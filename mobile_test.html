@@ -7,61 +7,97 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>丽江音悦台 - 移动端测试</title>
+  <title>丽江音悦台 - 移动端完全适配测试</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="style_mobile.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    .device-frame {
-      max-width: 100%;
-      margin: 20px auto;
-      border: 2px solid #333;
-      border-radius: 30px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-    
     .device-info {
-      background: #f8f9fa;
-      padding: 15px;
-      border-bottom: 1px solid #dee2e6;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     
     .viewport-info {
-      background: #e9ecef;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+      background: rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 10px;
       font-family: monospace;
-      font-size: 12px;
+      font-size: 13px;
+      margin-top: 10px;
     }
     
     .test-section {
       padding: 20px;
       background: white;
-      margin-bottom: 10px;
-      border-radius: 10px;
+      margin-bottom: 15px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     
-    .test-item {
-      padding: 15px;
-      margin-bottom: 10px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border-left: 4px solid #0d6efd;
+    .test-section h4 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-weight: 700;
     }
     
     .responsive-indicator {
       position: fixed;
       top: 10px;
       right: 10px;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.9);
       color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
+      padding: 8px 15px;
+      border-radius: 25px;
       font-size: 12px;
       z-index: 9999;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .test-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .touch-test {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 15px 0;
+    }
+    
+    .touch-test:active {
+      transform: scale(0.98);
+    }
+    
+    @media (max-width: 575.98px) {
+      .device-info {
+        padding: 15px;
+        border-radius: 12px;
+      }
+      
+      .viewport-info {
+        font-size: 11px;
+        padding: 12px;
+      }
+      
+      .test-section {
+        padding: 15px;
+        border-radius: 12px;
+      }
+      
+      .test-section h4 {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
@@ -71,10 +107,10 @@
   </div>
 
   <div class="container py-4">
-    <h1 class="text-center mb-4">📱 移动端适配测试页面</h1>
+    <h1 class="text-center mb-4">📱 移动端完全适配测试</h1>
     
     <div class="device-info">
-      <h5>设备信息</h5>
+      <h5 class="mb-0">📊 设备信息</h5>
       <div class="viewport-info" id="device-info">
         加载中...
       </div>
@@ -82,7 +118,7 @@
 
     <!-- 导航栏测试 -->
     <div class="test-section">
-      <h4>导航栏测试</h4>
+      <h4>🧭 导航栏测试</h4>
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
         <div class="container">
           <a class="navbar-brand" href="#">
@@ -101,12 +137,12 @@
           </div>
         </div>
       </nav>
-      <p class="text-muted small">测试导航栏在移动端的折叠和展开功能</p>
+      <p class="text-muted small mb-0">✅ 测试导航栏在移动端的折叠和展开功能</p>
     </div>
 
-    <!-- 卡片测试 -->
+    <!-- 音乐卡片测试 -->
     <div class="test-section">
-      <h4>音乐卡片测试</h4>
+      <h4>🎵 音乐卡片测试</h4>
       <div class="music-card card mb-2">
         <div class="card-body">
           <img src="./images/avatar.jpg" alt="封面" class="album-cover me-3">
@@ -127,11 +163,12 @@
           </div>
         </div>
       </div>
+      <p class="text-muted small mt-2">✅ 测试音乐卡片的布局和触摸区域</p>
     </div>
 
     <!-- 视频卡片测试 -->
     <div class="test-section">
-      <h4>视频卡片测试</h4>
+      <h4>🎬 视频卡片测试</h4>
       <div class="row">
         <div class="col-6 mb-3">
           <div class="video-card card">
@@ -152,11 +189,12 @@
           </div>
         </div>
       </div>
+      <p class="text-muted small">✅ 测试视频卡片的网格布局</p>
     </div>
 
     <!-- 播放器测试 -->
     <div class="test-section">
-      <h4>底部播放器测试</h4>
+      <h4>🎧 底部播放器测试</h4>
       <div class="bottom-player fixed-bottom text-white shadow-lg">
         <div class="container">
           <div class="d-flex align-items-center justify-content-between">
@@ -186,11 +224,12 @@
           </div>
         </div>
       </div>
+      <p class="text-muted small">✅ 测试底部播放器的响应式布局</p>
     </div>
 
     <!-- 表单测试 -->
     <div class="test-section">
-      <h4>表单测试</h4>
+      <h4>📝 表单测试</h4>
       <form>
         <div class="mb-3">
           <label class="form-label">姓名</label>
@@ -206,16 +245,47 @@
         </div>
         <button type="submit" class="btn btn-primary w-100">提交</button>
       </form>
+      <p class="text-muted small mt-2">✅ 测试表单输入和按钮触摸区域</p>
     </div>
 
     <!-- 触摸测试 -->
     <div class="test-section">
-      <h4>触摸区域测试</h4>
-      <div class="test-item">
-        <p>点击测试区域 - 应该有足够的触摸空间</p>
+      <h4>👆 触摸区域测试</h4>
+      <div class="test-card">
+        <p class="mb-2">点击测试区域 - 应该有足够的触摸空间（最小44x44px）</p>
         <button class="btn btn-primary me-2">按钮1</button>
         <button class="btn btn-secondary">按钮2</button>
       </div>
+      <div class="touch-test">
+        <h5>🎯 触摸反馈测试</h5>
+        <p class="mb-0">点击此区域查看触摸反馈效果</p>
+      </div>
+    </div>
+
+    <!-- 标签页测试 -->
+    <div class="test-section">
+      <h4>📑 标签页测试</h4>
+      <ul class="nav nav-tabs justify-content-center mb-3" id="testTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="test-tab-1" data-bs-toggle="tab" data-bs-target="#test-content-1" type="button" role="tab">
+            <i class="fas fa-music me-2"></i>音乐
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="test-tab-2" data-bs-toggle="tab" data-bs-target="#test-content-2" type="button" role="tab">
+            <i class="fas fa-video me-2"></i>视频
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="test-content-1" role="tabpanel">
+          <p class="text-center text-muted">音乐内容区域</p>
+        </div>
+        <div class="tab-pane fade" id="test-content-2" role="tabpanel">
+          <p class="text-center text-muted">视频内容区域</p>
+        </div>
+      </div>
+      <p class="text-muted small">✅ 测试标签页切换功能</p>
     </div>
   </div>
 
@@ -236,24 +306,30 @@
         deviceType = '平板设备';
       }
       
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const orientation = window.orientation || (window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
+      
       const info = `
-        设备类型: ${deviceType}
-        视口宽度: ${width}px
-        视口高度: ${height}px
-        像素比: ${pixelRatio}
-        用户代理: ${navigator.userAgent.substring(0, 50)}...
+设备类型: ${deviceType}
+视口宽度: ${width}px
+视口高度: ${height}px
+像素比: ${pixelRatio}
+触摸支持: ${isTouch ? '是' : '否'}
+屏幕方向: ${orientation}
+用户代理: ${navigator.userAgent.substring(0, 40)}...
       `;
       
-      document.getElementById('device-info').textContent = info;
+      document.getElementById('device-info').textContent = info.trim();
       document.getElementById('viewport-indicator').textContent = `${width}x${height} - ${deviceType}`;
     }
     
     // 初始化和监听
     updateDeviceInfo();
     window.addEventListener('resize', updateDeviceInfo);
+    window.addEventListener('orientationchange', updateDeviceInfo);
     
     // 触摸事件测试
-    document.querySelectorAll('.test-item').forEach(item => {
+    document.querySelectorAll('.test-card').forEach(item => {
       item.addEventListener('touchstart', function() {
         this.style.backgroundColor = '#e7f1ff';
       });
