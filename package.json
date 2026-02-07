@@ -1,0 +1,34 @@
+{
+  "name": "lijiang-yinyuetai",
+  "version": "1.0.0",
+  "description": "丽江音悦台 - 纳西族音乐精选网站",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080",
+    "dev": "http-server -p 3000",
+    "build": "mkdir -p dist && cp index.html style.css script.js README.md deploy.sh deploy.bat package.json dist/ && mkdir -p dist/images && cp ../images/avatar.jpg dist/images/",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "keywords": [
+    "music",
+    "naxi",
+    "lijiang",
+    "chinese-traditional",
+    "audio-player",
+    "website"
+  ],
+  "author": "丽江音悦台",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "gh-pages": "^6.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/lijiang-yinyuetai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/lijiang-yinyuetai/issues"
+  },
+  "homepage": "https://github.com/username/lijiang-yinyuetai#readme"
+}

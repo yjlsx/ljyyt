@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>视频数据调试</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container py-5">
+    <h1>视频数据调试页面</h1>
+    
+    <div class="alert alert-info">
+      <strong>调试目的：</strong> 检查videoData是否正确加载
+    </div>
+    
+    <div class="card">
+      <div class="card-body">
+        <h5>调试信息：</h5>
+        <ul id="debug-info">
+          <li>等待加载...</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5>视频数据：</h5>
+        <pre id="video-data-display">等待加载...</pre>
+      </div>
+    </div>
+    
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5>视频列表渲染：</h5>
+        <div id="video-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 先加载视频数据 -->
+  <script src="videos/video_data.js"></script>
+  
+  <script>
+    const debugInfo = document.getElementById('debug-info');
+    const videoDataDisplay = document.getElementById('video-data-display');
+    const videoList = document.getElementById('video-list');
+    
+    function addDebugInfo(message) {
+      const li = document.createElement('li');
+      li.textContent = message;
+      debugInfo.appendChild(li);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      addDebugInfo('✅ DOM加载完成');
+      
+      // 检查videoData是否存在
+      if (typeof videoData === 'undefined') {
+        addDebugInfo('❌ videoData 未定义');
+        videoDataDisplay.textContent = 'videoData 变量未找到';
+      } else {
+        addDebugInfo('✅ videoData 已定义');
+        addDebugInfo('📊 视频数量: ' + videoData.length);
+        videoDataDisplay.textContent = JSON.stringify(videoData, null, 2);
+        
+        // 渲染视频列表
+        renderVideoList();
+      }
+    });
+    
+    function renderVideoList() {
+      videoList.innerHTML = '';
+      
+      videoData.forEach(function(video, index) {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 mb-3';
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        card.innerHTML = 
+          '<div class="card-body p-0">' +
+            '<div class="position-relative">' +
+              '<img src="' + video.cover + '" alt="' + video.title + '" class="card-img-top" style="height: 200px; object-fit: cover;">' +
+              '<div class="position-absolute top-50 start-50 translate-middle">' +
+                '<i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>' +
+              '</div>' +
+              '<div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">' +
+                '<span class="text-white small">' + formatTime(video.duration) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="p-3">' +
+              '<h6 class="card-title mb-1">' + video.title + '</h6>' +
+              '<p class="card-text text-muted mb-0 small">' + video.artist + '</p>' +
+            '</div>' +
+          '</div>';
+        
+        col.appendChild(card);
+        videoList.appendChild(col);
+      });
+      
+      addDebugInfo('✅ 视频列表渲染完成');
+    }
+    
+    function formatTime(seconds) {
+      if(isNaN(seconds) || seconds <= 0) return '0:00';
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return min + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+  </script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</body>
+</html>

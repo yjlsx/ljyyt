@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全面调试</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="text-center mb-4">🔍 全面调试页面</h1>
+    
+    <div class="alert alert-warning">
+      <strong>问题：</strong> 音乐和视频标签下都没有显示任何内容
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">调试信息</h5>
+          </div>
+          <div class="card-body">
+            <ul id="debug-info" class="list-unstyled">
+              <li>⏳ 等待加载...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">错误信息</h5>
+          </div>
+          <div class="card-body">
+            <ul id="error-info" class="list-unstyled">
+              <li>✅ 暂无错误</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0">数据检查</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6>音乐数据：</h6>
+            <pre id="music-data-check" class="bg-light p-2">检查中...</pre>
+          </div>
+          <div class="col-md-6">
+            <h6>视频数据：</h6>
+            <pre id="video-data-check" class="bg-light p-2">检查中...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0">渲染测试</h5>
+      </div>
+      <div class="card-body">
+        <h6>音乐列表：</h6>
+        <div id="music-list-test" class="row mb-4"></div>
+        
+        <h6>视频列表：</h6>
+        <div id="video-list-test" class="row"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 先加载视频数据 -->
+  <script src="videos/video_data.js"></script>
+  
+  <script>
+    const debugInfo = document.getElementById('debug-info');
+    const errorInfo = document.getElementById('error-info');
+    const musicDataCheck = document.getElementById('music-data-check');
+    const videoDataCheck = document.getElementById('video-data-check');
+    
+    function addDebugInfo(message) {
+      const li = document.createElement('li');
+      li.innerHTML = message;
+      debugInfo.appendChild(li);
+      console.log(message);
+    }
+    
+    function addErrorInfo(message) {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="text-danger">❌ ' + message + '</span>';
+      errorInfo.appendChild(li);
+      console.error(message);
+    }
+    
+    function formatTime(seconds) {
+      if(isNaN(seconds) || seconds <= 0) return '0:00';
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return min + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      addDebugInfo('✅ DOM加载完成');
+      
+      // 检查musicData
+      try {
+        if (typeof musicData === 'undefined') {
+          addErrorInfo('musicData 未定义');
+          musicDataCheck.textContent = '❌ musicData 变量未找到';
+        } else {
+          addDebugInfo('✅ musicData 已定义');
+          addDebugInfo('📊 音乐数量: ' + musicData.length);
+          musicDataCheck.textContent = '✅ musicData 存在，数量: ' + musicData.length;
+          
+          // 渲染音乐列表
+          renderMusicList();
+        }
+      } catch (error) {
+        addErrorInfo('musicData 检查错误: ' + error.message);
+      }
+      
+      // 检查videoData
+      try {
+        if (typeof videoData === 'undefined') {
+          addErrorInfo('videoData 未定义');
+          videoDataCheck.textContent = '❌ videoData 变量未找到';
+        } else {
+          addDebugInfo('✅ videoData 已定义');
+          addDebugInfo('📊 视频数量: ' + videoData.length);
+          videoDataCheck.textContent = '✅ videoData 存在，数量: ' + videoData.length;
+          
+          // 渲染视频列表
+          renderVideoList();
+        }
+      } catch (error) {
+        addErrorInfo('videoData 检查错误: ' + error.message);
+      }
+    });
+    
+    function renderMusicList() {
+      try {
+        const container = document.getElementById('music-list-test');
+        container.innerHTML = '';
+        
+        musicData.forEach(function(track, index) {
+          const col = document.createElement('div');
+          col.className = 'col-md-6 mb-2';
+          
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = 
+            '<div class="card-body p-2">' +
+              '<small>' + track.title + '</small>' +
+            '</div>';
+          
+          col.appendChild(card);
+          container.appendChild(col);
+        });
+        
+        addDebugInfo('✅ 音乐列表渲染完成');
+      } catch (error) {
+        addErrorInfo('音乐列表渲染错误: ' + error.message);
+      }
+    }
+    
+    function renderVideoList() {
+      try {
+        const container = document.getElementById('video-list-test');
+        container.innerHTML = '';
+        
+        videoData.forEach(function(track, index) {
+          const col = document.createElement('div');
+          col.className = 'col-md-6 mb-2';
+          
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = 
+            '<div class="card-body p-2">' +
+              '<small>' + track.title + '</small>' +
+            '</div>';
+          
+          col.appendChild(card);
+          container.appendChild(col);
+        });
+        
+        addDebugInfo('✅ 视频列表渲染完成');
+      } catch (error) {
+        addErrorInfo('视频列表渲染错误: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
