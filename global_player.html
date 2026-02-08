@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>全局播放器</title>
+</head>
+<body>
+  <!-- 全局音频播放器 -->
+  <audio id="global-audio-player"></audio>
+  
+  <script>
+    console.log('🎵 全局播放器页面加载');
+    
+    // 初始化音频播放器
+    var globalAudioPlayer = document.getElementById('global-audio-player');
+    var currentTrack = null;
+    var isPlaying = false;
+    
+    // 暴露全局播放器接口
+    window.globalPlayer = {
+      audioPlayer: globalAudioPlayer,
+      currentTrack: currentTrack,
+      isPlaying: isPlaying,
+      
+      // 播放音乐
+      play: function(track) {
+        console.log('🎵 全局播放器播放:', track.title);
+        currentTrack = track;
+        globalAudioPlayer.src = track.src;
+        globalAudioPlayer.play().then(function() {
+          isPlaying = true;
+          // 通知父窗口更新UI
+          if (window.opener && window.opener.updatePlayerUI) {
+            window.opener.updatePlayerUI(track, true);
+          }
+        }).catch(function(error) {
+          console.error('❌ 播放失败:', error);
+          isPlaying = false;
+        });
+      },
+      
+      // 暂停音乐
+      pause: function() {
+        console.log('⏸️ 全局播放器暂停');
+        globalAudioPlayer.pause();
+        isPlaying = false;
+        // 通知父窗口更新UI
+        if (window.opener && window.opener.updatePlayerUI) {
+          window.opener.updatePlayerUI(currentTrack, false);
+        }
+      },
+      
+      // 获取当前播放状态
+      getState: function() {
+        return {
+          currentTrack: currentTrack,
+          isPlaying: isPlaying,
+          currentTime: globalAudioPlayer.currentTime,
+          duration: globalAudioPlayer.duration
+        };
+      }
+    };
+    
+    // 监听音频事件
+    globalAudioPlayer.addEventListener('timeupdate', function() {
+      // 通知父窗口更新进度条
+      if (window.opener && window.opener.updateProgress) {
+        window.opener.updateProgress(globalAudioPlayer.currentTime, globalAudioPlayer.duration);
+      }
+    });
+    
+    globalAudioPlayer.addEventListener('ended', function() {
+      console.log('🎵 播放结束');
+      isPlaying = false;
+      // 通知父窗口播放结束
+      if (window.opener && window.opener.onTrackEnded) {
+        window.opener.onTrackEnded();
+      }
+    });
+    
+    console.log('✅ 全局播放器初始化完成');
+  </script>
+</body>
+</html>

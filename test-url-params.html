@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL参数测试</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">URL参数解析测试</h1>
+    
+    <div class="alert alert-info">
+      <strong>当前URL：</strong><span id="current-url"></span>
+    </div>
+    
+    <div class="alert alert-warning">
+      <strong>URL.search：</strong><span id="url-search"></span>
+    </div>
+    
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>测试结果</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>方法1：URLSearchParams</strong></p>
+        <p>搜索关键词：<span id="query1" class="badge bg-primary">-</span></p>
+        
+        <hr>
+        
+        <p><strong>方法2：正则表达式</strong></p>
+        <p>搜索关键词：<span id="query2" class="badge bg-success">-</span></p>
+        
+        <hr>
+        
+        <p><strong>方法3：split</strong></p>
+        <p>搜索关键词：<span id="query3" class="badge bg-info">-</span></p>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <a href="search.html?q=纳西" class="btn btn-primary">测试搜索页面</a>
+      <a href="test-url-params.html?q=测试关键词" class="btn btn-outline-primary ms-2">测试中文参数</a>
+    </div>
+  </div>
+
+  <script>
+    // 显示当前URL
+    document.getElementById('current-url').textContent = window.location.href;
+    document.getElementById('url-search').textContent = window.location.search;
+    
+    // 方法1：URLSearchParams
+    try {
+      var params1 = new URLSearchParams(window.location.search);
+      var query1 = params1.get('q');
+      document.getElementById('query1').textContent = query1 || '未找到';
+      console.log('方法1结果:', query1);
+    } catch (e) {
+      document.getElementById('query1').textContent = '错误: ' + e.message;
+    }
+    
+    // 方法2：正则表达式
+    try {
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(window.location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+      var query2 = getUrlParameter('q');
+      document.getElementById('query2').textContent = query2 || '未找到';
+      console.log('方法2结果:', query2);
+    } catch (e) {
+      document.getElementById('query2').textContent = '错误: ' + e.message;
+    }
+    
+    // 方法3：split
+    try {
+      var query3 = '';
+      if (window.location.search) {
+        var pairs = window.location.search.substring(1).split('&');
+        for (var i = 0; i < pairs.length; i++) {
+          var pair = pairs[i].split('=');
+          if (pair[0] === 'q') {
+            query3 = decodeURIComponent(pair[1]);
+            break;
+          }
+        }
+      }
+      document.getElementById('query3').textContent = query3 || '未找到';
+      console.log('方法3结果:', query3);
+    } catch (e) {
+      document.getElementById('query3').textContent = '错误: ' + e.message;
+    }
+  </script>
+</body>
+</html>

@@ -220,11 +220,11 @@ const musicData = [
       duration: 175
     },
     {
-      id: 25,
+      id: 20006,
       title: "和生辉 - 歌唱长水",
       artist: "和生辉",
       album: "纳西音乐精选",
-      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyODkz",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyNDA=",
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZBZ2v17qhuaicT5jTtHLglu4ucxhcrndVg2j0Ric7vr1Bptz8zFAicIiclfv9urOBK8ZoibISfx2hgDQ/0?wx_fmt=jpeg",
       duration: 175
     },
@@ -669,6 +669,10 @@ function playMusic() {
   audioPlayer.play().then(function() {
     isPlaying = true;
     updatePlayButton();
+    // 保存播放状态
+    if (typeof savePlayerState === 'function') {
+      savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex]);
+    }
   }).catch(function(error) {
     console.error('❌ 播放失败:', error);
   });
@@ -680,6 +684,10 @@ function pauseMusic() {
   audioPlayer.pause();
   isPlaying = false;
   updatePlayButton();
+  // 保存播放状态
+  if (typeof savePlayerState === 'function') {
+    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex]);
+  }
 }
 
 // 切换播放/暂停
@@ -912,6 +920,23 @@ function initPlayerEvents() {
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 DOM加载完成，开始初始化...');
+  
+  // 检查并恢复播放器状态
+  if (typeof restorePlayerState === 'function' && hasSavedPlayerState()) {
+    const savedState = restorePlayerState();
+    if (savedState && savedState.trackData) {
+      console.log('🔄 恢复播放器状态:', savedState.trackData.title);
+      const trackIndex = musicData.findIndex(t => t.id === savedState.trackId);
+      if (trackIndex !== -1) {
+        currentTrackIndex = trackIndex;
+        loadTrack(currentTrackIndex);
+        audioPlayer.currentTime = savedState.currentTime;
+        if (savedState.isPlaying) {
+          playMusic();
+        }
+      }
+    }
+  }
   
   // 渲染音乐列表
   renderMusicList();

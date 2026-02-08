@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -79,7 +79,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link active" href="#">首页</a>
           </li>
@@ -90,6 +90,13 @@
             <a class="nav-link" href="#contact">联系我们</a>
           </li>
         </ul>
+        <!-- 搜索栏 -->
+        <form class="d-flex" id="search-form">
+          <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
+          <button class="btn btn-outline-light" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
       </div>
     </div>
   </nav>
@@ -146,7 +153,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-10 text-center">
-          <h3>关于丽江音悦台</h3>
+          <h3>关于我们</h3>
           <p>丽江音悦台致力于传承和推广纳西族传统音乐文化，通过现代技术手段让更多人了解和欣赏纳西族独特的音乐艺术。</p>
           <p>我们的使命是保护和传播纳西族音乐遗产，同时鼓励现代创作，让古老的音乐文化在新时代焕发光彩。</p>
         </div>
@@ -244,6 +251,21 @@
   <script src="videos/video_data.js"></script>
   
   <!-- 主脚本 -->
-  <script src="script_fixed.js"></script>
+  <!-- 播放器状态管理 -->
+  <script src='player_state.js'></script>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+  <!-- 播放器状态增强 -->
+  <script src='player_state_enhanced.js'></script>
+

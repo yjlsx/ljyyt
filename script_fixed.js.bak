@@ -1,4 +1,4 @@
-﻿// 修复版脚本
+// 修复版脚本
 console.log('🚀 script_fixed.js 开始加载');
 
 // 音乐数据
@@ -629,12 +629,8 @@ function loadTrack(index) {
   // 更新总时长
   totalTimeEl.textContent = formatTime(track.duration);
   
-  
-  
-  // 保存播放器状态
-  if (typeof savePlayerState === 'function') {
-    savePlayerState(track.id, 0, false, track);
-  }
+  // 更新音乐列表的高亮状态
+  updateMusicListHighlight();
   
   console.log('✅ 音乐加载完成');
 }
@@ -643,11 +639,8 @@ function loadTrack(index) {
 function playMusic() {
   console.log('▶️ 播放音乐');
   audioPlayer.play().then(function() {
-    
-    // 保存播放器状态
-    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-      savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
-    }
+    isPlaying = true;
+    updatePlayButton();
   }).catch(function(error) {
     console.error('❌ 播放失败:', error);
   });
@@ -657,11 +650,8 @@ function playMusic() {
 function pauseMusic() {
   console.log('⏸️ 暂停音乐');
   audioPlayer.pause();
-  
-  // 保存播放器状态
-  if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, false, musicData[currentTrackIndex]);
-  }
+  isPlaying = false;
+  updatePlayButton();
 }
 
 // 切换播放/暂停
@@ -904,189 +894,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // 初始化播放器事件监听
   initPlayerEvents();
   
-  // 初始化搜索功能
-  initSearch();
-  
-  // 检查是否有保存的播放状态
-  if (typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
-    const savedState = restorePlayerState();
-    if (savedState && savedState.trackData) {
-      console.log('📥 恢复播放状态:', savedState.trackData.title);
-      
-      // 找到对应的歌曲索引
-      const trackIndex = musicData.findIndex(function(track) {
-        return track.id === savedState.trackId;
-      });
-      
-      if (trackIndex !== -1) {
-        currentTrackIndex = trackIndex;
-        loadTrack(currentTrackIndex);
-        
-        // 恢复播放位置
-        if (savedState.currentTime > 0) {
-          audioPlayer.currentTime = savedState.currentTime;
-        }
-        
-        // 如果之前在播放，则继续播放
-        if (savedState.isPlaying) {
-          playMusic();
-        }
-        
-        console.log('✅ 播放状态已恢复');
-      } else {
-        console.log('⚠️ 未找到对应的歌曲，加载第一首');
-        if (musicData.length > 0) {
-          loadTrack(0);
-        }
-      }
-    }
-  } else {
-    // 默认加载第一首歌
-    if (musicData.length > 0) {
-      loadTrack(0);
-      console.log('✅ 已加载第一首歌:', musicData[0].title);
-    }
+  // 默认加载第一首歌
+  if (musicData.length > 0) {
+    loadTrack(0);
+    console.log('✅ 已加载第一首歌:', musicData[0].title);
   }
   
   console.log('✅ 页面初始化完成');
   console.log('🎵 音乐数量:', musicData.length);
   console.log('🎬 视频数量:', typeof videoData !== 'undefined' ? videoData.length : '未定义');
 });
-
-// 搜索功能
-function initSearch() {
-  console.log('🔍 初始化搜索功能...');
-  
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  
-  if (!searchForm || !searchInput) {
-    console.error('❌ 搜索元素未找到');
-    return;
-  }
-  
-  searchForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const query = searchInput.value.trim();
-    
-    if (!query) {
-      return;
-    }
-    
-    console.log('🔍 跳转到搜索页面:', query);
-    
-    // 跳转到搜索页面
-    window.location.href = 'search.html?q=' + encodeURIComponent(query);
-  });
-  
-  console.log('✅ 搜索功能初始化完成');
-}
-// 渲染过滤后的音乐列表
-function renderFilteredMusicList(filteredData) {
-  console.log('🎵 渲染过滤后的音乐列表...');
-  
-  if (!musicListContainer) {
-    console.error('❌ musicListContainer 未找到');
-    return;
-  }
-  
-  musicListContainer.innerHTML = '';
-  
-  if (filteredData.length === 0) {
-    musicListContainer.innerHTML = '<div class="col-12 text-center text-muted py-5">未找到匹配的音乐</div>';
-    return;
-  }
-  
-  filteredData.forEach(function(track) {
-    // 找到原始索引
-    const originalIndex = musicData.findIndex(function(m) {
-      return m.id === track.id;
-    });
-    
-    var col = document.createElement('div');
-    col.className = 'col-md-6 col-lg-4 mb-3';
-    
-    var card = document.createElement('div');
-    card.className = 'card music-card';
-    card.dataset.id = track.id;
-    card.dataset.index = originalIndex;
-    
-    card.innerHTML = 
-      '<div class="card-body d-flex align-items-center">' +
-        '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
-        '<div class="flex-grow-1">' +
-          '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-          '<p class="card-text text-muted mb-1">' + track.artist + '</p>' +
-          '<small class="text-muted">时长: ' + formatTime(track.duration) + '</small>' +
-        '</div>' +
-        '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
-      '</div>';
-    
-    card.addEventListener('click', function() {
-      console.log('点击了音乐:', track.title);
-      currentTrackIndex = originalIndex;
-      loadTrack(currentTrackIndex);
-      playMusic();
-    });
-    
-    col.appendChild(card);
-    musicListContainer.appendChild(col);
-  });
-  
-  console.log('✅ 过滤列表渲染完成');
-}
-
-
-
-
-
-
-
-
-// 撒放器状态恢复
-function initPlayerStateRestore() {
-  console.log('📥 初始化播放器状态恢复...');
-  
-  if (typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
-    const savedState = restorePlayerState();
-    
-    if (savedState && savedState.trackData) {
-      console.log('📥 恢复播放状态:', savedState.trackData.title);
-      
-      const trackIndex = musicData.findIndex(function(track) {
-        return track.id === savedState.trackId;
-      });
-      
-      if (trackIndex !== -1) {
-        currentTrackIndex = trackIndex;
-        
-        setTimeout(function() {
-          loadTrack(currentTrackIndex);
-          
-          if (savedState.currentTime > 0) {
-            audioPlayer.currentTime = savedState.currentTime;
-          }
-          
-          if (savedState.isPlaying) {
-            playMusic();
-          }
-          
-          console.log('✅ 播放状态已恢复');
-        }, 500);
-        
-        return true;
-      }
-    }
-  }
-  
-  return false;
-}
-
-// 页面加载完成后尝试恢复播放状态
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    initPlayerStateRestore();
-  }, 1500);
-});
-
-
