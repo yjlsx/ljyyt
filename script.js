@@ -642,17 +642,37 @@ function loadTrack(index) {
 // 播放音乐
 function playMusic() {
   console.log('▶️ 播放音乐');
-  audioPlayer.play().then(function() {
-    isPlaying = true;
-    updatePlayButton();
-    
-    // 保存播放器状态
-    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-      savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
-    }
-  }).catch(function(error) {
-    console.error('❌ 播放失败:', error);
-  });
+  
+  // 确保音频已加载
+  if (audioPlayer.readyState < 2) {
+    console.log('⏳ 音频未加载完成，等待加载...');
+    audioPlayer.addEventListener('canplay', function onCanPlay() {
+      audioPlayer.removeEventListener('canplay', onCanPlay);
+      audioPlayer.play().then(function() {
+        isPlaying = true;
+        updatePlayButton();
+        
+        // 保存播放器状态
+        if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
+          savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
+        }
+      }).catch(function(error) {
+        console.error('❌ 播放失败:', error);
+      });
+    });
+  } else {
+    audioPlayer.play().then(function() {
+      isPlaying = true;
+      updatePlayButton();
+      
+      // 保存播放器状态
+      if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
+        savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
+      }
+    }).catch(function(error) {
+      console.error('❌ 播放失败:', error);
+    });
+  }
 }
 
 // 暂停音乐
@@ -1045,52 +1065,5 @@ function renderFilteredMusicList(filteredData) {
 
 
 
-
-
-// 撒放器状态恢复
-function initPlayerStateRestore() {
-  console.log('📥 初始化播放器状态恢复...');
-  
-  if (typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
-    const savedState = restorePlayerState();
-    
-    if (savedState && savedState.trackData) {
-      console.log('📥 恢复播放状态:', savedState.trackData.title);
-      
-      const trackIndex = musicData.findIndex(function(track) {
-        return track.id === savedState.trackId;
-      });
-      
-      if (trackIndex !== -1) {
-        currentTrackIndex = trackIndex;
-        
-        setTimeout(function() {
-          loadTrack(currentTrackIndex);
-          
-          if (savedState.currentTime > 0) {
-            audioPlayer.currentTime = savedState.currentTime;
-          }
-          
-          if (savedState.isPlaying) {
-            playMusic();
-          }
-          
-          console.log('✅ 播放状态已恢复');
-        }, 500);
-        
-        return true;
-      }
-    }
-  }
-  
-  return false;
-}
-
-// 页面加载完成后尝试恢复播放状态
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    initPlayerStateRestore();
-  }, 1500);
-});
 
 

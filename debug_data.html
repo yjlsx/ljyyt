@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据加载调试</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .debug-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .status-card {
+      margin-bottom: 20px;
+    }
+    .data-preview {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-radius: 3px;
+    }
+    .log-info { background: #d1ecf1; color: #0c5460; }
+    .log-success { background: #d4edda; color: #155724; }
+    .log-error { background: #f8d7da; color: #721c24; }
+    .log-warning { background: #fff3cd; color: #856404; }
+  </style>
+</head>
+<body>
+  <div class="container debug-container">
+    <h1 class="text-center mb-4">🔍 数据加载调试页面</h1>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card status-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">📁 文件加载状态</h5>
+          </div>
+          <div class="card-body">
+            <div id="file-status"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card status-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">📊 数据统计</h5>
+          </div>
+          <div class="card-body">
+            <div id="data-stats"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card status-card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">🎵 音乐数据预览</h5>
+      </div>
+      <div class="card-body">
+        <div id="music-preview" class="data-preview">等待加载...</div>
+      </div>
+    </div>
+    
+    <div class="card status-card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">🎬 视频数据预览</h5>
+      </div>
+      <div class="card-body">
+        <div id="video-preview" class="data-preview">等待加载...</div>
+      </div>
+    </div>
+    
+    <div class="card status-card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">📝 加载日志</h5>
+      </div>
+      <div class="card-body">
+        <div id="log-container" class="data-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载必要的脚本 -->
+  <script src="videos/video_data.js"></script>
+  <script src="player_state.js"></script>
+  <script src="script.js"></script>
+  
+  <script>
+    const fileStatus = document.getElementById('file-status');
+    const dataStats = document.getElementById('data-stats');
+    const musicPreview = document.getElementById('music-preview');
+    const videoPreview = document.getElementById('video-preview');
+    const logContainer = document.getElementById('log-container');
+    
+    function addLog(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry log-' + type;
+      const time = new Date().toLocaleTimeString();
+      entry.textContent = `[${time}] ${message}`;
+      logContainer.appendChild(entry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    
+    function updateFileStatus() {
+      let html = '<ul class="list-unstyled">';
+      
+      // 检查 script.js
+      if (typeof musicData !== 'undefined') {
+        html += '<li class="text-success">✅ script.js (包含 musicData)</li>';
+      } else {
+        html += '<li class="text-danger">❌ script.js (musicData 未定义)</li>';
+      }
+      
+      // 检查 video_data.js
+      if (typeof videoData !== 'undefined') {
+        html += '<li class="text-success">✅ videos/video_data.js</li>';
+      } else {
+        html += '<li class="text-danger">❌ videos/video_data.js (videoData) 未定义)</li>';
+      }
+      
+      // 检查 player_state.js
+      if (typeof savePlayerState !== 'undefined') {
+        html += '<li class="text-success">✅ player_state.js</li>';
+      } else {
+        html += '<li class="text-danger">❌ player_state.js (函数未定义)</li>';
+      }
+      
+      html += '</ul>';
+      fileStatus.innerHTML = html;
+    }
+    
+    function updateDataStats() {
+      let html = '<ul class="list-unstyled">';
+      
+      if (typeof musicData !== 'undefined') {
+        html += `<li><strong>音乐数量:</strong> ${musicData.length} 首</li>`;
+      } else {
+        html += '<li><strong>音乐数量:</strong> <span class="text-danger">未定义</span></li>';
+      }
+      
+      if (typeof videoData !== 'undefined') {
+        html += `<li><strong>视频数量:</strong> ${videoData.length} 个</li>`;
+      } else {
+        html += '<li><strong>视频数量:</strong> <span class="text-danger">未定义</span></li>';
+      }
+      
+      html += '</ul>';
+      dataStats.innerHTML = html;
+    }
+    
+    function updateMusicPreview() {
+      if (typeof musicData !== 'undefined' && musicData.length > 0) {
+        let html = '<table class="table table-sm table-striped">';
+        html += '<thead><tr><th>ID</th><th>标题</th><th>歌手</th><th>时长</th></tr></thead>';
+        html += '<tbody>';
+        
+        musicData.slice(0, 10).forEach(track => {
+          html += `<tr>
+            <td>${track.id}</td>
+            <td>${track.title}</td>
+            <td>${track.artist}</td>
+            <td>${track.duration}s</td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        
+        if (musicData.length > 10) {
+          html += `<p class="text-muted text-center">... 还有 ${musicData.length - 10} 首</p>`;
+        }
+        
+        musicPreview.innerHTML = html;
+        addLog(`✅ 音乐数据加载成功: ${musicData.length} 首`, 'success');
+      } else {
+        musicPreview.innerHTML = '<p class="text-danger">musicData 未定义或为空</p>';
+        addLog('❌ 音乐数据加载失败', 'error');
+      }
+    }
+    
+    function updateVideoPreview() {
+      if (typeof videoData !== 'undefined' && videoData.length > 0) {
+        let html = '<table class="table table-sm table-striped">';
+        html += '<thead><tr><th>ID</th><th>标题</th><th>歌手</th><th>时长</th></tr></thead>';
+        html += '<tbody>';
+        
+        videoData.slice(0, 10).forEach(track => {
+          html += `<tr>
+            <td>${track.id}</td>
+            <td>${track.title}</td>
+            <td>${track.artist}</td>
+            <td>${track.duration}s</td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        
+        if (videoData.length > 10) {
+          html += `<p class="text-muted text-center">... 还有 ${videoData.length - 10} 个</p>`;
+        }
+        
+        videoPreview.innerHTML = html;
+        addLog(`✅ 视频数据加载成功: ${videoData.length} 个`, 'success');
+      } else {
+        videoPreview.innerHTML = '<p class="text-danger">videoData 未定义或为空</p>';
+        addLog('❌ 视频数据加载失败', 'error');
+      }
+    }
+    
+    // 页面加载完成后执行检查
+    window.addEventListener('load', function() {
+      addLog('🚀 开始检查数据加载...', 'info');
+      
+      setTimeout(function() {
+        updateFileStatus();
+        updateDataStats();
+        updateMusicPreview();
+        updateVideoPreview();
+        
+        addLog('✅ 检查完成', 'success');
+      }, 500);
+    });
+    
+    addLog('📝 调试页面加载完成', 'info');
+  </script>
+</body>
+</html>

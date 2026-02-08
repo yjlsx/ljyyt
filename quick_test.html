@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>快速测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 快速测试页面</h1>
+  
+  <div id="status"></div>
+  
+  <div>
+    <button onclick="testScriptJS()">测试 script.js</button>
+    <button onclick="testVideoData()">测试 video_data.js</button>
+    <button onclick="testPlayerState()">测试 player_state.js</button>
+    <button onclick="testAll()">全部测试</button>
+  </div>
+  
+  <div id="results"></div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const resultsDiv = document.getElementById('results');
+    
+    function showStatus(message, type) {
+      statusDiv.innerHTML = '<div class="status ' + type + '">' + message + '</div>';
+    }
+    
+    function addResult(message, type) {
+      const div = document.createElement('div');
+      div.className = 'status ' + type;
+      div.textContent = message;
+      resultsDiv.appendChild(div);
+    }
+    
+    function testScriptJS() {
+      showStatus('正在测试 script.js...', 'info');
+      
+      fetch('script.js')
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error('HTTP ' + response.status);
+          }
+        })
+        .then(content => {
+          // 检查关键内容
+          const hasMusicData = content.includes('const musicData');
+          const hasRenderMusicList = content.includes('function renderMusicList');
+          const hasRenderVideoList = content.includes('function renderVideoList');
+          
+          if (hasMusicData && hasRenderMusicList && hasRenderVideoList) {
+            addResult('✅ script.js 测试通过', 'success');
+            addResult('   - 包含 musicData 定义', 'success');
+            addResult('   - 包含 renderMusicList 函数', 'success');
+            addResult('   - 包含 renderVideoList 函数', 'success');
+          } else {
+            addResult('❌ script.js 测试失败', 'error');
+            if (!hasMusicData) addResult('   - 缺少 musicData 定义', 'error');
+            if (!hasRenderMusicList) addResult('   - 缺少 renderMusicList 函数', 'error');
+            if (!hasRenderVideoList) addResult('   - 缺少 renderVideoList 函数', 'error');
+          }
+        })
+        .catch(error => {
+          addResult('❌ script.js 加载失败: ' + error.message, 'error');
+        });
+    }
+    
+    function testVideoData() {
+      showStatus('正在测试 video_data.js...', 'info');
+      
+      fetch('videos/video_data.js')
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error('HTTP ' + response.status);
+          }
+        })
+        .then(content => {
+          const hasVideoData = content.includes('const videoData');
+          
+          if (hasVideoData) {
+            addResult('✅ video_data.js 测试通过', 'success');
+            addResult('   - 包含 videoData 定义', 'success');
+          } else {
+            addResult('❌ video_data.js 测试失败', 'error');
+            addResult('   - 缺少 videoData 定义', 'error');
+          }
+        })
+        .catch(error => {
+          addResult('❌ video_data.js 加载失败: ' + error.message, 'error');
+        });
+    }
+    
+    function testPlayerState() {
+      showStatus('正在测试 player_state.js...', 'info');
+      
+      fetch('player_state.js')
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error('HTTP ' + response.status);
+          }
+        })
+        .then(content => {
+          const hasSavePlayerState = content.includes('function savePlayerState');
+          const hasRestorePlayerState = content.includes('function restorePlayerState');
+          
+          if (hasSavePlayerState && hasRestorePlayerState) {
+            addResult('✅ player_state.js 测试通过', 'success');
+            addResult('   - 包含 savePlayerState 函数', 'success');
+            addResult('   - 包含 restorePlayerState 函数', 'success');
+          } else {
+            addResult('❌ player_state.js 测试失败', 'error');
+            if (!hasSavePlayerState) addResult('   - 缺少 savePlayerState 函数', 'error');
+            if (!hasRestorePlayerState) addResult('   - 缺少 restorePlayerState 函数', 'error');
+          }
+        })
+        .catch(error => {
+          addResult('❌ player_state.js 加载失败: ' + error.message, 'error');
+        });
+    }
+    
+    function testAll() {
+      resultsDiv.innerHTML = '';
+      testScriptJS();
+      setTimeout(testVideoData, 500);
+      setTimeout(testPlayerState, 1000);
+    }
+    
+    // 页面加载时自动测试
+    window.addEventListener('load', function() {
+      showStatus('📝 测试页面已加载，请点击按钮开始测试', 'info');
+    });
+  </script>
+</body>
+</html>
