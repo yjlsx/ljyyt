@@ -570,8 +570,132 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
       duration: 203
     },
-
-
+    {
+      id: 64,
+      title: "和善武、金顺- 鱼水相会",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NjI=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 180
+    },
+    {
+      id: 65,
+      title: "金顺 - 勒巴舞唱腔",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NjM=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 321
+    },
+    {
+      id: 66,
+      title: "金顺 - 劝世歌",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NjQ=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 172
+    },
+    {
+      id: 67,
+      title: "金顺 - 兴余花华色",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NjU=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 278
+    },
+    {
+      id: 68,
+      title: "金顺 - 游子的心",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NjY=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 245
+    },
+    {
+      id: 69,
+      title: "金顺- 沧桑的诺言",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2Njc=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 290
+    },
+    {
+      id: 70,
+      title: "金顺- 沧桑的诺言",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2Njc=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 290
+    },
+    {
+      id: 71,
+      title: "金顺- 次里次姆",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzA=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 243
+    },
+    {
+      id: 72,
+      title: "金顺- 打跳联唱",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzE=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 415
+    },
+    {
+      id: 73,
+      title: "金顺- 红叶傲霜",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzI=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 329
+    },
+    {
+      id: 74,
+      title: "金顺- 回到我身边",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzM=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 172
+    },
+    {
+      id: 75,
+      title: "金顺- 悄然前行",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzQ=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 248
+    },
+    {
+      id: 76,
+      title: "金顺- 三月百花开",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzU=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 216
+    },
+    {
+      id: 77,
+      title: "金顺、和秀山 - 塔城纳西民歌",
+      artist: "金顺",
+      album: "纳西音乐精选",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk2NzY=",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
+      duration: 216
+    },
 
 
 
