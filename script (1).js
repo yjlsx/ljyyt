@@ -1,5 +1,5 @@
-﻿// 修复版脚本
-console.log('🚀 script_fixed.js 开始加载');
+// 修复版脚本
+console.log('🚀 script.js 开始加载');
 
 // 音乐数据
 const musicData = [
@@ -63,7 +63,7 @@ const musicData = [
       artist: "和春艳",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAzMTE2",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmPHrpBfqX7iawCibCibdsPWc8c3MoO9tJibdU9sAmjUZ8jHkyhlE0IXAjrQ/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/s/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmPHrpBfqX7iawCibCibdsPWc8c3MoO9tJibdU9sAmjUZ8jHkyhlE0IXAjrQ/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -108,7 +108,7 @@ const musicData = [
       artist: "涵蜜金组合",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAzMDUz",
-      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV9n5FgoMoAbliaCreicUXzDvE2gNLnYF9HONCyaQxiaDu8OgAlouTT0PEo6iabm657bfrA9QIrUibQ7Txw/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV9n5FgoMoAbliaCreicUXzDvE2gNLnYF9HONCyaQxiaDu8xOgAlouTT0PEo6iabm657bfrA9QIrUibQ7Txw/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -162,7 +162,7 @@ const musicData = [
       artist: "和文军",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyOTYw",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibV6ibEicbKg5SZ4xlf8nQQdjVJdWiaUiamXSIn7UCEuUII9ALM1T2Lmp96I0CPLNmyWsljUxnjYWqxKg/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibV6ibEicbKg5SZ4xlf8nQQdjVJdWiaUiamXSIn7UCEuXUII9ALM1T2Lmp96I0CPLNmyWsljUxnjYWqxKg/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -176,11 +176,11 @@ const musicData = [
     },
     {
       id: 21,
-      title: "玉龙雪山的牧童",
+      title: "玉龙雪山的牧童x",
       artist: "和楚雄",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyOTg0",
-      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8ZnD9MUwnUxsSEFZJwMIzPACZXS0fv1Pnhjez7qdwWUGf4Jaw7IgrC8VMqvG4qicz7RJLUFwfYdUw/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8ZnD9MUwnUxsSEFZJwMIzPACZXS0fv1Pnhjez7qdwWUGf4Jawaw7IgrC8VMqvG4qicz7RJLUFwfYdUw/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -216,16 +216,7 @@ const musicData = [
       artist: "李承翰",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyOTI2",
-      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8EWzb0KFzwicXFx448RArgicfZ6FBib8xbYzEXrb2ncfJdxGOLibk8cNZ7ic4qe7JspECs4UytIdBQX8A/0?wx_fmt=jpeg",
-      duration: 175
-    },
-    {
-      id: 25,
-      title: "和生辉 - 歌唱长水",
-      artist: "和生辉",
-      album: "纳西音乐精选",
-      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyODkz",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZBZ2v17qhuaicT5jTtHLglu4ucxhcrndVg2j0Ric7vr1Bptz8zFAicIiclfv9urOBK8ZoibISfx2hgDQ/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8EWzb0KFzwicXFx448RArgicfZ6FBib8xbYzEXrb2ncfJdxGOLibk8cNZ7x4qe7JspECs4UytIdBQX8A/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -279,7 +270,7 @@ const musicData = [
       artist: "树润花",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyODM0",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyPj2vQn42pXSwfC9iaz1mxSNLib8QWKYu1AK7eNLVB12f8VGDNpTfc2Gg/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyPj2vQn42pXSwfC9iaz1mxSNLib8QWKYu1AK7eNLVB12f8VGDNpTf2Gg/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -297,16 +288,7 @@ const musicData = [
       artist: "纳西蕾蕾",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyODA5",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
-      duration: 175
-    },
-    {
-      id: 34,
-      title: "纳西蕾蕾 - 我愿",
-      artist: "纳西蕾蕾",
-      album: "纳西音乐精选",
-      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyODA5",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJxq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
       duration: 175
     },
     {
@@ -369,7 +351,7 @@ const musicData = [
       artist: "达坡玛吉",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyNzM2",
-      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGwdIwLV3uYgmicUCTXfnwQIOhVHoicl0iaZ1icE4LLUTMu2zRhJKrt7XOsA/0?wx_fmt=jpeg",
+      cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGwdIwLV3uYgmicUCTXfnwQIOhVHoicl0iaZ1icE4LLUTMu2zRhJKrt7XOsA/0?wxwx_fmt=jpeg",
       duration: 175
     },
     {
@@ -476,7 +458,7 @@ const musicData = [
       title: "涵蜜金组合 - 摩梭山歌",
       artist: "涵蜜金组合",
       album: "纳西音乐精选",
-      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyNjI0",
+      src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyNjIw",
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
       duration: 175
     },
@@ -545,7 +527,7 @@ const musicData = [
     },
     {
       id: 61,
-      title: "郑旭先 - 冬之歌",
+      title: "郑旭先 - 冬之歌",
       artist: "郑旭先",
       album: "纳西音乐精选",
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyNTc3",
@@ -569,13 +551,7 @@ const musicData = [
       src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8yMjQ3NTAyNDM5",
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
       duration: 203
-    },
-
-
-
-
-
-
+    }
 ];
 
 console.log('✅ musicData 加载完成，数量:', musicData.length);
@@ -628,8 +604,6 @@ function loadTrack(index) {
   
   // 更新总时长
   totalTimeEl.textContent = formatTime(track.duration);
-  
-  
   
   // 保存播放器状态
   if (typeof savePlayerState === 'function') {
@@ -772,7 +746,7 @@ function renderMusicList() {
         '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
         '<div class="flex-grow-1">' +
           '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-          '<p class="card-text text-muted mb-1">' + track.artist + '</p>' +
+          '<p class="card-text text-muted mb-1">' + + track.artist + '</p>' +
           '<small class="text-muted">时长: ' + formatTime(track.duration) + '</small>' +
         '</div>' +
         '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
@@ -848,7 +822,7 @@ function renderVideoList() {
     });
     
     col.appendChild(card);
-    videoListContainer.appendChild(col);
+    videoListContainerx.appendChild(col);
   });
   
   console.log('✅ 视频列表渲染完成');
@@ -985,6 +959,7 @@ function initSearch() {
   
   console.log('✅ 搜索功能初始化完成');
 }
+
 // 渲染过滤后的音乐列表
 function renderFilteredMusicList(filteredData) {
   console.log('🎵 渲染过滤后的音乐列表...');
@@ -1039,58 +1014,3 @@ function renderFilteredMusicList(filteredData) {
   
   console.log('✅ 过滤列表渲染完成');
 }
-
-
-
-
-
-
-
-
-// 撒放器状态恢复
-function initPlayerStateRestore() {
-  console.log('📥 初始化播放器状态恢复...');
-  
-  if (typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
-    const savedState = restorePlayerState();
-    
-    if (savedState && savedState.trackData) {
-      console.log('📥 恢复播放状态:', savedState.trackData.title);
-      
-      const trackIndex = musicData.findIndex(function(track) {
-        return track.id === savedState.trackId;
-      });
-      
-      if (trackIndex !== -1) {
-        currentTrackIndex = trackIndex;
-        
-        setTimeout(function() {
-          loadTrack(currentTrackIndex);
-          
-          if (savedState.currentTime > 0) {
-            audioPlayer.currentTime = savedState.currentTime;
-          }
-          
-          if (savedState.isPlaying) {
-            playMusic();
-          }
-          
-          console.log('✅ 播放状态已恢复');
-        }, 500);
-        
-        return true;
-      }
-    }
-  }
-  
-  return false;
-}
-
-// 页面加载完成后尝试恢复播放状态
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    initPlayerStateRestore();
-  }, 1500);
-});
-
-
