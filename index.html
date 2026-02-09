@@ -165,7 +165,7 @@
   <!-- 导航栏 -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="#" onclick="scrollToTop(); return false;">
         <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
         丽江音悦台
       </a>
@@ -175,7 +175,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="#">首页</a>
+            <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#about">关于我们</a>
@@ -349,6 +349,46 @@
   <script src='player_state.js'></script>
 
   <script src="script.js"></script>
+
+  <script>
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+    
+    // 为导航栏品牌添加点击事件
+    document.addEventListener('DOMContentLoaded', function() {
+      var navbarBrand = document.querySelector('.navbar-brand');
+      if (navbarBrand) {
+        navbarBrand.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+      
+      // 为首页链接添加点击事件
+      var homeLink = document.querySelector('.nav-link.active[href="#"]');
+      if (homeLink) {
+        homeLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+      
+      // 为头像添加点击事件
+      var avatar = document.querySelector('.navbar-brand img');
+      if (avatar) {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToTop();
+        });
+      }
+    });
+  </script>
 </body>
 </html>
 

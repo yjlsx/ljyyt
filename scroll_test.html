@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>滚动测试 - 丽江音悦台</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_mobile.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    .test-section {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .test-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .test-content {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    
+    .test-btn {
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 10px;
+    }
+    
+    .status-box {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #667eea;
+    }
+    
+    .status-box h5 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .status-box p {
+      color: #666;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#" onclick="scrollToTop(); return false;">
+        <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
+        丽江音悦台
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section1">测试区域1</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section2">测试区域2</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- 顶部测试区域 -->
+  <div class="test-section" style="margin-top: 100px;">
+    <h1 class="test-title">🧪 滚动功能测试</h1>
+    
+    <div class="status-box">
+      <h5><i class="fas fa-info-circle"></i> 测试说明</h5>
+      <p>1. 向下滚动页面</p>
+      <p>2. 点击导航栏左上角的头像</p>
+      <p>3. 点击"丽江音悦台"文字</p>
+      <p>4. 点击"首页"链接</p>
+      <p>5. 应该平滑滚动到页面顶部</p>
+    </div>
+    
+    <div style="text-align: center; margin: 30px 0;">
+      <button class="btn btn-primary test-btn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i> 滚动到顶部
+      </button>
+      <button class="btn btn-success test-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-home"></i> 返回主页
+      </button>
+    </div>
+  </div>
+  
+  <!-- 测试区域1 -->
+  <div id="section1" class="test-section">
+    <h2 class="test-title">测试区域 1</h2>
+    <div class="test-content">
+      <p>这是测试区域1的内容。请向下滚动到这个区域，然后测试导航栏的滚动功能。</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn btn-primary test-btn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i> 滚动到顶部
+      </button>
+    </div>
+  </div>
+  
+  <!-- 测试区域2 -->
+  <div id="section2" class="test-section">
+    <h2 class="test-title">测试区域 2</h2>
+    <div class="test-content">
+      <p>这是测试区域2的内容。请向下滚动到这个区域，然后测试导航栏的滚动功能。</p>
+      <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+      <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn btn-primary test-btn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i> 滚动到顶部
+      </button>
+    </div>
+  </div>
+  
+  <!-- 底部测试区域 -->
+  <div class="test-section">
+    <h2 class="test-title">底部测试区域</h2>
+    <div class="test-content">
+      <p>这是底部测试区域。现在请测试导航栏的滚动功能：</p>
+      <p>1. 点击左上角的头像</p>
+      <p>2. 点击"丽江音悦台"文字</p>
+      <p>3. 点击"首页"链接</p>
+      <p>应该平滑滚动到页面顶部</p>
+    </div>
+    <div style="text-align: center; margin: 30px 0;">
+      <button class="btn btn-primary test-btn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i> 滚动到顶部
+      </button>
+      <button class="btn btn-success test-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-home"></i> 返回主页
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    function scrollToTop() {
+      console.log('scrollToTop 被调用');
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+    
+    // 为导航栏品牌添加点击事件
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM已加载');
+      
+      var navbarBrand = document.querySelector('.navbar-brand');
+      if (navbarBrand) {
+        console.log('找到navbar-brand');
+        navbarBrand.addEventListener('click', function(e) {
+          console.log('navbar-brand被点击');
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+      
+      // 为首页链接添加点击事件
+      var homeLink = document.querySelector('.nav-link.active[href="#"]');
+      if (homeLink) {
+        console.log('找到首页链接');
+        homeLink.addEventListener('click', function(e) {
+          console.log('首页链接被点击');
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+      
+      // 为头像添加点击事件
+      var avatar = document.querySelector('.navbar-brand img');
+      if (avatar) {
+        console.log('找到头像');
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', function(e) {
+          console.log('头像被点击');
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToTop();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
