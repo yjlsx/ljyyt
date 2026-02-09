@@ -160,6 +160,45 @@
       }
     }
 </style>
+
+  <style>
+    /* 向上火箭按钮 - 内联样式 */
+    .scroll-to-top {
+      position: fixed !important;
+      bottom: 90px !important;
+      right: 20px !important;
+      width: 45px !important;
+      height: 45px !important;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 50% !important;
+      font-size: 1.2rem !important;
+      cursor: pointer !important;
+      z-index: 9998 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transition: all 0.3s ease !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    .scroll-to-top.show {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    
+    .scroll-to-top:hover {
+      transform: translateY(-3px) !important;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .scroll-to-top:active {
+      transform: translateY(-1px) !important;
+    }
+  </style>
 </head>
 <body>
   <!-- 导航栏 -->
@@ -352,13 +391,22 @@
 
   
 
+  
+
+  
+
   <!-- 向上火箭按钮 -->
   <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
     <i class="fas fa-rocket"></i>
   </button>
   
+  
+
+  
+
   <script>
     function scrollToTop() {
+      console.log('scrollToTop 被调用');
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -369,16 +417,54 @@
     window.addEventListener('scroll', function() {
       var scrollToTopBtn = document.getElementById('scrollToTopBtn');
       if (scrollToTopBtn) {
-        if (window.pageYOffset > 300) {
+        var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        console.log('当前滚动位置：' + scrollPosition);
+        
+        // 降低触发阈值到50px
+        if (scrollPosition > 50) {
           scrollToTopBtn.classList.add('show');
+          console.log('火箭按钮已显示');
         } else {
           scrollToTopBtn.classList.remove('show');
+          console.log('火箭按钮已隐藏');
         }
       }
     });
     
-    // 为导航栏品牌添加点击事件
+    // 页面加载完成后检查
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM已加载');
+      
+      var scrollToTopBtn = document.getElementById('scrollToTopBtn');
+      if (scrollToTopBtn) {
+        console.log('火箭按钮元素已找到');
+        
+        // 强制设置样式
+        scrollToTopBtn.style.position = 'fixed';
+        scrollToTopBtn.style.bottom = '90px';
+        scrollToTopBtn.style.right = '20px';
+        scrollToTopBtn.style.width = '45px';
+        scrollToTopBtn.style.height = '45px';
+        scrollToTopBtn.style.zIndex = '99999';
+        scrollToTopBtn.style.display = 'flex';
+        scrollToTopBtn.style.alignItems = 'center';
+        scrollToTopBtn.style.justifyContent = 'center';
+        scrollToTopBtn.style.opacity = '0';
+        scrollToTopBtn.style.visibility = 'hidden';
+        
+        console.log('火箭按钮样式已强制设置');
+        
+        // 如果滚动位置已经超过50px，立即显示按钮
+        var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollPosition > 50) {
+          scrollToTopBtn.classList.add('show');
+          console.log('页面加载时火箭按钮已显示');
+        }
+      } else {
+        console.log('错误：找不到火箭按钮元素');
+      }
+      
+      // 为导航栏品牌添加点击事件
       var navbarBrand = document.querySelector('.navbar-brand');
       if (navbarBrand) {
         navbarBrand.addEventListener('click', function(e) {
