@@ -1174,17 +1174,6 @@ const videoData = [
     description: " "
   },
   {
-    id: 1107,
-    title: "木贵花 - 愿",
-    artist: "木贵花",
-    album: "音乐MV",
-    src: "https://mvwebfs.tx.kugou.com/202602081051/c5565c8a2868db9b8417623dd3808de0/v2/503df5810aaf472aced01536aa8b773b/KGTX/CLTX002/503df5810aaf472aced01536aa8b773b.mp4", 
-    cover: "https://p3fx.kgimg.com/mvpic/ea/f5/eaf5b0e3f333330e54621bf9f048990c.jpg",
-    duration: 331,
-    type: "video",
-    description: " "
-  },
-  {
     id: 1108,
     title: "墨尚七 - 桑瓦贡不勒",
     artist: "墨尚七",
