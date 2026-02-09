@@ -2,6 +2,187 @@
 const videoData = [
   {
     id: 1001,
+    title: "和善武、金顺 - 鱼水相会",
+    artist: "和善武、金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/c3cf02ee6a8990b9ad1fed05e6774b6b.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7NCtwazibtlUHAX0kOR3k6SeALRRWKiccfHQCEtLYtb4SqVetw5eVIlKWgjbdGvvgpibtpagiawd4ib71uoBuiaibialMbjJaumd9PTPgo/640?wx_fmt=png&amp;from=appmsg",
+    duration: 180,
+    type: "video",
+    description: "和善武、金顺 - 鱼水相会"
+  },
+  {
+    id: 1002,
+    title: "金顺 - 回到我身边",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/cbaf4f66e08724960608bf0e73363915.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pz6Ou9p86dBJtyAJ4zbccIaNC7UM79zbhy3LyOwFDdzapeaRq8RMQHDvGLQdmicnGC1QZicxDRQeiaLW4gWfVxvssLodHn6xcYLI/640?wx_fmt=png&amp;from=appmsg",
+    duration: 232,
+    type: "video",
+    description: "金顺 - 回到我身边"
+  },
+  {
+    id: 1003,
+    title: "和丽刚、金顺 - 缘定今生",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/e4b860b537832ead1f8b61bf4f080c82.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pz6Ou9p86dBJtyAJ4zbccIaNC7UM79zbhy3LyOwFDdzapeaRq8RMQHDvGLQdmicnGC1QZicxDRQeiaLW4gWfVxvssLodHn6xcYLI/640?wx_fmt=png&amp;from=appmsg",
+    duration: 281,
+    type: "video",
+    description: "和丽刚、金顺 - 缘定今生"
+  },
+  {
+    id: 1005,
+    title: "金顺 - 三月百花开",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/87a2fce89a250fb5c41e359194d5ab44.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7PiceWwkuhCFXUBpfGa7F1dXHibdMgYZu3aC4ly0eykTO7cjUtd5RiaLsBGNHva9xB9R9nTFQTGYWsIyX4uzFCwEQFXRUc7gVHTpQ/640?wx_fmt=png&amp;from=appmsg",
+    duration: 216,
+    type: "video",
+    description: "金顺 - 三月百花开"
+  },
+  {
+    id: 1006,
+    title: "金顺 - 兴余花华色",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/db33ef693b305abbb959e78811161bdb.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7NOrjPV7ohQicsvzEib6N8kQuW4gkcujiaGpNQVKavoA98hIEO75JFDyEylIba2w1ZCJyJvG5ZN3dr1k1aibx5cQEC3mtsDpymGD8U/640?wx_fmt=png&amp;from=appmsg",
+    duration: 278,
+    type: "video",
+    description: "金顺 - 兴余花华色"
+  },
+  {
+    id: 1007,
+    title: "金顺 - 游子的心",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/207470dfeca059e981dbc64b9e55803a.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7N3eL11iaMOicXhVjic0nu0f5OfkNmEEulYn174MKjcAo8yCZHWW76qzicvIIpdbWRQYZpl65PgPJWnibjctTBj6MvnWUkKyg4jibF4k/640?wx_fmt=png&amp;from=appmsg",
+    duration: 245,
+    type: "video",
+    description: "金顺 - 游子的心"
+  },
+  {
+    id: 1008,
+    title: "金顺 - 塔城纳西民歌",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260124/aab16c03c3595dcf2cf4ecf2e2be8f23.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7M3iagR6huc8ylv5DZGNd5YRH7WArOLYepkCDbcACiaLnde408WX2XkzXfH9dUibdicRrkP246qj6Kwx44cWKvFbcrYNTceayVSa3Y/640?wx_fmt=png&amp;from=appmsg",
+    duration: 222,
+    type: "video",
+    description: "金顺 - 塔城纳西民歌"
+  },
+  {
+    id: 1009,
+    title: "金顺 - 劝世歌",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/c2b8d2f9f52eb7666bd913a9d9636ee3.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7PRRBwZs06PJKGhG2Q0AGs0Mn3sn4ibegribxGxSRGiccXriam2kqcyPnGn9lVpor6vv1d3HypwtLEEzX5k1EIr4s6lhAibxCOC8IUw/640?wx_fmt=png&from=appmsg",
+    duration: 172,
+    type: "video",
+    description: "金顺 - 劝世歌"
+  },
+  {
+    id: 1010,
+    title: "金顺 - 勒巴舞唱腔",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/34a9c8591d7bb92abe9280cdb6317313.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7MibsurxzclLribWBtkzbib75tyZLcqLzxkpARtdIwmjb3juQ1egPLCozwzvibULxibMCGIpmZViapTkT4M9Fn4nHtctB1vafIEkBFWE/640?wx_fmt=png&amp;from=appmsg",
+    duration: 321,
+    type: "video",
+    description: "金顺 - 勒巴舞唱腔"
+  },
+  {
+    id: 1011,
+    title: "金顺 - 打跳联唱",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/02a3525a56bdaa06e13a878978ea4d50.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7PA0IqqF4wpO7vhYaxpZcAjcRKlTG8GZCAtppKR8icY9iczdsltAEgrSp7ZgFibJFX5Pb8aGFuZaqvWTagpA6N5kb0zmia3vs7J9hg/640?wx_fmt=png&amp;from=appmsg",
+    duration: 415,
+    type: "video",
+    description: "金顺 - 打跳联唱"
+  },
+  {
+    id: 1012,
+    title: "金顺- 沧桑的诺言",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/151697a28fd658d9b4d7a3615338ce29.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pcsa02YNbmpe5cQB5KSW6avLGqpRARrzC1GxcnDRdot3CsbynD1w46AJE0gbc28pIWLY3LicB2KiaSpYU6FKrtlz7lsxPSqWnsE/640?wx_fmt=png&amp;from=appmsg",
+    duration: 290,
+    type: "video",
+    description: "金顺- 沧桑的诺言"
+  },
+  {
+    id: 1013,
+    title: "金顺- 沧桑的诺言",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/0f74059731efff92b89ae105ed0ff571.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7ORCcX9fZkK2B8wBAWbxrS3ic3UA1wGsjzOh7f5QqnACpAibpAro5ep7ZveyKL2qJG3Dc5ShhK9m8gLd3HmPHnQIAMx6iafQlEicRo/640?wx_fmt=png&amp;from=appmsg",
+    duration: 243,
+    type: "video",
+    description: "金顺- 次里次姆"
+  },
+  {
+    id: 1014,
+    title: "金顺- 红叶傲霜",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/3a9c002b1229357622d01619a44523fc.mp4",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7NPBwPzB4kBIMLJYUjDLjW6dCFISonHpgBWP8ib7QCUjFZia08YUr2rZIENDVKw3yHkssliaxpIGze6vInfco80afJs6icx7T0iaqzw/640?wx_fmt=png&amp;from=appmsg",
+    duration: 329,
+    type: "video",
+    description: "金顺- 红叶傲霜"
+  },
+  {
+    id: 1015,
+    title: "金顺- 色卡飘季几",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/fcac7970a9adeb3dd10dba851edadf9d.mp4",
+    cover: "https://mmbiz.qlogo.cn/mmbiz_jpg/tfpibRIwbCV84jevYPGozARicbKWdicYtxDZB5iaibSoiaxovq3QZFibric1bdfr0wwCZQF4PRzHiaSibd7G93Q09KAjoglg/0?wx_fmt=jpeg",
+    duration: 268,
+    type: "video",
+    description: "金顺- 色卡飘季几"
+  },
+  {
+    id: 1016,
+    title: "金顺- 悄然前行",
+    artist: "金顺",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20260125/e1f3ff43fb74fe1666b1261dcb5ac06b.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7OqpsKKNciaIKKTPOwqPicA3icPCgKWkpLv2NiaX6VHVJObYlHdeSDOxoBIpIFNg1NeWLW50EMdYLERvbNAcVNY1fZRFDibJULYjXibs/640?wx_fmt=png&amp;from=appmsg",
+    duration: 248,
+    type: "video",
+    description: "金顺- 悄然前行"
+  },
+  {
+    id: 1017,
+    title: "纳西蕾蕾- 我愿",
+    artist: "纳西蕾蕾",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/812c4aa225d8f134481e567a56d57ed2.mp4",
+    cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8PmCq5l4vdgTMb31rlzEQoEzgBj3zEmCebLgAxwG1dCY7MzEMnErnvnstrYA4tjYRuhvvXuJl05g/0?wx_fmt=jpeg",
+    duration: 257,
+    type: "video",
+    description: "纳西蕾蕾- 我愿"
+  },
+
+
+
+
+
+  {
+    id: 1018,
     title: "和雪兰 - 吉祥的日子",
     artist: "和雪兰",
     album: "音乐MV",
@@ -12,7 +193,7 @@ const videoData = [
     description: "和雪兰演唱的《吉祥的日子》音乐MV，展现了纳西族音乐的魅力。"
   },
   {
-    id: 1002,
+    id: 1019,
     title: "和锦 - 四时吉祥",
     artist: "和锦",
     album: "音乐MV",
@@ -23,7 +204,7 @@ const videoData = [
     description: "和锦演唱的《四时吉祥》音乐MV，展现了纳西族传统音乐的现代演绎。"
   },
   {
-    id: 1003,
+    id: 1020,
     title: "墨尚七 - 纳西山歌",
     artist: "墨尚七",
     album: "音乐MV",
@@ -34,7 +215,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1004,
+    id: 1021,
     title: "金甲劲松 - 祖先",
     artist: "金甲劲松",
     album: "音乐MV",
@@ -45,7 +226,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1005,
+    id: 1022,
     title: "和丽刚 - 不变的誓言",
     artist: "和丽刚",
     album: "音乐MV",
@@ -56,7 +237,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1006,
+    id: 1023,
     title: "和丽刚 - 缘定今生",
     artist: "和丽刚",
     album: "音乐MV",
@@ -67,7 +248,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1007,
+    id: 1024,
     title: "彩菊 - 孝敬父母",
     artist: "彩菊",
     album: "音乐MV",
@@ -78,7 +259,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1008,
+    id: 1025,
     title: "和瑞智 - 玉龙神韵",
     artist: "和瑞智",
     album: "音乐MV",
@@ -89,7 +270,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1009,
+    id: 1026,
     title: "和笑 - 欢声笑语",
     artist: "和笑",
     album: "音乐MV",
@@ -100,7 +281,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1010,
+    id: 1027,
     title: "和丽刚 - 相守今生",
     artist: "和丽刚",
     album: "音乐MV",
@@ -111,7 +292,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1011,
+    id: 1028,
     title: "山娃子新歌 - 山娃子",
     artist: "山娃子",
     album: "音乐MV",
@@ -122,7 +303,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1012,
+    id: 1029,
     title: "和文军 - 三月百花开",
     artist: "和文军",
     album: "音乐MV",
@@ -133,7 +314,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1013,
+    id: 1030,
     title: "和善武 - 爸美汝实贺",
     artist: "和善武",
     album: "音乐MV",
@@ -144,7 +325,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1014,
+    id: 1031,
     title: "和丽龙 - 依恋",
     artist: "和丽龙",
     album: "音乐MV",
@@ -155,7 +336,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1015,
+    id: 1032,
     title: "和丽龙 - 赤子",
     artist: "和丽龙",
     album: "音乐MV",
@@ -166,7 +347,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1016,
+    id: 1033,
     title: "木贵花 - 愿",
     artist: "木贵花",
     album: "音乐MV",
@@ -177,7 +358,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1017,
+    id: 1034,
     title: "墨尚七 - 桑瓦贡不勒",
     artist: "墨尚七",
     album: "音乐MV",
@@ -188,7 +369,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1018,
+    id: 1035,
     title: "墨尚七 - 纳西山歌",
     artist: "墨尚七",
     album: "音乐MV",
@@ -199,7 +380,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1019,
+    id: 1036,
     title: "墨尚七 - 最美人间",
     artist: "墨尚七",
     album: "音乐MV",
@@ -210,7 +391,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1020,
+    id: 1037,
     title: "金顺 - 吾几吾日",
     artist: "金顺",
     album: "音乐MV",
@@ -221,7 +402,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1021,
+    id: 1038,
     title: "金顺 - 神仙在哪里",
     artist: "金顺",
     album: "音乐MV",
@@ -232,15 +413,15 @@ const videoData = [
     description: " "
   },
   {
-    id: 1022,
-    title: "和锦 - 纳西酒歌",
-    artist: "和锦",
+    id: 1039,
+    title: "阿花蜜 - 相依相守",
+    artist: "阿花蜜",
     album: "音乐MV",
-    src: "https://www.bilibili.com/video/BV1vY4y1V7AY", 
-    cover: "https://i1.hdslb.com/bfs/archive/f2ef1826ef54689743c8d88a6bf369a907430479.jpg@.avif",
-    duration: 243,
+    src: "https://xcx.lijiangmusic.com/upload/1/20241016/2bda2ce8dc36cf1814faaef9ef49a21d.mp4", 
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yyfsaa9s7wricmZwjUiazyzySibC1aUfJl93KI2dslSLmGPqdl06XJyZLrg/0?wx_fmt=jpeg",
+    duration: 239,
     type: "video",
-    description: " "
+    description: ""
   },
 
 
