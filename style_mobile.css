@@ -72,7 +72,7 @@ body {
   }
   
   .navbar-collapse {
-    background: #0d6efd;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 1rem 0;
     margin: 0 -12px;
   }
@@ -236,15 +236,43 @@ body {
     padding: 0 12px;
   }
   
-  /* 隐藏当前播放信息 */
+  /* 显示当前播放信息 - 移动端优化 */
   .bottom-player .current-track-info {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 120px;
+  }
+  
+  .bottom-player .current-track-info img {
     display: none !important;
   }
   
-  /* 播放控制优化 */
+  .bottom-player .current-track-info h6 {
+    font-size: 0.85rem !important;
+    font-weight: 600;
+    margin-bottom: 2px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .bottom-player .current-track-info small {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  /* 播放控制优化 - 水平排列 */
   .bottom-player .player-controls {
     margin-right: 8px !important;
     gap: 4px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
   }
   
   .bottom-player .btn-outline-light {
@@ -398,6 +426,151 @@ body {
     -ms-user-select: none;
     user-select: none;
   }
+
+  
+  /* === 底部播放器布局完全重构 === */
+  .bottom-player {
+    padding: 6px 0 !important;
+    min-height: 70px !important;
+    background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%) !important;
+  }
+  
+  .bottom-player .container {
+    padding: 0 10px !important;
+  }
+  
+  /* 播放器主容器 - 确保水平布局 */
+  .bottom-player .d-flex {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  /* 当前播放信息 - 左侧显示 */
+  .bottom-player .current-track-info {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    min-width: 100px !important;
+    max-width: 120px !important;
+    margin-right: 8px !important;
+    padding: 0 !important;
+  }
+  
+  .bottom-player .current-track-info img {
+    display: none !important;
+  }
+  
+  .bottom-player .current-track-info h6 {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    color: #fff !important;
+  }
+  
+  .bottom-player .current-track-info small {
+    font-size: 0.7rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  /* 播放控制按钮 - 水平排列 */
+  .bottom-player .player-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin: 0 6px !important;
+    flex: 0 0 auto !important;
+  }
+  
+  .bottom-player .player-controls .btn {
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .bottom-player #play-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    font-size: 0.9rem !important;
+    padding: 0 !important;
+  }
+  
+  /* 进度条 - 中间显示 */
+  .bottom-player .progress-container {
+    flex: 1 1 auto !important;
+    margin: 0 6px !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  
+  .bottom-player .progress-container .d-flex {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+  
+  .bottom-player .progress {
+    height: 4px !important;
+    border-radius: 2px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+  
+  .bottom-player .progress-bar {
+    background: #fff !important;
+  }
+  
+  .bottom-player #current-time,
+  .bottom-player #total-time {
+    font-size: 0.65rem !important;
+    min-width: 24px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  /* 音量控制 - 隐藏 */
+  .bottom-player .volume-control {
+    display: none !important;
+  }
+  
+  /* 确保所有按钮都是圆形的 */
+  .bottom-player .btn-outline-light {
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    background: transparent !important;
+    color: #fff !important;
+  }
+  
+  .bottom-player .btn-light {
+    background: #fff !important;
+    color: #667eea !important;
+    border: none !important;
+  }
 }
 
 /* ============================================
@@ -446,6 +619,12 @@ body {
   
   .bottom-player .current-track-info {
     display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bottom-player .current-track-info img {
+    display: none !important;
   }
   
   .bottom-player .current-track-info img {
@@ -583,6 +762,12 @@ body {
   }
   
   .bottom-player .current-track-info {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bottom-player .current-track-info img {
     display: none !important;
   }
   

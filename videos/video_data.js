@@ -198,13 +198,818 @@ const videoData = [
     type: "video",
     description: "木贵花 - 愿"
   },
+  {
+    id: 1019,
+    title: "涵依玛吉 - 花季情思",
+    artist: "涵依玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240516/b5cf2c3f8bfa830be4cf1ef234026e8a.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240516/135c2cb374fd56b2e85b18653c010b7e.jpg",
+    duration: 271,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1020,
+    title: "阿福 - 歌颂党情",
+    artist: "阿福",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240701/f53d19c331b0992bee351341bf6f88e1.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240701/6373e3960af7af9b1fe8deebb50cd50c_thumb.jpg",
+    duration: 200,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1021,
+    title: "和君梅 - 孝行颂",
+    artist: "和君梅",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240505/307b647e47d318b3d674ce88fac28f62.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240508/651c2adf972da02f3d7476d4f42d5c86.jpg",
+    duration: 182,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1022,
+    title: "丽江小龙 - 舞动丽江",
+    artist: "丽江小龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240330/39e3b4f2abab48f4096c635d52059284.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230628/eb088f35ffc4f5c21e50d8ead4110ce2.jpg",
+    duration: 293,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1023,
+    title: "小靓 - 心中的丽江",
+    artist: "小靓",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240127/02545b7dded5283850363c17b9b32e2f.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240127/e7de7a90884f4bfdedbf4012684fbfb4.jpg",
+    duration: 250,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1024,
+    title: "和文珠 - 思念",
+    artist: "和文珠",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230730/11ac2d063a1fce859abe3d76b2d26a91.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230730/cc0cc4ae79890138fffbabd3b7862c12.jpg",
+    duration: 254,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1025,
+    title: "和丽龙 - 呼唤",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/05f49f8e8e8c406cae38f7fbe61472b8.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/bc5a0ef0e4d6e07ad4378044b725ad3b.jpg",
+    duration: 302,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1026,
+    title: "和丽龙 - 玉龙欢歌",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/99d0258dc042bc5ff166367e29a58cda.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/f141caf7d6e1e49641043aa65de436c1.jpg",
+    duration: 279,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1027,
+    title: "和丽龙 - 人生莫愁",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/9e44fa76a3290c0e98feeeec1336f997.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/705621377a3d57c3665028378786ec83.jpg",
+    duration: 216,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1028,
+    title: "和丽龙 - 赤子",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/89eb5eb296cf40c1e15127ca5852dcd5.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/12fa39366704bea3013be0459dca4bca.jpg",
+    duration: 299,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1029,
+    title: "和丽龙 - 丽江情",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/68903fc3f5bc72656ec68c6c309a2737.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/6accb8efb005b36f504ab02392ae450f.jpg",
+    duration: 253,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1030,
+    title: "和丽龙 - 灵魂的梦",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/238262b5b89c6d4f08dd2b7d0525e4df.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/33be4cb1c63559ddc686f2d234c8b981.jpg",
+    duration: 308,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1031,
+    title: "和丽龙 - 冬天的约定",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/74eba3188d0215b6101bef4aa3bdc0e7.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/233ae72f8ff45a9e11978159bae0b204.jpg",
+    duration: 304,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1032,
+    title: "和丽龙 - 依恋",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230703/f89c1d68a6738ec413ac9e6cd4b634cf.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/e2c86762f3e74803c7f4f60ff429082c.jpg",
+    duration: 292,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1033,
+    title: "和丽龙 - 琉璃",
+    artist: "和丽龙",
+    album: "和丽龙《呼唤》",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/bc7fd11b91af7e4c8e77e9190dd393e6.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/0801fa39daf898bd843d37a78ea14d64.jpg",
+    duration: 299,
+    type: "video",
+    description: " "
+  },
+{
+    id: 1034,
+    title: "阿石才/珊珊 - 子啦勒",
+    artist: "阿石才/珊珊",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/1bc146aa3717a8418fb7518cc77b3496.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 276,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1035,
+    title: "阿石才 - 舞动三江",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230705/wdsj001.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 900,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1036,
+    title: "阿石才 - 大蛮调",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/81a96fbb7c055059315ef8749ca5c420.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 142,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1037,
+    title: "阿石才 - 新郎新娘慢慢跳",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/d5fb81cbbcca3679be5667b85af624dd.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 130,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1038,
+    title: "阿石才 - 相见乐",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/4a94d125f2a18c56a8cda37d2ffc32d6.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 134,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1039,
+    title: "阿石才 - 欢乐调",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/842369c5d18d7dfaa4ebd2869016c27f.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 228,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1040,
+    title: "阿石才 - 瓜迟迟",
+    artist: "阿石才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/511a91b9e63bae43ee43bf576d3febd1.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/f639442004363239a9a9ae1edd5e6e62.jpeg",
+    duration: 397,
+    type: "video",
+    description: " "
+  },
+{
+    id: 1041,
+    title: "天龙 - 金子为心",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/45babdd119fde91ba55c9fb8d8214dfb.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 437,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1042,
+    title: "天龙 - 梦在路上",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/2097f344330714f452a4fd6484f24c77.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 224,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1043,
+    title: "天龙 - 薄荷酒",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/fd0afa39555739b5651426fdf6914386.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 191,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1044,
+    title: "天龙 - 归来",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/3ff4937ab158313c51a6d31acdfc6e5f.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 268,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1045,
+    title: "陈四才 - 欢天喜地",
+    artist: "陈四才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230716/29a2be4922e26380b2ddb456609a7f8d.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230702/eabaac2f65bd2809f0520d7782fd481a.jpg",
+    duration: 212,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1046,
+    title: "陈四才 - 生肖歌",
+    artist: "陈四才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230702/98f85645c39970fa8eede2d15b91a0b4.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230702/eabaac2f65bd2809f0520d7782fd481a.jpg",
+    duration: 232,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1047,
+    title: "陈四才 - 幸福醉歌",
+    artist: "陈四才",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/bec1374802652d96c5cfb00c48076859.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/e2b3f77992d270f32650cb3f0794422c.jpg",
+    duration: 215,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1048,
+    title: "人狼格 - 民歌联唱",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/4317429722b72abcf4a194755a6b74c6.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 232,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1049,
+    title: "人狼格 - 新劝世歌",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/f4842945dc3e8af3102fe845e13b8ee1.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 452,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1050,
+    title: "人狼格 - 劝世歌",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/874ff59bf7c08cdd43ba49095871aff4.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 132,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1051,
+    title: "人狼格 - 鱼水相会",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/25be2e2e5bba81526e10ea68012cedbd.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 157,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1052,
+    title: "人狼格 - 丽水纵歌",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/bce66c845a3d212bfd7c1b92e4a6993f.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 303,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1053,
+    title: "人狼格 - 劳动歌联唱",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/ada8766c5be30dbe41b0b0ca81ccd3c0.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 371,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1054,
+    title: "人狼格 - 喜庆歌",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/428b2de99e80b1e46fbf2958ec546fd1.jpg",
+    duration: 243,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1055,
+    title: "人狼格 - 轮回之恋",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/1b787745d359e43400e719d2d935a0ae.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 247,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1056,
+    title: "人狼格 - 勤劳之歌",
+    artist: "人狼格",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/bf3a406e1f89714ce69551e43b24d42d.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 374,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1057,
+    title: "人狼格/和慧琼 - 玉龙恋歌",
+    artist: "人狼格/和慧琼",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/7409a8335951625a3213f8bb03d620c9.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/bb68c08374aa56ab5369ab4dce6b8f76.jpg",
+    duration: 389,
+    type: "video",
+    description: " "
+  },
+ {
+    id: 1058,
+    title: "丽江小龙 - 纳西阿妹",
+    artist: "丽江小龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230628/5bba2c024e4a86e06b90010813bb677b.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230628/eb088f35ffc4f5c21e50d8ead4110ce2.jpg",
+    duration: 280,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1059,
+    title: "丽江小龙 - 么彪腾辟",
+    artist: "丽江小龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230628/33274fd7df705d3bcc25f1e02e0b736c.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230628/eb088f35ffc4f5c21e50d8ead4110ce2.jpg",
+    duration: 194,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1060,
+    title: "天龙 - 金子为心",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/45babdd119fde91ba55c9fb8d8214dfb.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 437,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1061,
+    title: "天龙 - 梦在路上",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/2097f344330714f452a4fd6484f24c77.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 224,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1062,
+    title: "天龙 - 薄荷酒",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/fd0afa39555739b5651426fdf6914386.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 191,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1063,
+    title: "天龙 - 归来",
+    artist: "天龙",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/3ff4937ab158313c51a6d31acdfc6e5f.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230709/4574c4939ca374a5e00afb5d927653b2.jpg",
+    duration: 268,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1064,
+    title: "玉龙山组合 - 纳西敬酒歌",
+    artist: "玉龙山组合",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230705/2390740025526126584028b46b43685c.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230705/6f8c4f36cb36c2ab6a419b35a4493ae2.png",
+    duration: 250,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1065,
+    title: "玉龙山组合 - 欢聚一堂",
+    artist: "玉龙山组合",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230705/99cd664cecf948234ed31ba75c7b036e.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230705/ccfcc9ee64bae8a510b0edd65cbb696f.jpg",
+    duration: 204,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1066,
+    title: "玉龙山组合 - 玉龙欢歌",
+    artist: "玉龙山组合",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230705/d0fa3f4a72aa124ac991021896a1099d.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230705/ccfcc9ee64bae8a510b0edd65cbb696f.jpg",
+    duration: 198,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1067,
+    title: "玉龙山组合 - 起新房",
+    artist: "玉龙山组合",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230705/4a0d3fdcca4fb4293b4852b06d2546a3.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230705/ccfcc9ee64bae8a510b0edd65cbb696f.jpg",
+    duration: 235,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1068,
+    title: "玉龙山组合 - 喜庆歌",
+    artist: "玉龙山组合",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/7384f57298d7a185a64be84bf231250c.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230705/6f8c4f36cb36c2ab6a419b35a4493ae2.png",
+    duration: 194,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1069,
+    title: "和锦 - 阿腊古金歌",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/796151917badfcc1fd439dcbf7a809a7.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/69a708563d96fc84842b88a6bcdae606.jpg",
+    duration: 278,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1070,
+    title: "和锦 - 阿啧啧阿波波",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/fb46f24a4ec0665cb5e3e023b67165f8.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/69a708563d96fc84842b88a6bcdae606.jpg",
+    duration: 225,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1071,
+    title: "和锦 - 阿哥",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230625/62bfe5bd2dfcc84e322e7029c86215cb.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/d8b1086761263c57c1a6614befaca40a.jpg",
+    duration: 232,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1072,
+    title: "和锦 - 等待",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230625/d89ed40ce9f849c67a7dc4645e83bf6c.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/d8b1086761263c57c1a6614befaca40a.jpg",
+    duration: 255,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1073,
+    title: "和锦 - 血脉",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230625/cb2f9d7d0e1e1f02b53849f7ad8d652e.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/d8b1086761263c57c1a6614befaca40a.jpg",
+    duration: 229,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1074,
+    title: "和锦 - 喜庆歌",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/994f3729b3d4a1905e3a2b56867b5362.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/d8b1086761263c57c1a6614befaca40a.jpg",
+    duration: 222,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1075,
+    title: "和锦 - 纳西小情歌",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/5db204d1c9979ae3cdb4514b07153a2e.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/d8b1086761263c57c1a6614befaca40a.jpg",
+    duration: 244,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1076,
+    title: "肖煜光 - 月亮姑娘",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/40ea8f65482cfd9570571fcbf3b66b75.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 253,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1077,
+    title: "肖煜光 - 唯一",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/3e8f3de4b7e893017d1bf1bcb566ee32.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 275,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1078,
+    title: "肖煜光 - 溜达",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/061530928383e545b28726200ccaba27.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 243,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1079,
+    title: "肖煜光 - 纳西酒歌",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/e487e88471c3fd73a95e066933925813.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 207,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1080,
+    title: "肖煜光 - 朋友",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/32a5b39fa79620e83267f1e3075a5545.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 292,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1081,
+    title: "肖煜光 - 达瓦纳西努2019",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/2f57510a06f57e75bc69c1eb48463359.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 168,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1082,
+    title: "肖煜光 - 达瓦纳西努2023",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/246de172e7001bfe5c64fed0bf332514.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 198,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1083,
+    title: "肖煜光 - 阔吐蒙套",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/652dca6bbca1faeb572e8e3b6254c966.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 268,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1084,
+    title: "肖煜光 - 纳西火乐郭",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/89b44f2207c2cfa04e8eb63a1174e70c.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 147,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1085,
+    title: "肖煜光 - 远望",
+    artist: "肖煜光",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230722/9dcdbb2d4382ff886a36f11dcc89b3d5.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230722/b9639d6294130e46faf5e43bba683ecb.jpg",
+    duration: 239,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1086,
+    title: "纳西阿贵 - 都是一家人",
+    artist: "纳西阿贵",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/c07c0c56fbeff827bb614e205dc4a671.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/7688ab8e3dcfa288ba43fc1976752800.jpg",
+    duration: 428,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1087,
+    title: "纳西阿贵/纳西英子 - 中秋的约定",
+    artist: "纳西阿贵/纳西英子",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230704/7f5ca797eada8a00f261ada7091ed809.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/7688ab8e3dcfa288ba43fc1976752800.jpg",
+    duration: 221,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1088,
+    title: "纳西阿贵 - 纳西舞韵",
+    artist: "纳西阿贵",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230622/27d316a14a6e1283f34142402a08cf77.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/7688ab8e3dcfa288ba43fc1976752800.jpg",
+    duration: 276,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1089,
+    title: "纳西阿贵 - 相会歌",
+    artist: "纳西阿贵",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/f8cb518f788eb432f7b8ecf58d4b5282.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230704/7688ab8e3dcfa288ba43fc1976752800.jpg",
+    duration: 245,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1090,
+    title: "和富伟 - 寿美夸空",
+    artist: "和富伟",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20231012/5eb607b347d807d800a68a7106f5d675.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20231012/9733e3cbe25075c55c27ff5a08fdbe59.jpg",
+    duration: 242,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1091,
+    title: "和丽霞 - 纳西美",
+    artist: "和丽霞",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230619/2fc75b375a2735b628da0393743fec45.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230619/225ba7a5a0f4cb906998bdaab39894b0.jpg",
+    duration: 255,
+    type: "video",
+    description: " "
+  },
+
+
 
 
 
 
 
   {
-    id: 1019,
+    id: 1092,
     title: "和雪兰 - 吉祥的日子",
     artist: "和雪兰",
     album: "音乐MV",
@@ -215,18 +1020,18 @@ const videoData = [
     description: "和雪兰演唱的《吉祥的日子》音乐MV，展现了纳西族音乐的魅力。"
   },
   {
-    id: 1020,
+    id: 1093,
     title: "和锦 - 四时吉祥",
     artist: "和锦",
     album: "音乐MV",
-    src: "https://mvwebfs.kugou.com/202602071605/a03ee44ffac35b33b60dcad1a6e30d21/KGTX/CLTX002/e7171902db487d8f3aef8de56d449451.mp4", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20240104/701a4aa64f6b9bdf5f364fedade30a61.mp4", 
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8uU6y3XH97VVGyv87ia8w0T35WvWY1Gs5M4sLAiaCwUm0BRibV7F7iccQRGkwDLSDxQBrFYkajzDbHAA/0?wx_fmt=jpeg",
     duration: 255,
     type: "video",
     description: "和锦演唱的《四时吉祥》音乐MV，展现了纳西族传统音乐的现代演绎。"
   },
   {
-    id: 1021,
+    id: 1094,
     title: "墨尚七 - 纳西山歌",
     artist: "墨尚七",
     album: "音乐MV",
@@ -237,7 +1042,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1022,
+    id: 1095,
     title: "金甲劲松 - 祖先",
     artist: "金甲劲松",
     album: "音乐MV",
@@ -248,7 +1053,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1023,
+    id: 1096,
     title: "和丽刚 - 不变的誓言",
     artist: "和丽刚",
     album: "音乐MV",
@@ -259,7 +1064,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1024,
+    id: 1097,
     title: "和丽刚 - 缘定今生",
     artist: "和丽刚",
     album: "音乐MV",
@@ -270,7 +1075,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1025,
+    id: 1098,
     title: "彩菊 - 孝敬父母",
     artist: "彩菊",
     album: "音乐MV",
@@ -281,7 +1086,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1026,
+    id: 1099,
     title: "和瑞智 - 玉龙神韵",
     artist: "和瑞智",
     album: "音乐MV",
@@ -292,29 +1097,40 @@ const videoData = [
     description: " "
   },
   {
-    id: 1027,
+    id: 1100,
     title: "和笑 - 欢声笑语",
     artist: "和笑",
     album: "音乐MV",
-    src: "https://mvwebfs.kugou.com/202602072201/64019705c226b6b2af9e19fd52be8ffa/KGTX/CLTX002/22d9d1c3212b0ea7b3596c36a78f2077.mp4", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20240109/7ccaf69b3404aa4f077c2d45f4d1c878.mp4", 
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9KwWgBqQMBwE1fTrYkiabGKuDCUyMHMLa4QvukTV2AmnghCxlqSTNqo59LUvo4jn19EF4ic9p2T8yg/0?wx_fmt=jpeg",
     duration: 229,
     type: "video",
     description: " "
   },
   {
-    id: 1028,
+    id: 1101,
     title: "和丽刚 - 相守今生",
     artist: "和丽刚",
     album: "音乐MV",
-    src: "https://mvwebfs.tx.kugou.com/202602072204/d5a97b574ae943b88134cf32a97d9fae/v2/d884e9c8dd541573c40ed171796e90c5/G223/M0B/1A/18/f4cBAF8fge6AbAZnCTQGjRNX1yw556.mp4", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20230702/664f7888803a12df90c6c5cc84aa1582.mp4", 
     cover: "https://mmbiz.qlogo.cn/mmbiz_jpg/tfpibRIwbCVibpUuWemqz8F66pF1kcibMI55NfGdYo9GSMwuMBWglpPIwr3FEhlk6SSbhDdy0M5b5AnW5icI3L8tSw/0?wx_fmt=jpeg",
-    duration: 321,
+    duration: 300,
     type: "video",
     description: " "
   },
   {
-    id: 1029,
+    id: 1102,
+    title: "和丽刚 - 姿蹉",
+    artist: "和丽刚",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/933cfb79fa0ecc4232d5749561135797.mp4", 
+    cover: "https://mmbiz.qlogo.cn/mmbiz_jpg/tfpibRIwbCVibpUuWemqz8F66pF1kcibMI55NfGdYo9GSMwuMBWglpPIwr3FEhlk6SSbhDdy0M5b5AnW5icI3L8tSw/0?wx_fmt=jpeg",
+    duration: 300,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1103,
     title: "山娃子新歌 - 山娃子",
     artist: "山娃子",
     album: "音乐MV",
@@ -325,7 +1141,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1030,
+    id: 1104,
     title: "和文军 - 三月百花开",
     artist: "和文军",
     album: "音乐MV",
@@ -336,40 +1152,29 @@ const videoData = [
     description: " "
   },
   {
-    id: 1031,
+    id: 1105,
     title: "和善武 - 爸美汝实贺",
     artist: "和善武",
     album: "音乐MV",
-    src: "https://ugchsy.gtimg.com/B_rPBsIvbCvQp1vcLVnUVMtxVukOJ5AXZ0_IUA7NtVzNp0JaMCJhe-4XffPwk7EYN-2sI_xYBoUPuNMxd7PWfXHq2IBMKw43FJKEr34A42JHzHPHZLt8afQAVJrtkoj1mzW6IjqCPML00312hHYocbEQ/svp_50200/gzc_1000039_0b53lqaseaabn4aana7ybrpy2xgdejoacisa.f2.mp4?sdtfrom=v1010&guid=f54132df521e0770&vkey=5C024CE80967CEBE428C4213EDC598ADC9582B7AFB7B22C0C90523AF78EE0F04B4A2AAB7B3CE7F1EEAF75EB940AB6913EAE9F0AECD752938073966CA4A905CE58680276F54972F246205FB2BA03768CA09F91A96AD1639E7DC74356C468CBDABCAB9AD86D6060CFE07F7E1343D29C5B2FED760DE53F1AC8C094B3D668E098FE72CD5AF0CEAAA595472A271F9C51DDD29C7F441D0AA632AB6450B027589BA99F840DD3924106B34A6", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/35a6c1ad21dbcb274e0b2816c14291ff.mp4", 
     cover: "https://puui.qpic.cn/vpic_cover/b3219pgm2ah/b3219pgm2ah_hz.jpg/496",
-    duration: 213,
+    duration: 251,
     type: "video",
     description: " "
   },
   {
-    id: 1032,
-    title: "和丽龙 - 依恋",
-    artist: "和丽龙",
+    id: 1106,
+    title: "和善武 - 高山开杜鹃",
+    artist: "和善武",
     album: "音乐MV",
-    src: "https://ugchsy.gtimg.com/B_PcBEFZl47yT11XPyFgSQBl3ytTEOBjCYd-h5VN8k72njDI7kVo4JMeplpN02UOx-iL0NLr9vY0k7uUlQVivNXbdyLz-yIPjrfDS-g9Z_2Mck-VYVF7psFxuw40yyuTxN/svp_50200/njc_1000195_0bc35qcjeaaenqaetjuvkzrrz3geslwajesa.f2.mp4?sdtfrom=v1010&guid=f54132df521e0770&vkey=892CCFAF0FCB2310A75EB5C9383148DAF3DAD6A51704ECB1FBF13A9F9C67560BDF9F5553C62885FC2E441156D4A6A4974A343BE8018B9E9D78E0756BCDDBBCCF0494147B7FD00BE6A81D32416F894136A222B979D7FA73B5CFCB9A513B03A100AA020ECDFA5E088FA3781FD40A661D41769019094F1422A51176DF86674AD08B844EEF2703505C0D9BEA507B4F55292E4FF970D4952F2658A31AC537250270F38111FFD5F02CE0F4", 
-    cover: "https://pic.bbs.ljdb.net/forum/201811/11/150249z4vbq6buqtj68j8u.jpg",
-    duration: 292,
+    src: "https://xcx.lijiangmusic.com/upload/1/20230709/859effd6f07c260c49f60187e50a5b20.mp4", 
+    cover: "https://puui.qpic.cn/vpic_cover/b3219pgm2ah/b3219pgm2ah_hz.jpg/496",
+    duration: 264,
     type: "video",
     description: " "
   },
   {
-    id: 1033,
-    title: "和丽龙 - 赤子",
-    artist: "和丽龙",
-    album: "音乐MV",
-    src: "https://open.douyin.com/player/video?vid=7425501418892676404", 
-    cover: "https://m.ykimg.com/054104085BFD155300000104A80CDFE0",
-    duration: 331,
-    type: "video",
-    description: " "
-  },
-  {
-    id: 1034,
+    id: 1107,
     title: "木贵花 - 愿",
     artist: "木贵花",
     album: "音乐MV",
@@ -380,18 +1185,29 @@ const videoData = [
     description: " "
   },
   {
-    id: 1035,
+    id: 1108,
     title: "墨尚七 - 桑瓦贡不勒",
     artist: "墨尚七",
     album: "音乐MV",
-    src: "https://mvwebfs.kugou.com/202602081056/913921f6c89ff0eefe524fc3aaf5a36d/v2/13e71e03a2948ceab996bd182698fff3/G184/M04/13/03/mJQEAF3WYqmAKum-BrHU6mlILFQ404.mp4", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20230701/2f487f54058883551b26b2510c7895ba.mp4", 
     cover: "https://imgessl.kugou.com/mvhdpic/240/20240113/20240113101555391040.jpg",
     duration: 217,
     type: "video",
     description: " "
   },
   {
-    id: 1036,
+    id: 1109,
+    title: "墨尚七 - 不放手",
+    artist: "墨尚七",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230701/27f9ce68992c065d52e8406d17817b05.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230701/540532b83b1ffe7679738b2fced59efc.jpg",
+    duration: 252,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1110,
     title: "墨尚七 - 纳西山歌",
     artist: "墨尚七",
     album: "音乐MV",
@@ -402,18 +1218,18 @@ const videoData = [
     description: " "
   },
   {
-    id: 1037,
+    id: 1111,
     title: "墨尚七 - 最美人间",
     artist: "墨尚七",
     album: "音乐MV",
-    src: "https://mvwebfs.kugou.com/202602081100/abc057f0df60dff44b54c2b2e086cf55/v2/275d52dda553ee4684595986ff611bca/G178/M02/0D/11/UocBAF2xUwyAJEphCTX7RRaVuWM809.mp4", 
+    src: "https://xcx.lijiangmusic.com/upload/1/20230701/ed5e8a1cacac5671cb67c82bef784d50.mp4", 
     cover: "https://imgessl.kugou.com/mvhdpic/240/20240113/20240113071113213431.jpg",
-    duration: 247,
+    duration: 300,
     type: "video",
     description: " "
   },
   {
-    id: 1038,
+    id: 1112,
     title: "金顺 - 吾几吾日",
     artist: "金顺",
     album: "音乐MV",
@@ -424,7 +1240,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1039,
+    id: 1113,
     title: "金顺 - 神仙在哪里",
     artist: "金顺",
     album: "音乐MV",
@@ -435,7 +1251,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1040,
+    id: 1114,
     title: "阿花蜜 - 相依相守",
     artist: "阿花蜜",
     album: "音乐MV",
@@ -445,7 +1261,116 @@ const videoData = [
     type: "video",
     description: ""
   },
-
+  {
+    id: 1115,
+    title: "达坡玛吉 - 小河淌水",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/dd86418a862d58db54ad295bee921ae1.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 202,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1116,
+    title: "达坡玛吉 - 月亮姆",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/bee144b500155f5d69f8207beeb340ab.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 150,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1117,
+    title: "达坡玛吉 - 愿",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/e9dbf6a73a18502f752c6236018ecfc5.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 227,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1118,
+    title: "达坡玛吉 - 踏歌丽江",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/67227228db3dc406e77573686a5729c9.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 245,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1119,
+    title: "达坡玛吉 - 中国画",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/6264adae8ae0383492e88a39e3336c29.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 241,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1120,
+    title: "达坡玛吉 - 纳西祝酒歌",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/fda2bf0ae1e96639756a375dd014f6a1.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 162,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1121,
+    title: "达坡玛吉 - 大家一起来",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/a355e0d096544ac1d8a6aedae207afdc.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 225,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1122,
+    title: "达坡玛吉 - 唱起来 跳起来",
+    artist: "达坡玛吉",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/f1e2d144bb9f3be34959ec3089b4433a.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 180,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1123,
+    title: "达坡玛吉/和金花 - 放牛娃娃调",
+    artist: "达坡玛吉/和金花",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/9487899b56bbdcbf6cfc3410fb7704f8.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 231,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1124,
+    title: "达坡玛吉/和金花 - 娥姆达",
+    artist: "达坡玛吉/和金花",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230720/e1423717c28d043b1b10c5751bb56ae4.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 196,
+    type: "video",
+    description: " "
+  },
 
 
 ];
