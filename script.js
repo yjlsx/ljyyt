@@ -915,10 +915,12 @@ function renderMusicList() {
       '<div class="card-body d-flex align-items-center">' +
         '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
         '<div class="flex-grow-1">' +
-          '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-          '<p class="card-text text-muted mb-1">' + track.artist + '</p>' +
-          '<small class="text-muted">时长: ' + formatTime(track.duration) + '</small>' +
-        '</div>' +
+            '<h6 class="card-title mb-1">' + track.title + '</h6>' +
+            '<div class="d-flex align-items-center">' +
+              '<p class="card-text text-muted mb-0 me-5">' + track.artist + '</p>' +
+              '<small class="text-muted">' + formatTime(track.duration) + '</small>' +
+            '</div>' +
+          '</div>' +
         '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
       '</div>';
     
@@ -1163,10 +1165,12 @@ function renderFilteredMusicList(filteredData) {
       '<div class="card-body d-flex align-items-center">' +
         '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
         '<div class="flex-grow-1">' +
-          '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-          '<p class="card-text text-muted mb-1">' + track.artist + '</p>' +
-          '<small class="text-muted">时长: ' + formatTime(track.duration) + '</small>' +
-        '</div>' +
+            '<h6 class="card-title mb-1">' + track.title + '</h6>' +
+            '<div class="d-flex align-items-center">' +
+              '<p class="card-text text-muted mb-0 me-5">' + track.artist + '</p>' +
+              '<small class="text-muted">' + formatTime(track.duration) + '</small>' +
+            '</div>' +
+          '</div>' +
         '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
       '</div>';
     

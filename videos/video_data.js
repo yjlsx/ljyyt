@@ -231,6 +231,18 @@ const videoData = [
     type: "video",
     description: " "
   },
+  {
+    id: 1022,
+    title: "和锦 - 纳西酒歌",
+    artist: "和锦",
+    album: "音乐MV",
+    src: "https://www.bilibili.com/video/BV1vY4y1V7AY", 
+    cover: "https://i1.hdslb.com/bfs/archive/f2ef1826ef54689743c8d88a6bf369a907430479.jpg@.avif",
+    duration: 243,
+    type: "video",
+    description: " "
+  },
+
 
 
 ];

@@ -320,6 +320,12 @@ body {
   background-color: #e7f1ff;
 }
 
+/* 音乐卡片时间样式 */
+.music-card .card-body small {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
 .card-body {
   display: flex !important;
   align-items: center !important;
