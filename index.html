@@ -66,7 +66,100 @@
         padding: 8px 0;
       }
     }
-  </style>
+  
+    
+    /* 移动端底部播放器优化 */
+    @media (max-width: 767.98px) {
+      .bottom-player {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+      }
+      
+      body {
+        padding-bottom: 80px !important;
+      }
+    }
+
+    
+    /* 触摸优化 */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
+    
+    .music-card, .video-card, .btn {
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    
+    /* 视频播放器移动端优化 */
+    @media (max-width: 767.98px) {
+      video, iframe {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+      
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 比例 */
+        height: 0;
+        overflow: hidden;
+      }
+      
+      .video-container video,
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    
+    /* 搜索框移动端优化 */
+    @media (max-width: 767.98px) {
+      #search-form {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      
+      #search-input {
+        flex: 1;
+        font-size: 16px; /* 防止iOS自动缩放 */
+      }
+    }
+
+    
+    /* 导航栏移动端优化 */
+    @media (max-width: 767.98px) {
+      .navbar {
+        padding: 0.5rem 0;
+      }
+      
+      .navbar-brand {
+        font-size: 1rem;
+      }
+      
+      .navbar-brand img {
+        width: 28px;
+        height: 28px;
+      }
+      
+      .navbar-collapse {
+        background: #0d6efd;
+        padding: 1rem 0;
+      }
+      
+      .nav-link {
+        padding: 0.75rem 1rem;
+      }
+    }
+</style>
 </head>
 <body>
   <!-- 导航栏 -->
