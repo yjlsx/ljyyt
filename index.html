@@ -350,6 +350,13 @@
 
   <script src="script.js"></script>
 
+  
+
+  <!-- 向上火箭按钮 -->
+  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
+    <i class="fas fa-rocket"></i>
+  </button>
+  
   <script>
     function scrollToTop() {
       window.scrollTo({
@@ -357,6 +364,18 @@
         behavior: 'smooth'
       });
     }
+    
+    // 显示/隐藏火箭按钮
+    window.addEventListener('scroll', function() {
+      var scrollToTopBtn = document.getElementById('scrollToTopBtn');
+      if (scrollToTopBtn) {
+        if (window.pageYOffset > 300) {
+          scrollToTopBtn.classList.add('show');
+        } else {
+          scrollToTopBtn.classList.remove('show');
+        }
+      }
+    });
     
     // 为导航栏品牌添加点击事件
     document.addEventListener('DOMContentLoaded', function() {
