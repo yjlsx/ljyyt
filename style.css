@@ -38,6 +38,8 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
+  /* 解决滚动条遮挡问题 */
+  margin-right: calc(-1 * (100vw - 100%)); /* 补偿滚动条宽度 */
 }
 
 .navbar-brand {
@@ -754,6 +756,8 @@ footer {
   padding: 12px 0;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* 解决滚动条遮挡问题 */
+  margin-right: calc(-1 * (100vw - 100%)); /* 补偿滚动条宽度 */
 }
 
 .bottom-player .current-track-info img {
@@ -810,7 +814,36 @@ footer {
   }
   
   .bottom-player .current-track-info {
-    display: none;
+    min-width: 120px; /* 确保有足够的空间显示封面和文字 */
+    flex: 0 0 auto; /* 固定宽度，不压缩 */
+    display: flex !important;
+  }
+
+  .bottom-player .current-track-info img {
+    width: 40px !important;
+    height: 40px !important;
+    margin-right: 8px !important;
+    flex: 0 0 auto; /* 固定尺寸 */
+  }
+
+  .bottom-player .current-track-info div {
+    overflow: hidden;
+    flex: 1; /* 占据剩余空间 */
+  }
+
+  .bottom-player .current-track-info h6 {
+    font-size: 0.85rem !important;
+    margin-bottom: 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bottom-player .current-track-info small {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .bottom-player .volume-control {
@@ -828,6 +861,15 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .bottom-player .current-track-info {
+    min-width: 100px; /* 在极小屏幕上稍微减少封面区域宽度 */
+  }
+  
+  .bottom-player .current-track-info img {
+    width: 35px !important;
+    height: 35px !important;
+  }
+  
   .bottom-player .player-controls {
     margin-right: 10px !important;
   }
