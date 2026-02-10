@@ -1,4 +1,4 @@
-﻿// 修复版脚本
+// 修复版脚本
 console.log('🚀 script_fixed.js 开始加载');
 
 // 音乐数据
@@ -858,7 +858,7 @@ function loadTrack(index) {
   
   // 保存播放器状态
   if (typeof savePlayerState === 'function') {
-    savePlayerState(track.id, 0, false, track);
+    savePlayerState(track.id, 0, false, track, audioPlayer.volume);
   }
   
   console.log('✅ 音乐加载完成');
@@ -879,7 +879,7 @@ function playMusic() {
         
         // 保存播放器状态
         if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-          savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
+          savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex], audioPlayer.volume);
         }
       }).catch(function(error) {
         console.error('❌ 播放失败:', error);
@@ -892,7 +892,7 @@ function playMusic() {
       
       // 保存播放器状态
       if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-        savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex]);
+        savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex], audioPlayer.volume);
       }
     }).catch(function(error) {
       console.error('❌ 播放失败:', error);
@@ -909,7 +909,7 @@ function pauseMusic() {
   
   // 保存播放器状态
   if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, false, musicData[currentTrackIndex]);
+    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, false, musicData[currentTrackIndex], audioPlayer.volume);
   }
 }
 
@@ -977,7 +977,13 @@ function setProgress(e) {
 
 // 设置音量
 function setVolume(e) {
-  audioPlayer.volume = e.target.value;
+  const volume = e.target.value;
+  audioPlayer.volume = volume;
+  
+  // 保存音量状态
+  if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
+    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], volume);
+  }
 }
 
 // 更新音乐列表的高亮状态
@@ -1005,7 +1011,7 @@ function renderMusicList() {
   
   musicData.forEach(function(track, index) {
     var col = document.createElement('div');
-    col.className = 'col-md-6 col-lg-4 mb-3';
+    col.className = 'col-md-6 col-lg-3 mb-3'; // 修改为 col-lg-3，即一行显示4个
     
     var card = document.createElement('div');
     card.className = 'card music-card';
@@ -1013,16 +1019,16 @@ function renderMusicList() {
     card.dataset.index = index;
     
     card.innerHTML = 
-      '<div class="card-body d-flex align-items-center">' +
-        '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
-        '<div class="flex-grow-1">' +
-            '<h6 class="card-title mb-1">' + track.title + '</h6>' +
+      '<div class="card-body d-flex align-items-center p-2">' +
+        '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-2" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">' +
+        '<div class="flex-grow-1 overflow-hidden">' +
+            '<h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem;" title="' + track.title + '">' + track.title + '</h6>' +
             '<div class="d-flex align-items-center">' +
-              '<p class="card-text text-muted mb-0 me-5">' + track.artist + '</p>' +
-              '<small class="text-muted">' + formatTime(track.duration) + '</small>' +
+              '<p class="card-text text-muted mb-0 small text-truncate me-2" style="max-width: 80px;" title="' + track.artist + '">' + track.artist + '</p>' +
+              '<small class="text-muted" style="font-size: 0.75rem;">' + formatTime(track.duration) + '</small>' +
             '</div>' +
           '</div>' +
-        '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
+        '<i class="fas fa-music text-primary ms-2" style="font-size: 1rem;"></i>' +
       '</div>';
     
     card.addEventListener('click', function() {
@@ -1176,11 +1182,35 @@ document.addEventListener('DOMContentLoaded', function() {
         // 恢复播放位置
         if (savedState.currentTime > 0) {
           audioPlayer.currentTime = savedState.currentTime;
+          console.log('⏱️ 恢复播放进度:', savedState.currentTime);
+        }
+        
+        // 恢复音量
+        if (savedState.volume !== undefined) {
+          audioPlayer.volume = savedState.volume;
+          if (volumeSlider) {
+            volumeSlider.value = savedState.volume;
+          }
+          console.log('🔊 恢复音量:', savedState.volume);
         }
         
         // 如果之前在播放，则继续播放
         if (savedState.isPlaying) {
-          playMusic();
+          // 尝试自动播放
+          var playPromise = audioPlayer.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.then(function() {
+              isPlaying = true;
+              updatePlayButton();
+              console.log('▶️ 自动恢复播放成功');
+            }).catch(function(error) {
+              console.log('⚠️ 自动播放被阻止，等待用户交互:', error);
+              // 即使自动播放失败，也保持暂停状态，但更新UI显示为暂停
+              isPlaying = false;
+              updatePlayButton();
+            });
+          }
         }
         
         console.log('✅ 播放状态已恢复');
@@ -1255,7 +1285,7 @@ function renderFilteredMusicList(filteredData) {
     });
     
     var col = document.createElement('div');
-    col.className = 'col-md-6 col-lg-4 mb-3';
+    col.className = 'col-md-6 col-lg-3 mb-3'; // 同样修改搜索结果为一行4个
     
     var card = document.createElement('div');
     card.className = 'card music-card';
@@ -1263,16 +1293,16 @@ function renderFilteredMusicList(filteredData) {
     card.dataset.index = originalIndex;
     
     card.innerHTML = 
-      '<div class="card-body d-flex align-items-center">' +
-        '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-3">' +
-        '<div class="flex-grow-1">' +
-            '<h6 class="card-title mb-1">' + track.title + '</h6>' +
+      '<div class="card-body d-flex align-items-center p-2">' +
+        '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-2" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">' +
+        '<div class="flex-grow-1 overflow-hidden">' +
+            '<h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem;" title="' + track.title + '">' + track.title + '</h6>' +
             '<div class="d-flex align-items-center">' +
-              '<p class="card-text text-muted mb-0 me-5">' + track.artist + '</p>' +
-              '<small class="text-muted">' + formatTime(track.duration) + '</small>' +
+              '<p class="card-text text-muted mb-0 small text-truncate me-2" style="max-width: 80px;" title="' + track.artist + '">' + track.artist + '</p>' +
+              '<small class="text-muted" style="font-size: 0.75rem;">' + formatTime(track.duration) + '</small>' +
             '</div>' +
           '</div>' +
-        '<i class="fas fa-music text-primary ms-2" style="font-size: 1.2rem;"></i>' +
+        '<i class="fas fa-music text-primary ms-2" style="font-size: 1rem;"></i>' +
       '</div>';
     
     card.addEventListener('click', function() {

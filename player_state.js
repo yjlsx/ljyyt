@@ -2,13 +2,14 @@
 console.log('🎵 播放器状态管理模块加载');
 
 // 保存播放器状态到 localStorage
-function savePlayerState(trackId, currentTime, isPlaying, trackData) {
+function savePlayerState(trackId, currentTime, isPlaying, trackData, volume) {
   const playerState = {
     trackId: trackId,
     currentTime: currentTime,
     isPlaying: isPlaying,
     timestamp: Date.now(),
-    trackData: trackData || null
+    trackData: trackData || null,
+    volume: volume !== undefined ? volume : 0.5 // 默认音量0.5
   };
   localStorage.setItem('playerState', JSON.stringify(playerState));
   console.log('💾 播放器状态已保存:', playerState);

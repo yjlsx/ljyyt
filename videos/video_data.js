@@ -123,7 +123,7 @@ const videoData = [
   },
   {
     id: 1012,
-    title: "金顺- 沧桑的诺言",
+    title: "金顺- 次里次姆",
     artist: "金顺",
     album: "音乐MV",
     src: "https://xcx.lijiangmusic.com/upload/1/20260125/0f74059731efff92b89ae105ed0ff571.mp4",
@@ -915,7 +915,7 @@ const videoData = [
   },
   {
     id: 1084,
-    title: "肖煜光 - 纳西火乐郭",
+    title: "肖煜光 - 纳西火乐锅",
     artist: "肖煜光",
     album: "音乐MV",
     src: "https://xcx.lijiangmusic.com/upload/1/20230722/89b44f2207c2cfa04e8eb63a1174e70c.mp4",
@@ -1360,6 +1360,21 @@ const videoData = [
     type: "video",
     description: " "
   },
+
+
+
+  {
+    id: 1724,
+    title: "狼毒花",
+    artist: "达坡玛吉/和金花",
+    album: "音乐MV",
+    src: "https://mpvideo.qpic.cn/0b78feaaaaaafuamfb47qfpvakodaauqaaaa.f10002.mp4?dis_k=518f16198e9970d78fe6d7203e3623d6&dis_t=1770651629&play_scene=10600&auth_info=T9z/vMwhSjxXzKLwugwmbW44Zh8+ahBhRlRlMhBcUnJ+fVw5HBZaBE8=&auth_key=9103827266fcf4f23dcb79192c66f3ba",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
+    duration: 196,
+    type: "video",
+    description: " "
+  },
+
 
 
 ];

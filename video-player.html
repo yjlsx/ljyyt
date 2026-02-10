@@ -9,9 +9,54 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>视频播放 - 丽江音悦台</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="scroll_to_top.css">
   <link rel="stylesheet" href="style_mobile.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* 导航栏标语样式 */
+    .navbar-brand {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    
+    .navbar-brand .d-flex.flex-column {
+      align-items: flex-start !important;
+    }
+    
+    .brand-name {
+      font-size: 1.2rem !important;
+      font-weight: bold !important;
+      color: white !important;
+    }
+    
+    .brand-slogan {
+      font-size: 0.7rem !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 200px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .navbar-brand {
+        gap: 8px !important;
+      }
+      
+      .brand-name {
+        font-size: 1rem !important;
+      }
+      
+      .brand-slogan {
+        font-size: 0.6rem !important;
+        max-width: 150px !important;
+      }
+    }
+  </style>
+
   <style>
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -20,27 +65,191 @@
       min-height: 100vh;
     }
     
+    /* 巨幕全屏布局：极致榨干横向宽度 */
+    .player-main-layout {
+      display: flex !important;
+      gap: 15px !important; /* 缩小间距 */
+      max-width: 100% !important;
+      margin: 0 !important;
+      width: 100% !important;
+      padding: 0 5px !important; /* 极致边距 */
+    }
+    
+    /* 极致对齐布局：缩短鸿沟，列表左移 */
+    .player-main-layout {
+      display: flex !important;
+      gap: 20px !important;
+      max-width: 1400px !important; /* 缩小最大宽度，让整体更聚合 */
+      margin: 0 auto !important;
+      justify-content: center !important; /* 在中间聚合 */
+    }
+    
+    .player-left-col {
+      width: 1024px !important; /* 标准 16:9 的宽 */
+      flex: 0 0 auto !important;
+    }
+    
+    .player-right-col {
+      width: 380px !important;
+      flex: 0 0 auto !important;
+    }
+
     .video-wrapper {
-      background: white;
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      margin-bottom: 20px;
+      padding: 1px 20px 20px 20px !important; /* 顶部留1px补丁，配合margin使用 */
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .video-container {
+      width: 984px !important;
+      height: 554px !important;
+      background: #000;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 20px auto 10px auto !important; /* 顶部强制留出 20px 空白 */
+    }
+    
+    .video-info {
+      width: 100% !important;
+      display: block !important;
+      text-align: left !important;
+    }
+    
+    .video-container iframe, .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+    }
+    
+    .player-right-col {
+      width: 320px !important; /* 极致压缩侧边栏，为视频巨幕化腾位 */
+      flex-shrink: 0 !important;
+    }
+
+    .video-wrapper {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      padding: 0 !important;
+    }
+    
+    .video-container {
+      width: 100% !important;
+      background: #000;
+      position: relative;
+      padding-top: 56.25% !important; /* 锁定 16:9，宽度增加高度必增加 */
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+    }
+
+    /* 侧边栏卡片微调以适应极窄空间 */
+    .player-right-col .video-card img {
+      height: 80px !important;
+    }
+    .player-right-col .card-title {
+      font-size: 0.8rem !important;
+    }
+    
+    .player-left-col {
+      flex: 1 !important; /* 占据绝大部分空间 */
+      min-width: 0 !important;
+    }
+    
+    .player-right-col {
+      width: 400px !important; /* 稍微缩小列表宽度，给视频腾地方 */
+      flex-shrink: 0 !important;
+    }
+
+    .video-wrapper {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       margin-bottom: 20px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 20px;
+      padding: 5px; /* 极致缩小内边距 */
     }
     
     .video-container {
       width: 100%;
-      max-width: 1100px;
+      background: #000;
+      position: relative;
+      /* 严格回归 16:9 比例 */
+      padding-top: 56.25% !important; 
+      height: 0 !important; /* 清除硬编码高度 */
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .video-container iframe, .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+    }
+
+    /* 移动端恢复自适应高度，防止手机屏溢出 */
+    @media (max-width: 768px) {
+      .video-container {
+        height: auto !important;
+        padding-top: 56.25% !important;
+      }
+    }
+
+    .related-videos {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      height: fit-content !important;
+    }
+
+    /* 侧边栏列表卡片大小适配新宽度 */
+    .player-right-col .video-card img {
+      height: 110px !important; /* 宽度增加了，高度也相应增加 */
+    }
+    .player-right-col .card-title {
+      font-size: 0.9rem !important;
+    }
+    .player-right-col .card-text {
+      font-size: 0.8rem !important;
+    }
+
+    @media (max-width: 992px) {
+      .player-main-layout {
+        flex-direction: column !important;
+      }
+      .player-right-col {
+        width: 100% !important;
+      }
+    }
+    
+    .video-container {
+      width: 100%;
+      max-width: 850px; /* 减小视频框宽度 */
       margin: 0 auto;
       background: #000;
       position: relative;
-      padding-top: 55%; /* 接近16:9的比例 */
-      border-radius: 10px;
+      padding-top: 56.25%; /* 严格的16:9比例 */
+      border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     
     .video-container video {
@@ -121,11 +330,12 @@
     }
     
     .related-videos {
-      background: white;
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
       border-radius: 15px;
       padding: 20px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-      max-width: 1200px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      max-width: 900px; /* 同步相关视频容器宽度 */
       margin-left: auto;
       margin-right: auto;
     }
@@ -234,71 +444,177 @@
       }
     }
   </style>
+
+  
+
+  
+
+  <style>
+    /* 全局背景 */
+    body {
+      background: url('./images/yyt.png') no-repeat center center fixed !important;
+      background-size: cover !important;
+      min-height: 100vh !important;
+    }
+    
+    /* hero-section优化 */
+    .hero-section {
+      background: rgba(255, 255, 255, 0.8) !important;
+      backdrop-filter: blur(10px) !important;
+      padding: 40px 0 !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .hero-section h1 {
+      color: #333 !important;
+      font-size: 2.5rem !important;
+      font-weight: bold !important;
+    }
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2rem !important;
+      }
+    }
+  </style>
+
+  <style>
+    /* 全局背景 */
+    body {
+      background: url('./images/yyt.png') no-repeat center center fixed !important;
+      background-size: cover !important;
+      min-height: 100vh !important;
+      position: relative !important;
+    }
+    
+    /* 背景透明层 */
+    body::before {
+      content: '' !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: rgba(255, 255, 255, 0.7) !important;
+      z-index: -1 !important;
+    }
+    
+    /* hero-section优化 */
+    .hero-section {
+      background: transparent !important;
+      padding: 40px 0 !important;
+      margin-bottom: 20px !important;
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    
+    .hero-section h1 {
+      color: #333 !important;
+      font-size: 2.5rem !important;
+      font-weight: bold !important;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2rem !important;
+      }
+      
+      body::before {
+        background: rgba(255, 255, 255, 0.8) !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- 导航栏 -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">
-        <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
-        丽江音悦台
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">首页</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="index.html#about">关于我们</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="index.html#contact">联系我们</a>
-          </li>
-        </ul>
-        <!-- 搜索栏 -->
-        <form class="d-flex" id="search-form">
-          <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
-          <button class="btn btn-outline-light" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-  </nav>
+          <div class="container">
+            <a class="navbar-brand" href="#" onclick="scrollToTop(); return false;">
+              <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
+              <div class="d-flex flex-column">
+                <span class="brand-name">丽江音悦台</span>
+                <span class="brand-slogan">传承纳西文化，分享民族音乐之美</span>
+              </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="index.html">首页</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#about">关于我们</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#contact">联系我们</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
 
-  <div class="container py-4">
-    <!-- 视频播放区域 -->
-    <div class="video-wrapper">
-      <div class="video-container" id="videoContainer">
-        <div class="loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+  <div class="container-fluid py-4" style="padding-top: 70px !important;">
+    <div class="player-main-layout">
+      <!-- 左侧：播放器和信息 -->
+      <div class="player-left-col">
+        <div class="video-wrapper">
+          <div class="video-container" id="videoContainer">
+            <div class="loading-spinner">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </div>
+          
+          <!-- 视频信息 -->
+          <div class="video-info" id="videoInfo" style="display: none;">
+            <h2 id="videoTitle" class="mb-2">加载中...</h2>
+            <div class="meta-row">
+              <div class="meta-item">
+                <i class="fas fa-user"></i>
+                <span id="videoArtist">-</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-compact-disc"></i>
+                <span id="videoAlbum">-</span>
+              </div>
+            </div>
+            <div class="description mt-2 small" id="videoDescription" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top:10px;"></div>
+          </div>
         </div>
       </div>
-      
-      <!-- 视频信息 -->
-      <div class="video-info" id="videoInfo" style="display: none;">
-        <h2 id="videoTitle">加载中...</h2>
-        <div class="meta-row">
-          <div class="meta-item">
-            <i class="fas fa-user"></i>
-            <span id="videoArtist">-</span>
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-compact-disc"></i>
-            <span id="videoAlbum">-</span>
+
+      <!-- 右侧：视频列表 -->
+      <div class="player-right-col">
+        <div class="related-videos" id="relatedVideosContainer">
+          <h3 class="mb-3" style="font-size: 1.1rem; border-left: 4px solid #0d6efd; padding-left: 10px;">📺 视频列表</h3>
+          <div class="row" id="relatedVideos">
+            <!-- 列表内容 -->
           </div>
         </div>
-        <div class="description" id="videoDescription"></div>
-      </div>
-    </div>
-
-    <!-- 相关视频 -->
-    <div class="related-videos" id="relatedVideosContainer">
-      <div class="row" id="relatedVideos">
-        <!-- 相关视频列表 -->
       </div>
     </div>
   </div>
@@ -454,29 +770,21 @@
       // 过滤掉当前视频
       allRelatedVideos = videoData.filter(function(v) { return v.id !== currentVideo.id; });
       
-      // 只在第一次调用时重置到第一页\n      if (typeof currentPage === 'undefined' || currentPage === null) {\n        currentPage = 0;\n        console.log('📄 初始化分页，重置到第一页');\n      } else {\n        console.log('📄 保持当前页码:', currentPage);\n      }
+      // 侧边栏显示8个视频 (4行 x 2列)
+      videosPerPage = 8; 
       
       // 清空容器
       container.innerHTML = '';
       
-      // 检查是否已有标题，如果没有则添加
-      var existingTitle = containerWrapper.querySelector('h3');
-      if (!existingTitle) {
-        var title = document.createElement('h3');
-        title.textContent = '📺 相关视频';
-        containerWrapper.insertBefore(title, container);
-      }
-      
-      // 添加分页控制
-      renderPaginationControls();
-      
       // 渲染当前页的视频
       renderCurrentPage();
+      
+      // 渲染分页控制
+      renderPaginationControls();
     }
     
     // 渲染分页控制
     function renderPaginationControls() {
-      var container = document.getElementById('relatedVideos');
       var containerWrapper = document.getElementById('relatedVideosContainer');
       
       // 移除旧的分页控制
@@ -487,48 +795,41 @@
       
       // 计算总页数
       var totalPages = Math.ceil(allRelatedVideos.length / videosPerPage);
+      if (totalPages <= 1) return; // 只有一页就不显示分页
       
       // 创建分页控制
       var controlsDiv = document.createElement('div');
-      controlsDiv.className = 'pagination-controls';
+      controlsDiv.className = 'pagination-controls d-flex justify-content-between align-items-center mb-3 mt-2';
       
-      // 上一页按钮
-      var prevBtn = document.createElement('button');
-      prevBtn.className = 'pagination-btn';
-      prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-      prevBtn.disabled = currentPage === 0;
-      prevBtn.onclick = function() {
+      controlsDiv.innerHTML = `
+        <button class="pagination-btn" ${currentPage === 0 ? 'disabled' : ''} id="prev-page-btn">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="pagination-info small text-muted">${currentPage + 1} / ${totalPages}</span>
+        <button class="pagination-btn" ${currentPage >= totalPages - 1 ? 'disabled' : ''} id="next-page-btn">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      `;
+      
+      // 插入到标题后面，列表前面
+      var list = document.getElementById('relatedVideos');
+      containerWrapper.insertBefore(controlsDiv, list);
+      
+      // 绑定事件
+      document.getElementById('prev-page-btn').onclick = function() {
         if (currentPage > 0) {
           currentPage--;
           renderCurrentPage();
           renderPaginationControls();
         }
       };
-      
-      // 页码信息
-      var pageInfo = document.createElement('span');
-      pageInfo.className = 'pagination-info';
-      pageInfo.textContent = (currentPage + 1) + ' / ' + totalPages;
-      
-      // 下一页按钮
-      var nextBtn = document.createElement('button');
-      nextBtn.className = 'pagination-btn';
-      nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-      nextBtn.disabled = currentPage >= totalPages - 1;
-      nextBtn.onclick = function() {
+      document.getElementById('next-page-btn').onclick = function() {
         if (currentPage < totalPages - 1) {
           currentPage++;
           renderCurrentPage();
           renderPaginationControls();
         }
       };
-      
-      controlsDiv.appendChild(prevBtn);
-      controlsDiv.appendChild(pageInfo);
-      controlsDiv.appendChild(nextBtn);
-      
-      // 插入到容器前面
-      containerWrapper.insertBefore(controlsDiv, container);
     }
     
     // 渲染当前页的视频
@@ -543,17 +844,17 @@
       var endIndex = Math.min(startIndex + videosPerPage, allRelatedVideos.length);
       var currentVideos = allRelatedVideos.slice(startIndex, endIndex);
       
-      // 渲染视频卡片
+      // 渲染视频卡片 (侧边栏模式：一行两个)
       currentVideos.forEach(function(video) {
         var col = document.createElement('div');
-        col.className = 'col-6 col-md-4 col-lg-3 mb-3';
+        col.className = 'col-6 mb-3'; // 实现一行两个
         
         col.innerHTML = `
-          <div class="card video-card" onclick="playVideo(${video.id})">
-            <img src="${video.cover}" class="card-img-top" alt="${video.title}" style="height: 120px; object-fit: cover;">
+          <div class="card video-card h-100" onclick="playVideo(${video.id})" style="border:none; background:rgba(255,255,255,0.5); overflow:hidden; transition: transform 0.2s; cursor:pointer;">
+            <img src="${video.cover}" style="width: 100%; height: 110px; object-fit: cover;">
             <div class="card-body p-2">
-              <h6 class="card-title mb-1" style="font-size: 0.85rem;">${video.title}</h6>
-              <p class="card-text mb-0" style="font-size: 0.75rem;">${video.artist}</p>
+              <h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem;" title="${video.title}">${video.title}</h6>
+              <p class="card-text mb-0 text-muted text-truncate" style="font-size: 0.8rem;">${video.artist}</p>
             </div>
           </div>
         `;
@@ -629,6 +930,25 @@
         }
       }, 5000);
     });
+  </script>
+
+  <!-- 向上火箭按钮 -->
+  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
+    <i class="fas fa-rocket"></i>
+  </button>
+  
+  <script>
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    window.onscroll = function() {
+      var btn = document.getElementById('scrollToTopBtn');
+      if (btn) {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    };
   </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta name="referrer" content="no-referrer">
@@ -10,6 +10,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>丽江音悦台 - 纳西族音乐精选</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="scroll_to_top.css">
+  
   <link rel="stylesheet" href="style_mobile.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -78,82 +80,7 @@
         z-index: 9999 !important;
       }
       
-      body {
-        padding-bottom: 80px !important;
-      }
-    }
-
-    
-    /* 触摸优化 */
-    * {
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-    }
-    
-    .music-card, .video-card, .btn {
-      touch-action: manipulation;
-      cursor: pointer;
-    }
-
-    
-    /* 视频播放器移动端优化 */
-    @media (max-width: 767.98px) {
-      video, iframe {
-        max-width: 100% !important;
-        height: auto !important;
-      }
       
-      .video-container {
-        position: relative;
-        padding-bottom: 56.25%; /* 16:9 比例 */
-        height: 0;
-        overflow: hidden;
-      }
-      
-      .video-container video,
-      .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    
-    /* 搜索框移动端优化 */
-    @media (max-width: 767.98px) {
-      #search-form {
-        width: 100%;
-        margin-top: 0.5rem;
-      }
-      
-      #search-input {
-        flex: 1;
-        font-size: 16px; /* 防止iOS自动缩放 */
-      }
-    }
-
-    
-    /* 导航栏移动端优化 */
-    @media (max-width: 767.98px) {
-      .navbar {
-        padding: 0.5rem 0;
-      }
-      
-      .navbar-brand {
-        font-size: 1rem;
-      }
-      
-      .navbar-brand img {
-        width: 28px;
-        height: 28px;
-      }
-      
-      .navbar-collapse {
-        background: #0d6efd;
-        padding: 1rem 0;
-      }
       
       .nav-link {
         padding: 0.75rem 1rem;
@@ -165,18 +92,18 @@
     /* 向上火箭按钮 - 内联样式 */
     .scroll-to-top {
       position: fixed !important;
-      bottom: 90px !important;
-      right: 20px !important;
-      width: 45px !important;
-      height: 45px !important;
+      bottom: 200px !important;
+      right: 30px !important;
+      width: 50px !important;
+      height: 50px !important;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
       color: white !important;
       border: none !important;
       border-radius: 50% !important;
-      font-size: 1.2rem !important;
+      font-size: 1.5rem !important;
       cursor: pointer !important;
-      z-index: 9998 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      z-index: 2147483647 !important; /* 最大值，确保在最上层 */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
       opacity: 0 !important;
       visibility: hidden !important;
       transition: all 0.3s ease !important;
@@ -191,59 +118,435 @@
     }
     
     .scroll-to-top:hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+      transform: translateY(-5px) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
     }
     
     .scroll-to-top:active {
-      transform: translateY(-1px) !important;
+      transform: translateY(-2px) !important;
+    }
+  </style>
+
+  
+
+  
+
+  
+
+  <style>
+    /* 导航栏标语样式 */
+    .navbar-brand {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    
+    .navbar-brand .d-flex.flex-column {
+      align-items: flex-start !important;
+    }
+    
+    .brand-name {
+      font-size: 1.2rem !important;
+      font-weight: bold !important;
+      color: white !important;
+    }
+    
+    .brand-slogan {
+      font-size: 0.7rem !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 200px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .navbar-brand {
+        gap: 8px !important;
+      }
+      
+      .brand-name {
+        font-size: 1rem !important;
+      }
+      
+      .brand-slogan {
+        font-size: 0.6rem !important;
+        max-width: 150px !important;
+      }
+    }
+    
+    /* 进一步优化hero-section */
+    
+    
+    
+    
+    
+  </style>
+
+  <style>
+    /* 全局背景 */
+    
+    
+    /* hero-section优化 */
+    
+    
+    
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+    }
+  </style>
+
+  <style>
+    /* 全局背景 */
+    
+    
+    /* 背景透明层 */
+    
+    
+    /* hero-section优化 */
+    
+    
+    
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+      
+      
+    }
+  </style>
+
+  <style>
+    /* hero-section优化 */
+    
+    
+    
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+    }
+  </style>
+
+  <style>
+    /* 全局背景 */
+    
+    
+    /* 背景透明层 */
+    
+    
+    /* hero-section优化 */
+    
+    
+    
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+      
+      
+    }
+  </style>
+
+  <style>
+    /* 全局背景 - 使用hero-section的清晰度 */
+    
+    
+    /* 背景透明层 - 与之前hero-section的清晰度一致 */
+    
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      margin-top: 80px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+      
+      .content-section {
+        margin-top: 70px !important;
+      }
+    }
+  </style>
+
+  <style>
+    /* 全局背景 - 使用头部区域的透明度 */
+    
+    
+    /* 背景透明层 - 与头部区域的透明度一致 */
+    
+    
+    /* 内容区域背景 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 10px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      margin-top: 80px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      
+      
+      .content-section {
+        margin-top: 70px !important;
+      }
+    }
+  </style>
+
+  <style>
+    /* 全局背景图：使用头像图片作为底图 */
+    body {
+      background: none !important;
+      background-color: #ffffff !important;
+      min-height: 100vh !important;
+      position: relative !important;
+    }
+    
+    /* 全局背景图：使用 yyt.png */
+    body::before {
+      content: '' !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: url('./images/yyt.png') no-repeat center center !important;
+      background-size: cover !important;
+      opacity: 0.2 !important; /* 调整透明度，使其作为底纹存在 */
+      z-index: -1 !important;
+    }
+    
+    /* 导航栏样式统一 */
+    .navbar-brand {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    .brand-name { font-size: 1.2rem !important; font-weight: bold !important; color: white !important; }
+    .brand-slogan { font-size: 0.7rem !important; color: rgba(255, 255, 255, 0.8) !important; }
+
+    /* 标语区域再次精简：极致紧凑 */
+    .slogan-container {
+      margin-top: 56px !important;
+      height: 45px !important; /* 几乎贴合文字高度 */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative !important;
+      z-index: 5 !important;
+    }
+    
+    .slogan-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
+
+    .slogan-line {
+      width: 50px !important;
+      height: 2px !important;
+      background: linear-gradient(90deg, transparent, #d35400, transparent) !important;
+      opacity: 0.6 !important;
+    }
+
+    .slogan-text {
+      font-size: 1.8rem !important; /* 稍微微调一下大小以适应极窄高度 */
+      font-weight: 800 !important;
+      letter-spacing: 4px !important;
+      font-family: "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+      background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: 
+        0px 2px 4px rgba(0,0,0,0.3),
+        0px 0px 15px rgba(243, 156, 18, 0.3) !important;
+      white-space: nowrap !important;
+      line-height: 1 !important;
+    }
+
+    /* 内容区域顶部间距：极致贴合 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 15px !important;
+      padding: 20px !important;
+      margin: 5px auto 20px auto !important; /* 只有 5px 的间距 */
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+      max-width: 1300px !important;
+    }
+    
+    .slogan-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      gap: 15px !important;
+    }
+
+    .slogan-line {
+      width: 60px !important; /* 线条随之加长 */
+      height: 2px !important;
+      background: linear-gradient(90deg, transparent, #1a2a6c, transparent) !important;
+      opacity: 0.4 !important;
+    }
+
+    .slogan-text {
+      font-size: 2rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 6px !important;
+      font-family: "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+      /* 使用古铜金到琥珀色的渐变，增加对比度 */
+      background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      /* 增强发光和投影，彻底与背景分离 */
+      text-shadow: 
+        0px 2px 4px rgba(0,0,0,0.3),
+        0px 0px 20px rgba(243, 156, 18, 0.4) !important;
+      white-space: nowrap !important;
+    }
+
+    .slogan-line {
+      width: 60px !important;
+      height: 2px !important;
+      /* 饰线同步改为古铜色渐变 */
+      background: linear-gradient(90deg, transparent, #d35400, transparent) !important;
+      opacity: 0.6 !important;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .slogan-text { font-size: 1.3rem !important; letter-spacing: 2px !important; }
+      .slogan-line { width: 30px !important; }
+    }
+
+    /* 内容区域顶部间距配合 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 15px !important;
+      padding: 20px !important;
+      margin: 10px auto 20px auto !important; /* 紧贴标语 */
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+      max-width: 1300px !important;
+    }
+
+    /* 移动端字体自适应 */
+    @media (max-width: 768px) {
+      .slogan-container { height: 100px !important; }
+      .slogan-text { font-size: 1.5rem !important; letter-spacing: 6px !important; }
+    }
+
+    /* 内容区域顶部间距微调 */
+    .content-section {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 15px !important;
+      padding: 20px !important;
+      margin: 20px auto !important;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+      max-width: 1300px !important;
+    }
+
+    /* 关于我们和联系我们也要透明感 */
+    .about-section, .contact-section {
+      background: rgba(255, 255, 255, 0.7) !important;
+      backdrop-filter: blur(5px) !important;
+      margin-bottom: 20px !important;
+      border-radius: 15px !important;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .hero-section { padding: 40px 0 10px 0 !important; }
     }
   </style>
 </head>
 <body>
   <!-- 导航栏 -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#" onclick="scrollToTop(); return false;">
-        <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
-        丽江音悦台
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">关于我们</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">联系我们</a>
-          </li>
-        </ul>
-        <!-- 搜索栏 -->
-        <form class="d-flex" id="search-form">
-          <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
-          <button class="btn btn-outline-light" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-        </form>
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
+          <div class="d-flex flex-column">
+            <span class="brand-name">丽江音悦台</span>
+            <span class="brand-slogan">传承纳西文化，分享民族音乐之美</span>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">关于我们</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">联系我们</a>
+            </li>
+          </ul>
+          <!-- 搜索栏 -->
+          <form class="d-flex" id="search-form">
+            <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
+            <button class="btn btn-outline-light" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- 主页横幅 -->
-  <header class="hero-section bg-gradient py-5 mt-5">
-    <div class="container text-center text-white">
-      <h1 class="display-4 fw-bold">丽江音悦台</h1>
-      <p class="lead">传承纳西文化，分享民族音乐之美</p>
-      <div class="mt-4">
-        <img src="./images/avatar.jpg" alt="丽江音悦台" class="rounded-circle shadow" width="120" height="120">
-      </div>
+
+  <!-- 艺术标语 -->
+  <div class="slogan-container">
+    <div class="slogan-wrapper">
+      <div class="slogan-line"></div>
+      <div class="slogan-text">弘扬真善美，传播好声音</div>
+      <div class="slogan-line"></div>
     </div>
-  </header>
+  </div>
 
   <!-- 音乐和视频标签页 -->
   <section class="content-section py-5">
@@ -371,7 +674,7 @@
         <!-- 音量控制 -->
         <div class="volume-control d-flex align-items-center">
           <i class="fas fa-volume-up text-white-50 me-2"></i>
-          <input type="range" id="volume-slider" class="form-range" min="0" max="1" step="0.01" value="0.7" style="width: 80px;">
+          <input type="range" id="volume-slider" class="form-range" min="0" max="1" step="0.01" value="0.5" style="width: 80px;">
         </div>
       </div>
     </div>
@@ -395,83 +698,93 @@
 
   
 
+  
+
+  
+
   <!-- 向上火箭按钮 -->
   <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
     <i class="fas fa-rocket"></i>
   </button>
   
-  
-
-  
-
   <script>
+    // 控制台输出函数
+    function log(message) {
+      console.log(message);
+    }
+    
+    // 滚动到顶部函数
     function scrollToTop() {
-      console.log('scrollToTop 被调用');
+      log('scrollToTop 被调用');
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
+      
+      // 添加火箭发射动画效果
+      var btn = document.getElementById('scrollToTopBtn');
+      if (btn) {
+        // 简单的向上移动动画
+        btn.style.transform = 'translateY(-20px)';
+        setTimeout(function() {
+          btn.style.transform = '';
+        }, 300);
+      }
     }
     
     // 显示/隐藏火箭按钮
-    window.addEventListener('scroll', function() {
+    function updateRocketButton() {
       var scrollToTopBtn = document.getElementById('scrollToTopBtn');
       if (scrollToTopBtn) {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-        console.log('当前滚动位置：' + scrollPosition);
+        log('当前滚动位置：' + scrollPosition);
         
-        // 降低触发阈值到50px
-        if (scrollPosition > 50) {
+        // 只有滚动超过300px才显示
+        if (scrollPosition > 300) {
           scrollToTopBtn.classList.add('show');
-          console.log('火箭按钮已显示');
+          log('火箭按钮已显示');
         } else {
           scrollToTopBtn.classList.remove('show');
-          console.log('火箭按钮已隐藏');
+          log('火箭按钮已隐藏');
         }
       }
-    });
+    }
     
     // 页面加载完成后检查
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM已加载');
+      log('DOM已加载');
       
       var scrollToTopBtn = document.getElementById('scrollToTopBtn');
       if (scrollToTopBtn) {
-        console.log('火箭按钮元素已找到');
+        log('火箭按钮元素已找到');
         
-        // 强制设置样式
-        scrollToTopBtn.style.position = 'fixed';
-        scrollToTopBtn.style.bottom = '90px';
-        scrollToTopBtn.style.right = '20px';
-        scrollToTopBtn.style.width = '45px';
-        scrollToTopBtn.style.height = '45px';
-        scrollToTopBtn.style.zIndex = '99999';
-        scrollToTopBtn.style.display = 'flex';
-        scrollToTopBtn.style.alignItems = 'center';
-        scrollToTopBtn.style.justifyContent = 'center';
+        // 检查按钮样式
+        var computedStyle = window.getComputedStyle(scrollToTopBtn);
+        if (computedStyle.position === 'fixed') {
+          log('火箭按钮样式正确');
+        } else {
+          log('火箭按钮样式错误：position = ' + computedStyle.position);
+        }
+        
+        // 初始状态：隐藏
         scrollToTopBtn.style.opacity = '0';
         scrollToTopBtn.style.visibility = 'hidden';
+        log('火箭按钮初始状态：隐藏');
         
-        console.log('火箭按钮样式已强制设置');
-        
-        // 如果滚动位置已经超过50px，立即显示按钮
+        // 检查滚动位置，如果超过300px则显示
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollPosition > 50) {
+        if (scrollPosition > 300) {
           scrollToTopBtn.classList.add('show');
-          console.log('页面加载时火箭按钮已显示');
+          log('页面加载时火箭按钮已显示');
         }
       } else {
-        console.log('错误：找不到火箭按钮元素');
+        log('错误：找不到火箭按钮元素');
       }
       
-      // 为导航栏品牌添加点击事件
-      var navbarBrand = document.querySelector('.navbar-brand');
-      if (navbarBrand) {
-        navbarBrand.addEventListener('click', function(e) {
-          e.preventDefault();
-          scrollToTop();
-        });
-      }
+      // 添加滚动事件监听器
+      window.addEventListener('scroll', updateRocketButton);
+      log('滚动事件监听器已添加');
+      
       
       // 为首页链接添加点击事件
       var homeLink = document.querySelector('.nav-link.active[href="#"]');
@@ -492,6 +805,8 @@
           scrollToTop();
         });
       }
+      
+      log('火箭按钮功能已初始化');
     });
   </script>
 </body>
@@ -507,4 +822,603 @@
 
   <!-- 播放器状态增强 -->
   <script src='player_state_enhanced.js'></script>
+
+hanced.js'></script>
+
+ipt>
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+  <!-- 播放器状态增强 -->
+  <script src='player_state_enhanced.js'></script>
+
+hanced.js'></script>
+
+ipt>
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+nk) {
+        homeLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+      
+      // 为头像添加点击事件
+      var avatar = document.querySelector('.navbar-brand img');
+      if (avatar) {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToTop();
+        });
+      }
+      
+      log('火箭按钮功能已初始化');
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+  <!-- 播放器状态增强 -->
+  <script src='player_state_enhanced.js'></script>
+
+hanced.js'></script>
+
+ipt>
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+  <!-- 播放器状态增强 -->
+  <script src='player_state_enhanced.js'></script>
+
+hanced.js'></script>
+
+ipt>
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
