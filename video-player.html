@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>视频播放 - 丽江音悦台</title>
+  <title>自定义视频播放器 - 丽江音悦台</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="scroll_to_top.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -122,6 +122,107 @@
       .video-info h2 { font-size: 1.1rem; }
       .meta-item { font-size: 0.85rem; }
     }
+    
+    /* 自定义播放器控件样式 */
+    .custom-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .video-container:hover .custom-controls {
+      opacity: 1;
+    }
+    
+    .control-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(5px);
+    }
+    
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .progress-container {
+      flex-grow: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .progress {
+      height: 100%;
+      background: #0d6efd;
+      border-radius: 3px;
+      width: 0%;
+      position: relative;
+    }
+    
+    .progress-buffer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      width: 0%;
+    }
+    
+    .time-display {
+      color: white;
+      font-size: 14px;
+      min-width: 80px;
+      text-align: center;
+    }
+    
+    .volume-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .volume-slider {
+      width: 80px;
+      height: 5px;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      outline: none;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+    
+    .fullscreen-btn {
+      margin-left: auto;
+    }
   </style>
 </head>
 <body>
@@ -155,7 +256,32 @@
     <!-- 左侧区域 -->
     <div class="player-left-col">
       <div class="video-wrapper">
-        <div class="video-container" id="videoContainer"></div>
+        <div class="video-container" id="videoContainer">
+          <video id="customPlayer" playsinline>
+            <!-- 这里将动态插入视频源 -->
+          </video>
+          <div class="custom-controls">
+            <button id="playPauseBtn" class="control-btn">
+              <i class="fas fa-play"></i>
+            </button>
+            <div class="time-display">
+              <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+            </div>
+            <div class="progress-container" id="progressContainer">
+              <div class="progress" id="progress"></div>
+              <div class="progress-buffer" id="progressBuffer"></div>
+            </div>
+            <div class="volume-container">
+              <button id="volumeBtn" class="control-btn">
+                <i class="fas fa-volume-up"></i>
+              </button>
+              <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+            </div>
+            <button id="fullscreenBtn" class="control-btn fullscreen-btn">
+              <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
         <div class="video-info">
           <h2 id="videoTitle">加载中...</h2>
           <div class="meta-row">
@@ -182,20 +308,138 @@
     var currentPage = 0;
     var videosPerPage = 8;
     var allRelatedVideos = [];
+    var isPlaying = false;
 
     function getUrlParameter(name) {
       var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
       return results ? decodeURIComponent(results[1]) : null;
     }
 
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return min + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function updateProgress() {
+      const video = document.getElementById('customPlayer');
+      const progress = document.getElementById('progress');
+      const currentTimeEl = document.getElementById('currentTime');
+      
+      const percentage = (video.currentTime / video.duration) * 100;
+      progress.style.width = percentage + '%';
+      currentTimeEl.textContent = formatTime(video.currentTime);
+    }
+
+    function setProgress(e) {
+      const video = document.getElementById('customPlayer');
+      const progressContainer = document.getElementById('progressContainer');
+      
+      const width = progressContainer.clientWidth;
+      const clickX = e.offsetX;
+      const duration = video.duration;
+      
+      video.currentTime = (clickX / width) * duration;
+    }
+
+    function updatePlayButton() {
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const video = document.getElementById('customPlayer');
+      const icon = playPauseBtn.querySelector('i');
+      
+      if (video.paused) {
+        icon.className = 'fas fa-play';
+        isPlaying = false;
+      } else {
+        icon.className = 'fas fa-pause';
+        isPlaying = true;
+      }
+    }
+
+    function togglePlay() {
+      const video = document.getElementById('customPlayer');
+      
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    function updateVolume() {
+      const video = document.getElementById('customPlayer');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumeBtn = document.getElementById('volumeBtn');
+      const volumeIcon = volumeBtn.querySelector('i');
+      
+      video.volume = volumeSlider.value;
+      
+      // 更新音量图标
+      if (video.volume === 0) {
+        volumeIcon.className = 'fas fa-volume-mute';
+      } else if (video.volume < 0.5) {
+        volumeIcon.className = 'fas fa-volume-down';
+      } else {
+        volumeIcon.className = 'fas fa-volume-up';
+      }
+    }
+
+    function toggleFullscreen() {
+      const videoContainer = document.getElementById('videoContainer');
+      
+      if (!document.fullscreenElement) {
+        if (videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) { /* Firefox */
+          videoContainer.mozRequestFullScreen();
+        } else if (videoContainer.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+          videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) { /* IE/Edge */
+          videoContainer.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+          document.msExitFullscreen();
+        }
+      }
+    }
+
     function renderPlayer(video) {
       const container = document.getElementById('videoContainer');
+      const videoElement = document.getElementById('customPlayer');
+      
+      // 重置播放器
+      videoElement.src = '';
+      
       if(video.src.includes('bilibili.com')) {
+        // 对于B站视频，仍然使用iframe，不使用自定义控件
         let bvid = video.src.match(/bvid=([a-zA-Z0-9]+)/)[1];
-        container.innerHTML = `<iframe src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+        container.innerHTML = `<iframe src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
       } else {
-        container.innerHTML = `<video src="${video.src}" controls autoplay playsinline style="width:100%; height:100%;"></video>`;
+        // 对于普通视频，使用自定义控件
+        videoElement.src = video.src;
+        videoElement.load();
+        
+        // 绑定事件
+        videoElement.addEventListener('timeupdate', updateProgress);
+        videoElement.addEventListener('loadedmetadata', function() {
+          document.getElementById('totalTime').textContent = formatTime(videoElement.duration);
+          document.getElementById('progressBuffer').style.width = '100%';
+        });
+        videoElement.addEventListener('play', updatePlayButton);
+        videoElement.addEventListener('pause', updatePlayButton);
+        videoElement.addEventListener('ended', function() {
+          updatePlayButton();
+          // 可以在这里添加自动播放下一视频的逻辑
+        });
       }
+      
       document.getElementById('videoTitle').innerText = video.title;
       document.getElementById('videoArtist').innerText = video.artist;
       document.getElementById('videoAlbum').innerText = video.album || '默认专辑';
@@ -213,7 +457,7 @@
       currentVideos.forEach(v => {
         // 修改：点击视频时，将当前页码通过 URL 参数传递，实现翻页记忆
         list.innerHTML += `<div class="col-12 col-md-6 mb-3">
-          <div class="video-card h-100" onclick="location.href='video-player.html?id=${v.id}&page=${currentPage}'">
+          <div class="video-card h-100" onclick="location.href='custom-video-player.html?id=${v.id}&page=${currentPage}'">
             <img src="${v.cover}" class="w-100" style="height:110px; object-fit:cover;">
             <div class="p-2 small">
               <div class="text-truncate fw-bold">${v.title}</div>
@@ -247,6 +491,35 @@
       if (savedPage !== null) {
         currentPage = parseInt(savedPage);
       }
+      
+      // 绑定自定义控件事件
+      document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
+      document.getElementById('progressContainer').addEventListener('click', setProgress);
+      document.getElementById('volumeSlider').addEventListener('input', updateVolume);
+      document.getElementById('volumeBtn').addEventListener('click', function() {
+        const video = document.getElementById('customPlayer');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeIcon = this.querySelector('i');
+        
+        if (video.volume > 0) {
+          // 存储当前音量值以便恢复
+          video.setAttribute('data-prev-volume', video.volume);
+          video.volume = 0;
+          volumeSlider.value = 0;
+          volumeIcon.className = 'fas fa-volume-mute';
+        } else {
+          // 恢复之前的音量
+          const prevVolume = video.getAttribute('data-prev-volume') || 1;
+          video.volume = parseFloat(prevVolume);
+          volumeSlider.value = prevVolume;
+          if (prevVolume < 0.5) {
+            volumeIcon.className = 'fas fa-volume-down';
+          } else {
+            volumeIcon.className = 'fas fa-volume-up';
+          }
+        }
+      });
+      document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
       
       let video = videoData.find(v => v.id == id);
       if(video) {
