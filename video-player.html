@@ -136,10 +136,24 @@
       gap: 15px;
       opacity: 0;
       transition: opacity 0.3s ease;
+      /* 添加移动端触摸支持 */
+      pointer-events: auto;
     }
     
-    .video-container:hover .custom-controls {
+    .video-container:hover .custom-controls,
+    .video-container:focus-within .custom-controls {
       opacity: 1;
+    }
+    
+    /* 移动端触控优化 */
+    @media (hover: none) and (pointer: coarse) {
+      .custom-controls {
+        opacity: 0.8; /* 在触摸设备上始终显示控件，但透明度较低 */
+      }
+      
+      .video-container:active .custom-controls {
+        opacity: 1;
+      }
     }
     
     .control-btn {
@@ -222,6 +236,85 @@
     
     .fullscreen-btn {
       margin-left: auto;
+    }
+    
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .player-main-layout {
+        flex-direction: column;
+        padding: 10px;
+      }
+      
+      .player-left-col, .player-right-col {
+        width: 100%;
+      }
+      
+      .video-wrapper {
+        padding: 15px !important;
+      }
+      
+      .custom-controls {
+        padding: 10px;
+        gap: 10px;
+      }
+      
+      .control-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+      }
+      
+      .time-display {
+        font-size: 12px;
+        min-width: 60px;
+      }
+      
+      .progress-container {
+        height: 4px;
+      }
+      
+      .volume-container {
+        gap: 5px;
+      }
+      
+      .volume-slider {
+        width: 60px;
+      }
+      
+      .video-info h2 {
+        font-size: 1.1rem;
+      }
+      
+      .meta-item {
+        font-size: 0.85rem;
+      }
+      
+      /* 移动端触摸友好的控件大小 */
+      .control-btn {
+        touch-action: manipulation;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .custom-controls {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 60px;
+      }
+      
+      .progress-container {
+        order: 1;
+        width: 100%;
+        margin-top: 5px;
+      }
+      
+      .time-display {
+        display: none; /* 在极小屏幕上隐藏时间显示，节省空间 */
+      }
+      
+      .player-left-col {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -457,7 +550,7 @@
       currentVideos.forEach(v => {
         // 修改：点击视频时，将当前页码通过 URL 参数传递，实现翻页记忆
         list.innerHTML += `<div class="col-12 col-md-6 mb-3">
-          <div class="video-card h-100" onclick="location.href='custom-video-player.html?id=${v.id}&page=${currentPage}'">
+          <div class="video-card h-100" onclick="location.href='video-player.html?id=${v.id}&page=${currentPage}'">
             <img src="${v.cover}" class="w-100" style="height:110px; object-fit:cover;">
             <div class="p-2 small">
               <div class="text-truncate fw-bold">${v.title}</div>
