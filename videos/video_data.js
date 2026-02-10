@@ -1426,50 +1426,7 @@ const videoData = [
     type: "video",
     description: " "
   },
-  {
-    id: 1130,
-    title: "郑旭先 - 冬之歌",
-    artist: "郑旭先",
-    album: "音乐MV",
-    src: "",
-    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/02278663990170a1094f5cf8ebc66b2f.png",
-    duration: 229,
-    type: "video",
-    description: " "
-  },
-  {
-    id: 1131,
-    title: "杨耀兰 - 秋之歌",
-    artist: "杨耀兰",
-    album: "音乐MV",
-    src: "",
-    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/898fbac5ca95649b87ff036b9aebd88f.png",
-    duration: 267,
-    type: "video",
-    description: " "
-  },
-  {
-    id: 1132,
-    title: "李丽芳 - 夏之歌",
-    artist: "李丽芳",
-    album: "音乐MV",
-    src: "",
-    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/2d0b28a4c83ca890ba393a190d509956.png",
-    duration: 273,
-    type: "video",
-    description: " "
-  },
-  {
-    id: 1133,
-    title: "王瑞香 - 春之歌",
-    artist: "王瑞香",
-    album: "音乐MV",
-    src: "",
-    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/cadc1f8e2c59b9e1ac82a5620dc8ca8a.png",
-    duration: 291,
-    type: "video",
-    description: " "
-  }
+
 
 
 
