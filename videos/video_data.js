@@ -1174,7 +1174,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1108,
+    id: 1107,
     title: "墨尚七 - 桑瓦贡不勒",
     artist: "墨尚七",
     album: "音乐MV",
@@ -1185,7 +1185,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1109,
+    id: 1108,
     title: "墨尚七 - 不放手",
     artist: "墨尚七",
     album: "音乐MV",
@@ -1196,7 +1196,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1110,
+    id: 1109,
     title: "墨尚七 - 纳西山歌",
     artist: "墨尚七",
     album: "音乐MV",
@@ -1207,7 +1207,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1111,
+    id: 1110,
     title: "墨尚七 - 最美人间",
     artist: "墨尚七",
     album: "音乐MV",
@@ -1218,7 +1218,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1112,
+    id: 1111,
     title: "金顺 - 吾几吾日",
     artist: "金顺",
     album: "音乐MV",
@@ -1229,7 +1229,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1113,
+    id: 1112,
     title: "金顺 - 神仙在哪里",
     artist: "金顺",
     album: "音乐MV",
@@ -1240,7 +1240,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1114,
+    id: 1113,
     title: "阿花蜜 - 相依相守",
     artist: "阿花蜜",
     album: "音乐MV",
@@ -1251,7 +1251,7 @@ const videoData = [
     description: ""
   },
   {
-    id: 1115,
+    id: 1114,
     title: "达坡玛吉 - 小河淌水",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1262,7 +1262,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1116,
+    id: 1115,
     title: "达坡玛吉 - 月亮姆",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1273,7 +1273,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1117,
+    id: 1116,
     title: "达坡玛吉 - 愿",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1284,7 +1284,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1118,
+    id: 1117,
     title: "达坡玛吉 - 踏歌丽江",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1295,7 +1295,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1119,
+    id: 1118,
     title: "达坡玛吉 - 中国画",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1306,7 +1306,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1120,
+    id: 1119,
     title: "达坡玛吉 - 纳西祝酒歌",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1317,7 +1317,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1121,
+    id: 1120,
     title: "达坡玛吉 - 大家一起来",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1328,7 +1328,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1122,
+    id: 1121,
     title: "达坡玛吉 - 唱起来 跳起来",
     artist: "达坡玛吉",
     album: "音乐MV",
@@ -1339,7 +1339,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1123,
+    id: 1122,
     title: "达坡玛吉/和金花 - 放牛娃娃调",
     artist: "达坡玛吉/和金花",
     album: "音乐MV",
@@ -1350,7 +1350,7 @@ const videoData = [
     description: " "
   },
   {
-    id: 1124,
+    id: 1123,
     title: "达坡玛吉/和金花 - 娥姆达",
     artist: "达坡玛吉/和金花",
     album: "音乐MV",
@@ -1360,20 +1360,118 @@ const videoData = [
     type: "video",
     description: " "
   },
-
-
-
   {
-    id: 1724,
-    title: "狼毒花",
-    artist: "达坡玛吉/和金花",
+    id: 1124,
+    title: "李丽芳 - 恩难忘",
+    artist: "李丽芳",
     album: "音乐MV",
-    src: "https://mpvideo.qpic.cn/0b78feaaaaaafuamfb47qfpvakodaauqaaaa.f10002.mp4?dis_k=518f16198e9970d78fe6d7203e3623d6&dis_t=1770651629&play_scene=10600&auth_info=T9z/vMwhSjxXzKLwugwmbW44Zh8+ahBhRlRlMhBcUnJ+fVw5HBZaBE8=&auth_key=9103827266fcf4f23dcb79192c66f3ba",
-    cover: "https://xcx.lijiangmusic.com/upload/1/20230720/6a9f6613331dc47ac8d8acf30c46b17c.jpg",
-    duration: 196,
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/533a7ddfbffa9e0615c1b3f95f888d49.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/2d0b28a4c83ca890ba393a190d509956.png",
+    duration: 307,
     type: "video",
     description: " "
   },
+  {
+    id: 1125,
+    title: "王瑞香 - 春之歌",
+    artist: "王瑞香",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/302a1e323605a0c0c035fe876ed7bf97.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/cadc1f8e2c59b9e1ac82a5620dc8ca8a.png",
+    duration: 287,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1126,
+    title: "李丽芳 - 夏之歌",
+    artist: "李丽芳",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/cf69fa6048898de1f063b9471821ae2a.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/2d0b28a4c83ca890ba393a190d509956.png",
+    duration: 268,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1127,
+    title: "杨耀兰 - 秋之歌",
+    artist: "杨耀兰",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/fcf4fa08dce4526289c5ad7a4c099a04.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/898fbac5ca95649b87ff036b9aebd88f.png",
+    duration: 263,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1128,
+    title: "郑旭先 - 冬之歌",
+    artist: "郑旭先",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/c78a360d8d22b653ed8d688eaf7b33b0.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/02278663990170a1094f5cf8ebc66b2f.png",
+    duration: 228,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1129,
+    title: "郑旭先 - 纳西潘金妹",
+    artist: "郑旭先",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20240714/7246838784e50ee9b1602c80afb58f90.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/02278663990170a1094f5cf8ebc66b2f.png",
+    duration: 185,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1130,
+    title: "郑旭先 - 冬之歌",
+    artist: "郑旭先",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/02278663990170a1094f5cf8ebc66b2f.png",
+    duration: 229,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1131,
+    title: "杨耀兰 - 秋之歌",
+    artist: "杨耀兰",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/898fbac5ca95649b87ff036b9aebd88f.png",
+    duration: 267,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1132,
+    title: "李丽芳 - 夏之歌",
+    artist: "李丽芳",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/2d0b28a4c83ca890ba393a190d509956.png",
+    duration: 273,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1133,
+    title: "王瑞香 - 春之歌",
+    artist: "王瑞香",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20240714/cadc1f8e2c59b9e1ac82a5620dc8ca8a.png",
+    duration: 291,
+    type: "video",
+    description: " "
+  }
+
+
 
 
 
