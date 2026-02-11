@@ -376,17 +376,36 @@
       max-height: none !important;
       width: 100% !important;
       height: 100% !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 9999 !important;
     }
     
     video:fullscreen {
       max-height: none !important;
       width: 100% !important;
       height: 100% !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 9999 !important;
     }
     
     /* iOS Safari 全屏样式 */
     video:-webkit-full-screen::backdrop {
       background: black;
+    }
+    
+    /* 移动端全屏优化 */
+    @media (max-width: 768px) {
+      video:-webkit-full-screen {
+        object-fit: contain !important;
+      }
+      
+      video:fullscreen {
+        object-fit: contain !important;
+      }
     }
     
     /* 加载状态样式 */
@@ -581,48 +600,95 @@
       const video = document.getElementById('customPlayer');
       const videoContainer = document.getElementById('videoContainer');
       
-      // 优先尝试使用视频元素进行全屏（移动端兼容性更好）
-      if (!document.fullscreenElement) {
+      // 检查当前是否为全屏状态
+      const isInFullscreen = document.fullscreenElement || 
+                            document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || 
+                            document.msFullscreenElement;
+      
+      if (!isInFullscreen) {
+        // 尝试进入全屏模式
         if (video.requestFullscreen) {
+          // 标准全屏API
           video.requestFullscreen().catch(e => {
-            console.warn("Fullscreen failed:", e);
-            // 如果视频元素无法全屏，则尝试容器
-            fallbackToContainerFullscreen(videoContainer);
+            console.warn("标准全屏API失败:", e);
+            // 尝试Webkit版本（Safari/iOS）
+            if (video.webkitEnterFullscreen) {
+              // iOS Safari 特有的全屏方法
+              video.webkitEnterFullscreen();
+            } else {
+              attemptFallbackFullscreen(video);
+            }
           });
-        } else if (video.webkitRequestFullscreen) { /* Safari */
-          video.webkitRequestFullscreen().catch(e => {
-            console.warn("webkitFullscreen failed:", e);
-            fallbackToContainerFullscreen(videoContainer);
-          });
-        } else if (video.msRequestFullscreen) { /* IE11 */
+        } else if (video.webkitEnterFullscreen) {
+          // iOS Safari 特有的全屏方法 - 这对于移动端非常重要
+          video.webkitEnterFullscreen();
+        } else if (video.mozRequestFullScreen) {
+          // Firefox
+          video.mozRequestFullScreen();
+        } else if (video.msRequestFullscreen) {
+          // IE/Edge
           video.msRequestFullscreen();
         } else {
-          // 浏览器不支持全屏API，尝试使用容器
-          fallbackToContainerFullscreen(videoContainer);
+          // 尝试备用方法
+          attemptFallbackFullscreen(video);
         }
       } else {
-        // 退出全屏
+        // 退出全屏模式
         if (document.exitFullscreen) {
           document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
+        } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
           document.msExitFullscreen();
         }
       }
     }
 
-    // 备用方法：使用容器进行全屏
-    function fallbackToContainerFullscreen(container) {
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if (container.webkitRequestFullscreen) { /* Safari */
-        container.webkitRequestFullscreen();
-      } else if (container.mozRequestFullScreen) { /* Firefox */
-        container.mozRequestFullScreen();
-      } else if (container.msRequestFullscreen) { /* IE/Edge */
-        container.msRequestFullscreen();
+    // 尝试备用全屏方法
+    function attemptFallbackFullscreen(element) {
+      if (element.webkitEnterFullscreen) {
+        // iOS Safari
+        element.webkitEnterFullscreen();
+      } else if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      } else {
+        // 如果所有方法都失败，对于移动端，我们可以尝试模拟全屏效果
+        alert("您的设备可能不支持全屏模式，或者视频需要用户手势才能全屏播放。");
       }
+    }
+    
+    // 为iframe播放器更新全屏函数
+    function updateFullscreenFunctionForIframe() {
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      if(fullscreenBtn) {
+        // 移除旧的事件监听器
+        const newFullscreenBtn = fullscreenBtn.cloneNode(true);
+        fullscreenBtn.parentNode.replaceChild(newFullscreenBtn, fullscreenBtn);
+        
+        // 添加新的事件监听器
+        newFullscreenBtn.addEventListener('click', toggleIframeFullscreen);
+      }
+    }
+    
+    // 专门针对iframe的全屏切换函数
+    function toggleIframeFullscreen() {
+      const iframe = document.getElementById('bilibili-player');
+      if(!iframe) {
+        // 如果不是iframe，回退到原始全屏功能
+        toggleFullscreen();
+        return;
+      }
+      
+      // 对于iframe，我们依赖其内部的全屏功能
+      // 在移动端，大多数情况下需要用户与iframe内的播放器直接交互才能触发全屏
+      alert("请直接点击视频画面内部的全屏按钮来进入全屏模式。移动端浏览器通常需要在iframe内部触发全屏。");
     }
 
     function renderPlayer(video) {
@@ -637,12 +703,19 @@
         // 对于B站视频，仍然使用iframe，不使用自定义控件
         let bvid = video.src.match(/bvid=([a-zA-Z0-9]+)/)[1];
         // 不替换整个容器，而是替换video元素
-        const iframeHTML = `<iframe src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen style="width:100%; height:100%; position: absolute; top: 0; left: 0;"></iframe>`;
+        const iframeHTML = `<iframe id="bilibili-player" src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen style="width:100%; height:100%; position: absolute; top: 0; left: 0;"></iframe>`;
         videoElement.outerHTML = iframeHTML;
         
         // 隐藏占位符元素
         if(videoPlaceholder) {
           videoPlaceholder.style.display = 'none';
+        }
+        
+        // 为B站播放器添加全屏支持
+        const bilibiliPlayer = document.getElementById('bilibili-player');
+        if(bilibiliPlayer) {
+          // 更新全屏函数以支持iframe
+          updateFullscreenFunctionForIframe();
         }
       } else {
         // 设置封面图片
