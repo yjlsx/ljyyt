@@ -5,11 +5,11 @@ console.log('🎵 播放器状态管理模块加载');
 function savePlayerState(trackId, currentTime, isPlaying, trackData, volume) {
   const playerState = {
     trackId: trackId,
-    currentTime: currentTime,
-    isPlaying: isPlaying,
+    currentTime: currentTime || 0,
+    isPlaying: isPlaying || false,
     timestamp: Date.now(),
     trackData: trackData || null,
-    volume: volume !== undefined ? volume : 0.5 // 默认音量0.5
+    volume: volume !== undefined ? volume : (typeof audioPlayer !== 'undefined' ? audioPlayer.volume : 0.5)
   };
   localStorage.setItem('playerState', JSON.stringify(playerState));
   console.log('💾 播放器状态已保存:', playerState);
@@ -21,8 +21,8 @@ function restorePlayerState() {
   if (savedState) {
     try {
       const state = JSON.parse(savedState);
-      // 检查状态是否还有效（不超过30分钟）
-      if (Date.now() - state.timestamp < 30 * 60 * 1000) {
+      // 检查状态是否还有效（不超过24小时）
+      if (Date.now() - state.timestamp < 24 * 60 * 60 * 1000) {
         console.log('📥 恢复播放器状态:', state);
         return state;
       } else {

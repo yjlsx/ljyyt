@@ -70,6 +70,44 @@
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
     }
+    
+    #coverImage {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    #playButtonOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+    }
+    
+    #playButtonOverlay i {
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    #videoPlaceholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
 
     /* 视频信息区 */
     .video-info h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; color: #333; }
@@ -316,6 +354,35 @@
         width: 100%;
       }
     }
+    
+    /* 全屏模式下的样式 */
+    video:-webkit-full-screen {
+      max-height: none !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    
+    video:fullscreen {
+      max-height: none !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    
+    /* iOS Safari 全屏样式 */
+    video:-webkit-full-screen::backdrop {
+      background: black;
+    }
+    
+    /* 加载状态样式 */
+    .loading-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.2rem;
+      z-index: 3;
+    }
   </style>
 </head>
 <body>
@@ -350,7 +417,15 @@
     <div class="player-left-col">
       <div class="video-wrapper">
         <div class="video-container" id="videoContainer">
-          <video id="customPlayer" playsinline>
+          <div id="videoPlaceholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; align-items: center; justify-content: center; z-index: 1;">
+            <div id="coverImageContainer" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+              <img id="coverImage" src="" alt="视频封面" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+            </div>
+            <div id="playButtonOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2;">
+              <i class="fas fa-play-circle" style="font-size: 5rem; color: rgba(255,255,255,0.8);"></i>
+            </div>
+          </div>
+          <video id="customPlayer" playsinline webkit-playsinline allowfullscreen style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 0;">
             <!-- 这里将动态插入视频源 -->
           </video>
           <div class="custom-controls">
@@ -478,46 +553,93 @@
     }
 
     function toggleFullscreen() {
+      const video = document.getElementById('customPlayer');
       const videoContainer = document.getElementById('videoContainer');
       
+      // 优先尝试使用视频元素进行全屏（移动端兼容性更好）
       if (!document.fullscreenElement) {
-        if (videoContainer.requestFullscreen) {
-          videoContainer.requestFullscreen();
-        } else if (videoContainer.mozRequestFullScreen) { /* Firefox */
-          videoContainer.mozRequestFullScreen();
-        } else if (videoContainer.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-          videoContainer.webkitRequestFullscreen();
-        } else if (videoContainer.msRequestFullscreen) { /* IE/Edge */
-          videoContainer.msRequestFullscreen();
+        if (video.requestFullscreen) {
+          video.requestFullscreen().catch(e => {
+            console.warn("Fullscreen failed:", e);
+            // 如果视频元素无法全屏，则尝试容器
+            fallbackToContainerFullscreen(videoContainer);
+          });
+        } else if (video.webkitRequestFullscreen) { /* Safari */
+          video.webkitRequestFullscreen().catch(e => {
+            console.warn("webkitFullscreen failed:", e);
+            fallbackToContainerFullscreen(videoContainer);
+          });
+        } else if (video.msRequestFullscreen) { /* IE11 */
+          video.msRequestFullscreen();
+        } else {
+          // 浏览器不支持全屏API，尝试使用容器
+          fallbackToContainerFullscreen(videoContainer);
         }
       } else {
+        // 退出全屏
         if (document.exitFullscreen) {
           document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) { /* Firefox */
-          document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+        } else if (document.webkitExitFullscreen) { /* Safari */
           document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE/Edge */
+        } else if (document.msExitFullscreen) { /* IE11 */
           document.msExitFullscreen();
         }
+      }
+    }
+
+    // 备用方法：使用容器进行全屏
+    function fallbackToContainerFullscreen(container) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen();
+      } else if (container.webkitRequestFullscreen) { /* Safari */
+        container.webkitRequestFullscreen();
+      } else if (container.mozRequestFullScreen) { /* Firefox */
+        container.mozRequestFullScreen();
+      } else if (container.msRequestFullscreen) { /* IE/Edge */
+        container.msRequestFullscreen();
       }
     }
 
     function renderPlayer(video) {
       const container = document.getElementById('videoContainer');
       const videoElement = document.getElementById('customPlayer');
+      const coverImage = document.getElementById('coverImage');
+      const playButtonOverlay = document.getElementById('playButtonOverlay');
+      const videoPlaceholder = document.getElementById('videoPlaceholder');
       
       // 重置播放器
-      videoElement.src = '';
-      
       if(video.src.includes('bilibili.com')) {
         // 对于B站视频，仍然使用iframe，不使用自定义控件
         let bvid = video.src.match(/bvid=([a-zA-Z0-9]+)/)[1];
-        container.innerHTML = `<iframe src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+        // 不替换整个容器，而是替换video元素
+        const iframeHTML = `<iframe src="//player.bilibili.com/player.html?bvid=${bvid}&autoplay=1" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen style="width:100%; height:100%; position: absolute; top: 0; left: 0;"></iframe>`;
+        videoElement.outerHTML = iframeHTML;
+        
+        // 隐藏占位符元素
+        if(videoPlaceholder) {
+          videoPlaceholder.style.display = 'none';
+        }
       } else {
+        // 设置封面图片
+        coverImage.src = video.cover;
+        coverImage.style.display = 'block';
+        videoPlaceholder.style.display = 'flex';
+        
+        // 为封面图片添加点击事件以开始播放
+        playButtonOverlay.onclick = function() {
+          const videoElement = document.getElementById('customPlayer');
+          videoElement.play().catch(e => {
+            console.error("播放失败:", e);
+            // 如果自动播放失败，可能需要用户手势才能播放
+          });
+        };
+        
         // 对于普通视频，使用自定义控件
         videoElement.src = video.src;
         videoElement.load();
+        
+        // 确保视频元素可见
+        videoElement.style.display = 'block';
         
         // 绑定事件
         videoElement.addEventListener('timeupdate', updateProgress);
@@ -525,11 +647,36 @@
           document.getElementById('totalTime').textContent = formatTime(videoElement.duration);
           document.getElementById('progressBuffer').style.width = '100%';
         });
-        videoElement.addEventListener('play', updatePlayButton);
-        videoElement.addEventListener('pause', updatePlayButton);
+        videoElement.addEventListener('play', function() {
+          updatePlayButton();
+          // 播放开始时隐藏封面
+          if(videoPlaceholder) {
+            videoPlaceholder.style.display = 'none';
+          }
+        });
+        videoElement.addEventListener('pause', function() {
+          updatePlayButton();
+          // 暂停时不显示封面，用户可能想继续观看
+        });
         videoElement.addEventListener('ended', function() {
           updatePlayButton();
+          // 视频结束时重新显示封面和播放按钮
+          if(videoPlaceholder) {
+            videoPlaceholder.style.display = 'flex';
+            coverImage.style.display = 'block';
+          }
           // 可以在这里添加自动播放下一视频的逻辑
+        });
+        
+        // 添加全屏事件监听器
+        videoElement.addEventListener('webkitbeginfullscreen', function() {
+          // iOS设备进入全屏时的处理
+          console.log("Entering fullscreen on iOS");
+        });
+        
+        videoElement.addEventListener('webkitendfullscreen', function() {
+          // iOS设备退出全屏时的处理
+          console.log("Exiting fullscreen on iOS");
         });
       }
       

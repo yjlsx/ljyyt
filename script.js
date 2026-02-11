@@ -1152,6 +1152,9 @@ function initPlayerEvents() {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 DOM加载完成，开始初始化...');
   
+  // 检测并设置滚动条宽度
+  detectScrollbarWidth();
+  
   // 渲染音乐列表
   renderMusicList();
   
@@ -1165,10 +1168,16 @@ document.addEventListener('DOMContentLoaded', function() {
   initSearch();
   
   // 检查是否有保存的播放状态
+  console.log('🔍 检查是否有保存的播放状态...');
   if (typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
+    console.log('✅ 检测到保存的播放状态');
     const savedState = restorePlayerState();
     if (savedState && savedState.trackData) {
       console.log('📥 恢复播放状态:', savedState.trackData.title);
+      console.log('📊 状态详情 - 歌曲ID:', savedState.trackId);
+      console.log('📊 状态详情 - 播放时间:', savedState.currentTime);
+      console.log('📊 状态详情 - 音量:', savedState.volume);
+      console.log('📊 状态详情 - 播放状态:', savedState.isPlaying);
       
       // 找到对应的歌曲索引
       const trackIndex = musicData.findIndex(function(track) {
@@ -1232,6 +1241,34 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('✅ 页面初始化完成');
   console.log('🎵 音乐数量:', musicData.length);
   console.log('🎬 视频数量:', typeof videoData !== 'undefined' ? videoData.length : '未定义');
+  
+  // 添加页面卸载事件监听器，确保状态被保存
+  window.addEventListener('beforeunload', function() {
+    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
+      savePlayerState(
+        musicData[currentTrackIndex].id,
+        audioPlayer.currentTime,
+        isPlaying,
+        musicData[currentTrackIndex],
+        audioPlayer.volume
+      );
+      console.log('🔄 页面卸载前保存播放器状态');
+    }
+  });
+  
+  // 定期保存播放状态（每30秒）
+  setInterval(function() {
+    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
+      savePlayerState(
+        musicData[currentTrackIndex].id,
+        audioPlayer.currentTime,
+        isPlaying,
+        musicData[currentTrackIndex],
+        audioPlayer.volume
+      );
+      console.log('⏰ 定期保存播放器状态');
+    }
+  }, 30000); // 30秒保存一次
 });
 
 // 搜索功能
@@ -1261,6 +1298,41 @@ function initSearch() {
   });
   
   console.log('✅ 搜索功能初始化完成');
+}
+
+// 检测滚动条宽度并应用到CSS变量
+function detectScrollbarWidth() {
+  // 创建一个临时元素来测量滚动条宽度
+  const outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.overflow = 'scroll';
+  outer.style.msOverflowStyle = 'scrollbar';
+  document.body.appendChild(outer);
+  
+  const inner = document.createElement('div');
+  outer.appendChild(inner);
+  
+  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+  outer.parentNode.removeChild(outer);
+  
+  // 设置CSS变量
+  document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
+  
+  console.log('📏 检测到滚动条宽度:', scrollbarWidth);
+  
+  // 应用滚动条宽度到导航栏和播放器
+  const navbar = document.querySelector('.navbar');
+  const bottomPlayer = document.querySelector('.bottom-player');
+  
+  if (navbar) {
+    navbar.style.right = scrollbarWidth + 'px';
+    navbar.style.left = '0';
+  }
+  
+  if (bottomPlayer) {
+    bottomPlayer.style.right = scrollbarWidth + 'px';
+    bottomPlayer.style.left = '0';
+  }
 }
 // 渲染过滤后的音乐列表
 function renderFilteredMusicList(filteredData) {

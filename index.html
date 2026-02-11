@@ -11,7 +11,7 @@
   <title>丽江音悦台 - 纳西族音乐精选</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="scroll_to_top.css">
-  
+  <link rel="stylesheet" href="scroll_fix.css">
   <link rel="stylesheet" href="style_mobile.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -626,18 +626,18 @@
         <div class="col-md-6">
           <div class="card shadow">
             <div class="card-body">
-              <form>
+              <form id="contactForm">
                 <div class="mb-3">
-                  <label for="name" class="form-label">姓名</label>
-                  <input type="text" class="form-control" id="name" autocomplete="name">
+                  <label for="nickname" class="form-label">昵称</label>
+                  <input type="text" class="form-control" id="nickname" name="nickname" autocomplete="nickname">
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">邮箱</label>
-                  <input type="email" class="form-control" id="email" autocomplete="email">
+                  <input type="email" class="form-control" id="email" name="email" autocomplete="email">
                 </div>
                 <div class="mb-3">
                   <label for="message" class="form-label">留言</label>
-                  <textarea class="form-control" id="message" rows="4" autocomplete="off"></textarea>
+                  <textarea class="form-control" id="message" name="message" rows="4" autocomplete="off"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">发送</button>
               </form>
@@ -723,6 +723,15 @@
 
   
 
+  <!-- 邮件发送所需的脚本 -->
+  <script src="https://cdn.emailjs.com/sdk/2.6.4/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      // Initialize EmailJS with your user ID
+      emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+    })();
+  </script>
+  
   <!-- 向上火箭按钮 -->
   <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
     <i class="fas fa-rocket"></i>
@@ -806,7 +815,6 @@
       window.addEventListener('scroll', updateRocketButton);
       log('滚动事件监听器已添加');
       
-      
       // 为首页链接添加点击事件
       var homeLink = document.querySelector('.nav-link.active[href="#"]');
       if (homeLink) {
@@ -828,7 +836,74 @@
       }
       
       log('火箭按钮功能已初始化');
+      
+      // 联系我们表单处理
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault(); // 阻止默认提交行为
+          
+          // 获取表单数据
+          const nickname = document.getElementById('nickname').value;
+          const email = document.getElementById('email').value;
+          const message = document.getElementById('message').value;
+          
+          // 验证必填字段
+          if (!nickname || !email || !message) {
+            alert('请填写所有必填字段！');
+            return;
+          }
+          
+          // 验证邮箱格式
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            alert('请输入有效的邮箱地址！');
+            return;
+          }
+          
+          // 发送邮件
+          sendContactEmail(nickname, email, message);
+        });
+      }
     });
+    
+    // 发送联系邮件函数
+    function sendContactEmail(nickname, email, message) {
+      // 显示发送中提示
+      const submitBtn = document.querySelector('#contactForm .btn-primary');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = '发送中...';
+      submitBtn.disabled = true;
+      
+      // 邮件模板参数
+      const templateParams = {
+        from_name: nickname,
+        from_email: email,
+        message: message,
+        to_email: "your-receiving-email@example.com", // 替换为接收邮件的地址
+        subject: `丽江音悦台 - 来自${nickname}的联系`
+      };
+      
+      // 使用EmailJS发送邮件
+      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+        .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          alert('您的消息已成功发送！我们会尽快回复您。');
+          // 重置表单
+          document.getElementById('contactForm').reset();
+          // 恢复按钮状态
+          const submitBtn = document.querySelector('#contactForm .btn-primary');
+          submitBtn.textContent = '发送';
+          submitBtn.disabled = false;
+        }, function(error) {
+          console.log('FAILED...', error);
+          alert('发送失败，请稍后重试。');
+          // 恢复按钮状态
+          const submitBtn = document.querySelector('#contactForm .btn-primary');
+          submitBtn.textContent = '发送';
+          submitBtn.disabled = false;
+        });
+    }
   </script>
 </body>
 </html>
