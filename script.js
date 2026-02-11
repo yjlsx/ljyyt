@@ -859,6 +859,10 @@ function loadTrack(index) {
   // 保存播放器状态
   if (typeof savePlayerState === 'function') {
     savePlayerState(track.id, 0, false, track, audioPlayer.volume);
+  } else {
+    // 如果没有增强版，尝试调用基础版或直接操作 localStorage
+    localStorage.setItem('currentTrackId', track.id);
+    localStorage.setItem('lastPlayedTrack', JSON.stringify(track));
   }
   
   console.log('✅ 音乐加载完成');
