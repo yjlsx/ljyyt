@@ -29,7 +29,7 @@ body {
   /* === 底部播放器布局 - 三行布局 === */
   .bottom-player {
     padding: 6px 0 !important;
-    min-height: 85px !important;
+    min-height: 100px !important; /* 增加高度以容纳封面 */
     background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%) !important;
   }
   
@@ -50,15 +50,21 @@ body {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important; /* 改为左对齐 */
     flex: 0 0 auto !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 10px !important; /* 增加内边距 */
     width: 100% !important;
   }
   
+  /* 显示专辑封面 */
   .bottom-player .current-track-info img {
-    display: none !important;
+    display: block !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 4px !important;
+    margin-right: 10px !important;
+    object-fit: cover !important;
   }
   
   .bottom-player .current-track-info h6 {
@@ -70,9 +76,9 @@ body {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    max-width: 100% !important;
+    max-width: calc(100% - 50px) !important; /* 减去封面宽度 */
     color: #fff !important;
-    text-align: center !important;
+    text-align: left !important; /* 改为左对齐 */
   }
   
   .bottom-player .current-track-info small {
