@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <meta name="referrer" content="no-referrer">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>自定义视频播放器 - 丽江音悦台</title>
@@ -167,68 +168,83 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      padding: 15px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      padding: 20px 15px;
       display: flex;
       align-items: center;
       gap: 15px;
       opacity: 0;
-      transition: opacity 0.3s ease;
-      /* 添加移动端触摸支持 */
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(10px);
       pointer-events: auto;
     }
     
     .video-container:hover .custom-controls,
     .video-container:focus-within .custom-controls {
       opacity: 1;
-    }
-    
-    /* 移动端触控优化 */
-    @media (hover: none) and (pointer: coarse) {
-      .custom-controls {
-        opacity: 0.8; /* 在触摸设备上始终显示控件，但透明度较低 */
-      }
-      
-      .video-container:active .custom-controls {
-        opacity: 1;
-      }
+      transform: translateY(0);
     }
     
     .control-btn {
-      background: rgba(255, 255, 255, 0.2);
+      background: transparent;
       border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       cursor: pointer;
       transition: all 0.2s ease;
-      backdrop-filter: blur(5px);
+      font-size: 1.1rem;
     }
     
     .control-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.1);
+      color: #0d6efd;
+      transform: scale(1.2);
     }
     
     .progress-container {
       flex-grow: 1;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 3px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
       cursor: pointer;
       position: relative;
+      transition: height 0.2s;
+    }
+    
+    .progress-container:hover {
+      height: 6px;
     }
     
     .progress {
       height: 100%;
       background: #0d6efd;
-      border-radius: 3px;
+      border-radius: 2px;
       width: 0%;
       position: relative;
+      box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+    }
+    
+    /* 进度条上的小白点 */
+    .progress::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .progress-container:hover .progress::after {
+      opacity: 1;
     }
     
     .progress-buffer {
@@ -386,31 +402,40 @@
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">
-        <img src="./images/avatar.jpg" width="40" height="40" class="rounded-circle me-2">
-        <div class="d-flex flex-column">
-          <span class="brand-name">丽江音悦台</span>
-          <span class="brand-slogan">传承纳西文化，分享民族音乐之美</span>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <img src="./images/avatar.jpg" alt="丽江音悦台" width="40" height="40" class="rounded-circle me-2">
+          <div class="d-flex flex-column">
+            <span class="brand-name">丽江音悦台</span>
+            <span class="brand-slogan">传承纳西文化，分享民族音乐之美</span>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">首页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#about">关于我们</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#contact">联系我们</a>
+            </li>
+          </ul>
+          <!-- 搜索栏 -->
+          <form class="d-flex" id="search-form" action="search.html" method="GET">
+            <input class="form-control me-2" type="search" name="q" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
+            <button class="btn btn-outline-light" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
         </div>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#about">关于我们</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#contact">联系我们</a></li>
-        </ul>
-        <form class="d-flex mt-2 mt-lg-0" id="search-form" action="search.html" method="GET">
-          <input class="form-control me-2" type="search" name="q" placeholder="搜索音乐..." aria-label="搜索">
-          <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
-        </form>
       </div>
-    </div>
-  </nav>
+    </nav>
 
   <div class="player-main-layout">
     <!-- 左侧区域 -->
