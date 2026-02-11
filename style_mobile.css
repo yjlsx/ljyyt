@@ -26,10 +26,10 @@ body {
    ============================================ */
 @media (max-width: 575.98px) {
   
-  /* === 底部播放器布局 - 修复后的布局 === */
+  /* === 底部播放器布局 - 移动端垂直布局（进度条移到下方）=== */
   .bottom-player {
     padding: 8px 0 !important;
-    min-height: 90px !important;
+    min-height: 110px !important; /* 增加高度以容纳下方进度条 */
     background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%) !important;
   }
   
@@ -37,12 +37,12 @@ body {
     padding: 0 10px !important;
   }
   
-  /* 播放器主容器 - 水平布局，左右排列 */
+  /* 播放器主容器 - 垂直布局，上下排列 */
   .bottom-player > .container > .d-flex {
-    flex-direction: row !important;
-    align-items: center !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
     justify-content: space-between !important;
-    gap: 10px !important;
+    gap: 5px !important;
   }
   
   /* 左侧：封面和标题信息 - 水平排列 */
@@ -61,10 +61,10 @@ body {
   /* 封面样式 - 适合移动端 */
   .bottom-player .current-track-info img {
     display: block !important;
-    width: 45px !important;
-    height: 45px !important;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 6px !important;
-    margin-right: 10px !important;
+    margin-right: 8px !important;
     object-fit: cover !important;
     flex: 0 0 auto !important; /* 固定尺寸 */
   }
@@ -81,22 +81,46 @@ body {
   
   /* 歌曲标题 */
   .bottom-player .current-track-info h6 {
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     font-weight: 600 !important;
-    margin: 0 0 2px 0 !important;
+    margin: 0 0 1px 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     color: #fff !important;
     text-align: left !important;
     max-width: 100% !important;
+    position: relative !important;
+  }
+  
+  /* 长标题滚动动画 */
+  .bottom-player .current-track-info h6 .scrolling-text {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    animation: scrollText 10s linear infinite !important;
+    padding-left: 100% !important;
+  }
+  
+  .bottom-player .current-track-info h6:hover .scrolling-text {
+    animation-play-state: paused !important;
+  }
+  
+  @keyframes scrollText {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  
+  /* 备选方案：当标题过长时使用省略号 */
+  .bottom-player .current-track-info h6.ellipsis-only {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   
   /* 歌手信息 */
   .bottom-player .current-track-info small {
-    font-size: 0.7rem !important;
+    font-size: 0.65rem !important;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
@@ -107,26 +131,25 @@ body {
     text-align: left !important;
   }
   
-  /* 中间：播放控制按钮 */
+  /* 中间：播放控制按钮 - 放在封面和进度条之间 */
   .bottom-player .player-controls {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
     margin: 0 !important;
     padding: 0 !important;
     flex: 0 0 auto !important;
-    order: 2; /* 放在中间 */
   }
   
   /* 播放/暂停按钮稍微大一点 */
   .bottom-player #play-btn {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    min-height: 38px !important;
-    font-size: 1rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    font-size: 0.9rem !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -136,24 +159,22 @@ body {
   /* 上一首/下一首按钮 */
   .bottom-player #prev-btn,
   .bottom-player #next-btn {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 0.8rem !important;
+    font-size: 0.75rem !important;
   }
   
-  /* 右侧：进度条 */
+  /* 进度条容器 - 移动端放在底部 */
   .bottom-player .progress-container {
-    flex: 1 !important;
-    margin: 0 10px 0 5px !important;
-    min-width: 80px !important;
-    max-width: 150px !important;
-    order: 3; /* 放在右侧 */
+    width: 100% !important;
+    margin-top: 5px !important;
+    order: 3 !important; /* 确保进度条在最后 */
   }
   
   .bottom-player .progress-container .d-flex {
@@ -180,9 +201,10 @@ body {
   .bottom-player #current-time,
   .bottom-player #total-time {
     font-size: 0.65rem !important;
-    min-width: 25px !important;
+    min-width: 30px !important;
     color: rgba(255,255,255, 0.9) !important;
     font-weight: 500 !important;
+    flex: 0 0 auto !important;
   }
   
   /* 隐藏音量控制 */
