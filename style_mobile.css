@@ -26,11 +26,123 @@ body {
    ============================================ */
 @media (max-width: 575.98px) {
   
-  /* === 底部播放器布局 - 三行布局 === */
+  /* === 底部播放器布局 - 左右分栏布局 === */
   .bottom-player {
     padding: 6px 0 !important;
-    min-height: 100px !important; /* 增加高度以容纳封面 */
+    min-height: 100px !important;
     background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%) !important;
+  }
+  
+  .bottom-player .container {
+    padding: 0 10px !important;
+  }
+  
+  /* 播放器主容器 - 水平布局 */
+  .bottom-player > .container > .d-flex {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+  
+  /* 左侧：封面 */
+  .bottom-player .current-track-info {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+  }
+  
+  /* 封面样式 - 增加高度，跨越两行 */
+  .bottom-player .current-track-info img {
+    display: block !important;
+    width: 80px !important; /* 增大封面尺寸 */
+    height: 80px !important;
+    border-radius: 6px !important;
+    margin-right: 0 !important;
+    object-fit: cover !important;
+  }
+  
+  /* 隐藏原来的标题容器，因为我们要重新布局 */
+  .bottom-player .current-track-info div {
+    display: none !important;
+  }
+  
+  /* 右侧：控制区域（标题+按钮+进度条） */
+  .mobile-controls-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    overflow: hidden !important; /* 防止溢出 */
+  }
+  
+  /* 标题行 */
+  .mobile-title-row {
+    display: flex !important;
+    justify-content: center !important; /* 标题居中 */
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 2px !important;
+  }
+  
+  .mobile-title-row h6 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+  }
+  
+  /* 按钮行 */
+  .bottom-player .player-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* 进度条行 */
+  .bottom-player .progress-container {
+    width: 100% !important;
+    margin-top: 2px !important;
+  }
+  
+  /* 调整按钮大小 */
+  .bottom-player .player-controls .btn {
+    padding: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .bottom-player #play-btn {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  
+  /* 隐藏不需要的元素 */
+  .bottom-player .current-track-info small {
+    display: none !important;
+  }
+  
+  .bottom-player .volume-control {
+    display: none !important;
   }
   
   .bottom-player .container {
