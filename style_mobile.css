@@ -235,7 +235,39 @@ body {
     color: #667eea !important;
     border: none !important;
   }
+
+  /* 分页适配手机端 */
+  .pagination-container {
+    gap: 5px !important;
+    margin-top: 20px !important;
+    justify-content: center !important;
+  }
+
+  .page-btn {
+    min-width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    font-size: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pagination-container input {
+    width: 45px !important;
+    height: 32px !important;
+    font-size: 0.75rem !important;
+    padding: 0 4px !important;
+    text-align: center !important;
+  }
+
+  .pagination-container .btn-primary {
+    height: 32px !important;
+    padding: 0 8px !important;
+    font-size: 0.75rem !important;
+  }
 }
+
 
 
 /* ============================================
