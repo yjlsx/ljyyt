@@ -1390,15 +1390,6 @@ const musicData = [
     duration: 278
   },
     {
-    id: 155,
-    title: "纳西蕾蕾 - 我愿",
-    artist: "纳西蕾蕾",
-    album: "纳西音乐精选",
-    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTY0MzY=",
-    cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
-    duration: 257
-  },
-    {
     id: 156,
     title: "周萍、甲姆沽·阿平 - 相守到永久",
     artist: "周萍、甲姆沽·阿平",

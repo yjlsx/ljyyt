@@ -756,6 +756,36 @@
       box-shadow: 0 10px 20px rgba(211, 84, 0, 0.2) !important;
       filter: brightness(1.1);
     }
+    
+    /* 留言提示框样式 */
+    .contact-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateX(400px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .contact-toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .contact-toast.toast-success {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .contact-toast.toast-error {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
   </style>
 
   <!-- 页脚 -->
@@ -976,10 +1006,41 @@
       }
     });
     
+    // 显示提示消息函数
+    function showToast(message, type = 'success') {
+      // 创建提示元素
+      const toast = document.createElement('div');
+      toast.className = `contact-toast toast-${type}`;
+      toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+      `;
+      
+      // 添加到页面
+      document.body.appendChild(toast);
+      
+      // 显示动画
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      // 3秒后自动消失
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+    
     // 发送联系邮件函数
     function sendContactEmail(nickname, email, message) {
       // 显示发送中提示
-      const submitBtn = document.querySelector('#contactForm .btn-primary');
+      const submitBtn = document.querySelector('#contactForm button[type="submit"]');
+      if (!submitBtn) {
+        console.error('找不到提交按钮');
+        return;
+      }
       const originalText = submitBtn.textContent;
       submitBtn.textContent = '发送中...';
       submitBtn.disabled = true;
@@ -997,19 +1058,17 @@
       emailjs.send('service_aqocomv', 'template_c848a1t', templateParams)
         .then(function(response) {
           console.log('SUCCESS!', response.status, response.text);
-          alert('您的消息已成功发送！我们会尽快回复您。');
+          showToast('✨ 留言发送成功！我们会尽快回复您。', 'success');
           // 重置表单
           document.getElementById('contactForm').reset();
           // 恢复按钮状态
-          const submitBtn = document.querySelector('#contactForm .btn-primary');
-          submitBtn.textContent = '发送';
+          submitBtn.textContent = originalText;
           submitBtn.disabled = false;
         }, function(error) {
           console.log('FAILED...', error);
-          alert('发送失败，请稍后重试。');
+          showToast('❌ 发送失败，请稍后重试。', 'error');
           // 恢复按钮状态
-          const submitBtn = document.querySelector('#contactForm .btn-primary');
-          submitBtn.textContent = '发送';
+          submitBtn.textContent = originalText;
           submitBtn.disabled = false;
         });
     }
