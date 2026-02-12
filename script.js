@@ -847,7 +847,7 @@ function loadTrack(index) {
   audioPlayer.load();
   
   // 更新播放器显示
-  currentTitle.textContent = track.title;
+  currentTitle.innerHTML = '<span>' + track.title + '</span>';
   currentArtist.textContent = track.artist;
   currentCover.src = track.cover;
   

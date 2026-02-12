@@ -81,19 +81,31 @@ body {
     align-items: center !important;
   }
   
-  /* 歌曲标题 */
+  /* 歌曲标题 - 长标题滚动效果 */
   .bottom-player .current-track-info h6 {
     font-size: 0.95rem !important;
     font-weight: 600 !important;
-    margin: 0 0 2px 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     color: #fff !important;
     text-align: center !important;
     width: 100% !important;
+    position: relative !important;
+    display: block !important;
+  }
+
+  .bottom-player .current-track-info h6 span {
+    display: inline-block !important;
+    padding-left: 100% !important;
+    animation: marquee 10s linear infinite !important;
+  }
+
+  @keyframes marquee {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
   }
 
   /* 歌手信息 */
