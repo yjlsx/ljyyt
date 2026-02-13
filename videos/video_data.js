@@ -28,7 +28,7 @@ const videoData = [
     artist: "金顺",
     album: "音乐MV",
     src: "https://xcx.lijiangmusic.com/upload/1/20260124/e4b860b537832ead1f8b61bf4f080c82.mp4",
-    cover: "https://imgessl.kugou.com/stdmusic/20210904/20210904192839266028.jpg",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9icnoQRx2z8RMuV9pKIJ4ulTg13YXSibpDbhGncCFGtia43kVBMvNWoibIIUn2vdkiaDaTIF7Jmyp8Kibw/0?wx_fmt=jpeg",
     duration: 281,
     type: "video",
     description: "和丽刚、金顺 - 缘定今生"
@@ -1426,7 +1426,116 @@ const videoData = [
     type: "video",
     description: " "
   },
-
+  {
+    id: 1130,
+    title: "和群星 - 的库册尼嘿",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230719/6b5ff24e897df4eb166ea6b0867f7e88.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 250,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1131,
+    title: "和群星 - 纳西情歌",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/4437e4f43ea867bf3e60bb0e1d615d95.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 219,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1132,
+    title: "和群星 - 高美漫纽金",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/64c0920ab70cf4d062c1180f7440930a.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 253,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1133,
+    title: "和群星 - 玉龙之约",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/0349e3166952724d5cb36a5491c94e76.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 296,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1134,
+    title: "和群星 - 不忘初心",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 134,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1135,
+    title: "和群星 - 玉龙女",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/a7b55c256152aa51c042c4187c43fb63.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 223,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1136,
+    title: "和群星 - 玉龙欢歌",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/ec3cd5b9998a3ffc4f1aba63bda2c732.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 204,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1137,
+    title: "和群星 - 玉龙雪山我的家乡",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/7a4b69d9b8ba0555b5e10870e862d63d.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 257,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1138,
+    title: "和群星 - 思乡",
+    artist: "和群星",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20230801/3579fdd4da6da55c1a109b6b51de1d91.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20230719/04cc33df74818a1280ab120e28f06e11.jpg",
+    duration: 236,
+    type: "video",
+    description: " "
+  },
+  {
+    id: 1139,
+    title: "和富伟 - 寿美夸空",
+    artist: "和富伟",
+    album: "音乐MV",
+    src: "https://xcx.lijiangmusic.com/upload/1/20231012/5eb607b347d807d800a68a7106f5d675.mp4",
+    cover: "https://xcx.lijiangmusic.com/upload/1/20231012/9733e3cbe25075c55c27ff5a08fdbe59.jpg",
+    duration: 242,
+    type: "video",
+    description: " "
+  }
 
 
 
