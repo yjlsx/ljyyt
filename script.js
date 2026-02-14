@@ -1296,7 +1296,7 @@ const musicData = [
     artist: "李承翰",
     album: "纳西音乐精选",
     src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTc0NDQ=",
-    cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCViclg0f480ry0nb6JB5tM3MHqqZ95kX0PQ71oGK8gc5yBRZcUu7eOv23CdzHIVXX6zfBqhP3j0B0qg/640?wx_fmt=jpeg",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
     duration: 244
   },
     {
@@ -1478,7 +1478,334 @@ const musicData = [
     src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTU0ODY=",
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib56icib7d7hevKY5J395nTz9iakWLznWPflQkGfs4KZc1Gh9ILIsh7DwFxQ/640?wx_fmt=jpeg",
     duration: 232
+  },
+  {
+    id: 82,
+    title: "李承翰 - 回家的小路",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTIwMzc=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 313
+  },
+  {
+    id: 83,
+    title: "李承翰 - 打跳联唱",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE5Mjk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 367
+  },
+  {
+    id: 84,
+    title: "李承翰 - 劳动歌联唱",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4OTE=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 372
+  },
+  {
+    id: 85,
+    title: "李承翰 - 阿卡巴拉麻达咪",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4MzQ=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 170
+  },
+  {
+    id: 86,
+    title: "李承翰 - 嘛呢颂",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4MjI=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 241
+  },
+  {
+    id: 87,
+    title: "李承翰 - 犁牛调",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4MTU=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 189
+  },
+  {
+    id: 88,
+    title: "李承翰 - 呀哈哩",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3OTc=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 146
+  },
+  {
+    id: 89,
+    title: "李承翰 - 纳西纵歌",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3OTQ=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 164
+  },
+  {
+    id: 90,
+    title: "李承翰 - 十里送壮丁",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3Njk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 212
+  },
+  {
+    id: 91,
+    title: "李承翰＆和慧琼《玉龙恋歌》",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3NTc=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 393
+  },
+  {
+    id: 92,
+    title: "李承翰 - 心上人",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3NTI=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 159
+  },
+  {
+    id: 93,
+    title: "李承翰、和慧琼 - 喜鹤",
+    artist: "李承翰、和慧琼",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2NzY=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 336
+  },
+  {
+    id: 94,
+    title: "李承翰 - 相伴调",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE1ODg=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 218
+  },
+  {
+    id: 95,
+    title: "李承翰 - 喜庆歌",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE1NjQ=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 242
+  },
+  {
+    id: 96,
+    title: "李承翰 - 阿卡巴拉嘛达咪",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEzOTY=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 170
+  },
+  {
+    id: 97,
+    title: "李承翰 - 丽水纵歌",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEzMzA=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 306
+  },
+  {
+    id: 98,
+    title: "李承翰 - 纳西酒歌",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEyNzE=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 107
+  },
+  {
+    id: 99,
+    title: "李承翰＆和慧琼《玉龙恋歌》",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTExNDk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 393
+  },
+  {
+    id: 105,
+    title: "李承翰 - 劳动歌联唱",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDY0MTM=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 372
+  },
+  {
+    id: 106,
+    title: "李承翰 - 鱼水相会",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDYyMDM=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 155
+  },
+  {
+    id: 108,
+    title: "李承翰 - 丽水纵歌",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU0MjY=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 306
+  },
+  {
+    id: 109,
+    title: "李承翰 - 纳西民歌联唱",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDUyODk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 228
+  },
+  {
+    id: 110,
+    title: "李承翰 - 轮回之恋",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDUwNTc=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 248
+  },
+  {
+    id: 115,
+    title: "李承翰 - 木天王",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDQ2Njg=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 372
+  },
+  {
+    id: 116,
+    title: "李承翰 - 神奇的玉龙山",
+    artist: "李承翰",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDM5MTI=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 150
+  },
+  {
+    id: 119,
+    title: "三多颂-李承翰",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDM2MjY=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 266
+  },
+  {
+    id: 120,
+    title: "美丽的古城（人狼格）",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2MjA=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 210
+  },
+  {
+    id: 121,
+    title: "人狼格 - 纳西情歌",
+    artist: "人狼格",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEwMzg=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 162
+  },
+  {
+    id: 122,
+    title: "人狼格-流浪一生不回来",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTA1OTk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 151
+  },
+  {
+    id: 123,
+    title: "送小妹（人狼格）",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDgzMDg=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 240
+  },
+  {
+    id: 124,
+    title: "劳动之歌 - 人狼格",
+    artist: "劳动之歌",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDgxNzQ=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 374
+  },
+  {
+    id: 125,
+    title: "人狼格 - 妈妈",
+    artist: "人狼格",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDcxMjE=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 244
+  },
+  {
+    id: 126,
+    title: "爱羞的纳咪（人狼格）",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU2NTM=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 137
+  },
+  {
+    id: 127,
+    title: "美丽的古城（人狼格）",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU2NTA=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 210
+  },
+  {
+    id: 128,
+    title: "人狼格-玉龙大雪山",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU2NDk=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 245
+  },
+  {
+    id: 129,
+    title: "相伴调（人狼格）",
+    artist: "",
+    album: "纳西音乐精选",
+    src: "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU2MTI=",
+    cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
+    duration: 218
   }
+
+
+
 
 
 
