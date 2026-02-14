@@ -3,8 +3,8 @@ console.log('🚀 script_fixed.js 开始加载');
 
 // 音乐数据
 const musicData = [
-    {
-      "id": 1,
+  {
+      id: 1,
       "title": "和雪兰 - 吉祥的日子",
       "artist": "和雪兰",
       "album": "纳西音乐精选",
@@ -12,8 +12,8 @@ const musicData = [
       "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic8Y7J4gj1eLOpBTqic5g3IR62s444BlEibp8xGFR1np4jC42ZefZZHq5ic0HUYkb2pbKibWAPPjfNQBg/0?wx_fmt=jpeg",
       "duration": 245
     },
-    {
-      "id": 2,
+  {
+      id: 2,
       "title": "和锦 - 阿腊古金歌",
       "artist": "和锦",
       "album": "纳西音乐精选",
@@ -21,8 +21,8 @@ const musicData = [
       "cover": "https://mmbiz.qlogo.cn/mmbiz_jpg/tfpibRIwbCVic7GpubRvt0gvUxs0rRxbEePTFjQE9zjNNjueQYuKk6s9ibOODUMfY4XlxKjxiaU4So1NnlU3Sg9GFg/0?wx_fmt=jpeg",
       "duration": 240
     },
-    {
-      "id": 3,
+  {
+      id: 3,
       "title": "习东梅 - 白水台",
       "artist": "习东梅",
       "album": "纳西音乐精选",
@@ -30,8 +30,8 @@ const musicData = [
       "cover": "https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7PGN6N6AqSf2gJ8lvnwnyiaIib4ibDmdHxpNoWkiaXtBlR4SqBLJibmMZRWOwCFofkfb0SfrrEs7jWPK51MJq5U6nhibiawbWviaCNXJA4/640?wx_fmt=png&amp;from=appmsg",
       "duration": 200
     },
-    {
-      "id": 4,
+  {
+      id: 4,
       "title": "和顺东 - 我的父亲母亲",
       "artist": "和顺东",
       "album": "纳西音乐精选",
@@ -39,7 +39,7 @@ const musicData = [
       "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib5wQ6puTht2pPhmAJXKeYGYUzx2EnicQyyMmGMJTDzo14bQM8ofv9Iw4Qfzh0fzknjw6JiakXwI9Bg/0?wx_fmt=jpeg",
       "duration": 220
     },
-    {
+  {
       id: 5,
       title: "和丽霞 - 纳西若",
       artist: "和丽霞",
@@ -48,7 +48,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib9xXQ0tp4hgAnCwFX2MoclXK9RdTNtb3skg3kEwtCA29escvTr8C4DwsvQqqDLSnh6k8FJkTibZ3Q/0?wx_fmt=jpeg",
       duration: 246
     },
-    {
+  {
       id: 6,
       title: "阿花蜜、纳西蕾蕾 - 欢聚",
       artist: "阿花蜜、纳西蕾蕾",
@@ -57,7 +57,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8blmXDtvjo9PicNibWxuKUU4JXTbw5Pr2q5sTalOr5mrgyZoShocde9IeGrL0JScM9jIzIAhd2iaxWg/0?wx_fmt=jpeg",
       duration: 216
     },
-    {
+  {
       id: 7,
       title: "和春艳 - 迎客欢歌",
       artist: "和春艳",
@@ -66,7 +66,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmPHrpBfqX7iawCibCibdsPWc8c3MoO9tJibdU9sAmjUZ8jHkyhlE0IXAjrQ/0?wx_fmt=jpeg",
       duration: 241
     },
-    {
+  {
       id: 8,
       title: "彩菊 - 孝敬父母",
       artist: "彩菊",
@@ -75,7 +75,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib5rbEQTYdVcSiaWU5V3puvZAicjicB8hsNBE9XBRHtyp1VpAshvibxQoBfWQ/0?wx_fmt=jpeg",
       duration: 200
     },
-    {
+  {
       id: 9,
       title: "和锦 - 四时吉祥",
       artist: "和锦",
@@ -84,7 +84,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8uU6y3XH97VVGyv87ia8w0T35WvWY1Gs5M4sLAiaCwUm0BRibV7F7iccQRGkwDLSDxQBrFYkajzDbHAA/0?wx_fmt=jpeg",
       duration: 256
     },
-    {
+  {
       id: 10,
       title: "天龙 - 纳西欢歌",
       artist: "天龙",
@@ -93,7 +93,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibx6Z7eJJADYAPsJNe76NaBGrVJtGKx8ESzGTwKTSqrkal93XnrDggprhhfHaPtN3ubIH86ZMTA1w/0?wx_fmt=jpeg",
       duration: 247
     },
-    {
+  {
       id: 11,
       title: "天龙 - 兄弟情",
       artist: "天龙",
@@ -102,7 +102,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHjxIhu6g56y5PkMEAvcib0uKNjujPQicdg7eK3FS6M2HjrWhlbGRR3SSbia2d7F16htwYtJ8ricTcWQ/0?wx_fmt=jpeg",
       duration: 224
     },
-    {
+  {
       id: 12,
       title: "幸福生活唱不完",
       artist: "涵蜜金组合",
@@ -111,7 +111,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV9n5FgoMoAbliaCreicUXzDvE2gNLnYF9HONCyaQxiaDu8OgAlouTT0PEo6iabm657bfrA9QIrUibQ7Txw/0?wx_fmt=jpeg",
       duration: 190
     },
-    {
+  {
       id: 13,
       title: "寒雨 - 牵挂",
       artist: "寒雨",
@@ -120,7 +120,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8EzBJaAiaghYgjWsxSCXhe24cJbSUzojN6ekcAOwZDfzyKEt2IxbJsXw/0?wx_fmt=jpeg",
       duration: 228
     },
-    {
+  {
       id: 14,
       title: "和艳 - 欢乐的阿哩哩",
       artist: "和艳",
@@ -129,7 +129,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibeFzk8VVBC2DlnYicjt64ILw05niczrOwlYzDr1Qoh3ErSTeUb37BjHicysV5snMdiblia5JYa97ibyj0w/0?wx_fmt=jpeg",
       duration: 254
     },
-    {
+  {
       id: 15,
       title: "啊秋 - 祈望",
       artist: "啊秋",
@@ -138,7 +138,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5NrYtvAIXF5kJGE3zbRvmTdCQUbQZxFz7nWCJyfjEZTibuKBBNrbXQPQ/0?wx_fmt=jpeg",
       duration: 245
     },
-    {
+  {
       id: 16,
       title: "和慧琼 - 党情冷么密",
       artist: "和慧琼",
@@ -147,7 +147,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
       duration: 322
     },
-    {
+  {
       id: 17,
       title: "天龙 - 人生",
       artist: "天龙",
@@ -156,7 +156,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFDM5Plb6FJQrC8d22fhcpW0PFiciaJTO6eiaX5Ul0ibBCibI7icGKUBNfgNHw/0?wx_fmt=jpeg",
       duration: 302
     },
-    {
+  {
       id: 18,
       title: "和文军 - 相伴调",
       artist: "和文军",
@@ -165,7 +165,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibV6ibEicbKg5SZ4xlf8nQQdjVJdWiaUiamXSIn7UCEuUII9ALM1T2Lmp96I0CPLNmyWsljUxnjYWqxKg/0?wx_fmt=jpeg",
       duration: 297
     },
-    {
+  {
       id: 19,
       title: "和锦 - 四时吉祥",
       artist: "和锦",
@@ -174,7 +174,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8uU6y3XH97VVGyv87ia8w0T35WvWY1Gs5M4sLAiaCwUm0BRibV7F7iccQRGkwDLSDxQBrFYkajzDbHAA/0?wx_fmt=jpeg",
       duration: 256
     },
-    {
+  {
       id: 20,
       title: "玉龙雪山的牧童",
       artist: "和楚雄",
@@ -183,7 +183,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8ZnD9MUwnUxsSEFZJwMIzPACZXS0fv1Pnhjez7qdwWUGf4Jaw7IgrC8VMqvG4qicz7RJLUFwfYdUw/0?wx_fmt=jpeg",
       duration: 266
     },
-    {
+  {
       id: 21,
       title: "丽江小龙 - 舞动丽江",
       artist: "丽江小龙",
@@ -192,7 +192,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibpWhgWegkEx3ssnfMQibnp2VtMEAElpO8TfhjqM9DaohId2mHiawD69WZT83abibwibxjxlHFkEhx28g/0?wx_fmt=jpeg",
       duration: 298
     },
-    {
+  {
       id: 22,
       title: "和雪芹 - 心里的家",
       artist: "和雪芹",
@@ -201,7 +201,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibbicbntchMGnLyuf89OtYLd8d84uUCE4UwH3iclMkZmOLJFKka8I2VyTaaddNwbWhF7XgMo68SAw0Q/0?wx_fmt=jpeg",
       duration: 284
     },
-    {
+  {
       id: 23,
       title: "阿夏丽 - 莫忘恩情",
       artist: "阿夏丽",
@@ -210,7 +210,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibibYibvlic8PD6IUbib87iaVJt9mU4BGFO1iblcAHSoPsVzjy6rkwhIoasE5cNAbINQPibicrzEa3icX98cJA/0?wx_fmt=jpeg",
       duration: 233
     },
-    {
+  {
       id: 24,
       title: "李承翰 - 纳西情歌",
       artist: "李承翰",
@@ -219,7 +219,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV8EWzb0KFzwicXFx448RArgicfZ6FBib8xbYzEXrb2ncfJdxGOLibk8cNZ7ic4qe7JspECs4UytIdBQX8A/0?wx_fmt=jpeg",
       duration: 163
     },
-    {
+  {
       id: 25,
       title: "和生辉 - 歌唱长水",
       artist: "和生辉",
@@ -228,7 +228,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZBZ2v17qhuaicT5jTtHLglu4ucxhcrndVg2j0Ric7vr1Bptz8zFAicIiclfv9urOBK8ZoibISfx2hgDQ/0?wx_fmt=jpeg",
       duration: 265
     },
-    {
+  {
       id: 26,
       title: "肖煜光 - 达瓦纳西努2025",
       artist: "肖煜光",
@@ -237,7 +237,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9AXiaoEDgm0jakstwgVqBg9s2IwsKepeRGV2brFvkkKomB1E60Be3iaVzLXmysBOUqG4PmccjTiawYA/0?wx_fmt=jpeg",
       duration: 229
     },
-    {
+  {
       id: 27,
       title: "金锁丽泉 - 塔城姑娘美",
       artist: "金锁丽泉",
@@ -246,7 +246,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJib5VIeyWqSia1KULW22Zq6AyDXvQhiambwyyg9ic6ic0AvliakWicIrnD5Dwg/0?wx_fmt=jpeg",
       duration: 249
     },
-    {
+  {
       id: 28,
       title: "和锦 - 百草飘香的地方",
       artist: "和锦",
@@ -255,7 +255,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 224
     },
-    {
+  {
       id: 29,
       title: "庭松 - 盛世欢歌",
       artist: "庭松",
@@ -264,7 +264,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJzooL7Za1iaicW3GyFkN7b1YUqjpJLt50aV1Q4zpwzpbpGzyicNAwibia1tA/0?wx_fmt=jpeg",
       duration: 291
     },
-    {
+  {
       id: 30,
       title: "和瑞智 - 玉龙神韵",
       artist: "和瑞智",
@@ -273,7 +273,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyJuianJ6zhgCwhr8iakCceqHdC3icV29ubH2nks3zPG3HbSNxPERiaDibnSA/0?wx_fmt=jpeg",
       duration: 429
     },
-    {
+  {
       id: 31,
       title: "树润花 - 姿姿好时获",
       artist: "树润花",
@@ -282,7 +282,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyPj2vQn42pXSwfC9iaz1mxSNLib8QWKYu1AK7eNLVB12f8VGDNpTfc2Gg/0?wx_fmt=jpeg",
       duration: 217
     },
-    {
+  {
       id: 32,
       title: "和慧琼、和燕、李九铭、马涛 - 桃园送别调",
       artist: "和慧琼、和燕、李九铭、马涛",
@@ -291,7 +291,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8SNnIwBQaKta1q2nAuD0XAXye1Oib7MjtuzQXqic7Toxp1DQR0Bq1qaow/0?wx_fmt=jpeg",
       duration: 193
     },
-    {
+  {
       id: 33,
       title: "纳西蕾蕾 - 我愿",
       artist: "纳西蕾蕾",
@@ -300,7 +300,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
       duration: 258
     },
-    {
+  {
       id: 34,
       title: "纳西蕾蕾 - 我愿",
       artist: "纳西蕾蕾",
@@ -309,7 +309,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
       duration: 258
     },
-    {
+  {
       id: 35,
       title: "金甲劲松 - 石鼓响天下",
       artist: "金甲劲松",
@@ -318,7 +318,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVicybGeZMBCpLThFRC1qJ6n3dicJibmOCJdUQJyic6kBggy2P9dvv9EsPpRibO7m4hcaC6Hic6Yk5ziafE4Q/0?wx_fmt=jpeg",
       duration: 261
     },
-    {
+  {
       id: 36,
       title: "阿花蜜 - 相依相守",
       artist: "阿花蜜",
@@ -327,7 +327,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yyfsaa9s7wricmZwjUiazyzySibC1aUfJl93KI2dslSLmGPqdl06XJyZLrg/0?wx_fmt=jpeg",
       duration: 240
     },
-    {
+  {
       id: 37,
       title: "和善武 - 爸美汝实贺",
       artist: "和善武",
@@ -336,7 +336,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibhw32CVXUaBhibGnfmbqcF5tW0kTb0NTYaKycFseg4GUz2SD7IJhqqog/0?wx_fmt=jpeg",
       duration: 252
     },
-    {
+  {
       id: 38,
       title: "李承翰 - 纳西新劝世歌",
       artist: "李承翰",
@@ -345,7 +345,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
       duration: 301
     },
-    {
+  {
       id: 39,
       title: "木贵花 - 愿",
       artist: "木贵花",
@@ -354,7 +354,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGiaWvUBZeOSnY15XwxZxBFhicFf8oB94P1S3GqUSr07YFnPFhaQgP0Plw/0?wx_fmt=jpeg",
       duration: 308
     },
-    {
+  {
       id: 40,
       title: "和上钧&阿诛 - 玉龙雪山的故事",
       artist: "和上钧&阿诛",
@@ -363,7 +363,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGuYQBIyxB3IAbSZt9DpQ1huGntkSwYoiaylld4HubCib6aR9zN6uZqibng/0?wx_fmt=jpeg",
       duration: 351
     },
-    {
+  {
       id: 41,
       title: "达坡玛吉 - 纳西酒歌",
       artist: "达坡玛吉",
@@ -372,7 +372,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGwdIwLV3uYgmicUCTXfnwQIOhVHoicl0iaZ1icE4LLUTMu2zRhJKrt7XOsA/0?wx_fmt=jpeg",
       duration: 161
     },
-    {
+  {
       id: 42,
       title: "祖先 - 金甲劲松",
       artist: "金甲劲松",
@@ -381,7 +381,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV86SbIE21sVic6BrKXNN7GquK9A4XRHUuJubjCuice2sML1RxTE827cZYpN6iatkbTtKT0ricFFTts2Xg/0?wx_fmt=jpeg",
       duration: 302
     },
-    {
+  {
       id: 43,
       title: "和文军 - 依恋的家园",
       artist: "和文军",
@@ -390,7 +390,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicuNH092cxUKSRmibSAEzj2ck4icK1MjXRD0CcpWzlzybQDY1qAbRPmhDdfA7t7ox0OpM8ZnvCISvrg/0?wx_fmt=jpeg",
       duration: 321
     },
-    {
+  {
       id: 44,
       title: "和慧琼 - 白云曲",
       artist: "和慧琼",
@@ -399,7 +399,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeP736tOJ9libibeVbmVe43mqTiaDbnCu7kO7PwxDSib1LbGFGrialTk8Jqfg/0?wx_fmt=jpeg",
       duration: 193
     },
-    {
+  {
       id: 45,
       title: "丽江阿黑哥 - 相逢三杯酒",
       artist: "丽江阿黑哥",
@@ -408,7 +408,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibOhbcl452eG4o1oiaJ6U9jCJJPvYmSXyqKvias9oiakqAdBMJGOn1twmFQ/0?wx_fmt=jpeg",
       duration: 240
     },
-    {
+  {
       id: 46,
       title: "纳浫阿福 - 满子周固男",
       artist: "纳浫阿福",
@@ -417,7 +417,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibyls3YsETR1uMwM0hL9MUZU7ww54HYmanHibL6yOgUBjZY1S4zfh1AsA/0?wx_fmt=jpeg",
       duration: 242
     },
-    {
+  {
       id: 47,
       title: "墨尚七 - 不放手",
       artist: "墨尚七",
@@ -426,7 +426,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVib1v0HXRGlDicQuO0pv0n0kUxOia7UIe1duJlYiaEOwJ8iaJ8tNjZcMPR8HL5gdfwYpibduZfLyVpziaibRw/0?wx_fmt=jpeg",
       duration: 253
     },
-    {
+  {
       id: 48,
       title: "山人行组合 - 三月花开时",
       artist: "山人行组合",
@@ -435,7 +435,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVicGIiaRABDKvq3h2vrqYnzCQFJibmIoUo41Vpiaia50BboI9ST29yCP0qt6cSpg9lrtLfngdQ1BRQLedA/0?wx_fmt=jpeg",
       duration: 247
     },
-    {
+  {
       id: 49,
       title: "和丽刚 - 菩捞阿姆",
       artist: "和丽刚",
@@ -444,7 +444,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibB5Ul7wGRIO7t65TgLIxmBG0ibPbcbFMY7hwKQ1jG2plRKc1teOPB40apiagNnBibAzALlbs830s3mQ/0?wx_fmt=jpeg",
       duration: 308
     },
-    {
+  {
       id: 50,
       title: "和慧琼 - 花落流年",
       artist: "和慧琼",
@@ -453,7 +453,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeP736tOJ9libibeVbmVe43mqTiaDbnCu7kO7PwxDSib1LbGFGrialTk8Jqfg/0?wx_fmt=jpeg",
       duration: 229
     },
-    {
+  {
       id: 51,
       title: "阿泉 - 纳西火把节",
       artist: "阿泉",
@@ -462,7 +462,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9o4HTgRx4AV3LduianWdhYWSCHWWZaIlw5T5vjANjnicuRUmCS1zaGBvJC0P5z0LyKKHQQqMqJynkA/0?wx_fmt=jpeg",
       duration: 244
     },
-    {
+  {
       id: 52,
       title: "和慧琼 - 归期",
       artist: "和慧琼",
@@ -471,7 +471,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeP736tOJ9libibeVbmVe43mqTiaDbnCu7kO7PwxDSib1LbGFGrialTk8Jqfg/0?wx_fmt=jpeg",
       duration: 242
     },
-    {
+  {
       id: 53,
       title: "涵蜜金组合 - 摩梭山歌",
       artist: "涵蜜金组合",
@@ -480,7 +480,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
       duration: 294
     },
-    {
+  {
       id: 54,
       title: "和慧琼 - 阿哩哩花花色",
       artist: "和慧琼",
@@ -489,7 +489,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeP736tOJ9libibeVbmVe43mqTiaDbnCu7kO7PwxDSib1LbGFGrialTk8Jqfg/0?wx_fmt=jpeg",
       duration: 265
     },
-    {
+  {
       id: 55,
       title: "涵蜜金组合 - 绿色出行歌",
       artist: "涵蜜金组合",
@@ -498,7 +498,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
       duration: 214
     },
-    {
+  {
       id: 56,
       title: "李丽芳 - 恩难忘",
       artist: "李丽芳",
@@ -507,7 +507,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeicFPYCIsUnpGhVggsu0sRWh2pNoyHGUhGWcvCfpaibbAZK8Wvdo1w0kA/0?wx_fmt=jpeg",
       duration: 308
     },
-    {
+  {
       id: 57,
       title: "郑旭先 - 纳西潘金妹",
       artist: "郑旭先",
@@ -516,7 +516,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeO60VGZTzZxUFicUa24giangIEfricdYUOibr9RgKTiaPZicgAHSWrUCDvJWw/0?wx_fmt=jpeg",
       duration: 186
     },
-    {
+  {
       id: 58,
       title: "王瑞香 - 春之歌",
       artist: "王瑞香",
@@ -525,7 +525,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xecOULzOI69StzBgQ6mOOLg59I32q7ZeNJyJ1rRdDwrCYNcRiamMAVHRg/0?wx_fmt=jpeg",
       duration: 288
     },
-    {
+  {
       id: 59,
       title: "李丽芳 - 夏之歌",
       artist: "李丽芳",
@@ -534,7 +534,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeIFmWo5Btnib93XKpA0PnyX4eqdiaYap4WlQIWIEX4gm1swDVWbK9R9icA/0?wx_fmt=jpeg",
       duration: 269
     },
-    {
+  {
       id: 60,
       title: "杨耀兰 - 秋之歌",
       artist: "杨耀兰",
@@ -543,7 +543,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xegPLtiaS4icmPj04FTLrLkUgSTqmaKicfty0vlzibXJIibAGGf39XQAD98bQ/0?wx_fmt=jpeg",
       duration: 264
     },
-    {
+  {
       id: 61,
       title: "郑旭先 - 冬之歌",
       artist: "郑旭先",
@@ -552,7 +552,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeJyNibQGibsibIzgQXfTRjdIcfq5ibwGc5kqdjcSgbOnKib8bgr7SoSQcqWw/0?wx_fmt=jpeg",
       duration: 229
     },
-    {
+  {
       id: 62,
       title: "阿福 - 歌颂党情",
       artist: "阿福",
@@ -561,7 +561,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicuNH092cxUKSRmibSAEzj2cUhnsRqHO6dXAhCPChjxnM0g5oXECiavGwp8lmocAZqppouGnaytI7uw/0?wx_fmt=jpeg",
       duration: 201
     },
-    {
+  {
       id: 63,
       title: "玉龙山组合 - 欢聚在一起",
       artist: "玉龙山组合",
@@ -570,7 +570,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
       duration: 204
     },
-    {
+  {
       id: 64,
       title: "和善武、金顺- 鱼水相会",
       artist: "金顺",
@@ -579,7 +579,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 181
     },
-    {
+  {
       id: 65,
       title: "金顺 - 勒巴舞唱腔",
       artist: "金顺",
@@ -588,7 +588,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 322
     },
-    {
+  {
       id: 66,
       title: "金顺 - 劝世歌",
       artist: "金顺",
@@ -597,7 +597,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 173
     },
-    {
+  {
       id: 67,
       title: "金顺 - 兴余花华色",
       artist: "金顺",
@@ -606,7 +606,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 279
     },
-    {
+  {
       id: 68,
       title: "金顺 - 游子的心",
       artist: "金顺",
@@ -615,7 +615,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 246
     },
-    {
+  {
       id: 69,
       title: "金顺- 沧桑的诺言",
       artist: "金顺",
@@ -624,7 +624,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 291
     },
-    {
+  {
       id: 70,
       title: "金顺- 沧桑的诺言",
       artist: "金顺",
@@ -633,7 +633,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 291
     },
-    {
+  {
       id: 71,
       title: "金顺- 次里次姆",
       artist: "金顺",
@@ -642,7 +642,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 244
     },
-    {
+  {
       id: 72,
       title: "金顺- 打跳联唱",
       artist: "金顺",
@@ -651,7 +651,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 416
     },
-    {
+  {
       id: 73,
       title: "金顺- 红叶傲霜",
       artist: "金顺",
@@ -660,7 +660,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 330
     },
-    {
+  {
       id: 74,
       title: "金顺- 回到我身边",
       artist: "金顺",
@@ -669,7 +669,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 173
     },
-    {
+  {
       id: 75,
       title: "金顺- 悄然前行",
       artist: "金顺",
@@ -678,7 +678,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 249
     },
-    {
+  {
       id: 76,
       title: "金顺- 三月百花开",
       artist: "金顺",
@@ -687,7 +687,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 217
     },
-    {
+  {
       id: 77,
       title: "金顺、和秀山 - 塔城纳西民歌",
       artist: "金顺",
@@ -696,7 +696,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7Of3Q2mngePC1E03T0yQrxG4Rs39MRKwSlIxOMYiba5ExmPFz46TwKX2cZp83YTPb0a7w8sHf1obtL2MWAIdqX9XQPm9FI9tCtw/0?wx_fmt=jpeg",
       duration: 223
     },
-    {
+  {
       id: 78,
       title: "和丽刚 - 姿磋",
       artist: "和丽刚",
@@ -705,7 +705,7 @@ const musicData = [
       cover: "https://xcx.lijiangmusic.com/upload/1/20230704/e72e7ecf0ee0ebaa5d6b20033297ff29.jpg",
       duration: 320
     },
-    {
+  {
     id: 79,
     title: "陈四才 - 我是玉龙山上的牧童",
     artist: "陈四才",
@@ -714,7 +714,7 @@ const musicData = [
     cover: "https://xcx.lijiangmusic.com/upload/1/20230702/eabaac2f65bd2809f0520d7782fd481a.jpg",
     duration: 266,
   },
-    {
+  {
     id: 80,
     title: "玉龙山组合、金沙姑娘组合-梦想成真",
     artist: "玉龙山组合、金沙姑娘组合",
@@ -723,7 +723,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     duration: 232,
   },
-    {
+  {
     id: 81,
     title: "和春艳 - 迎客欢歌",
     artist: "和春艳",
@@ -732,7 +732,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmAC3sXLb9JCyKzqv5Lp8opC0iaKbB8UV95et393MIHlWm0yjvPvgApOg/0?wx_fmt=jpeg",
     duration: 241,
   },
-    {
+  {
     id: 82,
     title: "和雪芹 - 心里的家",
     artist: "和雪芹",
@@ -741,7 +741,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibbicbntchMGnLyuf89OtYLdbEeyxzHKFhcheIbvQfy3yTsQR8GID9xJCSU6G2VZKicsnyRTp1T0U4A/0?wx_fmt=jpeg",
     duration: 284,
   },
-    {
+  {
     id: 83,
     title: "丽江福铃组合 - 纳西姑娘美",
     artist: "丽江福铃组合",
@@ -750,7 +750,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5gZnDkXMPyicr0kKqlOLmAer7KNicHic0teWhicAsJsuYEibF0gbZfHt4vDw/0?wx_fmt=jpeg",
     duration: 230,
   },
-    {
+  {
     id: 84,
     title: "纳浫阿福 - 满子周固男",
     artist: "纳浫阿福",
@@ -759,7 +759,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibyls3YsETR1uMwM0hL9MUZU7ww54HYmanHibL6yOgUBjZY1S4zfh1AsA/0?wx_fmt=jpeg",
     duration: 242,
   },
-    {
+  {
     id: 85,
     title: "丽江阿黑哥 - 相逢三杯酒",
     artist: "丽江阿黑哥",
@@ -768,7 +768,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibOhbcl452eG4o1oiaJ6U9jCJJPvYmSXyqKvias9oiakqAdBMJGOn1twmFQ/0?wx_fmt=jpeg",
     duration: 240,
   },
-    {
+  {
     id: 86,
     title: "涵蜜金组合 - 绿色出行歌",
     artist: "涵蜜金组合",
@@ -777,7 +777,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
     duration: 214,
   },
-    {
+  {
     id: 87,
     title: "涵蜜金组合 - 摩梭山歌",
     artist: "涵蜜金组合",
@@ -786,7 +786,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasBOxsZdP0KC0p6o0xY5WDqbWkxtWOTYejlBHiboPRPg6xfhrRPCrUCEg/0?wx_fmt=jpeg",
     duration: 294,
   },
-    {
+  {
     id: 88,
     title: "涵蜜金组合 - 摩梭山歌",
     artist: "涵蜜金组合",
@@ -795,7 +795,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasBOxsZdP0KC0p6o0xY5WDqbWkxtWOTYejlBHiboPRPg6xfhrRPCrUCEg/0?wx_fmt=jpeg",
     duration: 294,
   },
-    {
+  {
       id: 89,
       title: "和善武 - 子本子缘化",
       artist: "和善武",
@@ -804,7 +804,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibhw32CVXUaBhibGnfmbqcF5tW0kTb0NTYaKycFseg4GUz2SD7IJhqqog/0?wx_fmt=jpeg",
       duration: 195
     },
-    {
+  {
       id: 90,
       title: "和善武 - 高山开杜鹃",
       artist: "和善武",
@@ -813,7 +813,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibhw32CVXUaBhibGnfmbqcF5tW0kTb0NTYaKycFseg4GUz2SD7IJhqqog/0?wx_fmt=jpeg",
       duration: 264
     },
-    {
+  {
       id: 91,
       title: "和锦 - 喜庆歌",
       artist: "和锦",
@@ -822,7 +822,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 222
     },
-    {
+  {
       id: 92,
       title: "和锦 - 纳西小情歌",
       artist: "和锦",
@@ -831,7 +831,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 237
     },
-    {
+  {
       id: 93,
       title: "和锦 - 大山女儿",
       artist: "和锦",
@@ -840,7 +840,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 224
     },
-    {
+  {
       id: 94,
       title: "和锦 - 纳西酒歌",
       artist: "和锦",
@@ -849,7 +849,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 240
     },
-    {
+  {
       id: 95,
       title: "和锦、和文军 - 阿哥",
       artist: "和锦",
@@ -858,7 +858,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 231
     },
-    {
+  {
       id: 96,
       title: "和锦 - 血脉",
       artist: "和锦",
@@ -867,7 +867,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 226
     },
-    {
+  {
       id: 97,
       title: "和锦 - 啊啧啧 啊啵啵",
       artist: "和锦",
@@ -876,7 +876,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 228
     },
-    {
+  {
       id: 98,
       title: "和锦 - 等待",
       artist: "和锦",
@@ -885,7 +885,7 @@ const musicData = [
       cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJFsMemI3L9a7ia703l2xww98I5iaDCYukYiaqJIwFUOicfttgV0M6ia504wg/0?wx_fmt=jpeg",
       duration: 257
     },
-    {
+  {
     id: 99,
     title: "玉龙山组合 - 丽江好在",
     artist: "玉龙山组合",
@@ -894,7 +894,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
     duration: 281
   },
-    {
+  {
     id: 100,
     title: "肖煜光 - 塔拉久初",
     artist: "肖煜光",
@@ -903,7 +903,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9AXiaoEDgm0jakstwgVqBg9s2IwsKepeRGV2brFvkkKomB1E60Be3iaVzLXmysBOUqG4PmccjTiawYA/0?wx_fmt=jpeg",
     duration: 283
   },
-    {
+  {
     id: 101,
     title: "金甲劲松 - 欢聚白水台",
     artist: "金甲劲松",
@@ -912,7 +912,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVicybGeZMBCpLThFRC1qJ6n3dicJibmOCJdUQJyic6kBggy2P9dvv9EsPpRibO7m4hcaC6Hic6Yk5ziafE4Q/0?wx_fmt=jpeg",
     duration: 230
   },
-    {
+  {
     id: 102,
     title: "雄纳独知 - 心中的神山",
     artist: "雄纳独知",
@@ -921,7 +921,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 258
   },
-    {
+  {
     id: 103,
     title: "和华 - 隔山隔水不隔心",
     artist: "和华",
@@ -930,7 +930,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 181
   },
-    {
+  {
     id: 104,
     title: "肖煜光 - 达瓦纳西努2024",
     artist: "肖煜光",
@@ -939,7 +939,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 206
   },
-    {
+  {
     id: 105,
     title: "纳浫阿福 - 满子周固男",
     artist: "纳浫阿福",
@@ -948,7 +948,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 241
   },
-    {
+  {
     id: 106,
     title: "小靓 - 心中的丽江",
     artist: "小靓",
@@ -957,7 +957,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 250
   },
-    {
+  {
     id: 107,
     title: "和笑 - 欢声笑语",
     artist: "和笑",
@@ -966,7 +966,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 229
   },
-    {
+  {
     id: 108,
     title: "涵密金 - 情缘天地",
     artist: "涵密金",
@@ -975,7 +975,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 263
   },
-    {
+  {
     id: 109,
     title: "肖煜光 - 拉市足球之歌",
     artist: "肖煜光",
@@ -984,7 +984,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibPQdLdFES3ZlaVSY8VdUrXThKaqWVVxUCIicyEgVibQmtLgAN6dEObS7QWcVFlKjy66Af5iczIUuXibw/640?wx_fmt=jpeg",
     duration: 192
   },
-    {
+  {
     id: 110,
     title: "和丽龙 - 血肉相依",
     artist: "和丽龙",
@@ -993,7 +993,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 323
   },
-    {
+  {
     id: 111,
     title: "纳西晓霞 - 心上人",
     artist: "纳西晓霞",
@@ -1002,7 +1002,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 227
   },
-    {
+  {
     id: 112,
     title: "和丽刚 - 不变的誓言",
     artist: "和丽刚",
@@ -1011,7 +1011,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 243
   },
-    {
+  {
     id: 113,
     title: "和文珠 - 思恋",
     artist: "和文珠",
@@ -1020,7 +1020,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 254
   },
-    {
+  {
     id: 114,
     title: "金甲劲松 - 梦中的额吉",
     artist: "金甲劲松",
@@ -1029,7 +1029,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 246
   },
-    {
+  {
     id: 115,
     title: "金甲劲松 - 净土",
     artist: "金甲劲松",
@@ -1038,7 +1038,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 221
   },
-    {
+  {
     id: 116,
     title: "金甲劲松 - 和合劳",
     artist: "金甲劲松",
@@ -1047,7 +1047,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 381
   },
-    {
+  {
     id: 117,
     title: "金甲劲松 - 玉龙王国",
     artist: "金甲劲松",
@@ -1056,7 +1056,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 220
   },
-    {
+  {
     id: 118,
     title: "金甲劲松 - 纳西讲聚营",
     artist: "金甲劲松",
@@ -1065,7 +1065,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 170
   },
-    {
+  {
     id: 119,
     title: "金甲劲松 - 相伴调",
     artist: "金甲劲松",
@@ -1074,7 +1074,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 175
   },
-    {
+  {
     id: 120,
     title: "金甲劲松、和晓霞 - 雪山恋",
     artist: "金甲劲松、和晓霞",
@@ -1083,7 +1083,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 156
   },
-    {
+  {
     id: 121,
     title: "金甲劲松 - 山神之恋",
     artist: "金甲劲松",
@@ -1092,7 +1092,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 305
   },
-    {
+  {
     id: 122,
     title: "金甲劲松 - 玉龙王国",
     artist: "金甲劲松",
@@ -1101,7 +1101,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 220
   },
-    {
+  {
     id: 123,
     title: "金甲劲松 - 和合劳",
     artist: "金甲劲松",
@@ -1110,7 +1110,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 381
   },
-    {
+  {
     id: 124,
     title: "金甲劲松,杨友爱 - 纳西喂么达",
     artist: "金甲劲松,杨友爱",
@@ -1119,7 +1119,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 236
   },
-    {
+  {
     id: 125,
     title: "雪山情歌(达坡玛吉、金甲劲松)",
     artist: "雪山情歌(达坡玛吉",
@@ -1128,7 +1128,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 234
   },
-    {
+  {
     id: 126,
     title: "金甲劲松 - 阳光天堂",
     artist: "金甲劲松",
@@ -1137,7 +1137,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 159
   },
-    {
+  {
     id: 127,
     title: "金甲劲松 柯燕 - 靠近梦想",
     artist: "金甲劲松 柯燕",
@@ -1146,7 +1146,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 249
   },
-    {
+  {
     id: 128,
     title: "金甲劲松 - 乐土·家园",
     artist: "金甲劲松",
@@ -1155,7 +1155,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 297
   },
-    {
+  {
     id: 129,
     title: "金甲劲松 - 魅力丽江",
     artist: "金甲劲松",
@@ -1164,7 +1164,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 252
   },
-    {
+  {
     id: 130,
     title: "金甲劲松 - 蝴蝶小鱼",
     artist: "金甲劲松",
@@ -1173,7 +1173,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 143
   },
-    {
+  {
     id: 131,
     title: "金甲劲松 - 大山走出的孩子",
     artist: "金甲劲松",
@@ -1182,7 +1182,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg",
     duration: 282
   },
-    {
+  {
     id: 132,
     title: "纳西蕾蕾 - 呀阁雄高么",
     artist: "纳西蕾蕾",
@@ -1191,7 +1191,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
     duration: 216
   },
-    {
+  {
     id: 133,
     title: "墨尚七 - 不放手",
     artist: "墨尚七",
@@ -1200,7 +1200,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 252
   },
-    {
+  {
     id: 134,
     title: "《农村人居环境》快板(和群星 和善武)",
     artist: "和群星、和善武",
@@ -1209,7 +1209,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 231
   },
-    {
+  {
     id: 135,
     title: "涵蜜金组合 - 阿卡巴拉",
     artist: "涵蜜金组合",
@@ -1218,7 +1218,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasOkRpZzDDUJMiagv8UP8ibaxSux7cf6ILCgARISoa4Wu8zNNaOuKBSIicA/640?wx_fmt=jpeg&from=appmsg",
     duration: 356
   },
-    {
+  {
     id: 136,
     title: "纳西依古堆",
     artist: "",
@@ -1227,7 +1227,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 148
   },
-    {
+  {
     id: 137,
     title: "涵蜜金组合 - 绿色家园",
     artist: "涵蜜金组合",
@@ -1236,7 +1236,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasOkRpZzDDUJMiagv8UP8ibaxSux7cf6ILCgARISoa4Wu8zNNaOuKBSIicA/640?wx_fmt=jpeg&from=appmsg",
     duration: 285
   },
-    {
+  {
     id: 138,
     title: "肖煜光 - 寓言",
     artist: "肖煜光",
@@ -1245,7 +1245,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV860SjRBZewkt9Ytwq2W5rLfIG7iaY6lZWibrQoCpPR2CpHNYjdp87qBOhxeTnp3uPHaH3vRx3dCPibA/640?wx_fmt=jpeg",
     duration: 222
   },
-    {
+  {
     id: 139,
     title: "丽江小龙 - 么彪腾辟",
     artist: "丽江小龙",
@@ -1254,7 +1254,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCV86SbIE21sVic6BrKXNN7GquI1ae5raotzopf6ZJ2ePVFLibdVbIiaicG9rXKIiaArru9z4CzNcht1Dr0g/640?wx_fmt=jpeg",
     duration: 201
   },
-    {
+  {
     id: 140,
     title: "纳西少爷 - 天雨流芳",
     artist: "纳西少爷",
@@ -1263,7 +1263,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 187
   },
-    {
+  {
     id: 141,
     title: "阿强 - 茸余敢莫标",
     artist: "阿强",
@@ -1272,7 +1272,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 251
   },
-    {
+  {
     id: 142,
     title: "阿强 - 纳西欢歌",
     artist: "阿强",
@@ -1281,7 +1281,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 245
   },
-    {
+  {
     id: 143,
     title: "和永昌 - 苦尽甘来",
     artist: "和永昌",
@@ -1290,7 +1290,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 201
   },
-    {
+  {
     id: 144,
     title: "李承翰 - 今夜独我",
     artist: "李承翰",
@@ -1299,7 +1299,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
     duration: 244
   },
-    {
+  {
     id: 145,
     title: "福音音 - 心里话",
     artist: "福音音",
@@ -1308,7 +1308,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 212
   },
-    {
+  {
     id: 146,
     title: "纳西阿贵 - 雷鬼酒歌",
     artist: "纳西阿贵",
@@ -1317,7 +1317,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 221
   },
-    {
+  {
     id: 147,
     title: "玉龙山组合 - 喜庆歌",
     artist: "玉龙山组合",
@@ -1326,7 +1326,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
     duration: 195
   },
-    {
+  {
     id: 148,
     title: "玉龙山组合 - 革囊渡欢迎您",
     artist: "玉龙山组合",
@@ -1335,7 +1335,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibIMDjOsicflltuJKnaJDBhWqRia5KkRlsTOomu2qFxnwbpE0xQYJXuH7IHjG2gLpTvA1lOvrAb1cIw/0?wx_fmt=jpeg",
     duration: 231
   },
-    {
+  {
     id: 149,
     title: "天龙 - 归来",
     artist: "天龙",
@@ -1344,7 +1344,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 268
   },
-    {
+  {
     id: 150,
     title: "金顺 - 纳西姐弟歌曲联唱",
     artist: "金顺",
@@ -1353,7 +1353,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 564
   },
-    {
+  {
     id: 151,
     title: "和永昌 - 从头再来",
     artist: "和永昌",
@@ -1362,7 +1362,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 166
   },
-    {
+  {
     id: 152,
     title: "和善武 - 刷古刷巴巴",
     artist: "和善武",
@@ -1371,7 +1371,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 259
   },
-    {
+  {
     id: 153,
     title: "和丽元 和慧琼 - 幕布热美",
     artist: "和丽元 和慧琼",
@@ -1380,7 +1380,7 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 357
   },
-    {
+  {
     id: 154,
     title: "和月圆 和国江 - 姆达蹉",
     artist: "和月圆 和国江",
@@ -1389,8 +1389,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 278
   },
-    {
-    id: 156,
+  {
+    id: 155,
     title: "周萍、甲姆沽·阿平 - 相守到永久",
     artist: "周萍、甲姆沽·阿平",
     album: "纳西音乐精选",
@@ -1398,8 +1398,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 249
   },
-    {
-    id: 157,
+  {
+    id: 156,
     title: "纳西舞韵-阿贵",
     artist: "阿贵",
     album: "纳西音乐精选",
@@ -1407,8 +1407,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 280
   },
-    {
-    id: 158,
+  {
+    id: 157,
     title: "和善武、和慧琼 - 唠喂调",
     artist: "和善武、和慧琼",
     album: "纳西音乐精选",
@@ -1416,8 +1416,8 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibnDUbqTVAsMQYVf3e41g7CicY0NlY3OGicz5aw89uJoHhrsiawq6ljcEmg/640?wx_fmt=jpeg&from=appmsg",
     duration: 180
   },
-    {
-    id: 159,
+  {
+    id: 158,
     title: "雪莲君 - 相念三生",
     artist: "雪莲君",
     album: "纳西音乐精选",
@@ -1425,8 +1425,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 252
   },
-    {
-    id: 160,
+  {
+    id: 159,
     title: "《中秋的约定》阿贵  纳西英子",
     artist: "阿贵、纳西英子",
     album: "纳西音乐精选",
@@ -1434,8 +1434,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 221
   },
-    {
-    id: 161,
+  {
+    id: 160,
     title: "肖煜光 - 劝善咒.",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -1443,8 +1443,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 206
   },
-    {
-    id: 162,
+  {
+    id: 161,
     title: "纳西口弦 子谷气",
     artist: "",
     album: "纳西音乐精选",
@@ -1452,8 +1452,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 297
   },
-    {
-    id: 163,
+  {
+    id: 162,
     title: "杨润琴、瑞鸣音乐 - 请喝一碗纳西酒 喂唻喂唻",
     artist: "杨润琴、瑞鸣音乐",
     album: "纳西音乐精选",
@@ -1461,8 +1461,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 137
   },
-    {
-    id: 164,
+  {
+    id: 163,
     title: "水风永相伴",
     artist: "",
     album: "纳西音乐精选",
@@ -1470,8 +1470,8 @@ const musicData = [
     cover: "https://wx.qlogo.cn/mmopen/oQ7QIr12iawpBvkMib6C4FOUw6icnLUS3GDypPasdCNTSNeyk0ZyfRMxshgoehicfUKyNCicQkml8nZrBO7ojYxzpPibfUk9Kia1BjR/0",
     duration: 276
   },
-    {
-    id: 165,
+  {
+    id: 164,
     title: "陈四才 - 生肖歌",
     artist: "陈四才",
     album: "纳西音乐精选",
@@ -1480,7 +1480,7 @@ const musicData = [
     duration: 232
   },
   {
-    id: 82,
+    id: 165,
     title: "李承翰 - 回家的小路",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1489,7 +1489,7 @@ const musicData = [
     duration: 313
   },
   {
-    id: 83,
+    id: 166,
     title: "李承翰 - 打跳联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1498,7 +1498,7 @@ const musicData = [
     duration: 367
   },
   {
-    id: 84,
+    id: 167,
     title: "李承翰 - 劳动歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1507,7 +1507,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 85,
+    id: 168,
     title: "李承翰 - 阿卡巴拉麻达咪",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1516,7 +1516,7 @@ const musicData = [
     duration: 170
   },
   {
-    id: 86,
+    id: 169,
     title: "李承翰 - 嘛呢颂",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1525,7 +1525,7 @@ const musicData = [
     duration: 241
   },
   {
-    id: 87,
+    id: 170,
     title: "李承翰 - 犁牛调",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1534,7 +1534,7 @@ const musicData = [
     duration: 189
   },
   {
-    id: 88,
+    id: 171,
     title: "李承翰 - 呀哈哩",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1543,7 +1543,7 @@ const musicData = [
     duration: 146
   },
   {
-    id: 89,
+    id: 172,
     title: "李承翰 - 纳西纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1552,7 +1552,7 @@ const musicData = [
     duration: 164
   },
   {
-    id: 90,
+    id: 173,
     title: "李承翰 - 十里送壮丁",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1561,7 +1561,7 @@ const musicData = [
     duration: 212
   },
   {
-    id: 91,
+    id: 174,
     title: "李承翰＆和慧琼《玉龙恋歌》",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1570,7 +1570,7 @@ const musicData = [
     duration: 393
   },
   {
-    id: 92,
+    id: 175,
     title: "李承翰 - 心上人",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1579,7 +1579,7 @@ const musicData = [
     duration: 159
   },
   {
-    id: 93,
+    id: 176,
     title: "李承翰、和慧琼 - 喜鹤",
     artist: "李承翰、和慧琼",
     album: "纳西音乐精选",
@@ -1588,7 +1588,7 @@ const musicData = [
     duration: 336
   },
   {
-    id: 94,
+    id: 177,
     title: "李承翰 - 相伴调",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1597,7 +1597,7 @@ const musicData = [
     duration: 218
   },
   {
-    id: 95,
+    id: 178,
     title: "李承翰 - 喜庆歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1606,7 +1606,7 @@ const musicData = [
     duration: 242
   },
   {
-    id: 96,
+    id: 179,
     title: "李承翰 - 阿卡巴拉嘛达咪",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1615,7 +1615,7 @@ const musicData = [
     duration: 170
   },
   {
-    id: 97,
+    id: 180,
     title: "李承翰 - 丽水纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1624,7 +1624,7 @@ const musicData = [
     duration: 306
   },
   {
-    id: 98,
+    id: 181,
     title: "李承翰 - 纳西酒歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1633,7 +1633,7 @@ const musicData = [
     duration: 107
   },
   {
-    id: 99,
+    id: 182,
     title: "李承翰＆和慧琼《玉龙恋歌》",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1642,7 +1642,7 @@ const musicData = [
     duration: 393
   },
   {
-    id: 105,
+    id: 183,
     title: "李承翰 - 劳动歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1651,7 +1651,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 106,
+    id: 184,
     title: "李承翰 - 鱼水相会",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1660,7 +1660,7 @@ const musicData = [
     duration: 155
   },
   {
-    id: 108,
+    id: 185,
     title: "李承翰 - 丽水纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1669,7 +1669,7 @@ const musicData = [
     duration: 306
   },
   {
-    id: 109,
+    id: 186,
     title: "李承翰 - 纳西民歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1678,7 +1678,7 @@ const musicData = [
     duration: 228
   },
   {
-    id: 110,
+    id: 187,
     title: "李承翰 - 轮回之恋",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1687,7 +1687,7 @@ const musicData = [
     duration: 248
   },
   {
-    id: 115,
+    id: 188,
     title: "李承翰 - 木天王",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1696,7 +1696,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 116,
+    id: 189,
     title: "李承翰 - 神奇的玉龙山",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1705,7 +1705,7 @@ const musicData = [
     duration: 150
   },
   {
-    id: 119,
+    id: 190,
     title: "三多颂-李承翰",
     artist: "",
     album: "纳西音乐精选",
@@ -1714,7 +1714,7 @@ const musicData = [
     duration: 266
   },
   {
-    id: 120,
+    id: 191,
     title: "美丽的古城（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1723,7 +1723,7 @@ const musicData = [
     duration: 210
   },
   {
-    id: 121,
+    id: 192,
     title: "人狼格 - 纳西情歌",
     artist: "人狼格",
     album: "纳西音乐精选",
@@ -1732,7 +1732,7 @@ const musicData = [
     duration: 162
   },
   {
-    id: 122,
+    id: 193,
     title: "人狼格-流浪一生不回来",
     artist: "",
     album: "纳西音乐精选",
@@ -1741,7 +1741,7 @@ const musicData = [
     duration: 151
   },
   {
-    id: 123,
+    id: 194,
     title: "送小妹（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1750,7 +1750,7 @@ const musicData = [
     duration: 240
   },
   {
-    id: 124,
+    id: 195,
     title: "劳动之歌 - 人狼格",
     artist: "劳动之歌",
     album: "纳西音乐精选",
@@ -1759,7 +1759,7 @@ const musicData = [
     duration: 374
   },
   {
-    id: 125,
+    id: 196,
     title: "人狼格 - 妈妈",
     artist: "人狼格",
     album: "纳西音乐精选",
@@ -1768,7 +1768,7 @@ const musicData = [
     duration: 244
   },
   {
-    id: 126,
+    id: 197,
     title: "爱羞的纳咪（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1777,7 +1777,7 @@ const musicData = [
     duration: 137
   },
   {
-    id: 127,
+    id: 198,
     title: "美丽的古城（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1786,7 +1786,7 @@ const musicData = [
     duration: 210
   },
   {
-    id: 128,
+    id: 199,
     title: "人狼格-玉龙大雪山",
     artist: "",
     album: "纳西音乐精选",
@@ -1795,7 +1795,7 @@ const musicData = [
     duration: 245
   },
   {
-    id: 129,
+    id: 200,
     title: "相伴调（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1803,16 +1803,7 @@ const musicData = [
     cover: "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2YymnF5GrBwZ7NRGiar9g4b7Co46Tr6fauSg9sMPLB7vFDqENuiaFDagT0g/0?wx_fmt=jpeg",
     duration: 218
   }
-
-
-
-
-
-
-
-
-
-  ];
+];
 
 console.log('✅ musicData 加载完成，数量:', musicData.length);
 
