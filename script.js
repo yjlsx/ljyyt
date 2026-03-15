@@ -5,6 +5,42 @@ console.log('🚀 script_fixed.js 开始加载');
 const musicData = [
   {
       id: 1,
+      "title": "赵郑芝 - 故乡谣",
+      "artist": "赵郑芝",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MDU=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NrCAYkYXuqd1OjLa4qTZNmGWIuQiapFCLO1tPsE7z23p6wm9sPlvaCCRcS4B2k3bZPdnbVU9UrWh4EXORhQdo31QxAYm2cdc2M/0?wx_fmt=jpeg",
+      "duration": 252
+    },
+  {
+      id: 2,
+      "title": "金甲劲松 - 无名的歌",
+      "artist": "金甲劲松",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MDM=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OiaKHq5SAeC4icvDibghb4zqYwkLgfIybSes3n452PvQZ8r2SXibZBg3lKUpicTrtFY2sn5syJeP20hIibuDZwTIFXvr9SDklwMRWWo/0?wx_fmt=jpeg",
+      "duration": 201
+    },
+  {
+      id: 3,
+      "title": "和圣福 和丽龙 和丽霞 和雪芹 - 五台之歌",
+      "artist": "和圣福 和丽龙 和丽霞 和雪芹",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NzQ=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NsBgRKarJntvQM8IrSr32QZQTu1ef9xyxNUDLAiaTAreTv6Ozw4u4icEib7Z7aRHEPiciaJEeKZnSAscGrVKwYNIby39piaoEkLANHU/0?wx_fmt=jpeg",
+      "duration": 220
+    },
+  {
+      id: 4,
+      "title": "肖煜光 - 达瓦纳西努2026",
+      "artist": "肖煜光",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NDk=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9AXiaoEDgm0jakstwgVqBg9s2IwsKepeRGV2brFvkkKomB1E60Be3iaVzLXmysBOUqG4PmccjTiawYA/0?wx_fmt=jpeg",
+      "duration": 224
+    },
+  {
+      id: 5,
       "title": "和雪兰 - 吉祥的日子",
       "artist": "和雪兰",
       "album": "纳西音乐精选",
@@ -13,7 +49,7 @@ const musicData = [
       "duration": 245
     },
   {
-      id: 2,
+      id: 6,
       "title": "和锦 - 阿腊古金歌",
       "artist": "和锦",
       "album": "纳西音乐精选",
@@ -22,7 +58,7 @@ const musicData = [
       "duration": 240
     },
   {
-      id: 3,
+      id: 7,
       "title": "习东梅 - 白水台",
       "artist": "习东梅",
       "album": "纳西音乐精选",
@@ -31,7 +67,7 @@ const musicData = [
       "duration": 200
     },
   {
-      id: 4,
+      id: 8,
       "title": "和顺东 - 我的父亲母亲",
       "artist": "和顺东",
       "album": "纳西音乐精选",
@@ -40,7 +76,7 @@ const musicData = [
       "duration": 220
     },
   {
-      id: 5,
+      id: 9,
       title: "和丽霞 - 纳西若",
       artist: "和丽霞",
       album: "纳西音乐精选",
@@ -49,7 +85,7 @@ const musicData = [
       duration: 246
     },
   {
-      id: 6,
+      id: 10,
       title: "阿花蜜、纳西蕾蕾 - 欢聚",
       artist: "阿花蜜、纳西蕾蕾",
       album: "纳西音乐精选",
@@ -58,7 +94,7 @@ const musicData = [
       duration: 216
     },
   {
-      id: 7,
+      id: 11,
       title: "和春艳 - 迎客欢歌",
       artist: "和春艳",
       album: "纳西音乐精选",
@@ -67,7 +103,7 @@ const musicData = [
       duration: 241
     },
   {
-      id: 8,
+      id: 12,
       title: "彩菊 - 孝敬父母",
       artist: "彩菊",
       album: "纳西音乐精选",
@@ -76,7 +112,7 @@ const musicData = [
       duration: 200
     },
   {
-      id: 9,
+      id: 13,
       title: "和锦 - 四时吉祥",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -85,7 +121,7 @@ const musicData = [
       duration: 256
     },
   {
-      id: 10,
+      id: 14,
       title: "天龙 - 纳西欢歌",
       artist: "天龙",
       album: "纳西音乐精选",
@@ -94,7 +130,7 @@ const musicData = [
       duration: 247
     },
   {
-      id: 11,
+      id: 15,
       title: "天龙 - 兄弟情",
       artist: "天龙",
       album: "纳西音乐精选",
@@ -103,7 +139,7 @@ const musicData = [
       duration: 224
     },
   {
-      id: 12,
+      id: 16,
       title: "幸福生活唱不完",
       artist: "涵蜜金组合",
       album: "纳西音乐精选",
@@ -112,7 +148,7 @@ const musicData = [
       duration: 190
     },
   {
-      id: 13,
+      id: 17,
       title: "寒雨 - 牵挂",
       artist: "寒雨",
       album: "纳西音乐精选",
@@ -121,7 +157,7 @@ const musicData = [
       duration: 228
     },
   {
-      id: 14,
+      id: 18,
       title: "和艳 - 欢乐的阿哩哩",
       artist: "和艳",
       album: "纳西音乐精选",
@@ -130,7 +166,7 @@ const musicData = [
       duration: 254
     },
   {
-      id: 15,
+      id: 19,
       title: "啊秋 - 祈望",
       artist: "啊秋",
       album: "纳西音乐精选",
@@ -139,7 +175,7 @@ const musicData = [
       duration: 245
     },
   {
-      id: 16,
+      id: 20,
       title: "和慧琼 - 党情冷么密",
       artist: "和慧琼",
       album: "纳西音乐精选",
@@ -148,7 +184,7 @@ const musicData = [
       duration: 322
     },
   {
-      id: 17,
+      id: 21,
       title: "天龙 - 人生",
       artist: "天龙",
       album: "纳西音乐精选",
@@ -157,7 +193,7 @@ const musicData = [
       duration: 302
     },
   {
-      id: 18,
+      id: 22,
       title: "和文军 - 相伴调",
       artist: "和文军",
       album: "纳西音乐精选",
@@ -166,7 +202,7 @@ const musicData = [
       duration: 297
     },
   {
-      id: 19,
+      id: 23,
       title: "和锦 - 四时吉祥",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -175,7 +211,7 @@ const musicData = [
       duration: 256
     },
   {
-      id: 20,
+      id: 24,
       title: "玉龙雪山的牧童",
       artist: "和楚雄",
       album: "纳西音乐精选",
@@ -184,7 +220,7 @@ const musicData = [
       duration: 266
     },
   {
-      id: 21,
+      id: 25,
       title: "丽江小龙 - 舞动丽江",
       artist: "丽江小龙",
       album: "纳西音乐精选",
@@ -193,7 +229,7 @@ const musicData = [
       duration: 298
     },
   {
-      id: 22,
+      id: 26,
       title: "和雪芹 - 心里的家",
       artist: "和雪芹",
       album: "纳西音乐精选",
@@ -202,7 +238,7 @@ const musicData = [
       duration: 284
     },
   {
-      id: 23,
+      id: 27,
       title: "阿夏丽 - 莫忘恩情",
       artist: "阿夏丽",
       album: "纳西音乐精选",
@@ -211,7 +247,7 @@ const musicData = [
       duration: 233
     },
   {
-      id: 24,
+      id: 28,
       title: "李承翰 - 纳西情歌",
       artist: "李承翰",
       album: "纳西音乐精选",
@@ -220,7 +256,7 @@ const musicData = [
       duration: 163
     },
   {
-      id: 25,
+      id: 29,
       title: "和生辉 - 歌唱长水",
       artist: "和生辉",
       album: "纳西音乐精选",
@@ -229,7 +265,7 @@ const musicData = [
       duration: 265
     },
   {
-      id: 26,
+      id: 30,
       title: "肖煜光 - 达瓦纳西努2025",
       artist: "肖煜光",
       album: "纳西音乐精选",
@@ -238,7 +274,7 @@ const musicData = [
       duration: 229
     },
   {
-      id: 27,
+      id: 31,
       title: "金锁丽泉 - 塔城姑娘美",
       artist: "金锁丽泉",
       album: "纳西音乐精选",
@@ -247,7 +283,7 @@ const musicData = [
       duration: 249
     },
   {
-      id: 28,
+      id: 32,
       title: "和锦 - 百草飘香的地方",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -256,7 +292,7 @@ const musicData = [
       duration: 224
     },
   {
-      id: 29,
+      id: 33,
       title: "庭松 - 盛世欢歌",
       artist: "庭松",
       album: "纳西音乐精选",
@@ -265,7 +301,7 @@ const musicData = [
       duration: 291
     },
   {
-      id: 30,
+      id: 34,
       title: "和瑞智 - 玉龙神韵",
       artist: "和瑞智",
       album: "纳西音乐精选",
@@ -274,7 +310,7 @@ const musicData = [
       duration: 429
     },
   {
-      id: 31,
+      id: 35,
       title: "树润花 - 姿姿好时获",
       artist: "树润花",
       album: "纳西音乐精选",
@@ -283,7 +319,7 @@ const musicData = [
       duration: 217
     },
   {
-      id: 32,
+      id: 36,
       title: "和慧琼、和燕、李九铭、马涛 - 桃园送别调",
       artist: "和慧琼、和燕、李九铭、马涛",
       album: "纳西音乐精选",
@@ -292,7 +328,7 @@ const musicData = [
       duration: 193
     },
   {
-      id: 33,
+      id: 37,
       title: "纳西蕾蕾 - 我愿",
       artist: "纳西蕾蕾",
       album: "纳西音乐精选",
@@ -301,7 +337,7 @@ const musicData = [
       duration: 258
     },
   {
-      id: 34,
+      id: 38,
       title: "纳西蕾蕾 - 我愿",
       artist: "纳西蕾蕾",
       album: "纳西音乐精选",
@@ -310,7 +346,7 @@ const musicData = [
       duration: 258
     },
   {
-      id: 35,
+      id: 39,
       title: "金甲劲松 - 石鼓响天下",
       artist: "金甲劲松",
       album: "纳西音乐精选",
@@ -319,7 +355,7 @@ const musicData = [
       duration: 261
     },
   {
-      id: 36,
+      id: 40,
       title: "阿花蜜 - 相依相守",
       artist: "阿花蜜",
       album: "纳西音乐精选",
@@ -328,7 +364,7 @@ const musicData = [
       duration: 240
     },
   {
-      id: 37,
+      id: 41,
       title: "和善武 - 爸美汝实贺",
       artist: "和善武",
       album: "纳西音乐精选",
@@ -337,7 +373,7 @@ const musicData = [
       duration: 252
     },
   {
-      id: 38,
+      id: 42,
       title: "李承翰 - 纳西新劝世歌",
       artist: "李承翰",
       album: "纳西音乐精选",
@@ -346,7 +382,7 @@ const musicData = [
       duration: 301
     },
   {
-      id: 39,
+      id: 43,
       title: "木贵花 - 愿",
       artist: "木贵花",
       album: "纳西音乐精选",
@@ -355,7 +391,7 @@ const musicData = [
       duration: 308
     },
   {
-      id: 40,
+      id: 44,
       title: "和上钧&阿诛 - 玉龙雪山的故事",
       artist: "和上钧&阿诛",
       album: "纳西音乐精选",
@@ -364,7 +400,7 @@ const musicData = [
       duration: 351
     },
   {
-      id: 41,
+      id: 45,
       title: "达坡玛吉 - 纳西酒歌",
       artist: "达坡玛吉",
       album: "纳西音乐精选",
@@ -373,7 +409,7 @@ const musicData = [
       duration: 161
     },
   {
-      id: 42,
+      id: 46,
       title: "祖先 - 金甲劲松",
       artist: "金甲劲松",
       album: "纳西音乐精选",
@@ -382,7 +418,7 @@ const musicData = [
       duration: 302
     },
   {
-      id: 43,
+      id: 47,
       title: "和文军 - 依恋的家园",
       artist: "和文军",
       album: "纳西音乐精选",
@@ -391,7 +427,7 @@ const musicData = [
       duration: 321
     },
   {
-      id: 44,
+      id: 48,
       title: "和慧琼 - 白云曲",
       artist: "和慧琼",
       album: "纳西音乐精选",
@@ -400,7 +436,7 @@ const musicData = [
       duration: 193
     },
   {
-      id: 45,
+      id: 49,
       title: "丽江阿黑哥 - 相逢三杯酒",
       artist: "丽江阿黑哥",
       album: "纳西音乐精选",
@@ -409,7 +445,7 @@ const musicData = [
       duration: 240
     },
   {
-      id: 46,
+      id: 50,
       title: "纳浫阿福 - 满子周固男",
       artist: "纳浫阿福",
       album: "纳西音乐精选",
@@ -418,7 +454,7 @@ const musicData = [
       duration: 242
     },
   {
-      id: 47,
+      id: 51,
       title: "墨尚七 - 不放手",
       artist: "墨尚七",
       album: "纳西音乐精选",
@@ -427,7 +463,7 @@ const musicData = [
       duration: 253
     },
   {
-      id: 48,
+      id: 52,
       title: "山人行组合 - 三月花开时",
       artist: "山人行组合",
       album: "纳西音乐精选",
@@ -436,7 +472,7 @@ const musicData = [
       duration: 247
     },
   {
-      id: 49,
+      id: 53,
       title: "和丽刚 - 菩捞阿姆",
       artist: "和丽刚",
       album: "纳西音乐精选",
@@ -445,7 +481,7 @@ const musicData = [
       duration: 308
     },
   {
-      id: 50,
+      id: 54,
       title: "和慧琼 - 花落流年",
       artist: "和慧琼",
       album: "纳西音乐精选",
@@ -454,7 +490,7 @@ const musicData = [
       duration: 229
     },
   {
-      id: 51,
+      id: 55,
       title: "阿泉 - 纳西火把节",
       artist: "阿泉",
       album: "纳西音乐精选",
@@ -463,7 +499,7 @@ const musicData = [
       duration: 244
     },
   {
-      id: 52,
+      id: 56,
       title: "和慧琼 - 归期",
       artist: "和慧琼",
       album: "纳西音乐精选",
@@ -472,7 +508,7 @@ const musicData = [
       duration: 242
     },
   {
-      id: 53,
+      id: 57,
       title: "涵蜜金组合 - 摩梭山歌",
       artist: "涵蜜金组合",
       album: "纳西音乐精选",
@@ -481,7 +517,7 @@ const musicData = [
       duration: 294
     },
   {
-      id: 54,
+      id: 58,
       title: "和慧琼 - 阿哩哩花花色",
       artist: "和慧琼",
       album: "纳西音乐精选",
@@ -490,7 +526,7 @@ const musicData = [
       duration: 265
     },
   {
-      id: 55,
+      id: 59,
       title: "涵蜜金组合 - 绿色出行歌",
       artist: "涵蜜金组合",
       album: "纳西音乐精选",
@@ -499,7 +535,7 @@ const musicData = [
       duration: 214
     },
   {
-      id: 56,
+      id: 60,
       title: "李丽芳 - 恩难忘",
       artist: "李丽芳",
       album: "纳西音乐精选",
@@ -508,7 +544,7 @@ const musicData = [
       duration: 308
     },
   {
-      id: 57,
+      id: 61,
       title: "郑旭先 - 纳西潘金妹",
       artist: "郑旭先",
       album: "纳西音乐精选",
@@ -517,7 +553,7 @@ const musicData = [
       duration: 186
     },
   {
-      id: 58,
+      id: 62,
       title: "王瑞香 - 春之歌",
       artist: "王瑞香",
       album: "纳西音乐精选",
@@ -526,7 +562,7 @@ const musicData = [
       duration: 288
     },
   {
-      id: 59,
+      id: 63,
       title: "李丽芳 - 夏之歌",
       artist: "李丽芳",
       album: "纳西音乐精选",
@@ -535,7 +571,7 @@ const musicData = [
       duration: 269
     },
   {
-      id: 60,
+      id: 64,
       title: "杨耀兰 - 秋之歌",
       artist: "杨耀兰",
       album: "纳西音乐精选",
@@ -544,7 +580,7 @@ const musicData = [
       duration: 264
     },
   {
-      id: 61,
+      id: 65,
       title: "郑旭先 - 冬之歌",
       artist: "郑旭先",
       album: "纳西音乐精选",
@@ -553,7 +589,7 @@ const musicData = [
       duration: 229
     },
   {
-      id: 62,
+      id: 66,
       title: "阿福 - 歌颂党情",
       artist: "阿福",
       album: "纳西音乐精选",
@@ -562,7 +598,7 @@ const musicData = [
       duration: 201
     },
   {
-      id: 63,
+      id: 67,
       title: "玉龙山组合 - 欢聚在一起",
       artist: "玉龙山组合",
       album: "纳西音乐精选",
@@ -571,7 +607,7 @@ const musicData = [
       duration: 204
     },
   {
-      id: 64,
+      id: 68,
       title: "和善武、金顺- 鱼水相会",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -580,7 +616,7 @@ const musicData = [
       duration: 181
     },
   {
-      id: 65,
+      id: 69,
       title: "金顺 - 勒巴舞唱腔",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -589,7 +625,7 @@ const musicData = [
       duration: 322
     },
   {
-      id: 66,
+      id: 70,
       title: "金顺 - 劝世歌",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -598,7 +634,7 @@ const musicData = [
       duration: 173
     },
   {
-      id: 67,
+      id: 71,
       title: "金顺 - 兴余花华色",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -607,7 +643,7 @@ const musicData = [
       duration: 279
     },
   {
-      id: 68,
+      id: 72,
       title: "金顺 - 游子的心",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -616,7 +652,7 @@ const musicData = [
       duration: 246
     },
   {
-      id: 69,
+      id: 73,
       title: "金顺- 沧桑的诺言",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -625,7 +661,7 @@ const musicData = [
       duration: 291
     },
   {
-      id: 70,
+      id: 74,
       title: "金顺- 沧桑的诺言",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -634,7 +670,7 @@ const musicData = [
       duration: 291
     },
   {
-      id: 71,
+      id: 75,
       title: "金顺- 次里次姆",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -643,7 +679,7 @@ const musicData = [
       duration: 244
     },
   {
-      id: 72,
+      id: 76,
       title: "金顺- 打跳联唱",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -652,7 +688,7 @@ const musicData = [
       duration: 416
     },
   {
-      id: 73,
+      id: 77,
       title: "金顺- 红叶傲霜",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -661,7 +697,7 @@ const musicData = [
       duration: 330
     },
   {
-      id: 74,
+      id: 78,
       title: "金顺- 回到我身边",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -670,7 +706,7 @@ const musicData = [
       duration: 173
     },
   {
-      id: 75,
+      id: 79,
       title: "金顺- 悄然前行",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -679,7 +715,7 @@ const musicData = [
       duration: 249
     },
   {
-      id: 76,
+      id: 80,
       title: "金顺- 三月百花开",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -688,7 +724,7 @@ const musicData = [
       duration: 217
     },
   {
-      id: 77,
+      id: 81,
       title: "金顺、和秀山 - 塔城纳西民歌",
       artist: "金顺",
       album: "纳西音乐精选",
@@ -697,7 +733,7 @@ const musicData = [
       duration: 223
     },
   {
-      id: 78,
+      id: 82,
       title: "和丽刚 - 姿磋",
       artist: "和丽刚",
       album: "纳西音乐精选",
@@ -706,7 +742,7 @@ const musicData = [
       duration: 320
     },
   {
-    id: 79,
+    id: 83,
     title: "陈四才 - 我是玉龙山上的牧童",
     artist: "陈四才",
     album: "纳西音乐精选",
@@ -715,7 +751,7 @@ const musicData = [
     duration: 266,
   },
   {
-    id: 80,
+    id: 84,
     title: "玉龙山组合、金沙姑娘组合-梦想成真",
     artist: "玉龙山组合、金沙姑娘组合",
     album: "纳西音乐精选",
@@ -724,7 +760,7 @@ const musicData = [
     duration: 232,
   },
   {
-    id: 81,
+    id: 85,
     title: "和春艳 - 迎客欢歌",
     artist: "和春艳",
     album: "纳西音乐精选",
@@ -733,7 +769,7 @@ const musicData = [
     duration: 241,
   },
   {
-    id: 82,
+    id: 86,
     title: "和雪芹 - 心里的家",
     artist: "和雪芹",
     album: "纳西音乐精选",
@@ -742,7 +778,7 @@ const musicData = [
     duration: 284,
   },
   {
-    id: 83,
+    id: 87,
     title: "丽江福铃组合 - 纳西姑娘美",
     artist: "丽江福铃组合",
     album: "纳西音乐精选",
@@ -751,7 +787,7 @@ const musicData = [
     duration: 230,
   },
   {
-    id: 84,
+    id: 88,
     title: "纳浫阿福 - 满子周固男",
     artist: "纳浫阿福",
     album: "纳西音乐精选",
@@ -760,7 +796,7 @@ const musicData = [
     duration: 242,
   },
   {
-    id: 85,
+    id: 89,
     title: "丽江阿黑哥 - 相逢三杯酒",
     artist: "丽江阿黑哥",
     album: "纳西音乐精选",
@@ -769,7 +805,7 @@ const musicData = [
     duration: 240,
   },
   {
-    id: 86,
+    id: 90,
     title: "涵蜜金组合 - 绿色出行歌",
     artist: "涵蜜金组合",
     album: "纳西音乐精选",
@@ -778,7 +814,7 @@ const musicData = [
     duration: 214,
   },
   {
-    id: 87,
+    id: 91,
     title: "涵蜜金组合 - 摩梭山歌",
     artist: "涵蜜金组合",
     album: "纳西音乐精选",
@@ -787,7 +823,7 @@ const musicData = [
     duration: 294,
   },
   {
-    id: 88,
+    id: 92,
     title: "涵蜜金组合 - 摩梭山歌",
     artist: "涵蜜金组合",
     album: "纳西音乐精选",
@@ -796,7 +832,7 @@ const musicData = [
     duration: 294,
   },
   {
-      id: 89,
+      id: 93,
       title: "和善武 - 子本子缘化",
       artist: "和善武",
       album: "纳西音乐精选",
@@ -805,7 +841,7 @@ const musicData = [
       duration: 195
     },
   {
-      id: 90,
+      id: 94,
       title: "和善武 - 高山开杜鹃",
       artist: "和善武",
       album: "纳西音乐精选",
@@ -814,7 +850,7 @@ const musicData = [
       duration: 264
     },
   {
-      id: 91,
+      id: 95,
       title: "和锦 - 喜庆歌",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -823,7 +859,7 @@ const musicData = [
       duration: 222
     },
   {
-      id: 92,
+      id: 96,
       title: "和锦 - 纳西小情歌",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -832,7 +868,7 @@ const musicData = [
       duration: 237
     },
   {
-      id: 93,
+      id: 97,
       title: "和锦 - 大山女儿",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -841,7 +877,7 @@ const musicData = [
       duration: 224
     },
   {
-      id: 94,
+      id: 98,
       title: "和锦 - 纳西酒歌",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -850,7 +886,7 @@ const musicData = [
       duration: 240
     },
   {
-      id: 95,
+      id: 99,
       title: "和锦、和文军 - 阿哥",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -859,7 +895,7 @@ const musicData = [
       duration: 231
     },
   {
-      id: 96,
+      id: 100,
       title: "和锦 - 血脉",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -868,7 +904,7 @@ const musicData = [
       duration: 226
     },
   {
-      id: 97,
+      id: 101,
       title: "和锦 - 啊啧啧 啊啵啵",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -877,7 +913,7 @@ const musicData = [
       duration: 228
     },
   {
-      id: 98,
+      id: 102,
       title: "和锦 - 等待",
       artist: "和锦",
       album: "纳西音乐精选",
@@ -886,7 +922,7 @@ const musicData = [
       duration: 257
     },
   {
-    id: 99,
+    id: 103,
     title: "玉龙山组合 - 丽江好在",
     artist: "玉龙山组合",
     album: "纳西音乐精选",
@@ -895,7 +931,7 @@ const musicData = [
     duration: 281
   },
   {
-    id: 100,
+    id: 104,
     title: "肖煜光 - 塔拉久初",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -904,7 +940,7 @@ const musicData = [
     duration: 283
   },
   {
-    id: 101,
+    id: 105,
     title: "金甲劲松 - 欢聚白水台",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -913,7 +949,7 @@ const musicData = [
     duration: 230
   },
   {
-    id: 102,
+    id: 106,
     title: "雄纳独知 - 心中的神山",
     artist: "雄纳独知",
     album: "纳西音乐精选",
@@ -922,7 +958,7 @@ const musicData = [
     duration: 258
   },
   {
-    id: 103,
+    id: 107,
     title: "和华 - 隔山隔水不隔心",
     artist: "和华",
     album: "纳西音乐精选",
@@ -931,7 +967,7 @@ const musicData = [
     duration: 181
   },
   {
-    id: 104,
+    id: 108,
     title: "肖煜光 - 达瓦纳西努2024",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -940,7 +976,7 @@ const musicData = [
     duration: 206
   },
   {
-    id: 105,
+    id: 109,
     title: "纳浫阿福 - 满子周固男",
     artist: "纳浫阿福",
     album: "纳西音乐精选",
@@ -949,7 +985,7 @@ const musicData = [
     duration: 241
   },
   {
-    id: 106,
+    id: 110,
     title: "小靓 - 心中的丽江",
     artist: "小靓",
     album: "纳西音乐精选",
@@ -958,7 +994,7 @@ const musicData = [
     duration: 250
   },
   {
-    id: 107,
+    id: 111,
     title: "和笑 - 欢声笑语",
     artist: "和笑",
     album: "纳西音乐精选",
@@ -967,7 +1003,7 @@ const musicData = [
     duration: 229
   },
   {
-    id: 108,
+    id: 112,
     title: "涵密金 - 情缘天地",
     artist: "涵密金",
     album: "纳西音乐精选",
@@ -976,7 +1012,7 @@ const musicData = [
     duration: 263
   },
   {
-    id: 109,
+    id: 113,
     title: "肖煜光 - 拉市足球之歌",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -985,7 +1021,7 @@ const musicData = [
     duration: 192
   },
   {
-    id: 110,
+    id: 114,
     title: "和丽龙 - 血肉相依",
     artist: "和丽龙",
     album: "纳西音乐精选",
@@ -994,7 +1030,7 @@ const musicData = [
     duration: 323
   },
   {
-    id: 111,
+    id: 115,
     title: "纳西晓霞 - 心上人",
     artist: "纳西晓霞",
     album: "纳西音乐精选",
@@ -1003,7 +1039,7 @@ const musicData = [
     duration: 227
   },
   {
-    id: 112,
+    id: 116,
     title: "和丽刚 - 不变的誓言",
     artist: "和丽刚",
     album: "纳西音乐精选",
@@ -1012,7 +1048,7 @@ const musicData = [
     duration: 243
   },
   {
-    id: 113,
+    id: 117,
     title: "和文珠 - 思恋",
     artist: "和文珠",
     album: "纳西音乐精选",
@@ -1021,7 +1057,7 @@ const musicData = [
     duration: 254
   },
   {
-    id: 114,
+    id: 118,
     title: "金甲劲松 - 梦中的额吉",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1030,7 +1066,7 @@ const musicData = [
     duration: 246
   },
   {
-    id: 115,
+    id: 119,
     title: "金甲劲松 - 净土",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1039,7 +1075,7 @@ const musicData = [
     duration: 221
   },
   {
-    id: 116,
+    id: 120,
     title: "金甲劲松 - 和合劳",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1048,7 +1084,7 @@ const musicData = [
     duration: 381
   },
   {
-    id: 117,
+    id: 121,
     title: "金甲劲松 - 玉龙王国",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1057,7 +1093,7 @@ const musicData = [
     duration: 220
   },
   {
-    id: 118,
+    id: 122,
     title: "金甲劲松 - 纳西讲聚营",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1066,7 +1102,7 @@ const musicData = [
     duration: 170
   },
   {
-    id: 119,
+    id: 123,
     title: "金甲劲松 - 相伴调",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1075,7 +1111,7 @@ const musicData = [
     duration: 175
   },
   {
-    id: 120,
+    id: 124,
     title: "金甲劲松、和晓霞 - 雪山恋",
     artist: "金甲劲松、和晓霞",
     album: "纳西音乐精选",
@@ -1084,7 +1120,7 @@ const musicData = [
     duration: 156
   },
   {
-    id: 121,
+    id: 125,
     title: "金甲劲松 - 山神之恋",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1093,7 +1129,7 @@ const musicData = [
     duration: 305
   },
   {
-    id: 122,
+    id: 126,
     title: "金甲劲松 - 玉龙王国",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1102,7 +1138,7 @@ const musicData = [
     duration: 220
   },
   {
-    id: 123,
+    id: 127,
     title: "金甲劲松 - 和合劳",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1111,7 +1147,7 @@ const musicData = [
     duration: 381
   },
   {
-    id: 124,
+    id: 128,
     title: "金甲劲松,杨友爱 - 纳西喂么达",
     artist: "金甲劲松,杨友爱",
     album: "纳西音乐精选",
@@ -1120,7 +1156,7 @@ const musicData = [
     duration: 236
   },
   {
-    id: 125,
+    id: 129,
     title: "雪山情歌(达坡玛吉、金甲劲松)",
     artist: "雪山情歌(达坡玛吉",
     album: "纳西音乐精选",
@@ -1129,7 +1165,7 @@ const musicData = [
     duration: 234
   },
   {
-    id: 126,
+    id: 130,
     title: "金甲劲松 - 阳光天堂",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1138,7 +1174,7 @@ const musicData = [
     duration: 159
   },
   {
-    id: 127,
+    id: 131,
     title: "金甲劲松 柯燕 - 靠近梦想",
     artist: "金甲劲松 柯燕",
     album: "纳西音乐精选",
@@ -1147,7 +1183,7 @@ const musicData = [
     duration: 249
   },
   {
-    id: 128,
+    id: 132,
     title: "金甲劲松 - 乐土·家园",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1156,7 +1192,7 @@ const musicData = [
     duration: 297
   },
   {
-    id: 129,
+    id: 133,
     title: "金甲劲松 - 魅力丽江",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1165,7 +1201,7 @@ const musicData = [
     duration: 252
   },
   {
-    id: 130,
+    id: 134,
     title: "金甲劲松 - 蝴蝶小鱼",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1174,7 +1210,7 @@ const musicData = [
     duration: 143
   },
   {
-    id: 131,
+    id: 135,
     title: "金甲劲松 - 大山走出的孩子",
     artist: "金甲劲松",
     album: "纳西音乐精选",
@@ -1183,7 +1219,7 @@ const musicData = [
     duration: 282
   },
   {
-    id: 132,
+    id: 136,
     title: "纳西蕾蕾 - 呀阁雄高么",
     artist: "纳西蕾蕾",
     album: "纳西音乐精选",
@@ -1192,7 +1228,7 @@ const musicData = [
     duration: 216
   },
   {
-    id: 133,
+    id: 137,
     title: "墨尚七 - 不放手",
     artist: "墨尚七",
     album: "纳西音乐精选",
@@ -1201,7 +1237,7 @@ const musicData = [
     duration: 252
   },
   {
-    id: 134,
+    id: 138,
     title: "《农村人居环境》快板(和群星 和善武)",
     artist: "和群星、和善武",
     album: "纳西音乐精选",
@@ -1210,7 +1246,7 @@ const musicData = [
     duration: 231
   },
   {
-    id: 135,
+    id: 139,
     title: "涵蜜金组合 - 阿卡巴拉",
     artist: "涵蜜金组合",
     album: "纳西音乐精选",
@@ -1219,7 +1255,7 @@ const musicData = [
     duration: 356
   },
   {
-    id: 136,
+    id: 140,
     title: "纳西依古堆",
     artist: "",
     album: "纳西音乐精选",
@@ -1228,7 +1264,7 @@ const musicData = [
     duration: 148
   },
   {
-    id: 137,
+    id: 141,
     title: "涵蜜金组合 - 绿色家园",
     artist: "涵蜜金组合",
     album: "纳西音乐精选",
@@ -1237,7 +1273,7 @@ const musicData = [
     duration: 285
   },
   {
-    id: 138,
+    id: 142,
     title: "肖煜光 - 寓言",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -1246,7 +1282,7 @@ const musicData = [
     duration: 222
   },
   {
-    id: 139,
+    id: 143,
     title: "丽江小龙 - 么彪腾辟",
     artist: "丽江小龙",
     album: "纳西音乐精选",
@@ -1255,7 +1291,7 @@ const musicData = [
     duration: 201
   },
   {
-    id: 140,
+    id: 144,
     title: "纳西少爷 - 天雨流芳",
     artist: "纳西少爷",
     album: "纳西音乐精选",
@@ -1264,7 +1300,7 @@ const musicData = [
     duration: 187
   },
   {
-    id: 141,
+    id: 145,
     title: "阿强 - 茸余敢莫标",
     artist: "阿强",
     album: "纳西音乐精选",
@@ -1273,7 +1309,7 @@ const musicData = [
     duration: 251
   },
   {
-    id: 142,
+    id: 146,
     title: "阿强 - 纳西欢歌",
     artist: "阿强",
     album: "纳西音乐精选",
@@ -1282,7 +1318,7 @@ const musicData = [
     duration: 245
   },
   {
-    id: 143,
+    id: 147,
     title: "和永昌 - 苦尽甘来",
     artist: "和永昌",
     album: "纳西音乐精选",
@@ -1291,7 +1327,7 @@ const musicData = [
     duration: 201
   },
   {
-    id: 144,
+    id: 148,
     title: "李承翰 - 今夜独我",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1300,7 +1336,7 @@ const musicData = [
     duration: 244
   },
   {
-    id: 145,
+    id: 149,
     title: "福音音 - 心里话",
     artist: "福音音",
     album: "纳西音乐精选",
@@ -1309,7 +1345,7 @@ const musicData = [
     duration: 212
   },
   {
-    id: 146,
+    id: 150,
     title: "纳西阿贵 - 雷鬼酒歌",
     artist: "纳西阿贵",
     album: "纳西音乐精选",
@@ -1318,7 +1354,7 @@ const musicData = [
     duration: 221
   },
   {
-    id: 147,
+    id: 151,
     title: "玉龙山组合 - 喜庆歌",
     artist: "玉龙山组合",
     album: "纳西音乐精选",
@@ -1327,7 +1363,7 @@ const musicData = [
     duration: 195
   },
   {
-    id: 148,
+    id: 152,
     title: "玉龙山组合 - 革囊渡欢迎您",
     artist: "玉龙山组合",
     album: "纳西音乐精选",
@@ -1336,7 +1372,7 @@ const musicData = [
     duration: 231
   },
   {
-    id: 149,
+    id: 153,
     title: "天龙 - 归来",
     artist: "天龙",
     album: "纳西音乐精选",
@@ -1345,7 +1381,7 @@ const musicData = [
     duration: 268
   },
   {
-    id: 150,
+    id: 154,
     title: "金顺 - 纳西姐弟歌曲联唱",
     artist: "金顺",
     album: "纳西音乐精选",
@@ -1354,7 +1390,7 @@ const musicData = [
     duration: 564
   },
   {
-    id: 151,
+    id: 155,
     title: "和永昌 - 从头再来",
     artist: "和永昌",
     album: "纳西音乐精选",
@@ -1363,7 +1399,7 @@ const musicData = [
     duration: 166
   },
   {
-    id: 152,
+    id: 156,
     title: "和善武 - 刷古刷巴巴",
     artist: "和善武",
     album: "纳西音乐精选",
@@ -1372,7 +1408,7 @@ const musicData = [
     duration: 259
   },
   {
-    id: 153,
+    id: 157,
     title: "和丽元 和慧琼 - 幕布热美",
     artist: "和丽元 和慧琼",
     album: "纳西音乐精选",
@@ -1381,7 +1417,7 @@ const musicData = [
     duration: 357
   },
   {
-    id: 154,
+    id: 158,
     title: "和月圆 和国江 - 姆达蹉",
     artist: "和月圆 和国江",
     album: "纳西音乐精选",
@@ -1390,7 +1426,7 @@ const musicData = [
     duration: 278
   },
   {
-    id: 155,
+    id: 159,
     title: "周萍、甲姆沽·阿平 - 相守到永久",
     artist: "周萍、甲姆沽·阿平",
     album: "纳西音乐精选",
@@ -1399,7 +1435,7 @@ const musicData = [
     duration: 249
   },
   {
-    id: 156,
+    id: 160,
     title: "纳西舞韵-阿贵",
     artist: "阿贵",
     album: "纳西音乐精选",
@@ -1408,7 +1444,7 @@ const musicData = [
     duration: 280
   },
   {
-    id: 157,
+    id: 161,
     title: "和善武、和慧琼 - 唠喂调",
     artist: "和善武、和慧琼",
     album: "纳西音乐精选",
@@ -1417,7 +1453,7 @@ const musicData = [
     duration: 180
   },
   {
-    id: 158,
+    id: 162,
     title: "雪莲君 - 相念三生",
     artist: "雪莲君",
     album: "纳西音乐精选",
@@ -1426,7 +1462,7 @@ const musicData = [
     duration: 252
   },
   {
-    id: 159,
+    id: 163,
     title: "《中秋的约定》阿贵  纳西英子",
     artist: "阿贵、纳西英子",
     album: "纳西音乐精选",
@@ -1435,7 +1471,7 @@ const musicData = [
     duration: 221
   },
   {
-    id: 160,
+    id: 164,
     title: "肖煜光 - 劝善咒.",
     artist: "肖煜光",
     album: "纳西音乐精选",
@@ -1444,7 +1480,7 @@ const musicData = [
     duration: 206
   },
   {
-    id: 161,
+    id: 165,
     title: "纳西口弦 子谷气",
     artist: "",
     album: "纳西音乐精选",
@@ -1453,7 +1489,7 @@ const musicData = [
     duration: 297
   },
   {
-    id: 162,
+    id: 166,
     title: "杨润琴、瑞鸣音乐 - 请喝一碗纳西酒 喂唻喂唻",
     artist: "杨润琴、瑞鸣音乐",
     album: "纳西音乐精选",
@@ -1462,7 +1498,7 @@ const musicData = [
     duration: 137
   },
   {
-    id: 163,
+    id: 167,
     title: "水风永相伴",
     artist: "",
     album: "纳西音乐精选",
@@ -1471,7 +1507,7 @@ const musicData = [
     duration: 276
   },
   {
-    id: 164,
+    id: 168,
     title: "陈四才 - 生肖歌",
     artist: "陈四才",
     album: "纳西音乐精选",
@@ -1480,7 +1516,7 @@ const musicData = [
     duration: 232
   },
   {
-    id: 165,
+    id: 169,
     title: "李承翰 - 回家的小路",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1489,7 +1525,7 @@ const musicData = [
     duration: 313
   },
   {
-    id: 166,
+    id: 170,
     title: "李承翰 - 打跳联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1498,7 +1534,7 @@ const musicData = [
     duration: 367
   },
   {
-    id: 167,
+    id: 171,
     title: "李承翰 - 劳动歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1507,7 +1543,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 168,
+    id: 172,
     title: "李承翰 - 阿卡巴拉麻达咪",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1516,7 +1552,7 @@ const musicData = [
     duration: 170
   },
   {
-    id: 169,
+    id: 173,
     title: "李承翰 - 嘛呢颂",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1525,7 +1561,7 @@ const musicData = [
     duration: 241
   },
   {
-    id: 170,
+    id: 174,
     title: "李承翰 - 犁牛调",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1534,7 +1570,7 @@ const musicData = [
     duration: 189
   },
   {
-    id: 171,
+    id: 175,
     title: "李承翰 - 呀哈哩",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1543,7 +1579,7 @@ const musicData = [
     duration: 146
   },
   {
-    id: 172,
+    id: 176,
     title: "李承翰 - 纳西纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1552,7 +1588,7 @@ const musicData = [
     duration: 164
   },
   {
-    id: 173,
+    id: 177,
     title: "李承翰 - 十里送壮丁",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1561,7 +1597,7 @@ const musicData = [
     duration: 212
   },
   {
-    id: 174,
+    id: 178,
     title: "李承翰＆和慧琼《玉龙恋歌》",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1570,7 +1606,7 @@ const musicData = [
     duration: 393
   },
   {
-    id: 175,
+    id: 179,
     title: "李承翰 - 心上人",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1579,7 +1615,7 @@ const musicData = [
     duration: 159
   },
   {
-    id: 176,
+    id: 180,
     title: "李承翰、和慧琼 - 喜鹤",
     artist: "李承翰、和慧琼",
     album: "纳西音乐精选",
@@ -1588,7 +1624,7 @@ const musicData = [
     duration: 336
   },
   {
-    id: 177,
+    id: 181,
     title: "李承翰 - 相伴调",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1597,7 +1633,7 @@ const musicData = [
     duration: 218
   },
   {
-    id: 178,
+    id: 182,
     title: "李承翰 - 喜庆歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1606,7 +1642,7 @@ const musicData = [
     duration: 242
   },
   {
-    id: 179,
+    id: 183,
     title: "李承翰 - 阿卡巴拉嘛达咪",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1615,7 +1651,7 @@ const musicData = [
     duration: 170
   },
   {
-    id: 180,
+    id: 184,
     title: "李承翰 - 丽水纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1624,7 +1660,7 @@ const musicData = [
     duration: 306
   },
   {
-    id: 181,
+    id: 185,
     title: "李承翰 - 纳西酒歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1633,7 +1669,7 @@ const musicData = [
     duration: 107
   },
   {
-    id: 182,
+    id: 186,
     title: "李承翰＆和慧琼《玉龙恋歌》",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1642,7 +1678,7 @@ const musicData = [
     duration: 393
   },
   {
-    id: 183,
+    id: 187,
     title: "李承翰 - 劳动歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1651,7 +1687,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 184,
+    id: 188,
     title: "李承翰 - 鱼水相会",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1660,7 +1696,7 @@ const musicData = [
     duration: 155
   },
   {
-    id: 185,
+    id: 189,
     title: "李承翰 - 丽水纵歌",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1669,7 +1705,7 @@ const musicData = [
     duration: 306
   },
   {
-    id: 186,
+    id: 190,
     title: "李承翰 - 纳西民歌联唱",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1678,7 +1714,7 @@ const musicData = [
     duration: 228
   },
   {
-    id: 187,
+    id: 191,
     title: "李承翰 - 轮回之恋",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1687,7 +1723,7 @@ const musicData = [
     duration: 248
   },
   {
-    id: 188,
+    id: 192,
     title: "李承翰 - 木天王",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1696,7 +1732,7 @@ const musicData = [
     duration: 372
   },
   {
-    id: 189,
+    id: 193,
     title: "李承翰 - 神奇的玉龙山",
     artist: "李承翰",
     album: "纳西音乐精选",
@@ -1705,7 +1741,7 @@ const musicData = [
     duration: 150
   },
   {
-    id: 190,
+    id: 194,
     title: "三多颂-李承翰",
     artist: "",
     album: "纳西音乐精选",
@@ -1714,7 +1750,7 @@ const musicData = [
     duration: 266
   },
   {
-    id: 191,
+    id: 195,
     title: "美丽的古城（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1723,7 +1759,7 @@ const musicData = [
     duration: 210
   },
   {
-    id: 192,
+    id: 196,
     title: "人狼格 - 纳西情歌",
     artist: "人狼格",
     album: "纳西音乐精选",
@@ -1732,7 +1768,7 @@ const musicData = [
     duration: 162
   },
   {
-    id: 193,
+    id: 197,
     title: "人狼格-流浪一生不回来",
     artist: "",
     album: "纳西音乐精选",
@@ -1741,7 +1777,7 @@ const musicData = [
     duration: 151
   },
   {
-    id: 194,
+    id: 198,
     title: "送小妹（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1750,7 +1786,7 @@ const musicData = [
     duration: 240
   },
   {
-    id: 195,
+    id: 199,
     title: "劳动之歌 - 人狼格",
     artist: "劳动之歌",
     album: "纳西音乐精选",
@@ -1759,7 +1795,7 @@ const musicData = [
     duration: 374
   },
   {
-    id: 196,
+    id: 200,
     title: "人狼格 - 妈妈",
     artist: "人狼格",
     album: "纳西音乐精选",
@@ -1768,7 +1804,7 @@ const musicData = [
     duration: 244
   },
   {
-    id: 197,
+    id: 201,
     title: "爱羞的纳咪（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1777,7 +1813,7 @@ const musicData = [
     duration: 137
   },
   {
-    id: 198,
+    id: 202,
     title: "美丽的古城（人狼格）",
     artist: "",
     album: "纳西音乐精选",
@@ -1786,7 +1822,7 @@ const musicData = [
     duration: 210
   },
   {
-    id: 199,
+    id: 203,
     title: "人狼格-玉龙大雪山",
     artist: "",
     album: "纳西音乐精选",
@@ -1795,7 +1831,7 @@ const musicData = [
     duration: 245
   },
   {
-    id: 200,
+    id: 204,
     title: "相伴调（人狼格）",
     artist: "",
     album: "纳西音乐精选",

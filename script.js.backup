@@ -3,6 +3,43 @@ console.log('🚀 script_fixed.js 开始加载');
 
 // 音乐数据
 const musicData = [
+    {
+      "id": 1,
+      "title": "赵郑芝 - 故乡谣",
+      "artist": "赵郑芝",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MDU=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NrCAYkYXuqd1OjLa4qTZNmGWIuQiapFCLO1tPsE7z23p6wm9sPlvaCCRcS4B2k3bZPdnbVU9UrWh4EXORhQdo31QxAYm2cdc2M/0?wx_fmt=jpeg",
+      "duration": 252
+    },
+    {
+      "id": 2,
+      "title": "金甲劲松 - 无名的歌",
+      "artist": "金甲劲松",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MDM=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OiaKHq5SAeC4icvDibghb4zqYwkLgfIybSes3n452PvQZ8r2SXibZBg3lKUpicTrtFY2sn5syJeP20hIibuDZwTIFXvr9SDklwMRWWo/0?wx_fmt=jpeg",
+      "duration": 201
+    },
+    {
+      "id": 3,
+      "title": "和圣福 和丽龙 和丽霞 和雪芹 - 五台之歌",
+      "artist": "和圣福 和丽龙 和丽霞 和雪芹",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NzQ=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NsBgRKarJntvQM8IrSr32QZQTu1ef9xyxNUDLAiaTAreTv6Ozw4u4icEib7Z7aRHEPiciaJEeKZnSAscGrVKwYNIby39piaoEkLANHU/0?wx_fmt=jpeg",
+      "duration": 220
+    },
+    {
+      "id": 4,
+      "title": "肖煜光 - 达瓦纳西努2026",
+      "artist": "肖煜光",
+      "album": "纳西音乐精选",
+      "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NDk=",
+      "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9AXiaoEDgm0jakstwgVqBg9s2IwsKepeRGV2brFvkkKomB1E60Be3iaVzLXmysBOUqG4PmccjTiawYA/0?wx_fmt=jpeg",
+      "duration": 224
+    },
+
   {
       id: 1,
       "title": "和雪兰 - 吉祥的日子",
