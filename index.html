@@ -8,520 +8,34 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- SEO Meta -->
+  <meta name="description" content="丽江音悦台 - 传承纳西文化，分享民族音乐之美。收录纳西族传统音乐、民歌精选，在线收听高品质民族音乐。">
+  <meta name="keywords" content="纳西族, 丽江, 民族音乐, 纳西音乐, 丽江音悦台, 民歌, 传统音乐">
+  <meta name="author" content="丽江音悦台">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="丽江音悦台 - 纳西族音乐精选">
+  <meta property="og:description" content="传承纳西文化，分享民族音乐之美。收录纳西族传统音乐、民歌精选。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="./images/avatar.jpg">
+  <meta property="og:url" content="https://ljyyt.github.io/">
+
+  <!-- Preconnect to CDN -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://res.wx.qq.com" crossorigin>
+  <link rel="preconnect" href="https://mmbiz.qpic.cn" crossorigin>
+
   <title>丽江音悦台 - 纳西族音乐精选</title>
+  <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="./images/avatar.jpg">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="scroll_to_top.css">
-  <link rel="stylesheet" href="scroll_fix.css">
   <link rel="stylesheet" href="style_mobile.css">
+  <link rel="stylesheet" href="ui_enhancements.css">
+  <link rel="stylesheet" href="dark_mode.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    .nav-tabs .nav-link {
-      color: #495057 !important; /* 强制使用深灰色 */
-      font-weight: 500;
-      padding: 10px 20px;
-    }
-    .nav-tabs .nav-link.active {
-      color: #0d6efd !important; /* 强制使用蓝色 */
-      background-color: #fff !important; /* 确保背景是白色 */
-      font-weight: 600;
-      border-bottom: 3px solid #0d6efd;
-    }
-    .music-card, .video-card {
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .music-card:hover, .video-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-    .music-card.active, .video-card.active {
-      border: 2px solid #0d6efd;
-      background-color: #f8f9fa;
-    }
-    .album-cover {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .bottom-player {
-      background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%);
-      backdrop-filter: blur(10px);
-      padding: 10px 0;
-      z-index: 1000;
-    }
-    .tab-content {
-      min-height: 400px;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 575.98px) {
-      .nav-tabs .nav-link {
-        padding: 0.6rem 1rem;
-        font-size: 0.95rem;
-      }
-      .album-cover {
-        width: 48px;
-        height: 48px;
-      }
-      .bottom-player {
-        padding: 8px 0;
-      }
-    }
-  
-    
-    /* 移动端底部播放器优化 */
-    @media (max-width: 767.98px) {
-      .bottom-player {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 9999 !important;
-      }
-      
-      
-      
-      .nav-link {
-        padding: 0.75rem 1rem;
-      }
-    }
-</style>
-
-  <style>
-    /* 向上火箭按钮 - 内联样式 */
-    .scroll-to-top {
-      position: fixed !important;
-      bottom: 200px !important;
-      right: 30px !important;
-      width: 50px !important;
-      height: 50px !important;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-      color: white !important;
-      border: none !important;
-      border-radius: 50% !important;
-      font-size: 1.5rem !important;
-      cursor: pointer !important;
-      z-index: 2147483647 !important; /* 最大值，确保在最上层 */
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      transition: all 0.3s ease !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-    
-    .scroll-to-top.show {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-    
-    .scroll-to-top:hover {
-      transform: translateY(-5px) !important;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
-    }
-    
-    .scroll-to-top:active {
-      transform: translateY(-2px) !important;
-    }
-  </style>
-
-  
-
-  
-
-  
-
-  <style>
-    /* 导航栏标语样式 */
-    .navbar-brand {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-    }
-    
-    .navbar-brand .d-flex.flex-column {
-      align-items: flex-start !important;
-    }
-    
-    .brand-name {
-      font-size: 1.2rem !important;
-      font-weight: bold !important;
-      color: white !important;
-    }
-    
-    .brand-slogan {
-      font-size: 0.7rem !important;
-      color: rgba(255, 255, 255, 0.8) !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      max-width: 200px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      .navbar-brand {
-        gap: 8px !important;
-      }
-      
-      .brand-name {
-        font-size: 1rem !important;
-      }
-      
-      .brand-slogan {
-        font-size: 0.6rem !important;
-        max-width: 150px !important;
-      }
-    }
-    
-    /* 进一步优化hero-section */
-    
-    
-    
-    
-    
-  </style>
-
-  <style>
-    /* 全局背景 */
-    
-    
-    /* hero-section优化 */
-    
-    
-    
-    
-    /* 内容区域背景 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 10px !important;
-      padding: 20px !important;
-      margin-bottom: 20px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-    }
-  </style>
-
-  <style>
-    /* 全局背景 */
-    
-    
-    /* 背景透明层 */
-    
-    
-    /* hero-section优化 */
-    
-    
-    
-    
-    /* 内容区域背景 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 10px !important;
-      padding: 20px !important;
-      margin-bottom: 20px !important;
-      position: relative !important;
-      z-index: 1 !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-      
-      
-    }
-  </style>
-
-  <style>
-    /* hero-section优化 */
-    
-    
-    
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-    }
-  </style>
-
-  <style>
-    /* 全局背景 */
-    
-    
-    /* 背景透明层 */
-    
-    
-    /* hero-section优化 */
-    
-    
-    
-    
-    /* 内容区域背景 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 10px !important;
-      padding: 20px !important;
-      margin-bottom: 20px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-      
-      
-    }
-  </style>
-
-  <style>
-    /* 全局背景 - 使用hero-section的清晰度 */
-    
-    
-    /* 背景透明层 - 与之前hero-section的清晰度一致 */
-    
-    
-    /* 内容区域背景 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 10px !important;
-      padding: 20px !important;
-      margin-bottom: 20px !important;
-      margin-top: 80px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-      
-      .content-section {
-        margin-top: 70px !important;
-      }
-    }
-  </style>
-
-  <style>
-    /* 全局背景 - 使用头部区域的透明度 */
-    
-    
-    /* 背景透明层 - 与头部区域的透明度一致 */
-    
-    
-    /* 内容区域背景 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 10px !important;
-      padding: 20px !important;
-      margin-bottom: 20px !important;
-      margin-top: 80px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      
-      
-      .content-section {
-        margin-top: 70px !important;
-      }
-    }
-  </style>
-
-  <style>
-    /* 全局背景图：使用头像图片作为底图 */
-    body {
-      background: none !important;
-      background-color: #ffffff !important;
-      min-height: 100vh !important;
-      position: relative !important;
-    }
-    
-    /* 全局背景图：使用 yyt.png */
-    body::before {
-      content: '' !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      background: url('./images/yyt.png') no-repeat center center !important;
-      background-size: cover !important;
-      opacity: 0.2 !important; /* 调整透明度，使其作为底纹存在 */
-      z-index: -1 !important;
-    }
-    
-    /* 导航栏样式统一 */
-    .navbar-brand {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-    }
-    .brand-name { font-size: 1.2rem !important; font-weight: bold !important; color: white !important; }
-    .brand-slogan { font-size: 0.7rem !important; color: rgba(255, 255, 255, 0.8) !important; }
-
-    /* 标语区域再次精简：极致紧凑 */
-    .slogan-container {
-      margin-top: 56px !important;
-      height: 45px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      position: relative !important;
-      z-index: 5 !important;
-      overflow: hidden !important; /* 防止手机溢出 */
-    }
-    
-    .slogan-wrapper {
-      display: flex !important;
-      align-items: center !important;
-      gap: 12px !important;
-      max-width: 100% !important;
-      padding: 0 10px !important;
-    }
-
-    .slogan-line {
-      width: 50px !important;
-      height: 2px !important;
-      background: linear-gradient(90deg, transparent, #d35400, transparent) !important;
-      opacity: 0.6 !important;
-      flex-shrink: 1 !important;
-    }
-
-    .slogan-text {
-      font-size: 1.8rem !important;
-      font-weight: 800 !important;
-      letter-spacing: 4px !important;
-      font-family: "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
-      background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-      text-shadow: 
-        0px 2px 4px rgba(0,0,0,0.3),
-        0px 0px 15px rgba(243, 156, 18, 0.3) !important;
-      white-space: nowrap !important;
-      line-height: 1 !important;
-    }
-
-    /* 手机端适配：标语必须缩放以防溢出 */
-    @media (max-width: 576px) {
-      .slogan-container {
-        height: 35px !important;
-      }
-      .slogan-text {
-        font-size: 1rem !important;
-        letter-spacing: 1px !important;
-      }
-      .slogan-line {
-        width: 20px !important;
-      }
-      .slogan-wrapper {
-        gap: 5px !important;
-      }
-    }
-
-    /* 内容区域顶部间距：极致贴合 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.85) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 15px !important;
-      padding: 20px !important;
-      margin: 5px auto 20px auto !important; /* 只有 5px 的间距 */
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
-      max-width: 1300px !important;
-    }
-    
-    .slogan-wrapper {
-      display: flex !important;
-      align-items: center !important;
-      gap: 15px !important;
-    }
-
-    .slogan-line {
-      width: 60px !important; /* 线条随之加长 */
-      height: 2px !important;
-      background: linear-gradient(90deg, transparent, #1a2a6c, transparent) !important;
-      opacity: 0.4 !important;
-    }
-
-    .slogan-text {
-      font-size: 2rem !important;
-      font-weight: 800 !important;
-      letter-spacing: 6px !important;
-      font-family: "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
-      /* 使用古铜金到琥珀色的渐变，增加对比度 */
-      background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-      /* 增强发光和投影，彻底与背景分离 */
-      text-shadow: 
-        0px 2px 4px rgba(0,0,0,0.3),
-        0px 0px 20px rgba(243, 156, 18, 0.4) !important;
-      white-space: nowrap !important;
-    }
-
-    .slogan-line {
-      width: 60px !important;
-      height: 2px !important;
-      /* 饰线同步改为古铜色渐变 */
-      background: linear-gradient(90deg, transparent, #d35400, transparent) !important;
-      opacity: 0.6 !important;
-    }
-
-    /* 移动端适配 */
-    @media (max-width: 768px) {
-      .slogan-text { font-size: 1.3rem !important; letter-spacing: 2px !important; }
-      .slogan-line { width: 30px !important; }
-    }
-
-    /* 内容区域顶部间距配合 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.85) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 15px !important;
-      padding: 20px !important;
-      margin: 10px auto 20px auto !important; /* 紧贴标语 */
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
-      max-width: 1300px !important;
-    }
-
-    /* 移动端字体自适应 */
-    @media (max-width: 768px) {
-      .slogan-container { height: 100px !important; }
-      .slogan-text { font-size: 1.5rem !important; letter-spacing: 6px !important; }
-    }
-
-    /* 内容区域顶部间距微调 */
-    .content-section {
-      background: rgba(255, 255, 255, 0.85) !important;
-      backdrop-filter: blur(10px) !important;
-      border-radius: 15px !important;
-      padding: 20px !important;
-      margin: 20px auto !important;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
-      max-width: 1300px !important;
-    }
-
-    /* 关于我们和联系我们也要透明感 */
-    .about-section, .contact-section {
-      background: rgba(255, 255, 255, 0.7) !important;
-      backdrop-filter: blur(5px) !important;
-      margin-bottom: 20px !important;
-      border-radius: 15px !important;
-    }
-    
-    /* 移动端优化 */
-    @media (max-width: 768px) {
-      .hero-section { padding: 40px 0 10px 0 !important; }
-    }
-  </style>
 </head>
 <body>
   <!-- 导航栏 -->
@@ -541,6 +55,9 @@
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="ranking.html"><i class="fas fa-trophy me-1"></i>排行榜</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#about">关于我们</a>
@@ -614,14 +131,18 @@
     </div>
   </section>
 
-  <!-- 关于我们上面 -->
+  <!-- 关于我们 -->
   <section id="about" class="about-section bg-light py-5">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-10 text-center">
-          <h3>关于我们</h3>
-          <p>丽江音悦台致力于传承和推广纳西族传统音乐文化，通过现代技术手段让更多人了解和欣赏纳西族独特的音乐艺术。</p>
-          <p>我们的使命是保护和传播纳西族音乐遗产，同时鼓励现代创作，让古老的音乐文化在新时代焕发光彩。</p>
+          <div class="mb-3">
+            <i class="fas fa-music fa-2x" style="color: #667eea; opacity: 0.6;"></i>
+          </div>
+          <h3 class="mb-3">关于我们</h3>
+          <div style="width: 50px; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px; margin: 0 auto 1.5rem;"></div>
+          <p class="text-muted" style="font-size: 1.05rem; line-height: 1.8;">丽江音悦台致力于传承和推广纳西族传统音乐文化，通过现代技术手段让更多人了解和欣赏纳西族独特的音乐艺术。</p>
+          <p class="text-muted" style="font-size: 1.05rem; line-height: 1.8;">我们的使命是保护和传播纳西族音乐遗产，同时鼓励现代创作，让古老的音乐文化在新时代焕发光彩。</p>
         </div>
       </div>
     </div>
@@ -684,110 +205,6 @@
     </div>
   </section>
 
-  <style>
-    .contact-card-minimal {
-      background: rgba(255, 255, 255, 0.95) !important;
-      border-radius: 4px !important;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.05) !important;
-      overflow: hidden;
-      border: 1px solid #f0f0f0 !important;
-    }
-    
-    .minimal-input {
-      background: transparent !important;
-      border: none !important;
-      border-bottom: 1px solid #e0e0e0 !important;
-      border-radius: 0 !important;
-      padding: 10px 0 !important;
-      font-size: 0.95rem !important;
-      box-shadow: none !important;
-      transition: all 0.4s ease !important;
-    }
-    
-    .minimal-input:focus {
-      border-bottom-color: #d35400 !important;
-    }
-    
-    .btn-minimal {
-      background: #333 !important;
-      color: #fff !important;
-      border-radius: 0 !important;
-      padding: 12px 35px !important;
-      font-size: 0.9rem !important;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      transition: all 0.3s ease !important;
-    }
-    
-    .btn-minimal:hover {
-      background: #d35400 !important;
-      color: #fff !important;
-      transform: translateX(5px);
-    }
-
-    /* 修复之前样式冲突 */
-    .contact-section {
-      background: transparent !important;
-      backdrop-filter: none !important;
-    }
-  </style>
-
-  <style>
-    .contact-card {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(15px) !important;
-      border-radius: 30px !important;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
-      border: 1px solid rgba(255,255,255,0.4) !important;
-    }
-    
-    .form-floating > .form-control:focus ~ label,
-    .form-floating > .form-control:not(:placeholder-shown) ~ label {
-      color: #d35400 !important;
-      transform: scale(0.85) translateY(-1rem) translateX(0) !important;
-    }
-    
-    .form-control:focus {
-      border-bottom-color: #d35400 !important;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(211, 84, 0, 0.2) !important;
-      filter: brightness(1.1);
-    }
-    
-    /* 留言提示框样式 */
-    .contact-toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 16px 24px;
-      border-radius: 8px;
-      color: white;
-      font-size: 15px;
-      font-weight: 500;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      z-index: 9999;
-      opacity: 0;
-      transform: translateX(400px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .contact-toast.show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    
-    .contact-toast.toast-success {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .contact-toast.toast-error {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    }
-  </style>
-
   <!-- 页脚 -->
   <footer class="bg-dark text-white py-4">
     <div class="container text-center">
@@ -796,7 +213,6 @@
     </div>
   </footer>
 
-  <!-- 音频播放器 -->
   <audio id="audio-player"></audio>
 
   <!-- 底部悬浮播放器 -->
@@ -841,31 +257,13 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- 视频数据 -->
   <script src="videos/video_data.js"></script>
-  
-  <!-- 主脚本 -->
-  <!-- 播放器状态管理 -->
   <script src='player_state.js'></script>
-
   <script src="script.js"></script>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  <!-- 邮件发送所需的脚本 -->
+  <script src="player_enhanced.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script type="text/javascript">
+  <script>
     (function(){
       emailjs.init("ojiQsRL4dJSKmRPkx");
     })();

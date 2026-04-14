@@ -26,81 +26,77 @@ body {
    ============================================ */
 @media (max-width: 575.98px) {
   
-  /* === 底部播放器布局 - 移动端垂直布局（进度条移到下方）=== */
+  /* === 底部播放器布局 - 移动端垂直布局 === */
   .bottom-player {
-    padding: 8px 0 !important;
-    min-height: 110px !important; /* 增加高度以容纳下方进度条 */
-    background: linear-gradient(180deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%) !important;
+    padding: 8px 0;
+    min-height: 110px;
   }
   
   .bottom-player .container {
-    padding: 0 10px !important;
+    padding: 0 10px;
   }
   
-  /* 播放器主容器 - 更加紧凑的布局 */
   .bottom-player > .container > .d-flex {
-    flex-direction: row !important; /* 改回横向布局 */
-    flex-wrap: wrap !important;   /* 允许换行以容纳进度条 */
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 0 !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
   }
   
   /* 左侧：封面和标题信息 */
   .bottom-player .current-track-info {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    flex: 1 !important; /* 占据可用空间 */
-    margin: 0 !important;
-    padding: 0 5px !important;
-    min-width: 0 !important;
-    width: auto !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    margin: 0;
+    padding: 0 5px;
+    min-width: 0;
+    width: auto;
   }
   
-  /* 封面样式 - 增大尺寸并确保对齐 */
   .bottom-player .current-track-info img {
-    display: block !important;
-    width: 60px !important; 
-    height: 60px !important;
-    border-radius: 6px !important;
-    margin-right: 10px !important;
-    object-fit: cover !important;
-    flex: 0 0 auto !important;
+    display: block;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    margin-right: 10px;
+    object-fit: cover;
+    flex: 0 0 auto;
   }
   
-  /* 歌曲信息容器 */
   .bottom-player .current-track-info > div {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    flex: 1 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
     min-width: 0;
     overflow: hidden;
-    align-items: center !important;
+    align-items: center;
   }
   
   /* 歌曲标题 - 长标题滚动效果 */
   .bottom-player .current-track-info h6 {
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    color: #fff !important;
-    text-align: center !important;
-    width: 100% !important;
-    position: relative !important;
-    display: block !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    display: block;
   }
 
   .bottom-player .current-track-info h6 span {
-    display: inline-block !important;
-    padding-left: 100% !important;
-    animation: marquee 10s linear infinite !important;
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 10s linear infinite;
   }
 
   @keyframes marquee {
@@ -110,238 +106,174 @@ body {
 
   /* 歌手信息 */
   .bottom-player .current-track-info small {
-    font-size: 0.75rem !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    text-align: center !important;
-    width: 100% !important;
+    font-size: 0.75rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    width: 100%;
   }
   
-  /* 中间：播放控制按钮 */
+  /* 播放控制按钮 */
   .bottom-player .player-controls {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    gap: 10px !important;
-    margin: 0 !important;
-    padding: 0 5px !important;
-    flex: 0 0 auto !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0;
+    padding: 0 5px;
+    flex: 0 0 auto;
   }
   
-  /* 播放/暂停按钮稍微大一点 */
   .bottom-player #play-btn {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    font-size: 1rem !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 1rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  /* 上一首/下一首按钮 */
   .bottom-player #prev-btn,
   .bottom-player #next-btn {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 0.8rem !important;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
   }
   
-  /* 进度条容器 - 移动端放在底部 */
+  /* 进度条容器 - 放在底部 */
   .bottom-player .progress-container {
-    width: 100% !important;
-    margin-top: 5px !important;
-    order: 3 !important; /* 确保进度条在最后 */
-  /* 列表卡片在移动端每行显示两个 */
-  #music-list > .col-md-6,
-  #video-list > .col-md-6 {
-    width: 50% !important;
-    padding: 0 5px !important;
+    width: 100%;
+    margin-top: 5px;
+    order: 3;
   }
-  
-  .music-card, .video-card {
-    margin-bottom: 10px !important;
-  }
-  
-  .music-card .album-cover {
-    width: 50px !important;
-    height: 50px !important;
-  }
-  
-  .video-card .card-img-top {
-    height: 120px !important;
-  }
-}
 
   .bottom-player .progress-container .d-flex {
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 5px !important;
-    width: 100% !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
   }
   
   .bottom-player .progress {
-    height: 4px !important;
-    border-radius: 2px !important;
-    background: rgba(255,255,255, 0.3) !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-    cursor: pointer !important;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255, 0.3);
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
   }
   
   .bottom-player .progress-bar {
-    background: #fff !important;
+    background: #fff;
   }
   
   .bottom-player #current-time,
   .bottom-player #total-time {
-    font-size: 0.65rem !important;
-    min-width: 30px !important;
-    color: rgba(255,255,255, 0.9) !important;
-    font-weight: 500 !important;
-    flex: 0 0 auto !important;
+    font-size: 0.65rem;
+    min-width: 30px;
+    color: rgba(255,255,255, 0.9);
+    font-weight: 500;
+    flex: 0 0 auto;
+  }
+
+  /* 列表卡片每行两个 */
+  #music-list > .col-md-6,
+  #video-list > .col-md-6 {
+    width: 50%;
+    padding: 0 5px;
   }
   
-  /* 隐藏音量控制 */
-  .bottom-player .volume-control {
-    display: none !important;
+  .music-card, .video-card {
+    margin-bottom: 10px;
   }
   
+  .music-card .album-cover {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .video-card .card-img-top {
+    height: 120px;
+  }
+
   /* 按钮样式优化 */
   .bottom-player .btn-outline-light {
-    border-radius: 50% !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.6) !important;
-    background: transparent !important;
-    color: #fff !important;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    color: #fff;
   }
   
   .bottom-player .btn-light {
-    background: #fff !important;
-    color: #667eea !important;
-    border: none !important;
+    background: #fff;
+    color: #667eea;
+    border: none;
   }
 
-  /* 分页适配手机端 */
+  /* 分页适配 */
   .pagination-container {
-    gap: 5px !important;
-    margin-top: 20px !important;
-    justify-content: center !important;
+    gap: 5px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  /* 底部播放器新增按钮适配 */
+  .bottom-player .player-controls {
+    gap: 0 !important;
+    flex-wrap: nowrap !important;
+  }
+  .bottom-player #btn-mode,
+  .bottom-player #btn-fav {
+    padding: 2px 5px !important;
+    font-size: 0.6rem !important;
+    margin: 0 !important;
+    min-width: 24px;
+    height: 24px;
+  }
+  /* 移动端隐藏分享和播放列表按钮（节省空间） */
+  .bottom-player #btn-share,
+  .bottom-player #btn-list,
+  .bottom-player #btn-speed {
+    display: none !important;
   }
 
   .page-btn {
-    min-width: 32px !important;
-    height: 32px !important;
-    padding: 0 !important;
-    font-size: 0.75rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .pagination-container input {
-    width: 45px !important;
-    height: 32px !important;
-    font-size: 0.75rem !important;
-    padding: 0 4px !important;
-    text-align: center !important;
+    width: 45px;
+    height: 32px;
+    font-size: 0.75rem;
+    padding: 0 4px;
+    text-align: center;
   }
 
   .pagination-container .btn-primary {
-    height: 32px !important;
-    padding: 0 8px !important;
-    font-size: 0.75rem !important;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 0.75rem;
   }
-}
-
-
-
-/* ============================================
-   向上火箭按钮 - 全局样式
-   ============================================ */
-.scroll-to-top {
-  position: fixed !important;
-  bottom: 90px !important;
-  right: 20px !important;
-  width: 45px !important;
-  height: 45px !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 50% !important;
-  font-size: 1.2rem !important;
-  cursor: pointer !important;
-  z-index: 9998 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: all 0.3s ease !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.scroll-to-top.show {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.scroll-to-top:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
-}
-
-.scroll-to-top:active {
-  transform: translateY(-1px) !important;
-}
-
-
-Y(-1px) !important;
-}
-d: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 50% !important;
-  font-size: 1.2rem !important;
-  cursor: pointer !important;
-  z-index: 9998 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: all 0.3s ease !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.scroll-to-top.show {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.scroll-to-top:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
-}
-
-.scroll-to-top:active {
-  transform: translateY(-1px) !important;
-}
-
-
-Y(-1px) !important;
 }
