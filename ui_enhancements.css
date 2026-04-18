@@ -320,11 +320,52 @@ body::before {
   transform: scale(1.08);
 }
 
-/* 播放时封面旋转 */
-.bottom-player .current-track-info img.playing {
+/* 播放时封面旋转（仅播放页，首页不旋转） */
+.music-player-page .bottom-player .current-track-info img.playing {
   animation: spin-cover 5s linear infinite;
   border-radius: 50% !important;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+/* === 底部播放栏收起/展开 === */
+
+/* toggle 在 body 里，position: fixed，不受播放栏 pointer-events 影响 */
+#bottom-player-toggle {
+  position: fixed;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.32);
+  border-radius: 999px 999px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1061;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 10px;
+  transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  line-height: 1;
+  padding: 0;
+  backdrop-filter: blur(10px);
+}
+
+#bottom-player-toggle:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* 收起时内容全部隐藏 */
+.bottom-player-collapsed .container {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.bottom-player:not(.bottom-player-collapsed) .container {
+  opacity: 1;
+  transition: opacity 0.2s 0.15s;
 }
 
 /* 进度条发光 */

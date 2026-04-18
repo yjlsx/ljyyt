@@ -3,7 +3,8 @@
 <head>
   <meta name="referrer" content="no-referrer">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#667eea">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
@@ -20,6 +21,7 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="./images/avatar.jpg">
   <meta property="og:url" content="https://ljyyt.github.io/">
+  <link rel="canonical" href="https://ljyyt.github.io/">
 
   <!-- Preconnect to CDN -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -54,7 +56,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="#" onclick="scrollToTop(); return false;">首页</a>
+              <a class="nav-link active" id="home-link" href="#">首页</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="ranking.html"><i class="fas fa-trophy me-1"></i>排行榜</a>
@@ -68,7 +70,7 @@
           </ul>
           <!-- 搜索栏 -->
           <form class="d-flex" id="search-form">
-            <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索">
+            <input class="form-control me-2" type="search" id="search-input" placeholder="搜索音乐..." aria-label="搜索音乐" autocomplete="off">
             <button class="btn btn-outline-light" type="submit">
               <i class="fas fa-search"></i>
             </button>
@@ -176,17 +178,17 @@
                   
                   <form id="contactForm">
                     <div class="mb-4">
-                      <label class="form-label small text-uppercase fw-bold opacity-50">您的称呼</label>
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="nickname">您的称呼</label>
                       <input type="text" class="form-control minimal-input" id="nickname" name="nickname" required>
                     </div>
                     
                     <div class="mb-4">
-                      <label class="form-label small text-uppercase fw-bold opacity-50">您的邮箱</label>
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="email">您的邮箱</label>
                       <input type="email" class="form-control minimal-input" id="email" name="email" required>
                     </div>
                     
                     <div class="mb-5">
-                      <label class="form-label small text-uppercase fw-bold opacity-50">留言内容</label>
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="message">留言内容</label>
                       <textarea class="form-control minimal-input" id="message" name="message" rows="3" required></textarea>
                     </div>
                     
@@ -223,25 +225,25 @@
         <div class="current-track-info d-flex align-items-center flex-grow-1 me-3">
           <img id="current-cover" src="./images/avatar.jpg" alt="专辑封面" class="rounded me-2" width="50" height="50">
           <div>
-            <h6 id="current-title" class="mb-0">请选择一首歌曲</h6>
+            <h6 id="current-title" class="mb-0" aria-live="polite">请选择一首歌曲</h6>
             <small id="current-artist" class="text-white-50">-</small>
           </div>
         </div>
         
         <!-- 播放控制 -->
         <div class="player-controls d-flex align-items-center me-3">
-          <button id="prev-btn" class="btn btn-outline-light btn-sm me-2"><i class="fas fa-step-backward"></i></button>
-          <button id="play-btn" class="btn btn-light rounded-circle" style="width: 40px; height: 40px;">
+          <button id="prev-btn" class="btn btn-outline-light btn-sm me-2" aria-label="上一首"><i class="fas fa-step-backward"></i></button>
+          <button id="play-btn" class="btn btn-light rounded-circle" style="width: 40px; height: 40px;" aria-label="播放或暂停">
             <i class="fas fa-play text-primary"></i>
           </button>
-          <button id="next-btn" class="btn btn-outline-light btn-sm ms-2"><i class="fas fa-step-forward"></i></button>
+          <button id="next-btn" class="btn btn-outline-light btn-sm ms-2" aria-label="下一首"><i class="fas fa-step-forward"></i></button>
         </div>
         
         <!-- 进度条和时间 -->
         <div class="progress-container flex-grow-1 me-3">
           <div class="d-flex align-items-center">
             <span id="current-time" class="text-white-50 me-2" style="font-size: 0.8rem;">0:00</span>
-            <div id="progress-container" class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.3); border-radius: 3px; cursor: pointer;">
+            <div id="progress-container" class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.3); border-radius: 3px; cursor: pointer;" role="slider" aria-label="播放进度">
               <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%; background: #fff; height: 100%; transition: width 0.1s linear;"></div>
             </div>
             <span id="total-time" class="text-white-50 ms-2" style="font-size: 0.8rem;">0:00</span>
@@ -270,7 +272,7 @@
   </script>
   
   <!-- 向上火箭按钮 -->
-  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
+  <button id="scrollToTopBtn" class="scroll-to-top" type="button" aria-label="回到顶部">
     <i class="fas fa-rocket"></i>
   </button>
   
@@ -353,12 +355,16 @@
       log('滚动事件监听器已添加');
       
       // 为首页链接添加点击事件
-      var homeLink = document.querySelector('.nav-link.active[href="#"]');
+      var homeLink = document.getElementById('home-link');
       if (homeLink) {
         homeLink.addEventListener('click', function(e) {
           e.preventDefault();
           scrollToTop();
         });
+      }
+
+      if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', scrollToTop);
       }
       
       // 为头像添加点击事件
@@ -381,9 +387,9 @@
           e.preventDefault(); // 阻止默认提交行为
           
           // 获取表单数据
-          const nickname = document.getElementById('nickname').value;
-          const email = document.getElementById('email').value;
-          const message = document.getElementById('message').value;
+          const nickname = document.getElementById('nickname').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const message = document.getElementById('message').value.trim();
           
           // 验证必填字段
           if (!nickname || !email || !message) {
@@ -443,6 +449,13 @@
       submitBtn.textContent = '发送中...';
       submitBtn.disabled = true;
       
+      if (typeof emailjs === 'undefined') {
+        showToast('邮件服务暂时不可用，请稍后重试。', 'error');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+
       // 邮件模板参数
       const templateParams = {
         from_name: nickname,

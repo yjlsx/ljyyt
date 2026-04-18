@@ -28,6 +28,7 @@ body {
   padding-bottom: 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ===== 导航栏 ===== */
@@ -274,6 +275,73 @@ body.dark-mode .artist-link:hover { color: #8b9cf7; }
   right: 8px;
   left: 0;
   width: calc(100% - 8px);
+  transition: transform 0.28s ease, bottom 0.28s ease, box-shadow 0.28s ease, opacity 0.28s ease;
+}
+
+.bottom-player.bottom-player-linkable {
+  cursor: pointer;
+}
+
+.bottom-player.bottom-player-linkable .player-controls,
+.bottom-player.bottom-player-linkable .progress-container,
+.bottom-player.bottom-player-linkable .volume-control {
+  cursor: default;
+}
+
+.bottom-player.bottom-player-collapsed {
+  transform: translateY(calc(100% - 18px)) !important;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+}
+.bottom-player-layout-player .bottom-player.bottom-player-collapsed {
+  transform: translate(-50%, calc(100% - 18px)) !important;
+}
+.bottom-player.bottom-player-collapsed:hover {
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.3);
+}
+
+#bottom-player-toggle {
+  position: fixed;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 20px;
+  border-radius: 999px 999px 0 0;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  z-index: 1061;
+  transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+#bottom-player-toggle:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+#bottom-player-toggle i {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.bottom-player.bottom-player-collapsed .current-track-info,
+.bottom-player.bottom-player-collapsed .player-controls,
+.bottom-player.bottom-player-collapsed .progress-container,
+.bottom-player.bottom-player-collapsed .volume-control,
+.bottom-player.bottom-player-collapsed #btn-layout,
+.bottom-player.bottom-player-collapsed #btn-list,
+.bottom-player.bottom-player-collapsed #btn-speed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-player.bottom-player-collapsed #btn-collapse {
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .bottom-player .current-track-info img {
@@ -341,6 +409,136 @@ body.dark-mode .artist-link:hover { color: #8b9cf7; }
   height: 100%;
   min-width: 2px;
 }
+
+body.bottom-player-layout-player .bottom-player {
+  left: 50% !important;
+  right: auto !important;
+  width: min(calc(100vw - 32px), 920px) !important;
+  transform: translateX(-50%) !important;
+  bottom: 12px !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(140deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)),
+    radial-gradient(circle at 20% 25%, rgba(88,166,255,0.08), transparent 30%),
+    radial-gradient(circle at 75% 20%, rgba(63,185,80,0.06), transparent 28%),
+    radial-gradient(circle at 50% 85%, rgba(139,92,246,0.06), transparent 32%),
+    linear-gradient(180deg, rgba(13, 17, 23, 0.96), rgba(22, 27, 34, 0.94)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+  padding: 12px 0;
+  z-index: 1200;
+}
+
+body.bottom-player-layout-player .bottom-player.bottom-player-collapsed {
+  transform: translate(-50%, calc(100% - 18px)) !important;
+}
+body.music-player-page.bottom-player-layout-player .bottom-player.bottom-player-collapsed {
+  transform: translate(-50%, calc(100% - 18px)) !important;
+}
+
+body.bottom-player-layout-player .bottom-player > .container {
+  padding: 0 18px;
+}
+
+body.bottom-player-layout-player .bottom-player > .container > .d-flex {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+
+body.bottom-player-layout-player .bottom-player .current-track-info {
+  flex: 1 1 280px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.bottom-player-layout-player .bottom-player .current-track-info > div {
+  min-width: 0;
+  overflow: hidden;
+  align-items: flex-start;
+}
+
+body.bottom-player-layout-player .bottom-player .current-track-info h6,
+body.bottom-player-layout-player .bottom-player .current-track-info small {
+  width: 100%;
+  text-align: left !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.bottom-player-layout-player .bottom-player .player-controls {
+  flex: 0 0 auto !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+body.bottom-player-layout-player .bottom-player .progress-container {
+  flex: 1 1 360px !important;
+  width: auto !important;
+  margin: 0 !important;
+  order: 0 !important;
+}
+
+body.bottom-player-layout-player .bottom-player .volume-control {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  margin: 0 !important;
+}
+
+body.bottom-player-layout-player .bottom-player.bottom-player-linkable,
+body.bottom-player-layout-player .bottom-player.bottom-player-linkable .current-track-info {
+  cursor: default;
+}
+
+body.bottom-player-layout-player .bottom-player .current-track-info img {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px !important;
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.bottom-player-layout-player .bottom-player .btn-outline-light {
+  color: #f8fafc;
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+}
+
+body.bottom-player-layout-player .bottom-player .btn-outline-light:hover {
+  background: rgba(88,166,255,0.16);
+  border-color: rgba(88,166,255,0.24);
+}
+
+body.bottom-player-layout-player .bottom-player #play-btn {
+  background: linear-gradient(135deg, rgba(88,166,255,0.95), rgba(139,92,246,0.9));
+  color: #fff;
+}
+
+body.bottom-player-layout-player .bottom-player #play-btn i {
+  color: #fff !important;
+}
+
+body.bottom-player-layout-player .bottom-player #progress-container {
+  background: rgba(255,255,255,0.14);
+}
+
+body.bottom-player-layout-player .bottom-player #progress-bar {
+  background: linear-gradient(90deg, #7dd3fc 0%, #3fb950 100%);
+}
+
+body.bottom-player-layout-player .bottom-player #btn-speed {
+  display: none !important;
+}
+
+/* 播放列表按钮和分享按钮始终显示，仅隐藏速度按钮 */
 
 /* 音乐图标 */
 .card-body .fa-music {
@@ -467,4 +665,17 @@ body.dark-mode .artist-link:hover { color: #8b9cf7; }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* 封面旋转动画（播放中） */
+@keyframes spin-cover {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.bottom-player #current-cover.is-playing {
+  animation: spin-cover 8s linear infinite;
+  border-radius: 50% !important;
+}
+.bottom-player #current-cover {
+  transition: border-radius 0.4s ease;
 }

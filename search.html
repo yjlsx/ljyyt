@@ -367,6 +367,30 @@
       return (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
     }
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function buildArtistLinksHtml(artistValue) {
+      var names = (typeof splitArtistNames === 'function')
+        ? splitArtistNames(artistValue)
+        : String(artistValue || '').split(/[、，,\s]+/).filter(Boolean);
+
+      if (!names.length) {
+        return escapeHtml(String(artistValue || '未知艺术家').trim() || '未知艺术家');
+      }
+
+      return names.map(function(name) {
+        var safeName = escapeHtml(name);
+        return '<a href="artist.html?name=' + encodeURIComponent(name) + '" class="artist-link" onclick="event.stopPropagation()">' + safeName + '</a>';
+      }).join('、');
+    }
+
     // 搜索函数
     function search(query) {
       query = query.toLowerCase().trim();
@@ -431,7 +455,7 @@
             '<div class="flex-grow-1 overflow-hidden">' +
             '<h6 class="card-title mb-1 text-truncate" title="' + track.title + '">' + track.title + '</h6>' +
             '<div class="d-flex align-items-center">' +
-            '<p class="card-text text-muted mb-0 small text-truncate me-2" title="' + track.artist + '">' + track.artist + '</p>' +
+            '<p class="card-text text-muted mb-0 small text-truncate me-2" title="' + track.artist + '">' + buildArtistLinksHtml(track.artist) + '</p>' +
             '<small class="text-muted track-duration">' + formatTime(track.duration) + '</small>' +
             '</div></div>' +
             '<i class="fas fa-music text-primary ms-2 card-music-icon"></i>' +
@@ -468,7 +492,7 @@
             '</div></div></div>' +
             '<div class="p-3">' +
             '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-            '<p class="card-text text-muted mb-0 small">' + track.artist + '</p>' +
+            '<p class="card-text text-muted mb-0 small">' + buildArtistLinksHtml(track.artist) + '</p>' +
             '</div></div></div>';
         });
         videoContainer.innerHTML = videoHtml;
@@ -521,7 +545,11 @@
 
       // 更新底部播放器UI
       document.getElementById('current-title').textContent = track.title;
-      document.getElementById('current-artist').textContent = track.artist;
+      if (typeof setArtistElementContent === 'function') {
+        setArtistElementContent(document.getElementById('current-artist'), track.artist, false);
+      } else {
+        document.getElementById('current-artist').textContent = track.artist;
+      }
       document.getElementById('current-cover').src = track.cover;
 
       // 检查是否同一首歌
@@ -608,7 +636,11 @@
             if (trackIndex !== -1) {
               currentTrackIndex = trackIndex;
               document.getElementById('current-title').textContent = savedState.trackData.title;
-              document.getElementById('current-artist').textContent = savedState.trackData.artist;
+              if (typeof setArtistElementContent === 'function') {
+                setArtistElementContent(document.getElementById('current-artist'), savedState.trackData.artist, false);
+              } else {
+                document.getElementById('current-artist').textContent = savedState.trackData.artist;
+              }
               document.getElementById('current-cover').src = savedState.trackData.cover;
               audioPlayer.src = savedState.trackData.src;
 

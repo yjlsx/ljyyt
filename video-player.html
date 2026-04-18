@@ -3,7 +3,8 @@
 <head>
   <meta name="referrer" content="no-referrer">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#667eea">
 
   <!-- SEO Meta -->
   <meta name="description" content="丽江音悦台 - 纳西族音乐视频播放器">
@@ -24,20 +25,34 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body {
-      background: url('./images/yyt.png') no-referrer center center fixed !important;
-      background-size: cover !important;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2) !important;
       padding-top: 70px;
       min-height: 100vh;
+      position: relative;
     }
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, rgba(245,247,250,0.88), rgba(195,207,226,0.88));
-      z-index: -1;
+      background: linear-gradient(135deg, rgba(245,247,250,0.9), rgba(195,207,226,0.88));
+      z-index: -2;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('./images/yyt.png') center center / cover no-repeat;
+      opacity: 0.18;
+      z-index: -3;
+      pointer-events: none;
+      transform: translateZ(0);
     }
     body.dark-mode::before {
-      background: linear-gradient(135deg, rgba(10,10,20,0.92), rgba(15,15,30,0.92));
+      background: linear-gradient(135deg, rgba(10,10,20,0.94), rgba(15,15,30,0.92));
+    }
+    body.dark-mode::after {
+      opacity: 0.12;
+      filter: saturate(0.85) brightness(0.7);
     }
 
     /* 导航栏 */
@@ -210,6 +225,7 @@
     /* 手机端 (Responsive) 深度适配核心代码 */
     /* ====================================================== */
     @media (max-width: 991.98px) {
+      body::after { display: none; }
       .player-main-layout { padding: 10px; }
       
       /* 手机端左右留白缩小到 15px，防止视频太小 */
@@ -229,6 +245,8 @@
       .brand-slogan { display: none; } /* 极窄屏隐藏小标语 */
       .video-info h2 { font-size: 1.1rem; }
       .meta-item { font-size: 0.85rem; }
+      .video-wrapper,
+      .related-videos { backdrop-filter: none; }
     }
     
     /* 自定义播放器控件样式 */
@@ -617,6 +635,36 @@
       return min + ':' + (sec < 10 ? '0' : '') + sec;
     }
 
+    function splitArtistNamesLocal(value) {
+      return String(value || '')
+        .split(/[、，,\s]+/)
+        .map(function(name) { return name.trim(); })
+        .filter(Boolean);
+    }
+
+    function renderArtistLinksLocal(element, artistValue) {
+      if (!element) return;
+
+      var names = splitArtistNamesLocal(artistValue);
+      element.innerHTML = '';
+
+      if (!names.length) {
+        element.textContent = String(artistValue || '未知艺术家').trim() || '未知艺术家';
+        return;
+      }
+
+      names.forEach(function(name, index) {
+        if (index > 0) {
+          element.appendChild(document.createTextNode('、'));
+        }
+        var link = document.createElement('a');
+        link.href = 'artist.html?name=' + encodeURIComponent(name);
+        link.className = 'artist-link';
+        link.textContent = name;
+        element.appendChild(link);
+      });
+    }
+
     function updateProgress() {
       const video = document.getElementById('customPlayer');
       const progress = document.getElementById('progress');
@@ -887,7 +935,7 @@
       
       document.title = video.title + " - 丽江音悦台";
       document.getElementById('videoTitle').innerText = video.title;
-      document.getElementById('videoArtist').innerText = video.artist;
+      renderArtistLinksLocal(document.getElementById('videoArtist'), video.artist);
       document.getElementById('videoAlbum').innerText = video.album || '默认专辑';
       document.getElementById('videoDescription').innerText = video.description || '暂无描述';
     }
@@ -907,7 +955,7 @@
             <img src="${v.cover}" class="w-100" style="height:110px; object-fit:cover;" loading="lazy" decoding="async">
             <div class="p-2 small">
               <div class="text-truncate fw-bold">${v.title}${isActive ? ' <i class="fas fa-play-circle text-primary" style="font-size:0.7rem"></i>' : ''}</div>
-              <div class="text-muted text-truncate">${v.artist}</div>
+              <div class="text-muted text-truncate">${splitArtistNamesLocal(v.artist).join('、') || v.artist}</div>
             </div>
           </div>
         </div>`;

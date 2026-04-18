@@ -337,9 +337,18 @@
       document.title = artistName + ' - 丽江音悦台';
       document.getElementById('artist-name').innerText = artistName;
 
+      function containsArtistName(item, targetArtist) {
+        if (!item) return false;
+        if (Array.isArray(item.artistNames) && item.artistNames.indexOf(targetArtist) !== -1) return true;
+        if (typeof splitArtistNames === 'function') {
+          return splitArtistNames(item.artist).indexOf(targetArtist) !== -1;
+        }
+        return item.artist === targetArtist;
+      }
+
       // 筛选歌曲
-      var songs = musicData.filter(function(t) { return t.artist === artistName; });
-      var videos = videoData.filter(function(v) { return v.artist === artistName; });
+      var songs = musicData.filter(function(t) { return containsArtistName(t, artistName); });
+      var videos = videoData.filter(function(v) { return containsArtistName(v, artistName); });
 
       document.getElementById('song-count').innerText = songs.length;
       document.getElementById('video-count').innerText = videos.length;

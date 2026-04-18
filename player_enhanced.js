@@ -10,10 +10,26 @@
     history: 'ljyyt_play_history',
     playMode: 'ljyyt_play_mode',
     darkMode: 'ljyyt_dark_mode',
-    playCount: 'ljyyt_play_count'
+    playCount: 'ljyyt_play_count',
+    bottomPlayerLayout: 'ljyyt_bottom_player_layout',
+    bottomPlayerCollapsed: 'ljyyt_bottom_player_collapsed'
   };
 
+  // Toast 提示
+  function toast(msg, type) {
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;top:80px;right:20px;padding:12px 20px;border-radius:10px;color:#fff;font-size:14px;z-index:99999;opacity:0;transition:all 0.3s;backdrop-filter:blur(10px);' +
+      (type === 'success' ? 'background:linear-gradient(135deg,#667eea,#764ba2)' : 'background:rgba(0,0,0,0.8)');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(function() { el.style.opacity = '1'; }, 50);
+    setTimeout(function() { el.style.opacity = '0'; setTimeout(function() { if(el.parentNode) el.remove(); }, 300); }, 2000);
+  }
+  window.toast = toast;
+
   var playMode = localStorage.getItem(STORAGE.playMode) || 'order';
+  var bottomPlayerLayout = localStorage.getItem(STORAGE.bottomPlayerLayout) || 'home';
+  var bottomPlayerCollapsed = localStorage.getItem(STORAGE.bottomPlayerCollapsed) === 'true';
   var favorites = [];
   var playHistory = [];
   var playCounts = {};
@@ -24,9 +40,12 @@
     loadHistory();
     loadPlayCounts();
     initPlayMode();
+    initBottomPlayerLayout();
+    initBottomPlayerCollapse();
     initKeyboardShortcuts();
     initAutoNext();
     injectUI();
+    initBottomPlayerNavigation();
     if (localStorage.getItem(STORAGE.darkMode) === 'true') {
       document.body.classList.add('dark-mode');
     }
@@ -42,6 +61,7 @@
     localStorage.setItem(STORAGE.favorites, JSON.stringify(favorites));
   }
   function isFav(id) { return favorites.indexOf(id) !== -1; }
+  window.isFav = isFav;
   function toggleFav(id) {
     if (!id && typeof currentTrackIndex !== 'undefined' && typeof musicData !== 'undefined') {
       var t = musicData[currentTrackIndex];
@@ -53,7 +73,15 @@
     else { favorites.push(id); toast('已收藏 ❤️', 'success'); }
     saveFavorites();
     updateFavBtn(id);
+    document.dispatchEvent(new CustomEvent('ljyyt:favorites-changed', {
+      detail: {
+        id: id,
+        liked: isFav(id)
+      }
+    }));
   }
+  // 暴露到全局，供 music-player.html 内联 onclick 使用
+  window.toggleFav = toggleFav;
   function updateFavBtn(id) {
     var btn = document.getElementById('btn-fav');
     if (!btn) return;
@@ -96,15 +124,89 @@
     playMode = localStorage.getItem(STORAGE.playMode) || 'order';
     updateModeBtn();
   }
+  function initBottomPlayerLayout() {
+    bottomPlayerLayout = localStorage.getItem(STORAGE.bottomPlayerLayout) || 'home';
+    applyBottomPlayerLayout(bottomPlayerLayout);
+  }
+  function applyBottomPlayerLayout(layout) {
+    bottomPlayerLayout = layout === 'player' ? 'player' : 'home';
+    document.body.classList.toggle('bottom-player-layout-player', bottomPlayerLayout === 'player');
+    updateLayoutBtn();
+  }
+  function cycleBottomPlayerLayout() {
+    var nextLayout = bottomPlayerLayout === 'player' ? 'home' : 'player';
+    localStorage.setItem(STORAGE.bottomPlayerLayout, nextLayout);
+    applyBottomPlayerLayout(nextLayout);
+  }
+  function initBottomPlayerCollapse() {
+    var bp = document.getElementById('bottom-player');
+    if (!bp) return;
+
+    var toggle = document.getElementById('bottom-player-toggle');
+    if (!toggle) {
+      toggle = document.createElement('div');
+      toggle.id = 'bottom-player-toggle';
+      toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+      document.body.appendChild(toggle);
+    }
+
+    function positionToggle() {
+      var rect = bp.getBoundingClientRect();
+      toggle.style.bottom = (window.innerHeight - rect.top) + 'px';
+      toggle.style.left = (rect.left + rect.width / 2) + 'px';
+    }
+
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var nextCollapsed = !bottomPlayerCollapsed;
+      bottomPlayerCollapsed = nextCollapsed;
+      localStorage.setItem(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
+      bp.classList.toggle('bottom-player-collapsed', nextCollapsed);
+      updateCollapseBtn();
+      setTimeout(positionToggle, 380);
+    });
+
+    if (bottomPlayerCollapsed) {
+      bp.classList.add('bottom-player-collapsed');
+    }
+
+    updateCollapseBtn();
+    positionToggle();
+    window.addEventListener('resize', positionToggle);
+    setTimeout(positionToggle, 500);
+  }
+  function applyBottomPlayerCollapsed(collapsed) {
+    bottomPlayerCollapsed = !!collapsed;
+    var bottomPlayer = document.getElementById('bottom-player');
+    if (bottomPlayer) {
+      bottomPlayer.classList.toggle('bottom-player-collapsed', bottomPlayerCollapsed);
+    }
+    // 更新 toggle
+    var toggle = document.getElementById('bottom-player-toggle');
+    if (toggle) {
+      toggle.querySelector('i').className = bottomPlayerCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+      if (bottomPlayer) {
+        setTimeout(function() {
+          var rect = bottomPlayer.getBoundingClientRect();
+          toggle.style.bottom = (window.innerHeight - rect.top) + 'px';
+          toggle.style.left = (rect.left + rect.width / 2) + 'px';
+        }, 380);
+      }
+    }
+  }
+  function toggleBottomPlayerCollapse() {
+    var nextCollapsed = !bottomPlayerCollapsed;
+    localStorage.setItem(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
+    applyBottomPlayerCollapsed(nextCollapsed);
+  }
   function cycleMode() {
     var modes = ['order', 'repeat-all', 'repeat-one', 'shuffle'];
     var idx = modes.indexOf(playMode);
     playMode = modes[(idx + 1) % modes.length];
     localStorage.setItem(STORAGE.playMode, playMode);
     updateModeBtn();
-    var labels = { 'order': '顺序播放', 'repeat-all': '列表循环', 'repeat-one': '单曲循环', 'shuffle': '随机播放' };
-    toast(labels[playMode]);
   }
+  window.cycleMode = cycleMode;
   function updateModeBtn() {
     var btn = document.getElementById('btn-mode');
     if (!btn) return;
@@ -115,6 +217,24 @@
       'shuffle': '<i class="fas fa-random"></i>'
     };
     btn.innerHTML = icons[playMode] || icons['order'];
+  }
+  function updateLayoutBtn() {
+    var btn = document.getElementById('btn-layout');
+    if (!btn) return;
+    if (bottomPlayerLayout === 'player') {
+      btn.innerHTML = '<i class="fas fa-columns"></i>';
+      btn.title = '切换到首页播放栏样式';
+    } else {
+      btn.innerHTML = '<i class="fas fa-th-large"></i>';
+      btn.title = '切换到播放页主题样式';
+    }
+  }
+  function updateCollapseBtn() {
+    var toggle = document.getElementById('bottom-player-toggle');
+    if (!toggle) return;
+    var icon = toggle.querySelector('i');
+    if (!icon) return;
+    icon.className = bottomPlayerCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
   }
   function getNextIdx() {
     if (typeof musicData === 'undefined' || musicData.length === 0) return 0;
@@ -150,6 +270,7 @@
       if (playMode === 'order' && next === currentTrackIndex) {
         if (typeof isPlaying !== 'undefined') isPlaying = false;
         if (typeof updatePlayButton === 'function') updatePlayButton();
+        setCoverSpinning(false);
         return;
       }
       currentTrackIndex = next;
@@ -157,9 +278,22 @@
       if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
         addHistory(musicData[currentTrackIndex]);
         updateFavBtn(musicData[currentTrackIndex].id);
+        toast('▶ ' + musicData[currentTrackIndex].title);
       }
     });
   }
+
+  // 封面旋转控制
+  function setCoverSpinning(spinning) {
+    var cover = document.getElementById('current-cover');
+    if (!cover) return;
+    if (spinning) {
+      cover.classList.add('is-playing');
+    } else {
+      cover.classList.remove('is-playing');
+    }
+  }
+  window.setCoverSpinning = setCoverSpinning;
 
   // ========== 键盘快捷键 ==========
   function initKeyboardShortcuts() {
@@ -175,6 +309,7 @@
           if (e.ctrlKey) {
             currentTrackIndex = getNextIdx();
             if (typeof loadTrack === 'function') { loadTrack(currentTrackIndex); if (typeof playMusic === 'function') playMusic(); }
+            if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) toast('▶ ' + musicData[currentTrackIndex].title);
           } else {
             var a = document.getElementById('audio-player');
             if (a && a.duration) a.currentTime = Math.min(a.currentTime + 5, a.duration);
@@ -185,6 +320,7 @@
           if (e.ctrlKey) {
             currentTrackIndex = getPrevIdx();
             if (typeof loadTrack === 'function') { loadTrack(currentTrackIndex); if (typeof playMusic === 'function') playMusic(); }
+            if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) toast('▶ ' + musicData[currentTrackIndex].title);
           } else {
             var a = document.getElementById('audio-player');
             if (a) a.currentTime = Math.max(a.currentTime - 5, 0);
@@ -252,27 +388,56 @@
 
   // 底部播放器按钮: 播放模式 / 收藏 / 分享 / 播放列表
   function injectPlayerControls() {
-    var controls = document.querySelector('.bottom-player .player-controls');
+    var controls = document.querySelector('#bottom-player .player-controls');
+    var volumeControl = document.querySelector('#bottom-player .volume-control');
+    var isMusicPlayerPage = !!(document.body && document.body.classList.contains('music-player-page'));
     if (!controls) return;
 
-    // 播放模式按钮 (放最前面)
-    var modeBtn = mkBtn('btn-mode', '播放模式', cycleMode);
-    controls.insertBefore(modeBtn, controls.firstChild);
+    // 布局切换按钮
+    if (!document.getElementById('btn-layout')) {
+      var layoutBtn = mkBtn('btn-layout', '切换底部播放器样式', cycleBottomPlayerLayout);
+      layoutBtn.classList.remove('ms-1');
+      layoutBtn.classList.add('ms-2');
+      controls.appendChild(layoutBtn);
+    }
 
-    // 收藏 / 分享 / 播放列表 (依次追加到 controls 末尾, 即 next-btn 后面)
-    var favBtn = mkBtn('btn-fav', '收藏', function() { toggleFav(); });
-    favBtn.innerHTML = '<i class="fas fa-heart" style="color:rgba(255,255,255,0.5)"></i>';
-    controls.appendChild(favBtn);
+    // 播放模式按钮 — 只在不存在时创建
+    if (!document.getElementById('btn-mode')) {
+      var modeBtn = mkBtn('btn-mode', '播放模式', cycleMode);
+      controls.insertBefore(modeBtn, controls.firstChild);
+    }
 
-    var shareBtn = mkBtn('btn-share', '分享', shareTrack);
-    shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
-    controls.appendChild(shareBtn);
+    // 收藏 — 只在不存在时创建
+    if (!document.getElementById('btn-fav')) {
+      var favBtn = mkBtn('btn-fav', '收藏', function() { toggleFav(); });
+      favBtn.innerHTML = '<i class="fas fa-heart" style="color:rgba(255,255,255,0.5)"></i>';
+      controls.appendChild(favBtn);
+    }
 
-    var listBtn = mkBtn('btn-list', '播放列表', togglePlaylistPanel);
-    listBtn.innerHTML = '<i class="fas fa-list-ul"></i>';
-    controls.appendChild(listBtn);
+    // 分享 — 只在不存在时创建
+    if (!document.getElementById('btn-share')) {
+      var shareBtn = mkBtn('btn-share', '分享', shareTrack);
+      shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
+      controls.appendChild(shareBtn);
+    }
+
+    // 播放页右侧已经有播放队列，不再在底部栏重复创建播放列表按钮
+    if (isMusicPlayerPage) {
+      var existingListBtn = document.getElementById('btn-list');
+      if (existingListBtn) existingListBtn.remove();
+    } else if (!document.getElementById('btn-list')) {
+      var listBtn = mkBtn('btn-list', '播放列表', togglePlaylistPanel);
+      listBtn.innerHTML = '<i class="fas fa-list-ul"></i>';
+      if (volumeControl && volumeControl.parentNode) {
+        volumeControl.insertAdjacentElement('afterend', listBtn);
+      } else {
+        controls.appendChild(listBtn);
+      }
+    }
 
     updateModeBtn();
+    updateLayoutBtn();
+    updateCollapseBtn();
   }
   function mkBtn(id, title, onclick) {
     var b = document.createElement('button');
@@ -306,6 +471,17 @@
     // 关闭按钮
     document.getElementById('panel-close').onclick = function() { togglePlaylistPanel(); };
 
+    // 点击面板外部关闭
+    document.addEventListener('click', function(e) {
+      if (!panelVisible) return;
+      var panel = document.getElementById('playlist-panel');
+      var listBtn = document.getElementById('btn-list');
+      if (panel && !panel.contains(e.target) && listBtn && !listBtn.contains(e.target)) {
+        panelVisible = false;
+        panel.classList.remove('show');
+      }
+    });
+
     // 标签切换
     panel.querySelectorAll('.pltab').forEach(function(tab) {
       tab.addEventListener('click', function() {
@@ -313,6 +489,35 @@
         this.classList.add('active');
         renderPanelTab(this.getAttribute('data-tab'));
       });
+    });
+  }
+
+  function initBottomPlayerNavigation() {
+    var bottomPlayer = document.getElementById('bottom-player');
+    if (!bottomPlayer) return;
+
+    bottomPlayer.classList.add('bottom-player-linkable');
+    bottomPlayer.setAttribute('data-player-link', 'music-player.html');
+
+    bottomPlayer.addEventListener('click', function(event) {
+      if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+      if (event.target.closest('button, a, input, label, textarea, select')) return;
+      if (event.target.closest('#progress-container, .progress-container, .volume-control, #playlist-panel, #cover-overlay')) return;
+
+      if (typeof musicData !== 'undefined' && musicData[currentTrackIndex] && typeof savePlayerState === 'function') {
+        var audio = document.getElementById('audio-player');
+        savePlayerState(
+          musicData[currentTrackIndex].id,
+          audio ? audio.currentTime : 0,
+          typeof isPlaying !== 'undefined' ? isPlaying : false,
+          musicData[currentTrackIndex],
+          audio ? audio.volume : 0.5
+        );
+      }
+
+      var currentTrack = (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) ? musicData[currentTrackIndex] : null;
+      var targetUrl = 'music-player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
+      window.location.href = targetUrl;
     });
   }
 
@@ -412,10 +617,18 @@
     var params = new URLSearchParams(window.location.search);
     var tid = params.get('track');
     if (tid && typeof musicData !== 'undefined') {
+      if (window._playerStateRestored) {
+        console.log('⏭️ 已恢复本地播放状态，跳过 URL track 覆盖');
+        return;
+      }
       tid = parseInt(tid);
       var idx = musicData.findIndex(function(t) { return t.id === tid; });
       if (idx !== -1) {
         setTimeout(function() {
+          if (window._playerStateRestored) {
+            console.log('⏭️ 延迟执行前检测到已恢复本地播放状态，取消 URL track 覆盖');
+            return;
+          }
           currentTrackIndex = idx;
           if (typeof loadTrack === 'function') loadTrack(idx);
           if (typeof playMusic === 'function') playMusic();
@@ -485,6 +698,7 @@
         if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
           updatePageTitle(musicData[currentTrackIndex], true);
         }
+        setCoverSpinning(true);
       };
     }
     if (origPause) {
@@ -493,6 +707,7 @@
         if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
           updatePageTitle(musicData[currentTrackIndex], false);
         }
+        setCoverSpinning(false);
       };
     }
   }
@@ -512,8 +727,9 @@
   }
 
   function injectPlayerButtons() {
-    var controls = document.querySelector('.bottom-player .player-controls');
+    var controls = document.querySelector('#bottom-player .player-controls');
     if (!controls) return;
+    if (document.getElementById('btn-speed')) return;
     var speedBtn = mkBtn('btn-speed', '播放速度', cycleSpeed);
     speedBtn.innerHTML = '<span style="font-size:0.6rem;font-weight:bold">1x</span>';
     controls.appendChild(speedBtn);
@@ -625,7 +841,8 @@
         '<div class="card-body d-flex align-items-center p-2">' +
           '<img src="'+track.cover+'" alt="'+track.title+'" class="album-cover me-2" loading="lazy" decoding="async">' +
           '<div class="flex-grow-1 overflow-hidden"><h6 class="card-title mb-1 text-truncate" title="'+track.title+'">'+track.title+'</h6>' +
-          '<div class="d-flex align-items-center"><p class="card-text text-muted mb-0 small text-truncate me-2">'+track.artist+'</p>' +
+          '<div class="d-flex align-items-center"><p class="card-text text-muted mb-0 small text-truncate me-2">'+
+          (typeof renderArtistLinksHtml === 'function' ? renderArtistLinksHtml(track.artist) : track.artist) + '</p>' +
           '<small class="text-muted track-duration">'+formatTime(track.duration)+'</small></div></div>' +
           '<i class="fas fa-music text-primary ms-2 card-music-icon"></i></div>';
       card.addEventListener('click', function() {
@@ -688,7 +905,12 @@
       if (typeof musicData === 'undefined') return;
       var track = musicData[currentTrackIndex];
       if (!track) return;
-      window.location.href = 'artist.html?name=' + encodeURIComponent(track.artist);
+      var artistName = track.artist;
+      if (typeof splitArtistNames === 'function') {
+        var names = splitArtistNames(track.artist);
+        if (names.length) artistName = names[0];
+      }
+      window.location.href = 'artist.html?name=' + encodeURIComponent(artistName);
     });
   }
 
@@ -720,7 +942,8 @@
         if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
           var track = musicData[currentTrackIndex];
           document.getElementById('cover-large').src = track.cover;
-          document.getElementById('cover-large-info').innerHTML = '<strong>' + track.title + '</strong><br><span style="opacity:0.7">' + track.artist + '</span>';
+          document.getElementById('cover-large-info').innerHTML = '<strong>' + track.title + '</strong><br><span style="opacity:0.7">' +
+            (typeof renderArtistLinksHtml === 'function' ? renderArtistLinksHtml(track.artist) : track.artist) + '</span>';
           overlay.style.display = 'flex';
         }
       });
@@ -732,21 +955,6 @@
         overlay.style.display = 'none';
       }
     });
-  }
-
-  // ========== loadTrack 补丁 ==========
-  function patchLoadTrack() {
-    if (typeof window.showToast === 'function') {
-      window.showToast(msg, type === 'success' ? 'success' : 'info');
-      return;
-    }
-    var el = document.createElement('div');
-    el.style.cssText = 'position:fixed;top:80px;right:20px;padding:12px 20px;border-radius:10px;color:#fff;font-size:14px;z-index:99999;opacity:0;transition:all 0.3s;backdrop-filter:blur(10px);' +
-      (type === 'success' ? 'background:linear-gradient(135deg,#667eea,#764ba2)' : 'background:rgba(0,0,0,0.75)');
-    el.textContent = msg;
-    document.body.appendChild(el);
-    setTimeout(function() { el.style.opacity = '1'; }, 50);
-    setTimeout(function() { el.style.opacity = '0'; setTimeout(function() { el.remove(); }, 300); }, 2000);
   }
 
   // ========== 启动 ==========
