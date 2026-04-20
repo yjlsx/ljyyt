@@ -46,6 +46,7 @@
     initAutoNext();
     injectUI();
     initBottomPlayerNavigation();
+    initPlayerNavLinks();
     if (localStorage.getItem(STORAGE.darkMode) === 'true') {
       document.body.classList.add('dark-mode');
     }
@@ -504,20 +505,40 @@
       if (event.target.closest('button, a, input, label, textarea, select')) return;
       if (event.target.closest('#progress-container, .progress-container, .volume-control, #playlist-panel, #cover-overlay')) return;
 
-      if (typeof musicData !== 'undefined' && musicData[currentTrackIndex] && typeof savePlayerState === 'function') {
-        var audio = document.getElementById('audio-player');
-        savePlayerState(
-          musicData[currentTrackIndex].id,
-          audio ? audio.currentTime : 0,
-          typeof isPlaying !== 'undefined' ? isPlaying : false,
-          musicData[currentTrackIndex],
-          audio ? audio.volume : 0.5
-        );
-      }
-
-      var currentTrack = (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) ? musicData[currentTrackIndex] : null;
+      var currentTrack = saveCurrentPlaybackState();
       var targetUrl = 'music-player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
       window.location.href = targetUrl;
+    });
+  }
+
+  function saveCurrentPlaybackState() {
+    if (typeof musicData === 'undefined' || typeof currentTrackIndex === 'undefined') return null;
+    var currentTrack = musicData[currentTrackIndex];
+    if (!currentTrack) return null;
+
+    if (typeof savePlayerState === 'function') {
+      var audio = document.getElementById('audio-player');
+      savePlayerState(
+        currentTrack.id,
+        audio ? audio.currentTime : 0,
+        typeof isPlaying !== 'undefined' ? isPlaying : false,
+        currentTrack,
+        audio ? audio.volume : 0.5
+      );
+    }
+
+    return currentTrack;
+  }
+
+  function initPlayerNavLinks() {
+    document.querySelectorAll('a[href="music-player.html"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+        var currentTrack = saveCurrentPlaybackState();
+        if (currentTrack) {
+          link.href = 'music-player.html?track=' + encodeURIComponent(currentTrack.id);
+        }
+      });
     });
   }
 

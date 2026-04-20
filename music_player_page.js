@@ -444,7 +444,11 @@
         originalLoadTrack(index);
         updateHero(getCurrentTrack());
         updateSidebar();
-        renderCurrentQueue();
+        if (activeView === 'all' && !normalizeSearchText(queueSearchQuery)) {
+          setTimeout(scrollActiveCardIntoView, 30);
+        } else {
+          renderCurrentQueue();
+        }
       };
     }
 
