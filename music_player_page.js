@@ -1209,7 +1209,7 @@
   }
 
   function rotateLyrics() {
-    if (lyricsState && lyricsState.syncedEntries && lyricsState.syncedEntries.length) return;
+    if (lyricsState && (lyricsState.syncedEntries && lyricsState.syncedEntries.length || lyricsState.lines && lyricsState.lines.length)) return;
 
     var lines = Array.prototype.slice.call(document.querySelectorAll('#lyrics-lines .lyric-line'));
     if (!lines.length) return;
@@ -1237,7 +1237,7 @@
     }
 
     lyricTimer = setInterval(function() {
-      if (audio && !audio.paused && lyricsState && lyricsState.syncedEntries && lyricsState.syncedEntries.length) {
+      if (audio && !audio.paused && lyricsState && ((lyricsState.syncedEntries && lyricsState.syncedEntries.length) || (lyricsState.lines && lyricsState.lines.length))) {
         syncLyricsWithAudio();
       } else if (audio && !audio.paused) {
         rotateLyrics();
