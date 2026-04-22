@@ -12704,9 +12704,46 @@ function formatTime(seconds) {
 function sanitizeCoverLookupText(value) {
   return String(value || '')
     .replace(/\.(mp3|flac|wav|m4a)$/i, '')
+    .replace(/&amp;/gi, '&')
+    .replace(/_/g, ' ')
     .replace(/[《》"'`]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function buildExternalCoverLookup(track) {
+  var title = sanitizeCoverLookupText(track && track.title);
+  var artist = sanitizeCoverLookupText(track && track.artist);
+  var separators = [' - ', ' — ', ' – ', ' | ', '｜', '_'];
+
+  if (artist && title) {
+    var lowerTitle = title.toLowerCase();
+    var lowerArtist = artist.toLowerCase();
+    if (lowerTitle.indexOf(lowerArtist) === 0) {
+      title = title.slice(artist.length).replace(/^(\s*[-—–|｜_:：]+\s*)+/, '').trim() || title;
+    }
+  }
+
+  if (!artist && title) {
+    for (var i = 0; i < separators.length; i++) {
+      var separator = separators[i];
+      var separatorIndex = title.indexOf(separator);
+      if (separatorIndex > 0 && separatorIndex < title.length - separator.length) {
+        var left = title.slice(0, separatorIndex).trim();
+        var right = title.slice(separatorIndex + separator.length).trim();
+        if (left && right) {
+          artist = left;
+          title = right;
+          break;
+        }
+      }
+    }
+  }
+
+  return {
+    title: title,
+    artist: artist
+  };
 }
 
 function isPlaceholderCover(coverUrl) {
@@ -12771,9 +12808,10 @@ function ensureTrackCover(track, targetImage) {
     return Promise.resolve(track ? track.cover : '');
   }
 
-  var title = sanitizeCoverLookupText(track.title);
-  var artist = sanitizeCoverLookupText(track.artist);
-  if (!title && !artist) return Promise.resolve(track.cover);
+  var lookup = buildExternalCoverLookup(track);
+  var title = lookup.title;
+  var artist = lookup.artist;
+  if (!title || !artist) return Promise.resolve(track.cover);
 
   var cacheKey = buildCoverCacheKey(track);
   if (coverResolutionCache[cacheKey]) {
@@ -12948,7 +12986,6 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
   cover.className = 'album-cover me-2';
   cover.loading = 'lazy';
   cover.decoding = 'async';
-  ensureTrackCover(track, cover);
 
   var content = document.createElement('div');
   content.className = 'flex-grow-1 overflow-hidden';

@@ -173,19 +173,11 @@
     var lines;
     if (!track) {
       lines = [
-        '点击右侧任意歌曲开始播放，播放器舞台会自动同步。',
-        '这里会像音乐产品一样展示歌曲标题、歌手与播放状态。',
-        '右侧播放队列支持全部歌曲、收藏和最近播放切换。',
-        '底部控制条仍然是真实播放器，拖动进度和切歌都会立刻生效。',
-        '后续如果你提供歌词数据，这里可以升级成真正的歌词滚动区域。'
+        '暂无歌词'
       ];
     } else {
       lines = [
-        '正在播放《' + track.title + '》',
-        '演唱：' + track.artist,
-        '专辑：' + (track.album || '纳西音乐精选'),
-        '这首歌已进入沉浸式播放器舞台',
-        '右侧可以快速切换到其他歌曲、收藏和最近播放'
+        '暂无歌词'
       ];
     }
 
@@ -198,9 +190,57 @@
   function sanitizeTrackText(value) {
     return String(value || '')
       .replace(/\.(mp3|flac|wav|m4a)$/i, '')
+      .replace(/&amp;/gi, '&')
+      .replace(/_/g, ' ')
       .replace(/[《》"'`]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  function buildExternalLookupData(trackOrTitle, artistValue) {
+    var rawTitle = '';
+    var rawArtist = '';
+
+    if (typeof trackOrTitle === 'object' && trackOrTitle) {
+      rawTitle = trackOrTitle.title || '';
+      rawArtist = trackOrTitle.artist || '';
+    } else {
+      rawTitle = trackOrTitle || '';
+      rawArtist = artistValue || '';
+    }
+
+    var title = sanitizeTrackText(rawTitle);
+    var artist = sanitizeTrackText(rawArtist);
+    var separators = [' - ', ' — ', ' – ', ' | ', '｜', '_'];
+
+    if (artist && title) {
+      var lowerTitle = title.toLowerCase();
+      var lowerArtist = artist.toLowerCase();
+      if (lowerTitle.indexOf(lowerArtist) === 0) {
+        title = title.slice(artist.length).replace(/^(\s*[-—–|｜_:：]+\s*)+/, '').trim() || title;
+      }
+    }
+
+    if (!artist && title) {
+      for (var i = 0; i < separators.length; i++) {
+        var separator = separators[i];
+        var separatorIndex = title.indexOf(separator);
+        if (separatorIndex > 0 && separatorIndex < title.length - separator.length) {
+          var left = title.slice(0, separatorIndex).trim();
+          var right = title.slice(separatorIndex + separator.length).trim();
+          if (left && right) {
+            artist = left;
+            title = right;
+            break;
+          }
+        }
+      }
+    }
+
+    return {
+      title: title,
+      artist: artist
+    };
   }
 
   function renderLyricsLines(lines, syncedEntries) {
@@ -269,6 +309,7 @@
     if (!track) return '';
 
     var customEndpoint = window.LYRICS_API_ENDPOINT || '';
+    var lookup = buildExternalLookupData(track);
 
     if (!customEndpoint) {
       customEndpoint = 'https://lrclib.net/api/get';
@@ -276,11 +317,11 @@
 
     var params = new URLSearchParams();
     if (customEndpoint.indexOf('lrclib.net/api/get') !== -1) {
-      params.set('track_name', sanitizeTrackText(track.title));
-      params.set('artist_name', sanitizeTrackText(track.artist));
+      params.set('track_name', lookup.title);
+      params.set('artist_name', lookup.artist);
     } else {
-      params.set('title', sanitizeTrackText(track.title));
-      params.set('artist', sanitizeTrackText(track.artist));
+      params.set('title', lookup.title);
+      params.set('artist', lookup.artist);
       if (track.id !== undefined && track.id !== null) params.set('id', String(track.id));
     }
     if (customEndpoint.indexOf('tools.rangotec.com/api/anon/lrc') !== -1) {
@@ -356,8 +397,9 @@
 
   function getLyricsSearchEndpoint(track, title, artist) {
     var customEndpoint = window.LYRICS_SEARCH_API_ENDPOINT || 'https://lrclib.net/api/search';
-    var normalizedTitle = sanitizeTrackText(title || (track && track.title));
-    var normalizedArtist = sanitizeTrackText(artist || (track && track.artist));
+    var lookup = buildExternalLookupData(title || (track && track.title), artist || (track && track.artist));
+    var normalizedTitle = lookup.title;
+    var normalizedArtist = lookup.artist;
     var params = new URLSearchParams();
     if (customEndpoint.indexOf('lrclib.net/api/search') !== -1) {
       if (normalizedTitle) params.set('track_name', normalizedTitle);
@@ -446,8 +488,9 @@
   }
 
   function fetchLyricsOvhPayload(track, signal) {
-    var artist = sanitizeTrackText(track && track.artist);
-    var title = sanitizeTrackText(track && track.title);
+    var lookup = buildExternalLookupData(track);
+    var artist = lookup.artist;
+    var title = lookup.title;
     if (!artist || !title) {
       return Promise.reject(new Error('lyrics.ovh needs artist and title'));
     }
@@ -906,10 +949,7 @@
 
         lyricsState = {
           lines: [
-            '暂时没有找到《' + sanitizeTrackText(track.title) + '》的歌词',
-            '已按歌名和歌手尝试检索：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
-            '当前站点正在使用公开歌词接口直连模式。',
-            '当前仍可正常播放音频，歌词区会继续保留。'
+            '暂无歌词'
           ],
           source: 'empty',
           status: 'empty',
@@ -986,10 +1026,7 @@
 
                   lyricsState = {
                     lines: [
-                      '暂时没有找到《' + sanitizeTrackText(track.title) + '》的歌词',
-                      '已尝试 LRCLIB 精确匹配、候选搜索和 lyrics.ovh：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
-                      '你可以点右上角“搜索歌词”手动挑选其他版本。',
-                      '当前仍可正常播放音频。'
+                      '暂无歌词'
                     ],
                     source: 'empty',
                     status: 'empty',
@@ -1012,10 +1049,7 @@
 
         lyricsState = {
           lines: [
-            '歌词服务暂时不可用',
-            '当前歌曲：' + sanitizeTrackText(track.title),
-            '错误信息：' + errorMessage,
-            hintLine
+            '暂无歌词'
           ],
           source: 'error',
           status: 'error',
