@@ -12819,6 +12819,32 @@ function ensureTrackCover(track, targetImage) {
     return Promise.resolve(coverResolutionCache[cacheKey]);
   }
 
+  var customCoverEndpoint = String(window.COVER_API_ENDPOINT || '').trim();
+  if (customCoverEndpoint) {
+    var requestUrl = customCoverEndpoint + '?title=' + encodeURIComponent(title) + '&artist=' + encodeURIComponent(artist);
+    return fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(function(response) {
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+      return response.json();
+    }).then(function(payload) {
+      var imageUrl = normalizeMediaUrl(payload && payload.imageUrl ? payload.imageUrl : '');
+      if (!imageUrl) {
+        throw new Error('No cover image');
+      }
+      coverResolutionCache[cacheKey] = imageUrl;
+      applyResolvedCoverToDom(track, imageUrl, targetImage);
+      return imageUrl;
+    }).catch(function() {
+      return track.cover;
+    });
+  }
+
   var endpoint = 'https://api.lrc.cx/cover?title=' + encodeURIComponent(title) + '&artist=' + encodeURIComponent(artist);
   return new Promise(function(resolve) {
     var preloadImage = new Image();
