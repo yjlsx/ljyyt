@@ -12869,6 +12869,8 @@ window.ensureTrackCover = ensureTrackCover;
 // 加载音乐
 function loadTrack(index) {
   console.log('🎵 加载音乐:', index, musicData[index].title);
+
+  currentTrackIndex = index;
   
   const track = musicData[index];
   audioPlayer.src = track.src;

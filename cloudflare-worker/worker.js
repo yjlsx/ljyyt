@@ -55,9 +55,43 @@ async function handleLyricsRequest(url) {
     url.searchParams.get('title') || '',
     url.searchParams.get('artist') || ''
   );
+  const requestedSource = String(url.searchParams.get('source') || '').trim().toLowerCase();
+  const requestedProviderId = String(url.searchParams.get('providerId') || '').trim();
 
   if (!lookup.title) {
     return jsonResponse({ found: false, message: 'Missing title' }, 400);
+  }
+
+  if (requestedSource === 'rangotec' && requestedProviderId) {
+    const forcedRangotec = await fetchRangotecLyrics(lookup, requestedProviderId);
+    if (forcedRangotec.lines.length) {
+      return jsonResponse({
+        found: true,
+        source: 'rangotec',
+        title: forcedRangotec.title || lookup.title,
+        artist: forcedRangotec.artist || lookup.artist,
+        album: forcedRangotec.album || '',
+        providerId: forcedRangotec.providerId || requestedProviderId,
+        lines: forcedRangotec.lines,
+        syncedLyrics: forcedRangotec.syncedLyrics
+      });
+    }
+  }
+
+  if (requestedSource === 'netease' && requestedProviderId) {
+    const forcedNetease = await fetchNeteaseLyrics(lookup, requestedProviderId);
+    if (forcedNetease.lines.length) {
+      return jsonResponse({
+        found: true,
+        source: 'netease',
+        title: forcedNetease.title || lookup.title,
+        artist: forcedNetease.artist || lookup.artist,
+        album: forcedNetease.album || '',
+        providerId: forcedNetease.providerId || requestedProviderId,
+        lines: forcedNetease.lines,
+        syncedLyrics: forcedNetease.syncedLyrics
+      });
+    }
   }
 
   const exactPayload = await fetchLrclibExact(lookup);
@@ -387,13 +421,15 @@ async function fetchRangotecCandidates(lookup) {
     .sort((a, b) => scoreCandidateMatch(lookup, b.title, b.artist) - scoreCandidateMatch(lookup, a.title, a.artist));
 }
 
-async function fetchRangotecLyrics(lookup) {
+async function fetchRangotecLyrics(lookup, forcedProviderId = '') {
   const candidates = await fetchRangotecCandidates(lookup);
   if (!candidates.length) {
     return emptyLyricsResult();
   }
 
-  const best = candidates[0];
+  const best = forcedProviderId
+    ? candidates.find((candidate) => String(candidate.providerId) === String(forcedProviderId))
+    : candidates[0];
   if (!best.previewSourceLyrics) {
     return emptyLyricsResult();
   }
@@ -428,9 +464,11 @@ async function fetchNeteaseCandidates(lookup) {
   }
 }
 
-async function fetchNeteaseLyrics(lookup) {
+async function fetchNeteaseLyrics(lookup, forcedProviderId = '') {
   const candidates = await fetchNeteaseCandidates(lookup);
-  const first = candidates[0];
+  const first = forcedProviderId
+    ? candidates.find((candidate) => String(candidate.providerId) === String(forcedProviderId))
+    : candidates[0];
   if (!first || !first.providerId) {
     return emptyLyricsResult();
   }

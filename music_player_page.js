@@ -1405,9 +1405,9 @@
 
     if (lyricsSearchResults) {
       lyricsSearchResults.addEventListener('click', function(event) {
-        var button = event.target.closest('button[data-index]');
-        if (!button) return;
-        var index = parseInt(button.getAttribute('data-index'), 10);
+        var target = event.target.closest('[data-index]');
+        if (!target) return;
+        var index = parseInt(target.getAttribute('data-index'), 10);
         var list = lyricsSearchResults._candidateList || [];
         if (isNaN(index) || !list[index]) return;
         applyLyricsCandidate(list[index]);
@@ -1419,6 +1419,9 @@
     if (typeof window.loadTrack === 'function') {
       var originalLoadTrack = window.loadTrack;
       window.loadTrack = function(index) {
+        if (typeof currentTrackIndex !== 'undefined') {
+          currentTrackIndex = index;
+        }
         originalLoadTrack(index);
         updateHero(getCurrentTrack());
         updateSidebar();
