@@ -21,9 +21,29 @@
   var stageNextButton;
   var queueSearchInput;
   var queueSearchClearButton;
+  var lyricsSourceLabel;
+  var lyricsSearchToggleButton;
+  var lyricsSearchPanel;
+  var lyricsSearchTitleInput;
+  var lyricsSearchArtistInput;
+  var lyricsSearchSubmitButton;
+  var lyricsSearchStatus;
+  var lyricsSearchResults;
   var activeView = 'all';
   var queueSearchQuery = '';
   var lyricTimer = null;
+  var lyricsAbortController = null;
+  var lyricsRequestToken = 0;
+  var lyricsSearchAbortController = null;
+  var lyricsOverrides = {};
+  var lyricsState = {
+    lines: [],
+    source: 'placeholder',
+    status: 'idle',
+    syncedEntries: [],
+    activeIndex: -1,
+    currentCandidate: null
+  };
 
   function refs() {
     heroTitle = document.getElementById('hero-title');
@@ -40,6 +60,26 @@
     stagePlayButton = document.getElementById('stage-play-btn');
     queueSearchInput = document.getElementById('queue-search-input');
     queueSearchClearButton = document.getElementById('queue-search-clear');
+    lyricsSourceLabel = document.getElementById('lyrics-source-label');
+    lyricsSearchToggleButton = document.getElementById('lyrics-search-toggle');
+    lyricsSearchPanel = document.getElementById('lyrics-search-panel');
+    lyricsSearchTitleInput = document.getElementById('lyrics-search-title');
+    lyricsSearchArtistInput = document.getElementById('lyrics-search-artist');
+    lyricsSearchSubmitButton = document.getElementById('lyrics-search-submit');
+    lyricsSearchStatus = document.getElementById('lyrics-search-status');
+    lyricsSearchResults = document.getElementById('lyrics-search-results');
+  }
+
+  function readLyricsOverrides() {
+    try {
+      lyricsOverrides = JSON.parse(localStorage.getItem('ljyyt_lyrics_overrides')) || {};
+    } catch (error) {
+      lyricsOverrides = {};
+    }
+  }
+
+  function saveLyricsOverrides() {
+    localStorage.setItem('ljyyt_lyrics_overrides', JSON.stringify(lyricsOverrides));
   }
 
   function getCurrentTrack() {
@@ -155,7 +195,521 @@
     }).join('');
   }
 
+  function sanitizeTrackText(value) {
+    return String(value || '')
+      .replace(/\.(mp3|flac|wav|m4a)$/i, '')
+      .replace(/[《》"'`]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function renderLyricsLines(lines, syncedEntries) {
+    var container = document.getElementById('lyrics-lines');
+    if (!container) return;
+
+    var entries = Array.isArray(syncedEntries) ? syncedEntries.filter(Boolean) : [];
+    if (entries.length) {
+      lyricsState.syncedEntries = entries;
+    } else if (!Array.isArray(lyricsState.syncedEntries)) {
+      lyricsState.syncedEntries = [];
+    }
+
+    if (lyricsState.syncedEntries && lyricsState.syncedEntries.length) {
+      container.innerHTML = lyricsState.syncedEntries.map(function(entry, index) {
+        var line = String(entry.text || '').trim();
+        var cls = 'lyric-line';
+        if (index === lyricsState.activeIndex) cls += ' active';
+        else if (lyricsState.activeIndex !== -1 && index < lyricsState.activeIndex) cls += ' dim';
+        return '<div class="' + cls + '" data-lyric-index="' + index + '">' + line + '</div>';
+      }).join('');
+      return;
+    }
+
+    var safeLines = Array.isArray(lines)
+      ? lines.map(function(line) {
+          return String(line || '').trim();
+        }).filter(Boolean)
+      : [];
+
+    if (!safeLines.length) {
+      renderLyrics(null);
+      return;
+    }
+
+    container.innerHTML = safeLines.map(function(line, index) {
+      var cls = index === 0 ? 'lyric-line active' : 'lyric-line' + (index > 2 ? ' dim' : '');
+      return '<div class="' + cls + '">' + line + '</div>';
+    }).join('');
+  }
+
+  function getLyricsSourceLabel(source) {
+    var labels = {
+      'loading': '正在搜索歌词',
+      'error': '歌词加载失败',
+      'kugou': '当前来源：酷狗歌词',
+      'rangotec': '当前来源：公共 LRC',
+      'lrcapi': '当前来源：LrcApi 公共歌词',
+      'kuwo': '当前来源：酷我歌词',
+      'netease': '当前来源：网易云歌词',
+      'qq': '当前来源：QQ 音乐歌词',
+      'local-library': '当前来源：本地歌词库',
+      'placeholder': '当前来源：等待加载'
+    };
+    return labels[source] || ('当前来源：' + (source || '未知'));
+  }
+
+  function updateLyricsSourceLabel(source) {
+    if (!lyricsSourceLabel) return;
+    lyricsSourceLabel.textContent = getLyricsSourceLabel(source);
+  }
+
+  function getLyricsEndpoint(track) {
+    if (!track) return '';
+
+    var isFileProtocol = !!(window.location && window.location.protocol === 'file:');
+    var customEndpoint = window.LYRICS_API_ENDPOINT || '';
+
+    if (!customEndpoint) {
+      customEndpoint = isFileProtocol
+        ? 'https://tools.rangotec.com/api/anon/lrc'
+        : '/api/lyrics';
+    }
+
+    var params = new URLSearchParams();
+    params.set('title', sanitizeTrackText(track.title));
+    params.set('artist', sanitizeTrackText(track.artist));
+    if (track.id !== undefined && track.id !== null) params.set('id', String(track.id));
+    if (customEndpoint.indexOf('tools.rangotec.com/api/anon/lrc') !== -1) {
+      params.set('od', 'desc');
+    }
+
+    return customEndpoint + '?' + params.toString();
+  }
+
+  function getLyricsSearchEndpoint(track, title, artist) {
+    var customEndpoint = window.LYRICS_SEARCH_API_ENDPOINT || '/api/lyrics/search';
+    var normalizedTitle = sanitizeTrackText(title || (track && track.title));
+    var normalizedArtist = sanitizeTrackText(artist || (track && track.artist));
+    var params = new URLSearchParams();
+    if (normalizedTitle) params.set('title', normalizedTitle);
+    if (normalizedArtist) params.set('artist', normalizedArtist);
+    params.set('sources', 'kugou,kuwo,netease,qq,rangotec,lrcapi,local');
+    return customEndpoint + '?' + params.toString();
+  }
+
+  function getLyricsOverride(track) {
+    if (!track || track.id === undefined || track.id === null) return null;
+    return lyricsOverrides[String(track.id)] || null;
+  }
+
+  function setLyricsOverride(track, candidate) {
+    if (!track || track.id === undefined || track.id === null || !candidate) return;
+    lyricsOverrides[String(track.id)] = candidate;
+    saveLyricsOverrides();
+  }
+
+  function applyLyricsOverride(track, endpoint) {
+    var override = getLyricsOverride(track);
+    if (!override) return endpoint;
+
+    var url = new URL(endpoint, window.location.href);
+    if (override.source) url.searchParams.set('source', override.source);
+    if (override.candidateId) url.searchParams.set('candidateId', override.candidateId);
+    if (override.accesskey) url.searchParams.set('accesskey', override.accesskey);
+    if (override.providerId) url.searchParams.set('providerId', override.providerId);
+    return url.toString();
+  }
+
+  function parseRangotecLyrics(payload) {
+    if (!payload || payload.code !== 200 || !Array.isArray(payload.data) || !payload.data.length) {
+      return [];
+    }
+
+    var firstItem = payload.data[0];
+    if (!firstItem || !firstItem.lrc) return [];
+
+    return String(firstItem.lrc)
+      .split(/\r?\n/)
+      .map(function(line) {
+        return line.replace(/^\[[^\]]+\]/g, '').trim();
+      })
+      .filter(Boolean);
+  }
+
+  function parseLyricsPayload(payload) {
+    var directLines = Array.isArray(payload && payload.lines) ? payload.lines : [];
+    var syncedEntries = Array.isArray(payload && payload.syncedLyrics) ? payload.syncedLyrics : [];
+    if (directLines.length) {
+      return {
+        lines: directLines,
+        source: payload.source || 'server',
+        syncedEntries: syncedEntries,
+        currentCandidate: {
+          source: payload.source || 'server',
+          title: payload.title || '',
+          artist: payload.artist || '',
+          album: payload.album || '',
+          providerId: payload.providerId || '',
+          candidateId: payload.candidateId || '',
+          accesskey: payload.accesskey || '',
+          previewLines: directLines.slice(0, 2),
+          isCurrent: true
+        }
+      };
+    }
+
+    var rangotecLines = parseRangotecLyrics(payload);
+    if (rangotecLines.length) {
+      return {
+        lines: rangotecLines,
+        source: 'rangotec',
+        syncedEntries: [],
+        currentCandidate: {
+          source: 'rangotec',
+          title: payload && payload.data && payload.data[0] ? payload.data[0].title || '' : '',
+          artist: payload && payload.data && payload.data[0] ? payload.data[0].artist || '' : '',
+          album: payload && payload.data && payload.data[0] ? payload.data[0].album || '' : '',
+          providerId: payload && payload.data && payload.data[0] ? payload.data[0].id || '' : '',
+          previewLines: rangotecLines.slice(0, 2),
+          isCurrent: true
+        }
+      };
+    }
+
+    return {
+      lines: [],
+      source: payload && payload.source ? payload.source : 'server',
+      syncedEntries: [],
+      currentCandidate: {
+        source: payload && payload.source ? payload.source : 'server',
+        title: payload && payload.title ? payload.title : '',
+        artist: payload && payload.artist ? payload.artist : '',
+        album: payload && payload.album ? payload.album : '',
+        providerId: payload && payload.providerId ? payload.providerId : '',
+        candidateId: payload && payload.candidateId ? payload.candidateId : '',
+        accesskey: payload && payload.accesskey ? payload.accesskey : '',
+        previewLines: [],
+        isCurrent: true
+      }
+    };
+  }
+
+  function findSyncedLyricIndex(currentTime) {
+    var entries = Array.isArray(lyricsState.syncedEntries) ? lyricsState.syncedEntries : [];
+    if (!entries.length) return -1;
+
+    var activeIndex = -1;
+    for (var i = 0; i < entries.length; i++) {
+      if (Number(entries[i].time) <= currentTime + 0.12) activeIndex = i;
+      else break;
+    }
+    return activeIndex;
+  }
+
+  function syncLyricsWithAudio() {
+    var audio = document.getElementById('audio-player');
+    var container = document.getElementById('lyrics-lines');
+    var entries = Array.isArray(lyricsState.syncedEntries) ? lyricsState.syncedEntries : [];
+    if (!audio || !container || !entries.length) return;
+
+    var nextIndex = findSyncedLyricIndex(audio.currentTime || 0);
+    if (nextIndex === lyricsState.activeIndex) return;
+    lyricsState.activeIndex = nextIndex;
+
+    var nodes = Array.prototype.slice.call(container.querySelectorAll('.lyric-line'));
+    nodes.forEach(function(node, index) {
+      node.classList.toggle('active', index === nextIndex);
+      node.classList.toggle('dim', nextIndex !== -1 && index < nextIndex);
+    });
+
+    var activeNode = container.querySelector('.lyric-line.active');
+    if (!activeNode) return;
+
+    var containerRect = container.getBoundingClientRect();
+    var activeRect = activeNode.getBoundingClientRect();
+    var activeTop = activeRect.top - containerRect.top + container.scrollTop;
+    var targetTop = Math.max(activeTop - container.clientHeight * 0.35, 0);
+
+    if (Math.abs(container.scrollTop - targetTop) > 20) {
+      container.scrollTo({
+        top: targetTop,
+        behavior: audio.paused ? 'auto' : 'smooth'
+      });
+    }
+  }
+
+  function normalizeSearchCandidates(payload) {
+    var items = Array.isArray(payload && payload.candidates) ? payload.candidates : [];
+    return items.map(function(item) {
+      return {
+        source: item.source || 'kugou',
+        title: item.title || '',
+        artist: item.artist || '',
+        album: item.album || '',
+        duration: item.duration || '',
+        durationText: item.durationText || '',
+        candidateId: item.candidateId || '',
+        accesskey: item.accesskey || '',
+        providerId: item.providerId || '',
+        previewLines: Array.isArray(item.previewLines) ? item.previewLines : [],
+        isCurrent: !!item.isCurrent
+      };
+    }).filter(function(item) {
+      return item.title || item.artist;
+    });
+  }
+
+  function mergeCurrentLyricsCandidate(candidates) {
+    var list = Array.isArray(candidates) ? candidates.slice() : [];
+    var current = lyricsState && lyricsState.currentCandidate ? lyricsState.currentCandidate : null;
+    if (!current || !(current.title || current.artist || current.previewLines && current.previewLines.length)) {
+      return list;
+    }
+
+    var exists = list.some(function(item) {
+      return item.source === current.source &&
+        String(item.providerId || '') === String(current.providerId || '') &&
+        String(item.candidateId || '') === String(current.candidateId || '');
+    });
+
+    if (!exists) {
+      list.unshift(current);
+    }
+
+    return list;
+  }
+
+  function renderLyricsSearchResults(candidates) {
+    if (!lyricsSearchResults) return;
+
+    if (!candidates.length) {
+      lyricsSearchResults.innerHTML = '';
+      return;
+    }
+
+    lyricsSearchResults.innerHTML = candidates.map(function(item, index) {
+      var desc = [
+        item.isCurrent ? '当前显示中' : '',
+        item.artist ? ('歌手：' + item.artist) : '',
+        item.album ? ('专辑：' + item.album) : '',
+        item.durationText ? ('时长：' + item.durationText) : '',
+        item.source ? ('来源：' + item.source) : ''
+      ].filter(Boolean).join(' · ');
+      var preview = (item.previewLines || []).join(' / ');
+
+      return '' +
+        '<div class="lyrics-search-item' + (item.isCurrent ? ' is-current' : '') + '" data-index="' + index + '">' +
+          '<div class="lyrics-search-copy">' +
+            (item.isCurrent ? '<div class="lyrics-current-badge">当前使用中</div>' : '') +
+            '<div class="lyrics-search-title">' + (item.title || '未命名歌词') + '</div>' +
+            '<div class="lyrics-search-desc">' + (desc || '手动切换这个歌词版本') + '</div>' +
+            (preview ? ('<div class="lyrics-search-desc">预览：' + preview + '</div>') : '') +
+          '</div>' +
+          '<button class="lyrics-search-use' + (item.isCurrent ? ' is-current' : '') + '" type="button" data-index="' + index + '">' + (item.isCurrent ? '当前这版' : '使用这版') + '</button>' +
+        '</div>';
+    }).join('');
+  }
+
+  function setLyricsSearchStatus(text) {
+    if (lyricsSearchStatus) lyricsSearchStatus.textContent = text || '';
+  }
+
+  function toggleLyricsSearchPanel(forceOpen) {
+    if (!lyricsSearchPanel) return;
+    var shouldOpen = typeof forceOpen === 'boolean'
+      ? forceOpen
+      : !lyricsSearchPanel.classList.contains('is-open');
+    lyricsSearchPanel.classList.toggle('is-open', shouldOpen);
+
+    var track = getCurrentTrack();
+    if (shouldOpen && track) {
+      if (lyricsSearchTitleInput) lyricsSearchTitleInput.value = sanitizeTrackText(track.title);
+      if (lyricsSearchArtistInput) lyricsSearchArtistInput.value = sanitizeTrackText(track.artist);
+    }
+  }
+
+  function searchLyricsCandidates(track, title, artist) {
+    if (typeof fetch !== 'function') return;
+
+    var normalizedTitle = sanitizeTrackText(title || (track && track.title));
+    var normalizedArtist = sanitizeTrackText(artist || (track && track.artist));
+    if (!normalizedTitle && !normalizedArtist) {
+      setLyricsSearchStatus('请至少输入歌名或歌手中的一个再搜索。');
+      renderLyricsSearchResults([]);
+      return;
+    }
+
+    if (lyricsSearchAbortController && typeof lyricsSearchAbortController.abort === 'function') {
+      lyricsSearchAbortController.abort();
+    }
+    lyricsSearchAbortController = typeof AbortController !== 'undefined' ? new AbortController() : null;
+
+    setLyricsSearchStatus('正在搜索歌词候选...');
+    renderLyricsSearchResults([]);
+
+    fetch(getLyricsSearchEndpoint(track, normalizedTitle, normalizedArtist), {
+      method: 'GET',
+      signal: lyricsSearchAbortController ? lyricsSearchAbortController.signal : undefined,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then(function(response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(function(payload) {
+        var candidates = mergeCurrentLyricsCandidate(normalizeSearchCandidates(payload));
+        if (!candidates.length) {
+          setLyricsSearchStatus('没有找到新的歌词候选。当前歌词如果已经显示，会作为当前版本保留在这里。');
+          renderLyricsSearchResults([]);
+          return;
+        }
+
+        lyricsSearchResults._candidateList = candidates;
+        renderLyricsSearchResults(candidates);
+        setLyricsSearchStatus('已找到 ' + candidates.length + ' 个歌词候选，选择一版即可替换。');
+      })
+      .catch(function(error) {
+        if (error && error.name === 'AbortError') return;
+        var message = error && error.message ? error.message : '未知错误';
+        if (message === 'HTTP 404') {
+          message = '歌词搜索接口不存在。请用 npm start 启动 Node 歌词服务，不要再用纯静态服务器打开。';
+        }
+        setLyricsSearchStatus('歌词搜索失败：' + message);
+      });
+  }
+
+  function applyLyricsCandidate(candidate) {
+    var track = getCurrentTrack();
+    if (!track || !candidate) return;
+
+    if (candidate.isCurrent) {
+      setLyricsSearchStatus('当前已经在使用这版歌词。');
+      if (typeof window.toast === 'function') window.toast('当前已经在使用这版歌词');
+      return;
+    }
+
+    setLyricsOverride(track, candidate);
+    setLyricsSearchStatus('正在切换到：' + (candidate.title || track.title) + ' / ' + (candidate.artist || track.artist));
+    toggleLyricsSearchPanel(false);
+    renderLyricsSearchResults([]);
+    if (lyricsSearchResults) lyricsSearchResults._candidateList = [];
+    fetchLyrics(track);
+  }
+
+  function fetchLyrics(track) {
+    if (!track || typeof fetch !== 'function') return;
+
+    lyricsRequestToken += 1;
+    var currentToken = lyricsRequestToken;
+
+    if (lyricsAbortController && typeof lyricsAbortController.abort === 'function') {
+      lyricsAbortController.abort();
+    }
+
+    if (typeof AbortController !== 'undefined') {
+      lyricsAbortController = new AbortController();
+    } else {
+      lyricsAbortController = null;
+    }
+
+    lyricsState = {
+      lines: lyricsState.lines || [],
+      source: 'loading',
+      status: 'loading',
+      syncedEntries: lyricsState.syncedEntries || [],
+      activeIndex: lyricsState.activeIndex,
+      currentCandidate: lyricsState.currentCandidate || null
+    };
+    updateLyricsSourceLabel('loading');
+
+    fetch(applyLyricsOverride(track, getLyricsEndpoint(track)), {
+      method: 'GET',
+      signal: lyricsAbortController ? lyricsAbortController.signal : undefined,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function(payload) {
+        if (currentToken !== lyricsRequestToken) return;
+
+        var parsed = parseLyricsPayload(payload);
+        var lines = parsed.lines;
+        if (lines.length) {
+          lyricsState = {
+            lines: lines,
+            source: parsed.source,
+            status: 'loaded',
+            syncedEntries: Array.isArray(parsed.syncedEntries) ? parsed.syncedEntries : [],
+            activeIndex: -1,
+            currentCandidate: parsed.currentCandidate || null
+          };
+          renderLyricsLines(lines, lyricsState.syncedEntries);
+          updateLyricsSourceLabel(parsed.source);
+          setLyricsSearchStatus('歌词已切换成功：' + (parsed.currentCandidate && parsed.currentCandidate.title ? parsed.currentCandidate.title : sanitizeTrackText(track.title)));
+          if (typeof window.toast === 'function') {
+            window.toast('歌词已切换成功', 'success');
+          }
+          var lyricsContainer = document.getElementById('lyrics-lines');
+          if (lyricsContainer) lyricsContainer.scrollTop = 0;
+          syncLyricsWithAudio();
+          return;
+        }
+
+        lyricsState = {
+          lines: [
+            '服务器暂未找到《' + sanitizeTrackText(track.title) + '》的歌词',
+            '已按歌名和歌手尝试检索：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
+            '你可以稍后补充歌词库，或把服务端接到第三方歌词源。',
+            '当前仍可正常播放音频，歌词区会继续保留。'
+          ],
+          source: 'server',
+          status: 'empty',
+          syncedEntries: [],
+          activeIndex: -1,
+          currentCandidate: null
+        };
+        renderLyricsLines(lyricsState.lines);
+        updateLyricsSourceLabel('placeholder');
+      })
+      .catch(function(error) {
+        if (error && error.name === 'AbortError') return;
+        if (currentToken !== lyricsRequestToken) return;
+
+        var isFileProtocol = !!(window.location && window.location.protocol === 'file:');
+        var errorMessage = error && error.message ? error.message : '未知错误';
+        var hintLine = isFileProtocol
+          ? '当前页面是通过 file:// 打开的，浏览器会拦截大多数跨域歌词请求。请改用 http:// 本地服务器访问页面。'
+          : '页面会先回退到占位文案，你把服务端接口接好后这里就会自动显示歌词。';
+
+        lyricsState = {
+          lines: [
+            '歌词服务暂时不可用',
+            '当前歌曲：' + sanitizeTrackText(track.title),
+            '错误信息：' + errorMessage,
+            hintLine
+          ],
+          source: 'error',
+          status: 'error',
+          syncedEntries: [],
+          activeIndex: -1,
+          currentCandidate: null
+        };
+        renderLyricsLines(lyricsState.lines);
+        updateLyricsSourceLabel('error');
+      });
+  }
+
   function rotateLyrics() {
+    if (lyricsState && (lyricsState.status === 'loaded' || (lyricsState.syncedEntries && lyricsState.syncedEntries.length))) return;
+
     var lines = Array.prototype.slice.call(document.querySelectorAll('#lyrics-lines .lyric-line'));
     if (!lines.length) return;
 
@@ -202,6 +756,8 @@
       heroCover.alt = '当前歌曲封面';
       heroCover.classList.remove('playing');
       renderLyrics(null);
+      lyricsState.currentCandidate = null;
+      updateLyricsSourceLabel('placeholder');
       return;
     }
 
@@ -223,7 +779,13 @@
     heroSummary.textContent = '当前歌曲已进入播放器舞台。封面下方展示关键信息，右侧区域用来承接这首歌的文案、氛围和后续可替换的歌词内容。';
     heroCover.src = track.cover;
     heroCover.alt = track.title + ' 封面';
+    if (typeof window.ensureTrackCover === 'function') {
+      window.ensureTrackCover(track, heroCover);
+    }
     renderLyrics(track);
+    fetchLyrics(track);
+    if (lyricsSearchTitleInput) lyricsSearchTitleInput.value = sanitizeTrackText(track.title);
+    if (lyricsSearchArtistInput) lyricsSearchArtistInput.value = sanitizeTrackText(track.artist);
   }
 
   function updateSidebar() {
@@ -435,6 +997,31 @@
     document.addEventListener('ljyyt:favorites-changed', function() {
       renderCurrentQueue();
     });
+
+    if (lyricsSearchToggleButton) {
+      lyricsSearchToggleButton.addEventListener('click', function() {
+        toggleLyricsSearchPanel();
+      });
+    }
+
+    if (lyricsSearchSubmitButton) {
+      lyricsSearchSubmitButton.addEventListener('click', function() {
+        var track = getCurrentTrack();
+        if (!track) return;
+        searchLyricsCandidates(track, lyricsSearchTitleInput && lyricsSearchTitleInput.value, lyricsSearchArtistInput && lyricsSearchArtistInput.value);
+      });
+    }
+
+    if (lyricsSearchResults) {
+      lyricsSearchResults.addEventListener('click', function(event) {
+        var button = event.target.closest('button[data-index]');
+        if (!button) return;
+        var index = parseInt(button.getAttribute('data-index'), 10);
+        var list = lyricsSearchResults._candidateList || [];
+        if (isNaN(index) || !list[index]) return;
+        applyLyricsCandidate(list[index]);
+      });
+    }
   }
 
   function patchFunctions() {
@@ -476,13 +1063,18 @@
     ensureLyricsTimer(audio);
 
     audio.addEventListener('timeupdate', updateSidebar);
+    audio.addEventListener('timeupdate', syncLyricsWithAudio);
     audio.addEventListener('play', updateSidebar);
+    audio.addEventListener('play', syncLyricsWithAudio);
     audio.addEventListener('pause', updateSidebar);
     audio.addEventListener('loadedmetadata', updateSidebar);
+    audio.addEventListener('loadedmetadata', syncLyricsWithAudio);
+    audio.addEventListener('seeked', syncLyricsWithAudio);
   }
 
   function boot() {
     refs();
+    readLyricsOverrides();
     bindTabs();
     bindButtons();
     patchFunctions();

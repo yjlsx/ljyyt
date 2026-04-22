@@ -4,8 +4,9 @@
   "description": "丽江音悦台 - 纳西族音乐精选网站",
   "main": "index.html",
   "scripts": {
-    "start": "http-server -p 8080",
-    "dev": "http-server -p 3000",
+    "server": "node server.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "build": "mkdir -p dist && cp index.html style.css script.js README.md deploy.sh deploy.bat package.json dist/ && mkdir -p dist/images && cp ../images/avatar.jpg dist/images/",
     "deploy": "npm run build && gh-pages -d dist"
   },

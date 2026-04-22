@@ -12680,6 +12680,8 @@ console.log('✅ DOM元素获取完成');
 let currentTrackIndex = 0;
 let isPlaying = false;
 let currentMediaType = 'music';
+const DEFAULT_PLACEHOLDER_COVER = 'https://images.unsplash.com/photo-1677922068836-149f83761ddb?fm=jpg&q=60&w=640&auto=format&fit=crop';
+const coverResolutionCache = {};
 const musicIndexById = new Map(musicData.map(function(track, index) {
   return [track.id, index];
 }));
@@ -12699,6 +12701,95 @@ function formatTime(seconds) {
   return min + ':' + (sec < 10 ? '0' : '') + sec;
 }
 
+function sanitizeCoverLookupText(value) {
+  return String(value || '')
+    .replace(/\.(mp3|flac|wav|m4a)$/i, '')
+    .replace(/[《》"'`]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isPlaceholderCover(coverUrl) {
+  return String(coverUrl || '').trim() === DEFAULT_PLACEHOLDER_COVER;
+}
+
+function buildCoverCacheKey(track) {
+  if (!track) return '';
+  return [
+    String(track.id || '').trim(),
+    sanitizeCoverLookupText(track.title),
+    sanitizeCoverLookupText(track.artist)
+  ].join('::');
+}
+
+function applyResolvedCoverToDom(track, resolvedUrl, targetImage) {
+  if (!track || !resolvedUrl) return;
+
+  track.cover = resolvedUrl;
+
+  if (targetImage) {
+    targetImage.src = resolvedUrl;
+    targetImage.alt = track.title + ' 封面';
+  }
+
+  if (currentCover && musicData[currentTrackIndex] && musicData[currentTrackIndex].id === track.id) {
+    currentCover.src = resolvedUrl;
+    currentCover.alt = track.title + ' 封面';
+  }
+
+  var queueCardCover = document.querySelector('.music-card[data-id="' + track.id + '"] img.album-cover');
+  if (queueCardCover) {
+    queueCardCover.src = resolvedUrl;
+    queueCardCover.alt = track.title + ' 封面';
+  }
+
+  var heroCoverEl = document.getElementById('hero-cover');
+  if (heroCoverEl && musicData[currentTrackIndex] && musicData[currentTrackIndex].id === track.id) {
+    heroCoverEl.src = resolvedUrl;
+    heroCoverEl.alt = track.title + ' 封面';
+  }
+}
+
+function ensureTrackCover(track, targetImage) {
+  if (!track || !isPlaceholderCover(track.cover) || typeof fetch !== 'function') {
+    return Promise.resolve(track ? track.cover : '');
+  }
+
+  var title = sanitizeCoverLookupText(track.title);
+  var artist = sanitizeCoverLookupText(track.artist);
+  if (!title && !artist) return Promise.resolve(track.cover);
+
+  var cacheKey = buildCoverCacheKey(track);
+  if (coverResolutionCache[cacheKey]) {
+    applyResolvedCoverToDom(track, coverResolutionCache[cacheKey], targetImage);
+    return Promise.resolve(coverResolutionCache[cacheKey]);
+  }
+
+  var endpoint = '/api/cover?title=' + encodeURIComponent(title) + '&artist=' + encodeURIComponent(artist);
+  return fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+    .then(function(response) {
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      return response.json();
+    })
+    .then(function(payload) {
+      var imageUrl = payload && payload.imageUrl ? String(payload.imageUrl) : '';
+      if (!imageUrl) return track.cover;
+      coverResolutionCache[cacheKey] = imageUrl;
+      applyResolvedCoverToDom(track, imageUrl, targetImage);
+      return imageUrl;
+    })
+    .catch(function() {
+      return track.cover;
+    });
+}
+
+window.ensureTrackCover = ensureTrackCover;
+
 // 加载音乐
 function loadTrack(index) {
   console.log('🎵 加载音乐:', index, musicData[index].title);
@@ -12712,6 +12803,7 @@ function loadTrack(index) {
   setArtistElementContent(currentArtist, track.artist, false);
   currentCover.src = track.cover;
   currentCover.alt = track.title + ' 封面';
+  ensureTrackCover(track, currentCover);
   
   // 更新总时长
   totalTimeEl.textContent = formatTime(track.duration);
@@ -12844,6 +12936,7 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
   cover.className = 'album-cover me-2';
   cover.loading = 'lazy';
   cover.decoding = 'async';
+  ensureTrackCover(track, cover);
 
   var content = document.createElement('div');
   content.className = 'flex-grow-1 overflow-hidden';
