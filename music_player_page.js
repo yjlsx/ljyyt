@@ -187,6 +187,23 @@
     }).join('');
   }
 
+  function normalizeSyncedEntries(entries) {
+    return (Array.isArray(entries) ? entries : [])
+      .map(function(entry) {
+        if (!entry) return null;
+        return {
+          time: Number(entry.time),
+          text: String(entry.text || '').trim()
+        };
+      })
+      .filter(function(entry) {
+        return entry && !isNaN(entry.time) && entry.text;
+      })
+      .sort(function(a, b) {
+        return a.time - b.time;
+      });
+  }
+
   function sanitizeTrackText(value) {
     return String(value || '')
       .replace(/\.(mp3|flac|wav|m4a)$/i, '')
@@ -247,15 +264,11 @@
     var container = document.getElementById('lyrics-lines');
     if (!container) return;
 
-    var entries = Array.isArray(syncedEntries) ? syncedEntries.filter(Boolean) : [];
-    if (entries.length) {
-      lyricsState.syncedEntries = entries;
-    } else if (!Array.isArray(lyricsState.syncedEntries)) {
-      lyricsState.syncedEntries = [];
-    }
+    var entries = normalizeSyncedEntries(syncedEntries);
+    lyricsState.syncedEntries = entries;
 
-    if (lyricsState.syncedEntries && lyricsState.syncedEntries.length) {
-      container.innerHTML = lyricsState.syncedEntries.map(function(entry, index) {
+    if (entries.length) {
+      container.innerHTML = entries.map(function(entry, index) {
         var line = String(entry.text || '').trim();
         var cls = 'lyric-line';
         if (index === lyricsState.activeIndex) cls += ' active';
@@ -584,6 +597,7 @@
           };
         })
         .filter(Boolean);
+      lrclibSyncedEntries = normalizeSyncedEntries(lrclibSyncedEntries);
       var lrclibLines = lrclibSyncedEntries.length
         ? lrclibSyncedEntries.map(function(entry) { return entry.text; }).filter(Boolean)
         : String(payload.plainLyrics || '')
@@ -896,13 +910,14 @@
     }
 
     lyricsState = {
-      lines: lyricsState.lines || [],
+      lines: [],
       source: 'loading',
       status: 'loading',
-      syncedEntries: lyricsState.syncedEntries || [],
-      activeIndex: lyricsState.activeIndex,
-      currentCandidate: lyricsState.currentCandidate || null
+      syncedEntries: [],
+      activeIndex: -1,
+      currentCandidate: null
     };
+    renderLyrics(track);
     updateLyricsSourceLabel('loading');
 
     fetchJsonFromCandidates((function() {
@@ -931,7 +946,7 @@
             lines: lines,
             source: parsed.source,
             status: 'loaded',
-            syncedEntries: Array.isArray(parsed.syncedEntries) ? parsed.syncedEntries : [],
+            syncedEntries: normalizeSyncedEntries(parsed.syncedEntries),
             activeIndex: -1,
             currentCandidate: parsed.currentCandidate || null
           };
@@ -985,7 +1000,7 @@
                 lines: lines,
                 source: parsed.source,
                 status: 'loaded',
-                syncedEntries: Array.isArray(parsed.syncedEntries) ? parsed.syncedEntries : [],
+                syncedEntries: normalizeSyncedEntries(parsed.syncedEntries),
                 activeIndex: -1,
                 currentCandidate: parsed.currentCandidate || null
               };
@@ -1111,7 +1126,14 @@
       heroCover.alt = '当前歌曲封面';
       heroCover.classList.remove('playing');
       renderLyrics(null);
-      lyricsState.currentCandidate = null;
+      lyricsState = {
+        lines: [],
+        source: 'placeholder',
+        status: 'idle',
+        syncedEntries: [],
+        activeIndex: -1,
+        currentCandidate: null
+      };
       updateLyricsSourceLabel('placeholder');
       return;
     }
@@ -1137,6 +1159,14 @@
     if (typeof window.ensureTrackCover === 'function') {
       window.ensureTrackCover(track, heroCover);
     }
+    lyricsState = {
+      lines: [],
+      source: 'loading',
+      status: 'loading',
+      syncedEntries: [],
+      activeIndex: -1,
+      currentCandidate: null
+    };
     renderLyrics(track);
     fetchLyrics(track);
     if (lyricsSearchTitleInput) lyricsSearchTitleInput.value = sanitizeTrackText(track.title);

@@ -495,19 +495,32 @@
 
   function initBottomPlayerNavigation() {
     var bottomPlayer = document.getElementById('bottom-player');
+    var trackLinkArea = document.getElementById('bottom-player-track-link');
     if (!bottomPlayer) return;
+
+    function goToPlayerPage() {
+      var currentTrack = saveCurrentPlaybackState();
+      var targetUrl = 'music-player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
+      window.location.href = targetUrl;
+    }
 
     bottomPlayer.classList.add('bottom-player-linkable');
     bottomPlayer.setAttribute('data-player-link', 'music-player.html');
+
+    if (trackLinkArea) {
+      trackLinkArea.style.cursor = 'pointer';
+      trackLinkArea.addEventListener('click', function(event) {
+        if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+        if (event.target.closest('a, button, input, label, textarea, select')) return;
+        goToPlayerPage();
+      });
+    }
 
     bottomPlayer.addEventListener('click', function(event) {
       if (window.location.pathname.indexOf('music-player.html') !== -1) return;
       if (event.target.closest('button, a, input, label, textarea, select')) return;
       if (event.target.closest('#progress-container, .progress-container, .volume-control, #playlist-panel, #cover-overlay')) return;
-
-      var currentTrack = saveCurrentPlaybackState();
-      var targetUrl = 'music-player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
-      window.location.href = targetUrl;
+      goToPlayerPage();
     });
   }
 

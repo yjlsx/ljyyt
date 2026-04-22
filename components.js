@@ -43,9 +43,12 @@
             a('ranking.html',  '排行榜',  'fa-trophy',        page === 'ranking') +
             a('#about',        '关于我们', null,              false) +
           '</ul>' +
-          '<div class="d-none d-md-flex align-items-center ms-2">' +
-            '<form action="search.html" method="GET" class="d-flex">' +
-              '<input type="text" name="q" class="form-control form-control-sm bg-white text-dark border-secondary" placeholder="搜索歌曲..." style="width:160px">' +
+          '<div class="d-flex align-items-center ms-2 navbar-search-wrap">' +
+            '<form action="search.html" method="GET" class="d-flex align-items-center navbar-search-form">' +
+              '<input type="text" name="q" class="form-control form-control-sm bg-white text-dark border-secondary" placeholder="搜索歌曲..." style="width:160px;max-width:40vw;">' +
+              '<button type="submit" class="btn btn-light btn-sm ms-2" aria-label="搜索">' +
+                '<i class="fas fa-search text-primary"></i>' +
+              '</button>' +
             '</form>' +
           '</div>' +
         '</div>' +
@@ -58,7 +61,7 @@
     '<div id="bottom-player" class="bottom-player fixed-bottom text-white shadow-lg">' +
       '<div class="container">' +
         '<div class="d-flex align-items-center justify-content-between">' +
-          '<div class="current-track-info d-flex align-items-center flex-grow-1 me-3">' +
+          '<div id="bottom-player-track-link" class="current-track-info d-flex align-items-center flex-grow-1 me-3">' +
             '<img id="current-cover" src="./images/avatar.jpg" alt="专辑封面" class="rounded me-2" width="50" height="50">' +
             '<div>' +
               '<h6 id="current-title" class="mb-0" aria-live="polite">请选择一首歌曲</h6>' +

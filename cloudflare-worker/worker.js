@@ -239,6 +239,32 @@ function sanitizeText(value) {
     .trim();
 }
 
+function normalizeMatchText(value) {
+  return sanitizeText(value).toLowerCase();
+}
+
+function scoreCandidateMatch(lookup, candidateTitle, candidateArtist) {
+  const queryTitle = normalizeMatchText(lookup && lookup.title);
+  const queryArtist = normalizeMatchText(lookup && lookup.artist);
+  const title = normalizeMatchText(candidateTitle);
+  const artist = normalizeMatchText(candidateArtist);
+
+  let score = 0;
+
+  if (queryTitle && title === queryTitle) score += 80;
+  else if (queryTitle && title.includes(queryTitle)) score += 45;
+  else if (queryTitle && queryTitle.includes(title)) score += 30;
+
+  if (queryArtist && artist === queryArtist) score += 60;
+  else if (queryArtist && artist.includes(queryArtist)) score += 35;
+  else if (queryArtist && queryArtist.includes(artist)) score += 20;
+
+  if (!queryArtist && artist) score += 5;
+  if (!queryTitle && title) score += 5;
+
+  return score;
+}
+
 async function fetchJson(url) {
   const response = await fetch(url, {
     headers: {
@@ -357,7 +383,8 @@ async function fetchRangotecCandidates(lookup) {
     }
   }
 
-  return Array.from(deduped.values());
+  return Array.from(deduped.values())
+    .sort((a, b) => scoreCandidateMatch(lookup, b.title, b.artist) - scoreCandidateMatch(lookup, a.title, a.artist));
 }
 
 async function fetchRangotecLyrics(lookup) {
