@@ -123,20 +123,6 @@ async function handleLyricsRequest(url) {
     });
   }
 
-  const lyricsOvh = await fetchLyricsOvh(lookup);
-  if (lyricsOvh.lines.length) {
-    return jsonResponse({
-      found: true,
-      source: 'lyricsovh',
-      title: lookup.title,
-      artist: lookup.artist,
-      album: '',
-      providerId: '',
-      lines: lyricsOvh.lines,
-      syncedLyrics: []
-    });
-  }
-
   const rangotec = await fetchRangotecLyrics(lookup);
   if (rangotec.lines.length) {
     return jsonResponse({
@@ -162,6 +148,20 @@ async function handleLyricsRequest(url) {
       providerId: netease.providerId || '',
       lines: netease.lines,
       syncedLyrics: netease.syncedLyrics
+    });
+  }
+
+  const lyricsOvh = await fetchLyricsOvh(lookup);
+  if (lyricsOvh.lines.length) {
+    return jsonResponse({
+      found: true,
+      source: 'lyricsovh',
+      title: lookup.title,
+      artist: lookup.artist,
+      album: '',
+      providerId: '',
+      lines: lyricsOvh.lines,
+      syncedLyrics: []
     });
   }
 

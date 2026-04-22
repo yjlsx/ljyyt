@@ -345,6 +345,27 @@
     return customEndpoint + '?' + params.toString();
   }
 
+  function buildDirectLyricsFallbackUrls(track) {
+    var lookup = buildExternalLookupData(track);
+    var urls = [];
+
+    if (lookup.title && lookup.artist) {
+      urls.push(
+        'https://lrclib.net/api/get?track_name=' + encodeURIComponent(lookup.title) +
+        '&artist_name=' + encodeURIComponent(lookup.artist)
+      );
+    }
+
+    if (lookup.artist && lookup.title) {
+      urls.push(
+        'https://api.lyrics.ovh/v1/' + encodeURIComponent(lookup.artist) +
+        '/' + encodeURIComponent(lookup.title)
+      );
+    }
+
+    return urls;
+  }
+
   function getLyricsApiFallbackOrigins() {
     var origins = [];
     var origin = window.location && window.location.origin ? window.location.origin : '';
@@ -847,7 +868,8 @@
     setLyricsSearchStatus('正在搜索歌词候选...');
     renderLyricsSearchResults([]);
 
-    fetchJsonFromCandidates(getLyricsSearchEndpoint(track, normalizedTitle, normalizedArtist), {
+    var searchUrls = getLyricsSearchEndpoint(track, normalizedTitle, normalizedArtist);
+    fetchJsonFromCandidates(searchUrls, {
       method: 'GET',
       signal: lyricsSearchAbortController ? lyricsSearchAbortController.signal : undefined,
       headers: {
@@ -868,6 +890,44 @@
       })
       .catch(function(error) {
         if (error && error.name === 'AbortError') return;
+        var canFallbackToDirectSearch = !!(window.LYRICS_SEARCH_API_ENDPOINT && String(window.LYRICS_SEARCH_API_ENDPOINT).trim());
+        if (canFallbackToDirectSearch) {
+          fetchJsonFromCandidates([
+            'https://lrclib.net/api/search?' + (function() {
+              var params = new URLSearchParams();
+              if (normalizedTitle) params.set('track_name', normalizedTitle);
+              if (normalizedArtist) params.set('artist_name', normalizedArtist);
+              if (!normalizedTitle && normalizedArtist) params.set('q', normalizedArtist);
+              if (!normalizedArtist && normalizedTitle) params.set('q', normalizedTitle);
+              return params.toString();
+            })()
+          ], {
+            method: 'GET',
+            signal: lyricsSearchAbortController ? lyricsSearchAbortController.signal : undefined,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }).then(function(payload) {
+            var candidates = mergeCurrentLyricsCandidate(normalizeSearchCandidates(payload));
+            if (!candidates.length) {
+              setLyricsSearchStatus('当前代理不可用，已回退到公开搜索，但没有找到候选。');
+              renderLyricsSearchResults([]);
+              return;
+            }
+            lyricsSearchResults._candidateList = candidates;
+            renderLyricsSearchResults(candidates);
+            setLyricsSearchStatus('当前代理不可用，已回退到公开搜索，找到 ' + candidates.length + ' 个候选。');
+          }).catch(function(fallbackError) {
+            if (fallbackError && fallbackError.name === 'AbortError') return;
+            var fallbackMessage = fallbackError && fallbackError.message ? fallbackError.message : '未知错误';
+            if (fallbackMessage === 'HTTP 404') {
+              fallbackMessage = '当前歌词源没有返回搜索结果。';
+            }
+            setLyricsSearchStatus('歌词搜索失败：' + fallbackMessage);
+          });
+          return;
+        }
+
         var message = error && error.message ? error.message : '未知错误';
         if (message === 'HTTP 404') {
           message = '当前歌词源没有返回搜索结果。';
@@ -921,7 +981,7 @@
     renderLyrics(track);
     updateLyricsSourceLabel('loading');
 
-    fetchJsonFromCandidates((function() {
+    var primaryUrls = (function() {
       var endpoint = applyLyricsOverride(track, getLyricsEndpoint(track));
       if (/^https?:\/\//i.test(endpoint) || endpoint.indexOf('tools.rangotec.com/api/anon/lrc') !== -1) {
         return [endpoint];
@@ -930,7 +990,9 @@
       var query = endpoint.split('?')[1] || '';
       var params = new URLSearchParams(query);
       return buildLyricsApiUrl('/api/lyrics', params, window.LYRICS_API_ENDPOINT || '');
-    })(), {
+    })();
+
+    fetchJsonFromCandidates(primaryUrls, {
       method: 'GET',
       signal: lyricsAbortController ? lyricsAbortController.signal : undefined,
       headers: {
@@ -979,6 +1041,41 @@
       .catch(function(error) {
         if (error && error.name === 'AbortError') return;
         if (currentToken !== lyricsRequestToken) return;
+
+        var canFallbackToDirectLyrics = !!(window.LYRICS_API_ENDPOINT && String(window.LYRICS_API_ENDPOINT).trim());
+        if (canFallbackToDirectLyrics) {
+          fetchJsonFromCandidates(buildDirectLyricsFallbackUrls(track), {
+            method: 'GET',
+            signal: lyricsAbortController ? lyricsAbortController.signal : undefined,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }).then(function(payload) {
+            if (currentToken !== lyricsRequestToken) return;
+
+            var parsed = parseLyricsPayload(payload);
+            var lines = parsed.lines;
+            if (!lines.length) {
+              throw new Error('Direct fallback empty');
+            }
+
+            lyricsState = {
+              lines: lines,
+              source: parsed.source,
+              status: 'loaded',
+              syncedEntries: normalizeSyncedEntries(parsed.syncedEntries),
+              activeIndex: -1,
+              currentCandidate: parsed.currentCandidate || null
+            };
+            renderLyricsLines(lines, lyricsState.syncedEntries);
+            updateLyricsSourceLabel(parsed.source);
+            setLyricsSearchStatus('当前代理不可用，已回退到公开歌词源：' + sanitizeTrackText(track.title));
+            syncLyricsWithAudio();
+          }).catch(function() {
+            if (currentToken !== lyricsRequestToken) return;
+          });
+          return;
+        }
 
         var endpoint = applyLyricsOverride(track, getLyricsEndpoint(track));
         var canTryLrclibSearchFallback =
@@ -1107,10 +1204,12 @@
     }
 
     lyricTimer = setInterval(function() {
-      if (audio && !audio.paused) {
+      if (audio && !audio.paused && lyricsState && lyricsState.syncedEntries && lyricsState.syncedEntries.length) {
+        syncLyricsWithAudio();
+      } else if (audio && !audio.paused) {
         rotateLyrics();
       }
-    }, 2800);
+    }, 320);
   }
 
   function updateHero(track) {

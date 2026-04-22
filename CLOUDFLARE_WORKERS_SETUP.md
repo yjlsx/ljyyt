@@ -36,9 +36,9 @@ window.COVER_API_ENDPOINT = 'https://ljyyt-api.<your-subdomain>.workers.dev/api/
 - `/api/lyrics`
   - 先查 `LRCLIB`
   - 再试 `LRCLIB search`
-  - 再试 `lyrics.ovh`
   - 再试 `rangotec`
-  - 最后试网易云搜索 + 歌词接口
+  - 再试网易云搜索 + 歌词接口
+  - 最后才用 `lyrics.ovh` 纯文本歌词兜底
 - `/api/lyrics/search`
   - 合并 `LRCLIB`、`rangotec` 和网易云搜索候选
 - `/api/cover`
