@@ -275,6 +275,7 @@
         else if (lyricsState.activeIndex !== -1 && index < lyricsState.activeIndex) cls += ' dim';
         return '<div class="' + cls + '" data-lyric-index="' + index + '">' + line + '</div>';
       }).join('');
+      syncLyricsWithAudio();
       return;
     }
 
@@ -1167,6 +1168,11 @@
       activeIndex: -1,
       currentCandidate: null
     };
+    if (lyricsSearchResults) {
+      lyricsSearchResults._candidateList = [];
+      renderLyricsSearchResults([]);
+    }
+    setLyricsSearchStatus('');
     renderLyrics(track);
     fetchLyrics(track);
     if (lyricsSearchTitleInput) lyricsSearchTitleInput.value = sanitizeTrackText(track.title);
