@@ -247,6 +247,7 @@
       'loading': '正在搜索歌词',
       'error': '歌词加载失败',
       'lrclib': '当前来源：LRCLIB',
+      'lyricsovh': '当前来源：lyrics.ovh',
       'kugou': '当前来源：酷狗歌词',
       'rangotec': '当前来源：公共 LRC',
       'lrcapi': '当前来源：LrcApi 公共歌词',
@@ -444,6 +445,28 @@
     });
   }
 
+  function fetchLyricsOvhPayload(track, signal) {
+    var artist = sanitizeTrackText(track && track.artist);
+    var title = sanitizeTrackText(track && track.title);
+    if (!artist || !title) {
+      return Promise.reject(new Error('lyrics.ovh needs artist and title'));
+    }
+
+    return fetchJsonFromCandidates([
+      'https://api.lyrics.ovh/v1/' + encodeURIComponent(artist) + '/' + encodeURIComponent(title)
+    ], {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(function(payload) {
+      if (payload && !payload.title) payload.title = title;
+      if (payload && !payload.artist) payload.artist = artist;
+      return payload;
+    });
+  }
+
   function applyLyricsOverride(track, endpoint) {
     var override = getLyricsOverride(track);
     if (!override) return endpoint;
@@ -473,6 +496,14 @@
       .map(function(line) {
         return line.replace(/^\[[^\]]+\]/g, '').trim();
       })
+      .filter(Boolean);
+  }
+
+  function parseLyricsOvhPayload(payload) {
+    if (!payload || !payload.lyrics) return [];
+    return String(payload.lyrics)
+      .split(/\r?\n/)
+      .map(function(line) { return String(line || '').trim(); })
       .filter(Boolean);
   }
 
@@ -535,6 +566,26 @@
           }
         };
       }
+    }
+
+    var lyricsOvhLines = parseLyricsOvhPayload(payload);
+    if (lyricsOvhLines.length) {
+      return {
+        lines: lyricsOvhLines,
+        source: 'lyricsovh',
+        syncedEntries: [],
+        currentCandidate: {
+          source: 'lyricsovh',
+          title: payload.title || '',
+          artist: payload.artist || '',
+          album: '',
+          providerId: '',
+          candidateId: '',
+          accesskey: '',
+          previewLines: lyricsOvhLines.slice(0, 2),
+          isCurrent: true
+        }
+      };
     }
 
     var rangotecLines = parseRangotecLyrics(payload);
@@ -855,12 +906,12 @@
 
         lyricsState = {
           lines: [
-            '服务器暂未找到《' + sanitizeTrackText(track.title) + '》的歌词',
+            '暂时没有找到《' + sanitizeTrackText(track.title) + '》的歌词',
             '已按歌名和歌手尝试检索：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
-            '你可以稍后补充歌词库，或把服务端接到第三方歌词源。',
+            '当前站点正在使用公开歌词接口直连模式。',
             '当前仍可正常播放音频，歌词区会继续保留。'
           ],
-          source: 'server',
+          source: 'empty',
           status: 'empty',
           syncedEntries: [],
           activeIndex: -1,
@@ -907,21 +958,48 @@
               if (fallbackError && fallbackError.name === 'AbortError') return;
               if (currentToken !== lyricsRequestToken) return;
 
-              lyricsState = {
-                lines: [
-                  '暂时没有找到《' + sanitizeTrackText(track.title) + '》的歌词',
-                  '已尝试精确匹配和候选搜索：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
-                  '你可以点右上角“搜索歌词”手动挑选其他版本。',
-                  '当前仍可正常播放音频。'
-                ],
-                source: 'empty',
-                status: 'empty',
-                syncedEntries: [],
-                activeIndex: -1,
-                currentCandidate: null
-              };
-              renderLyricsLines(lyricsState.lines);
-              updateLyricsSourceLabel('placeholder');
+              fetchLyricsOvhPayload(track, lyricsAbortController ? lyricsAbortController.signal : undefined)
+                .then(function(payload) {
+                  if (currentToken !== lyricsRequestToken) return;
+
+                  var parsed = parseLyricsPayload(payload);
+                  var lines = parsed.lines;
+                  if (!lines.length) {
+                    throw new Error('lyrics.ovh empty');
+                  }
+
+                  lyricsState = {
+                    lines: lines,
+                    source: parsed.source,
+                    status: 'loaded',
+                    syncedEntries: [],
+                    activeIndex: -1,
+                    currentCandidate: parsed.currentCandidate || null
+                  };
+                  renderLyricsLines(lines);
+                  updateLyricsSourceLabel(parsed.source);
+                  setLyricsSearchStatus('已自动切换到 lyrics.ovh 歌词：' + sanitizeTrackText(track.title));
+                })
+                .catch(function(lastError) {
+                  if (lastError && lastError.name === 'AbortError') return;
+                  if (currentToken !== lyricsRequestToken) return;
+
+                  lyricsState = {
+                    lines: [
+                      '暂时没有找到《' + sanitizeTrackText(track.title) + '》的歌词',
+                      '已尝试 LRCLIB 精确匹配、候选搜索和 lyrics.ovh：' + (sanitizeTrackText(track.artist) || '未知艺术家'),
+                      '你可以点右上角“搜索歌词”手动挑选其他版本。',
+                      '当前仍可正常播放音频。'
+                    ],
+                    source: 'empty',
+                    status: 'empty',
+                    syncedEntries: [],
+                    activeIndex: -1,
+                    currentCandidate: null
+                  };
+                  renderLyricsLines(lyricsState.lines);
+                  updateLyricsSourceLabel('placeholder');
+                });
             });
           return;
         }
@@ -930,7 +1008,7 @@
         var errorMessage = error && error.message ? error.message : '未知错误';
         var hintLine = isFileProtocol
           ? '当前页面是通过 file:// 打开的，浏览器会拦截大多数跨域歌词请求。请改用 http:// 本地服务器访问页面。'
-          : '页面会先回退到占位文案，你把服务端接口接好后这里就会自动显示歌词。';
+          : '页面会先回退到占位文案。公开歌词接口偶尔会限流、无结果或临时不可用。';
 
         lyricsState = {
           lines: [

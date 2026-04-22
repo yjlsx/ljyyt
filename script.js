@@ -12682,7 +12682,6 @@ let isPlaying = false;
 let currentMediaType = 'music';
 const DEFAULT_PLACEHOLDER_COVER = 'https://images.unsplash.com/photo-1677922068836-149f83761ddb?fm=jpg&q=60&w=640&auto=format&fit=crop';
 const coverResolutionCache = {};
-let coverApiUnavailable = false;
 const musicIndexById = new Map(musicData.map(function(track, index) {
   return [track.id, index];
 }));
@@ -12768,7 +12767,7 @@ function ensureTrackCover(track, targetImage) {
 
   track.cover = normalizeMediaUrl(track.cover);
 
-  if (!isPlaceholderCover(track.cover) || typeof fetch !== 'function' || coverApiUnavailable) {
+  if (!isPlaceholderCover(track.cover)) {
     return Promise.resolve(track ? track.cover : '');
   }
 
@@ -12782,33 +12781,23 @@ function ensureTrackCover(track, targetImage) {
     return Promise.resolve(coverResolutionCache[cacheKey]);
   }
 
-  var endpoint = '/api/cover?title=' + encodeURIComponent(title) + '&artist=' + encodeURIComponent(artist);
-  return fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-    .then(function(response) {
-      if (!response.ok) {
-        if (response.status === 404 || response.status === 501) {
-          coverApiUnavailable = true;
-          console.log('⏭️ /api/cover 不可用，后续封面补全请求已停用');
-        }
-        throw new Error('HTTP ' + response.status);
-      }
-      return response.json();
-    })
-    .then(function(payload) {
-      var imageUrl = payload && payload.imageUrl ? String(payload.imageUrl) : '';
-      if (!imageUrl) return track.cover;
-      coverResolutionCache[cacheKey] = imageUrl;
-      applyResolvedCoverToDom(track, imageUrl, targetImage);
-      return imageUrl;
-    })
-    .catch(function() {
-      return track.cover;
-    });
+  var endpoint = 'https://api.lrc.cx/cover?title=' + encodeURIComponent(title) + '&artist=' + encodeURIComponent(artist);
+  return new Promise(function(resolve) {
+    var preloadImage = new Image();
+
+    preloadImage.onload = function() {
+      coverResolutionCache[cacheKey] = endpoint;
+      applyResolvedCoverToDom(track, endpoint, targetImage);
+      resolve(endpoint);
+    };
+
+    preloadImage.onerror = function() {
+      resolve(track.cover);
+    };
+
+    preloadImage.referrerPolicy = 'no-referrer';
+    preloadImage.src = endpoint;
+  });
 }
 
 window.ensureTrackCover = ensureTrackCover;
