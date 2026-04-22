@@ -12682,6 +12682,7 @@ let isPlaying = false;
 let currentMediaType = 'music';
 const DEFAULT_PLACEHOLDER_COVER = 'https://images.unsplash.com/photo-1677922068836-149f83761ddb?fm=jpg&q=60&w=640&auto=format&fit=crop';
 const coverResolutionCache = {};
+let coverApiUnavailable = false;
 const musicIndexById = new Map(musicData.map(function(track, index) {
   return [track.id, index];
 }));
@@ -12713,6 +12714,15 @@ function isPlaceholderCover(coverUrl) {
   return String(coverUrl || '').trim() === DEFAULT_PLACEHOLDER_COVER;
 }
 
+function normalizeMediaUrl(url) {
+  var value = String(url || '').trim();
+  if (!value) return '';
+  if (window.location && window.location.protocol === 'https:' && value.indexOf('http://') === 0) {
+    return 'https://' + value.slice('http://'.length);
+  }
+  return value;
+}
+
 function buildCoverCacheKey(track) {
   if (!track) return '';
   return [
@@ -12725,33 +12735,40 @@ function buildCoverCacheKey(track) {
 function applyResolvedCoverToDom(track, resolvedUrl, targetImage) {
   if (!track || !resolvedUrl) return;
 
-  track.cover = resolvedUrl;
+  var safeUrl = normalizeMediaUrl(resolvedUrl);
+  track.cover = safeUrl;
 
   if (targetImage) {
-    targetImage.src = resolvedUrl;
+    targetImage.src = safeUrl;
     targetImage.alt = track.title + ' 封面';
   }
 
   if (currentCover && musicData[currentTrackIndex] && musicData[currentTrackIndex].id === track.id) {
-    currentCover.src = resolvedUrl;
+    currentCover.src = safeUrl;
     currentCover.alt = track.title + ' 封面';
   }
 
   var queueCardCover = document.querySelector('.music-card[data-id="' + track.id + '"] img.album-cover');
   if (queueCardCover) {
-    queueCardCover.src = resolvedUrl;
+    queueCardCover.src = safeUrl;
     queueCardCover.alt = track.title + ' 封面';
   }
 
   var heroCoverEl = document.getElementById('hero-cover');
   if (heroCoverEl && musicData[currentTrackIndex] && musicData[currentTrackIndex].id === track.id) {
-    heroCoverEl.src = resolvedUrl;
+    heroCoverEl.src = safeUrl;
     heroCoverEl.alt = track.title + ' 封面';
   }
 }
 
 function ensureTrackCover(track, targetImage) {
-  if (!track || !isPlaceholderCover(track.cover) || typeof fetch !== 'function') {
+  if (!track) {
+    return Promise.resolve('');
+  }
+
+  track.cover = normalizeMediaUrl(track.cover);
+
+  if (!isPlaceholderCover(track.cover) || typeof fetch !== 'function' || coverApiUnavailable) {
     return Promise.resolve(track ? track.cover : '');
   }
 
@@ -12773,7 +12790,13 @@ function ensureTrackCover(track, targetImage) {
     }
   })
     .then(function(response) {
-      if (!response.ok) throw new Error('HTTP ' + response.status);
+      if (!response.ok) {
+        if (response.status === 404 || response.status === 501) {
+          coverApiUnavailable = true;
+          console.log('⏭️ /api/cover 不可用，后续封面补全请求已停用');
+        }
+        throw new Error('HTTP ' + response.status);
+      }
       return response.json();
     })
     .then(function(payload) {
@@ -12801,7 +12824,7 @@ function loadTrack(index) {
   // 更新播放器显示
   currentTitle.textContent = track.title;
   setArtistElementContent(currentArtist, track.artist, false);
-  currentCover.src = track.cover;
+  currentCover.src = normalizeMediaUrl(track.cover);
   currentCover.alt = track.title + ' 封面';
   ensureTrackCover(track, currentCover);
   
@@ -12931,7 +12954,7 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
   cardBody.className = 'card-body d-flex align-items-center p-2';
 
   var cover = document.createElement('img');
-  cover.src = track.cover;
+  cover.src = normalizeMediaUrl(track.cover);
   cover.alt = track.title;
   cover.className = 'album-cover me-2';
   cover.loading = 'lazy';
@@ -13351,7 +13374,7 @@ function renderVideoList() {
     card.innerHTML = 
       '<div class="card-body p-0">' +
         '<div class="position-relative">' +
-          '<img src="' + track.cover + '" alt="' + track.title + '" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">' +
+          '<img src="' + normalizeMediaUrl(track.cover) + '" alt="' + track.title + '" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">' +
           '<div class="position-absolute top-50 start-50 translate-middle">' +
             '<i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>' +
           '</div>' +
