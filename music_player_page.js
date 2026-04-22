@@ -719,7 +719,40 @@
     var audio = document.getElementById('audio-player');
     var container = document.getElementById('lyrics-lines');
     var entries = Array.isArray(lyricsState.syncedEntries) ? lyricsState.syncedEntries : [];
-    if (!audio || !container || !entries.length) return;
+    if (!audio || !container) return;
+
+    if (!entries.length) {
+      var plainLines = Array.isArray(lyricsState.lines) ? lyricsState.lines.filter(Boolean) : [];
+      var duration = Number(audio.duration || 0);
+      if (!plainLines.length || !duration || !isFinite(duration) || duration <= 0) return;
+
+      var progress = Math.min(Math.max((audio.currentTime || 0) / duration, 0), 0.999999);
+      var plainIndex = Math.min(Math.floor(progress * plainLines.length), plainLines.length - 1);
+      if (plainIndex === lyricsState.activeIndex) return;
+
+      lyricsState.activeIndex = plainIndex;
+      var plainNodes = Array.prototype.slice.call(container.querySelectorAll('.lyric-line'));
+      plainNodes.forEach(function(node, index) {
+        node.classList.toggle('active', index === plainIndex);
+        node.classList.toggle('dim', index < plainIndex || index > plainIndex + 2);
+      });
+
+      var plainActiveNode = container.querySelector('.lyric-line.active');
+      if (!plainActiveNode) return;
+
+      var plainContainerRect = container.getBoundingClientRect();
+      var plainActiveRect = plainActiveNode.getBoundingClientRect();
+      var plainActiveTop = plainActiveRect.top - plainContainerRect.top + container.scrollTop;
+      var plainTargetTop = Math.max(plainActiveTop - container.clientHeight * 0.35, 0);
+
+      if (Math.abs(container.scrollTop - plainTargetTop) > 20) {
+        container.scrollTo({
+          top: plainTargetTop,
+          behavior: audio.paused ? 'auto' : 'smooth'
+        });
+      }
+      return;
+    }
 
     var nextIndex = findSyncedLyricIndex(audio.currentTime || 0);
     if (nextIndex === lyricsState.activeIndex) return;
@@ -1176,7 +1209,7 @@
   }
 
   function rotateLyrics() {
-    if (lyricsState && (lyricsState.status === 'loaded' || (lyricsState.syncedEntries && lyricsState.syncedEntries.length))) return;
+    if (lyricsState && lyricsState.syncedEntries && lyricsState.syncedEntries.length) return;
 
     var lines = Array.prototype.slice.call(document.querySelectorAll('#lyrics-lines .lyric-line'));
     if (!lines.length) return;
