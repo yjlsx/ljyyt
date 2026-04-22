@@ -645,7 +645,7 @@
       tid = parseInt(tid);
       var idx = musicData.findIndex(function(t) { return t.id === tid; });
       if (idx !== -1) {
-        setTimeout(function() {
+        requestAnimationFrame(function() {
           if (window._playerStateRestored) {
             console.log('⏭️ 延迟执行前检测到已恢复本地播放状态，取消 URL track 覆盖');
             return;
@@ -653,7 +653,7 @@
           currentTrackIndex = idx;
           if (typeof loadTrack === 'function') loadTrack(idx);
           if (typeof playMusic === 'function') playMusic();
-        }, 1000);
+        });
       }
     }
   }

@@ -13517,21 +13517,26 @@ document.addEventListener('visibilitychange', function() {
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 DOM加载完成，开始初始化...');
+  const isPlayerPage = !!(document.body && document.body.classList.contains('music-player-page'));
   
   // 检测并设置滚动条宽度
   detectScrollbarWidth();
   
-  // 渲染音乐列表
-  renderMusicList();
-  
-  // 渲染视频列表
-  renderVideoList();
+  if (!isPlayerPage) {
+    // 首页才需要在初始化阶段渲染完整的音乐/视频入口区块
+    renderMusicList();
+    renderVideoList();
+  } else {
+    console.log('⏭️ 播放器页跳过首页重型列表初始化，交给 music_player_page.js 接管');
+  }
   
   // 初始化播放器事件监听
   initPlayerEvents();
   
   // 初始化搜索功能
-  initSearch();
+  if (!isPlayerPage) {
+    initSearch();
+  }
   
   // 检查是否有保存的播放状态
   console.log('🔍 检查是否有保存的播放状态...');

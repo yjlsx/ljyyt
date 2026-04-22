@@ -246,6 +246,7 @@
     var labels = {
       'loading': '正在搜索歌词',
       'error': '歌词加载失败',
+      'lrclib': '当前来源：LRCLIB',
       'kugou': '当前来源：酷狗歌词',
       'rangotec': '当前来源：公共 LRC',
       'lrcapi': '当前来源：LrcApi 公共歌词',
@@ -266,19 +267,21 @@
   function getLyricsEndpoint(track) {
     if (!track) return '';
 
-    var isFileProtocol = !!(window.location && window.location.protocol === 'file:');
     var customEndpoint = window.LYRICS_API_ENDPOINT || '';
 
     if (!customEndpoint) {
-      customEndpoint = isFileProtocol
-        ? 'https://tools.rangotec.com/api/anon/lrc'
-        : '/api/lyrics';
+      customEndpoint = 'https://lrclib.net/api/get';
     }
 
     var params = new URLSearchParams();
-    params.set('title', sanitizeTrackText(track.title));
-    params.set('artist', sanitizeTrackText(track.artist));
-    if (track.id !== undefined && track.id !== null) params.set('id', String(track.id));
+    if (customEndpoint.indexOf('lrclib.net/api/get') !== -1) {
+      params.set('track_name', sanitizeTrackText(track.title));
+      params.set('artist_name', sanitizeTrackText(track.artist));
+    } else {
+      params.set('title', sanitizeTrackText(track.title));
+      params.set('artist', sanitizeTrackText(track.artist));
+      if (track.id !== undefined && track.id !== null) params.set('id', String(track.id));
+    }
     if (customEndpoint.indexOf('tools.rangotec.com/api/anon/lrc') !== -1) {
       params.set('od', 'desc');
     }
@@ -286,15 +289,87 @@
     return customEndpoint + '?' + params.toString();
   }
 
+  function getLyricsApiFallbackOrigins() {
+    var origins = [];
+    var origin = window.location && window.location.origin ? window.location.origin : '';
+    var hostname = window.location && window.location.hostname ? window.location.hostname : '';
+    var isHttp = /^https?:/i.test(window.location && window.location.protocol ? window.location.protocol : '');
+
+    if (isHttp && origin && origin !== 'null') {
+      origins.push(origin);
+    }
+
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '') {
+      ['http://127.0.0.1:3000', 'http://localhost:3000'].forEach(function(candidate) {
+        if (origins.indexOf(candidate) === -1) origins.push(candidate);
+      });
+    }
+
+    return origins;
+  }
+
+  function buildLyricsApiUrl(pathname, params, preferredEndpoint) {
+    var directPath = pathname + '?' + params.toString();
+    var customEndpoint = preferredEndpoint || '';
+    var origins = getLyricsApiFallbackOrigins();
+    var candidates = [];
+
+    if (customEndpoint) {
+      candidates.push(customEndpoint + '?' + params.toString());
+    } else {
+      candidates.push(directPath);
+      origins.forEach(function(origin) {
+        candidates.push(origin + pathname + '?' + params.toString());
+      });
+    }
+
+    return candidates.filter(function(item, index) {
+      return item && candidates.indexOf(item) === index;
+    });
+  }
+
+  function fetchJsonFromCandidates(urls, options) {
+    var list = Array.isArray(urls) ? urls.filter(Boolean) : [urls];
+    if (!list.length) return Promise.reject(new Error('No request url'));
+
+    var lastError = null;
+
+    function attempt(index) {
+      if (index >= list.length) {
+        return Promise.reject(lastError || new Error('Request failed'));
+      }
+
+      return fetch(list[index], options).then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        return response.json();
+      }).catch(function(error) {
+        lastError = error;
+        return attempt(index + 1);
+      });
+    }
+
+    return attempt(0);
+  }
+
   function getLyricsSearchEndpoint(track, title, artist) {
-    var customEndpoint = window.LYRICS_SEARCH_API_ENDPOINT || '/api/lyrics/search';
+    var customEndpoint = window.LYRICS_SEARCH_API_ENDPOINT || 'https://lrclib.net/api/search';
     var normalizedTitle = sanitizeTrackText(title || (track && track.title));
     var normalizedArtist = sanitizeTrackText(artist || (track && track.artist));
     var params = new URLSearchParams();
+    if (customEndpoint.indexOf('lrclib.net/api/search') !== -1) {
+      if (normalizedTitle) params.set('track_name', normalizedTitle);
+      if (normalizedArtist) params.set('artist_name', normalizedArtist);
+      if (!normalizedTitle && normalizedArtist) params.set('q', normalizedArtist);
+      if (normalizedTitle && !normalizedArtist) params.set('q', normalizedTitle);
+      return [customEndpoint + '?' + params.toString()];
+    }
+
     if (normalizedTitle) params.set('title', normalizedTitle);
     if (normalizedArtist) params.set('artist', normalizedArtist);
     params.set('sources', 'kugou,kuwo,netease,qq,rangotec,lrcapi,local');
-    return customEndpoint + '?' + params.toString();
+    return buildLyricsApiUrl('/api/lyrics/search', params, customEndpoint);
   }
 
   function getLyricsOverride(track) {
@@ -311,6 +386,10 @@
   function applyLyricsOverride(track, endpoint) {
     var override = getLyricsOverride(track);
     if (!override) return endpoint;
+
+    if ((override.source === 'lrclib' || override.source === 'lrcapi') && override.providerId) {
+      return 'https://lrclib.net/api/get/' + encodeURIComponent(String(override.providerId));
+    }
 
     var url = new URL(endpoint, window.location.href);
     if (override.source) url.searchParams.set('source', override.source);
@@ -356,6 +435,45 @@
           isCurrent: true
         }
       };
+    }
+
+    if (payload && (payload.trackName || payload.artistName || payload.plainLyrics || payload.syncedLyrics)) {
+      var lrclibSyncedEntries = String(payload.syncedLyrics || '')
+        .split(/\r?\n/)
+        .map(function(line) {
+          var match = String(line || '').match(/^\[(\d{2}):(\d{2}(?:\.\d{1,3})?)\](.*)$/);
+          if (!match) return null;
+          return {
+            time: Number(match[1]) * 60 + Number(match[2]),
+            text: String(match[3] || '').trim()
+          };
+        })
+        .filter(Boolean);
+      var lrclibLines = lrclibSyncedEntries.length
+        ? lrclibSyncedEntries.map(function(entry) { return entry.text; }).filter(Boolean)
+        : String(payload.plainLyrics || '')
+            .split(/\r?\n/)
+            .map(function(line) { return String(line || '').trim(); })
+            .filter(Boolean);
+
+      if (lrclibLines.length) {
+        return {
+          lines: lrclibLines,
+          source: 'lrclib',
+          syncedEntries: lrclibSyncedEntries,
+          currentCandidate: {
+            source: 'lrclib',
+            title: payload.trackName || payload.name || '',
+            artist: payload.artistName || '',
+            album: payload.albumName || '',
+            providerId: payload.id || '',
+            candidateId: '',
+            accesskey: '',
+            previewLines: lrclibLines.slice(0, 2),
+            isCurrent: true
+          }
+        };
+      }
     }
 
     var rangotecLines = parseRangotecLyrics(payload);
@@ -439,19 +557,31 @@
   }
 
   function normalizeSearchCandidates(payload) {
-    var items = Array.isArray(payload && payload.candidates) ? payload.candidates : [];
+    var items = Array.isArray(payload)
+      ? payload
+      : Array.isArray(payload && payload.candidates)
+        ? payload.candidates
+        : [];
     return items.map(function(item) {
       return {
-        source: item.source || 'kugou',
-        title: item.title || '',
-        artist: item.artist || '',
-        album: item.album || '',
+        source: item.source || (item.trackName || item.artistName || item.plainLyrics || item.syncedLyrics ? 'lrclib' : 'kugou'),
+        title: item.title || item.trackName || item.name || '',
+        artist: item.artist || item.artistName || '',
+        album: item.album || item.albumName || '',
         duration: item.duration || '',
         durationText: item.durationText || '',
         candidateId: item.candidateId || '',
         accesskey: item.accesskey || '',
-        providerId: item.providerId || '',
-        previewLines: Array.isArray(item.previewLines) ? item.previewLines : [],
+        providerId: item.providerId || item.id || '',
+        previewLines: Array.isArray(item.previewLines)
+          ? item.previewLines
+          : String(item.plainLyrics || item.syncedLyrics || '')
+              .split(/\r?\n/)
+              .map(function(line) {
+                return String(line || '').replace(/^\[[^\]]+\]/, '').trim();
+              })
+              .filter(Boolean)
+              .slice(0, 2),
         isCurrent: !!item.isCurrent
       };
     }).filter(function(item) {
@@ -547,17 +677,13 @@
     setLyricsSearchStatus('正在搜索歌词候选...');
     renderLyricsSearchResults([]);
 
-    fetch(getLyricsSearchEndpoint(track, normalizedTitle, normalizedArtist), {
+    fetchJsonFromCandidates(getLyricsSearchEndpoint(track, normalizedTitle, normalizedArtist), {
       method: 'GET',
       signal: lyricsSearchAbortController ? lyricsSearchAbortController.signal : undefined,
       headers: {
         'Accept': 'application/json'
       }
     })
-      .then(function(response) {
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        return response.json();
-      })
       .then(function(payload) {
         var candidates = mergeCurrentLyricsCandidate(normalizeSearchCandidates(payload));
         if (!candidates.length) {
@@ -574,7 +700,7 @@
         if (error && error.name === 'AbortError') return;
         var message = error && error.message ? error.message : '未知错误';
         if (message === 'HTTP 404') {
-          message = '歌词搜索接口不存在。请用 npm start 启动 Node 歌词服务，不要再用纯静态服务器打开。';
+          message = '当前歌词源没有返回搜索结果。';
         }
         setLyricsSearchStatus('歌词搜索失败：' + message);
       });
@@ -624,19 +750,22 @@
     };
     updateLyricsSourceLabel('loading');
 
-    fetch(applyLyricsOverride(track, getLyricsEndpoint(track)), {
+    fetchJsonFromCandidates((function() {
+      var endpoint = applyLyricsOverride(track, getLyricsEndpoint(track));
+      if (/^https?:\/\//i.test(endpoint) || endpoint.indexOf('tools.rangotec.com/api/anon/lrc') !== -1) {
+        return [endpoint];
+      }
+
+      var query = endpoint.split('?')[1] || '';
+      var params = new URLSearchParams(query);
+      return buildLyricsApiUrl('/api/lyrics', params, window.LYRICS_API_ENDPOINT || '');
+    })(), {
       method: 'GET',
       signal: lyricsAbortController ? lyricsAbortController.signal : undefined,
       headers: {
         'Accept': 'application/json'
       }
     })
-      .then(function(response) {
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
-        }
-        return response.json();
-      })
       .then(function(payload) {
         if (currentToken !== lyricsRequestToken) return;
 
