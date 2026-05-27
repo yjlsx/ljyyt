@@ -57,7 +57,7 @@
       background: var(--background);
       font-family: "Geist", "PingFang SC", "Microsoft YaHei", sans-serif;
     }
-    button { font: inherit; color: inherit; border: 0; background: none; }
+    button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
     .app {
       height: 100dvh;
       position: relative;
@@ -540,7 +540,7 @@
       flex: 1 1 auto; min-width: 0; color: var(--muted-foreground); font-size: 12px;
       overflow: hidden; text-overflow: ellipsis;
     }
-    .mini-controls { display: flex; align-items: center; gap: 28px; }
+    .mini-controls { display: flex; align-items: center; gap: clamp(16px, 4.7vw, 28px); flex: 0 0 auto; }
     .mini-control {
       width: 27px; height: 34px; color: var(--muted-foreground);
       display: grid; place-items: center; border-radius: 11px;
@@ -663,6 +663,7 @@
     .controls button {
       color: rgba(255,255,255,.72); font-size: 23px; width: 48px; height: 48px;
       border-radius: 16px; display: grid; place-items: center; transition: background .18s ease, color .18s ease, transform .18s ease;
+      flex: 0 0 auto;
     }
     .controls svg, .icon-button svg, .progress svg, .queue svg {
       width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
@@ -673,6 +674,7 @@
       height: 61px; width: 61px; border-radius: 50%; background: white; color: #101415;
       display: grid; place-items: center; font-size: 25px;
     }
+    .controls .main-play svg { width: 24px; height: 24px; }
     .queue-drawer {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 70;
       height: min(75vh, 620px); transform: translateY(110%);
@@ -769,6 +771,24 @@
     @keyframes audio-bar { 0%,100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
     @keyframes appear { from { opacity: .2; transform: translateY(3px); } to { opacity: 1; transform: none; } }
     @keyframes rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @media (max-width: 430px) {
+      .player-stack { padding: 0 10px 8px; }
+      .player { gap: 8px; padding: 7px 8px; }
+      .player img { width: 42px; height: 42px; border-radius: 10px; flex: 0 0 auto; }
+      .player-copy { flex: 1 1 auto; min-width: 0; gap: 4px; }
+      .player-copy strong { font-size: 13px; }
+      .player-copy span { font-size: 11px; }
+      .mini-controls { gap: clamp(10px, 3.3vw, 15px); }
+      .mini-control, .queue { width: 28px; height: 36px; border-radius: 11px; }
+      .progress { width: 38px; height: 38px; flex: 0 0 38px; }
+      .controls { height: 92px; padding: 12px 22px 24px; }
+      .controls button { width: 45px; height: 45px; border-radius: 15px; }
+      .controls .main-play { width: 58px; height: 58px; }
+      .controls svg, .icon-button svg, .queue svg { width: 21px; height: 21px; }
+      .controls .main-play svg { width: 23px; height: 23px; }
+      .full-meta { padding-left: 22px; padding-right: 22px; }
+      .seek { margin-left: 22px; margin-right: 22px; }
+    }
     @media (min-width: 720px) {
       body {
         background: var(--secondary);
@@ -2676,6 +2696,7 @@
       pausePreviewVideo();
       closeTrackActionDrawer();
       closeSettingDrawer();
+      setQueueDrawerOpen(false);
       document.getElementById('full-player').classList.add('open');
     }
     function closeFullPlayer() {
