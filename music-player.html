@@ -1087,6 +1087,275 @@
       .cover-meta-panel { max-width: 220px; }
     }
 
+    .app-player-topbar,
+    .app-nowbar,
+    .queue-scrim {
+      display: none;
+    }
+
+    .app-player-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: var(--app-nav-height);
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 20px;
+      background: rgba(8, 13, 18, 0.76);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(18px);
+    }
+
+    .app-player-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #f8fafc;
+      text-decoration: none;
+      min-width: 0;
+    }
+
+    .app-player-brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .app-player-brand strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .app-player-brand span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(226, 232, 240, 0.58);
+      font-size: 0.74rem;
+      white-space: nowrap;
+    }
+
+    .app-player-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .app-player-nav a,
+    .app-player-nav button {
+      min-height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: rgba(241, 245, 249, 0.84);
+      background: rgba(255, 255, 255, 0.045);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .app-nowbar {
+      position: fixed;
+      left: 50%;
+      right: auto;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 1200;
+      width: min(calc(100vw - 32px), 980px);
+      min-height: var(--nowbar-height, 86px);
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(8, 13, 18, 0.92)),
+        radial-gradient(circle at 20% 10%, rgba(45, 212, 191, 0.13), transparent 35%);
+      box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(20px);
+      padding: 12px 16px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .now-track {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1 1 260px;
+    }
+
+    .now-cover {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      object-fit: cover;
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.16), rgba(56, 189, 248, 0.12));
+      flex: 0 0 58px;
+    }
+
+    .now-copy {
+      min-width: 0;
+    }
+
+    .now-copy h2,
+    .now-copy p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .now-copy h2 {
+      color: #f8fafc;
+      font-size: 0.96rem;
+      font-weight: 850;
+    }
+
+    .now-copy p {
+      margin-top: 4px;
+      color: rgba(203, 213, 225, 0.72);
+      font-size: 0.78rem;
+    }
+
+    .now-copy a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .now-controls,
+    .now-actions,
+    .now-volume {
+      display: flex;
+      align-items: center;
+    }
+
+    .now-controls { gap: 10px; flex: 0 0 auto; }
+    .now-actions { gap: 8px; flex: 0 0 auto; }
+    .now-volume { gap: 8px; color: rgba(203, 213, 225, 0.62); }
+    .now-volume input { width: 86px; accent-color: #48d9bd; }
+
+    .now-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(241, 245, 249, 0.86);
+      background: rgba(255, 255, 255, 0.055);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .now-btn:hover,
+    .now-btn:focus-visible {
+      background: rgba(45, 212, 191, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .now-btn.primary {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #48d9bd, #54a7ff);
+      color: #061018;
+      box-shadow: 0 14px 28px rgba(45, 212, 191, 0.2);
+      border-color: transparent;
+    }
+
+    .now-progress {
+      display: grid;
+      grid-template-columns: auto minmax(160px, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      flex: 1 1 360px;
+      color: rgba(203, 213, 225, 0.72);
+      font-size: 0.74rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .now-progress-track {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .now-progress-line {
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #48d9bd, #54a7ff);
+      transition: width 0.12s linear;
+    }
+
+    .queue-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 1040;
+      background: rgba(0, 0, 0, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    body.queue-open .queue-scrim {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    body.music-player-page .navbar,
+    body.music-player-page #bottom-player,
+    body.music-player-page #bottom-player-toggle {
+      display: none !important;
+    }
+
+    body.music-player-page {
+      --app-nav-height: 62px;
+      --nowbar-height: 86px;
+      min-height: 100dvh;
+    }
+
+    body.music-player-page .app-player-topbar,
+    body.music-player-page .app-nowbar,
+    body.music-player-page .queue-scrim {
+      display: flex;
+    }
+
+    body.music-player-page .music-shell {
+      height: auto;
+      min-height: 100dvh;
+      padding-top: 0;
+      padding-bottom: calc(var(--nowbar-height) + 34px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.music-player-page .music-layout {
+      min-height: calc(100dvh - var(--app-nav-height) - var(--nowbar-height) - 42px);
+      height: auto;
+    }
+
+    body.music-player-page .queue-panel {
+      height: calc(100dvh - var(--app-nav-height) - var(--nowbar-height) - 42px);
+      top: calc(var(--app-nav-height) + 18px);
+    }
+
     @media (max-width: 991.98px) {
       .music-layout { grid-template-columns: 1fr; height: auto; overflow-y: auto; }
       html, body { overflow: auto; }
@@ -1236,11 +1505,236 @@
         transform: translateY(calc(100% - 18px)) !important;
       }
     }
+
+    @media (max-width: 760px) {
+      body.music-player-page {
+        --app-nav-height: 58px;
+        --nowbar-height: 82px;
+      }
+
+      html, body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+      }
+
+      .app-player-topbar {
+        position: sticky;
+        height: var(--app-nav-height);
+        padding: 8px 12px;
+      }
+
+      .app-player-brand span,
+      .app-player-nav a:not(:first-child) {
+        display: none;
+      }
+
+      .music-shell {
+        max-width: none;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-bottom: calc(var(--nowbar-height) + 22px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+
+      .music-layout {
+        display: block;
+        min-height: 0 !important;
+        padding-top: 12px;
+      }
+
+      .player-stage {
+        min-height: 0;
+        max-height: calc(100dvh - var(--app-nav-height) - var(--nowbar-height) - 22px);
+        overflow: auto;
+      }
+
+      .stage-main {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .cover-frame {
+        width: min(58vw, 210px);
+        height: min(58vw, 210px);
+        padding: 12px;
+      }
+
+      .cover-frame::after {
+        width: 18px;
+        height: 18px;
+      }
+
+      .cover-meta-panel {
+        display: none;
+      }
+
+      .stage-transport {
+        gap: 14px;
+        margin-top: 12px;
+      }
+
+      .stage-transport-btn.prev,
+      .stage-transport-btn.next,
+      .stage-transport-btn.mode {
+        width: 44px;
+        height: 44px;
+      }
+
+      .stage-transport-btn.play {
+        width: 60px;
+        height: 60px;
+      }
+
+      .content-panel {
+        min-height: 220px;
+        max-height: none;
+      }
+
+      .lyrics-lines {
+        min-height: 160px;
+        max-height: 28vh;
+      }
+
+      .queue-panel {
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        bottom: calc(var(--nowbar-height) + env(safe-area-inset-bottom, 0px));
+        top: auto !important;
+        z-index: 1100;
+        height: min(72dvh, 620px) !important;
+        border-radius: 24px 24px 0 0;
+        transform: translateY(110%);
+        transition: transform 0.28s cubic-bezier(.2,.8,.2,1);
+        padding: 18px 14px 12px;
+        max-height: none;
+      }
+
+      body.queue-open .queue-panel {
+        transform: translateY(0);
+      }
+
+      .queue-header {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .queue-header::before {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        transform: translateX(-50%);
+        background: rgba(255,255,255,.22);
+      }
+
+      .queue-list {
+        min-height: 0;
+        max-height: none;
+      }
+
+      .app-nowbar {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        min-height: calc(var(--nowbar-height) + env(safe-area-inset-bottom, 0px));
+        border-radius: 22px 22px 0 0;
+        transform: none;
+        padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+        gap: 8px;
+      }
+
+      .now-cover {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+        border-radius: 13px;
+      }
+
+      .now-track {
+        flex: 1 1 auto;
+        gap: 9px;
+        min-width: 0;
+      }
+
+      .now-copy h2 {
+        font-size: 0.84rem;
+      }
+
+      .now-copy p {
+        font-size: 0.7rem;
+      }
+
+      .now-controls {
+        gap: 6px;
+      }
+
+      .now-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+      }
+
+      .now-btn.primary {
+        width: 46px;
+        height: 46px;
+      }
+
+      .now-progress {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: -12px;
+        min-width: 0;
+        display: block;
+      }
+
+      .now-progress span {
+        display: none;
+      }
+
+      .now-progress-track {
+        height: 18px;
+      }
+
+      .now-progress-line {
+        height: 4px;
+      }
+
+      .now-actions,
+      .now-volume,
+      #prev-btn,
+      #next-btn {
+        display: none;
+      }
+
+      #mobile-queue-toggle {
+        display: inline-flex;
+      }
+    }
   </style>
 </head>
 <body class="music-player-page">
-  <!-- 导航栏 (由 components.js 注入) -->
-  <div id="navbar-placeholder"></div>
+  <header class="app-player-topbar" aria-label="播放器导航">
+    <a class="app-player-brand" href="index.html" aria-label="返回丽江音悦台首页">
+      <img src="./images/avatar.jpg" alt="丽江音悦台">
+      <span>
+        <strong>丽江音悦台</strong>
+        <span>纳西音乐播放器</span>
+      </span>
+    </a>
+    <nav class="app-player-nav" aria-label="播放器页导航">
+      <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i>首页</a>
+      <a href="search.html"><i class="fas fa-search" aria-hidden="true"></i>搜索</a>
+      <button id="mobile-queue-toggle" type="button" aria-label="打开播放队列"><i class="fas fa-stream" aria-hidden="true"></i>队列</button>
+    </nav>
+  </header>
 
   <main class="music-shell">
     <div class="music-layout">
@@ -1346,11 +1840,8 @@
               <div class="lyrics-search-results" id="lyrics-search-results"></div>
             </div>
             <div class="lyrics-lines" id="lyrics-lines">
-              <div class="lyric-line active">点击右侧任意歌曲开始播放，主题区会自动切换。</div>
-              <div class="lyric-line">中间区域负责承载当前歌曲的视觉和信息主舞台。</div>
-              <div class="lyric-line dim">右边列表保持独立，只负责浏览和切歌。</div>
-              <div class="lyric-line dim">底部保留真实播放控件，拖动进度和切歌都会直接生效。</div>
-              <div class="lyric-line dim">后续如果你给我歌词数据，这里就能替换成真正的歌词滚动效果。</div>
+              <div class="lyric-line active">暂无歌词，正在尝试匹配</div>
+              <div class="lyric-line">没有找到歌词时，可以手动搜索更多版本。</div>
             </div>
             </section>
           </div>
@@ -1387,17 +1878,45 @@
     </div>
   </main>
 
-  <!-- 底部播放器 (由 components.js 注入) -->
-  <div id="player-placeholder"></div>
+  <div class="queue-scrim" id="queue-scrim" aria-hidden="true"></div>
 
-  <!-- 组件注入必须最先加载 -->
-  <script src="components.js"></script>
+  <audio id="audio-player" preload="metadata"></audio>
+  <footer class="app-nowbar" aria-label="当前播放">
+    <div class="now-track">
+      <img id="current-cover" class="now-cover" src="./images/avatar.jpg" alt="专辑封面">
+      <div class="now-copy">
+        <h2 id="current-title" aria-live="polite">请选择一首歌曲</h2>
+        <p id="current-artist">-</p>
+      </div>
+    </div>
+    <div class="now-controls" aria-label="播放控制">
+      <button id="prev-btn" class="now-btn" type="button" aria-label="上一首"><i class="fas fa-step-backward" aria-hidden="true"></i></button>
+      <button id="play-btn" class="now-btn primary" type="button" aria-label="开始播放" aria-pressed="false"><i class="fas fa-play" aria-hidden="true"></i></button>
+      <button id="next-btn" class="now-btn" type="button" aria-label="下一首"><i class="fas fa-step-forward" aria-hidden="true"></i></button>
+    </div>
+    <div class="now-progress" aria-label="播放进度">
+      <span id="current-time">0:00</span>
+      <div id="progress-container" class="now-progress-track" role="slider" aria-label="播放进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="now-progress-line"><div id="progress-bar"></div></div>
+      </div>
+      <span id="total-time">0:00</span>
+    </div>
+    <div class="now-actions">
+      <button id="btn-mode" class="now-btn" type="button" aria-label="切换播放模式"><i class="fas fa-list-ol" aria-hidden="true"></i></button>
+      <button id="btn-fav" class="now-btn" type="button" aria-label="收藏当前歌曲" aria-pressed="false"><i class="far fa-heart" aria-hidden="true"></i></button>
+      <button id="mobile-queue-toggle-bottom" class="now-btn" type="button" aria-label="打开播放队列"><i class="fas fa-stream" aria-hidden="true"></i></button>
+    </div>
+    <label class="now-volume" aria-label="音量">
+      <i class="fas fa-volume-up" aria-hidden="true"></i>
+      <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8" aria-label="音量">
+    </label>
+  </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="videos/video_data.js"></script>
   <script src="player_state.js"></script>
   <script src="site-config.js"></script>
   <script src="script.js"></script>
-  <script src="player_enhanced.js"></script>
-  <script src="music_player_page.js"></script>
+  <script src="music_player_page.js?v=app-player-20260528"></script>
 </body>
 </html>
