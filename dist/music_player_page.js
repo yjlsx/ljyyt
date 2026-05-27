@@ -21,6 +21,7 @@
   var stageNextButton;
   var queueSearchInput;
   var queueSearchClearButton;
+  var queueFilterToggleButton;
   var lyricsSourceLabel;
   var lyricsSearchToggleButton;
   var lyricsSearchPanel;
@@ -60,6 +61,7 @@
     stagePlayButton = document.getElementById('stage-play-btn');
     queueSearchInput = document.getElementById('queue-search-input');
     queueSearchClearButton = document.getElementById('queue-search-clear');
+    queueFilterToggleButton = document.getElementById('queue-filter-toggle');
     lyricsSourceLabel = document.getElementById('lyrics-source-label');
     lyricsSearchToggleButton = document.getElementById('lyrics-search-toggle');
     lyricsSearchPanel = document.getElementById('lyrics-search-panel');
@@ -1663,6 +1665,19 @@
       queueSearchInput.addEventListener('input', function() {
         queueSearchQuery = queueSearchInput.value || '';
         renderCurrentQueue();
+      });
+    }
+
+    if (queueFilterToggleButton) {
+      queueFilterToggleButton.addEventListener('click', function() {
+        var shouldOpen = !document.body.classList.contains('queue-filter-open');
+        document.body.classList.toggle('queue-filter-open', shouldOpen);
+        queueFilterToggleButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        if (shouldOpen && queueSearchInput) {
+          setTimeout(function() {
+            queueSearchInput.focus();
+          }, 80);
+        }
       });
     }
 
