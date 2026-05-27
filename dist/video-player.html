@@ -9,12 +9,6 @@
   <!-- SEO Meta -->
   <meta name="description" content="丽江音悦台 - 纳西族音乐视频播放器">
   <meta name="robots" content="noindex">
-  <meta property="og:title" content="丽江音悦台 - 视频播放">
-  <meta property="og:description" content="在丽江音悦台观看纳西音乐视频。">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
-  <meta property="og:url" content="https://ljyyt.bbroot.com/video-player.html">
-  <link rel="canonical" href="https://ljyyt.bbroot.com/video-player.html">
 
   <!-- Preconnect -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -23,9 +17,11 @@
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <script src="js/theme.js"></script>
+  <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="main.css?v=20260526-1">
+  <link rel="stylesheet" href="main.css">
   <style>
     body {
       background: linear-gradient(135deg, #f5f7fa, #c3cfe2) !important;
@@ -568,7 +564,7 @@
         <div class="video-container" id="videoContainer">
           <div id="videoPlaceholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; align-items: center; justify-content: center; z-index: 1;">
             <div id="coverImageContainer" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-              <img id="coverImage" src="./images/avatar.jpg" alt="视频封面" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+              <img id="coverImage" src="" alt="视频封面" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
             </div>
             <div id="playButtonOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2;">
               <i class="fas fa-play-circle" style="font-size: 5rem; color: rgba(255,255,255,0.8);"></i>
@@ -578,7 +574,7 @@
             <!-- 这里将动态插入视频源 -->
           </video>
           <div class="custom-controls">
-            <button id="playPauseBtn" class="control-btn" title="播放/暂停 (空格)" aria-label="播放或暂停视频">
+            <button id="playPauseBtn" class="control-btn" title="播放/暂停 (空格)">
               <i class="fas fa-play"></i>
             </button>
             <div class="time-display">
@@ -589,12 +585,12 @@
               <div class="progress-buffer" id="progressBuffer"></div>
             </div>
             <div class="volume-container">
-              <button id="volumeBtn" class="control-btn" title="静音 (M)" aria-label="静音或取消静音">
+              <button id="volumeBtn" class="control-btn" title="静音 (M)">
                 <i class="fas fa-volume-up"></i>
               </button>
               <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
             </div>
-            <button id="fullscreenBtn" class="control-btn fullscreen-btn" title="全屏 (F)" aria-label="进入或退出全屏">
+            <button id="fullscreenBtn" class="control-btn fullscreen-btn" title="全屏 (F)">
               <i class="fas fa-expand"></i>
             </button>
           </div>
@@ -621,7 +617,7 @@
   </div>
 
   <!-- 组件注入必须最先加载 -->
-  <script src="components.js?v=20260526-1"></script>
+  <script src="components.js"></script>
   <script src="videos/video_data.js"></script>
   <script>
     var currentPage = 0;
@@ -859,7 +855,7 @@
         }
       } else {
         // 设置封面图片
-        coverImage.src = video.cover || './images/avatar.jpg';
+        coverImage.src = video.cover;
         coverImage.style.display = 'block';
         videoPlaceholder.style.display = 'flex';
         
@@ -938,7 +934,7 @@
         });
       }
       
-      document.title = '丽江音悦台';
+      document.title = video.title + " - 丽江音悦台";
       document.getElementById('videoTitle').innerText = video.title;
       renderArtistLinksLocal(document.getElementById('videoArtist'), video.artist);
       document.getElementById('videoAlbum').innerText = video.album || '默认专辑';
@@ -957,7 +953,7 @@
         var isActive = (v.id == currentId);
         list.innerHTML += `<div class="col-12 col-md-6 mb-3">
           <div class="video-card h-100${isActive ? ' active-card' : ''}" onclick="location.href='video-player.html?id=${v.id}&page=${currentPage}'">
-            <img src="${v.cover || './images/avatar.jpg'}" alt="视频封面" class="w-100" style="height:110px; object-fit:cover;" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='./images/avatar.jpg'">
+            <img src="${v.cover}" class="w-100" style="height:110px; object-fit:cover;" loading="lazy" decoding="async">
             <div class="p-2 small">
               <div class="text-truncate fw-bold">${v.title}${isActive ? ' <i class="fas fa-play-circle text-primary" style="font-size:0.7rem"></i>' : ''}</div>
               <div class="text-muted text-truncate">${splitArtistNamesLocal(v.artist).join('、') || v.artist}</div>
@@ -972,9 +968,9 @@
       const controls = document.getElementById('paginationControls');
       let totalPages = Math.ceil(allRelatedVideos.length / videosPerPage);
       controls.innerHTML = `
-        <button class="pagination-btn" aria-label="上一页" ${currentPage==0?'disabled':''} onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="pagination-btn" ${currentPage==0?'disabled':''} onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
         <span class="small text-muted">${currentPage+1} / ${totalPages}</span>
-        <button class="pagination-btn" aria-label="下一页" ${currentPage>=totalPages-1?'disabled':''} onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
+        <button class="pagination-btn" ${currentPage>=totalPages-1?'disabled':''} onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
       `;
     }
 
@@ -1134,7 +1130,7 @@
         // 视频不存在
         document.getElementById('videoTitle').innerText = '视频不存在';
         document.getElementById('videoDescription').innerHTML = '<div class="text-center py-4"><i class="fas fa-exclamation-triangle fa-3x mb-3" style="color:#ffc107"></i><p class="text-muted">找不到该视频，请返回<a href="index.html" class="text-primary">首页</a>重新选择。</p></div>';
-        document.title = '丽江音悦台';
+        document.title = '视频不存在 - 丽江音悦台';
         // 仍然显示视频列表
         allRelatedVideos = videoData;
         renderList();

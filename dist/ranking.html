@@ -5,12 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="丽江音悦台 - 热门排行榜">
-  <meta property="og:title" content="丽江音悦台 - 热门排行榜">
-  <meta property="og:description" content="发现丽江音悦台热门歌曲。">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
-  <meta property="og:url" content="https://ljyyt.bbroot.com/ranking.html">
-  <link rel="canonical" href="https://ljyyt.bbroot.com/ranking.html">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://res.wx.qq.com" crossorigin>
@@ -18,9 +12,11 @@
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <script src="js/theme.js"></script>
+  <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="main.css?v=20260526-1">
+  <link rel="stylesheet" href="main.css">
   <style>
     body {
       padding-top: 70px;
@@ -215,13 +211,13 @@
   <div id="player-placeholder"></div>
 
   <!-- 组件注入必须最先加载 -->
-  <script src="components.js?v=20260526-1"></script>
+  <script src="components.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="videos/video_data.js"></script>
-  <script src="site-config.js?v=20260526-1"></script>
-  <script src="script.js?v=20260526-1"></script>
+  <script src="site-config.js"></script>
+  <script src="script.js"></script>
   <script src="player_state.js"></script>
-  <script src="player_enhanced.js?v=20260526-1"></script>
+  <script src="player_enhanced.js"></script>
   <script>
     function formatTime(s) {
       if (!s) return '0:00';
@@ -261,7 +257,7 @@
         div.className = 'rank-item';
         div.innerHTML =
           '<div class="rank-num ' + getRankClass(i) + '">' + (i+1) + '</div>' +
-          '<img src="' + (track.cover || './images/avatar.jpg') + '" alt="歌曲封面" class="rank-cover" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+          '<img src="' + track.cover + '" class="rank-cover" loading="lazy">' +
           '<div class="rank-info">' +
             '<div class="rank-song">' + track.title + '</div>' +
             '<div class="rank-artist">' + track.artist + '</div>' +

@@ -6,12 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="丽江音悦台 - 歌手详情页">
   <meta name="robots" content="noindex">
-  <meta property="og:title" content="丽江音悦台 - 歌手详情">
-  <meta property="og:description" content="查看丽江音悦台歌手相关歌曲与视频。">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
-  <meta property="og:url" content="https://ljyyt.bbroot.com/artist.html">
-  <link rel="canonical" href="https://ljyyt.bbroot.com/artist.html">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://res.wx.qq.com" crossorigin>
@@ -19,9 +13,11 @@
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <script src="js/theme.js"></script>
+  <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="main.css?v=20260526-1">
+  <link rel="stylesheet" href="main.css">
   <style>
     body {
       padding-top: 70px;
@@ -234,7 +230,7 @@
 
     <!-- 歌手头部 -->
     <div class="artist-header" id="artist-header">
-      <img id="artist-avatar" class="artist-avatar" src="./images/avatar.jpg" alt="歌手头像">
+      <img id="artist-avatar" class="artist-avatar" src="./images/avatar.jpg" alt="">
       <div class="artist-info">
         <h1 id="artist-name">加载中...</h1>
         <div class="artist-stats">
@@ -267,13 +263,13 @@
   <div id="player-placeholder"></div>
 
   <!-- 组件注入必须最先加载 -->
-  <script src="components.js?v=20260526-1"></script>
+  <script src="components.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="videos/video_data.js"></script>
-  <script src="site-config.js?v=20260526-1"></script>
-  <script src="script.js?v=20260526-1"></script>
+  <script src="site-config.js"></script>
+  <script src="script.js"></script>
   <script src="player_state.js"></script>
-  <script src="player_enhanced.js?v=20260526-1"></script>
+  <script src="player_enhanced.js"></script>
   <script>
     function getUrlParam(name) {
       var r = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(location.search);
@@ -309,7 +305,7 @@
       document.getElementById('songs-section').style.display = 'none';
       document.getElementById('videos-section').style.display = 'none';
     } else {
-      document.title = '丽江音悦台';
+      document.title = artistName + ' - 丽江音悦台';
       document.getElementById('artist-name').innerText = artistName;
 
       function containsArtistName(item, targetArtist) {
@@ -330,9 +326,9 @@
 
       // 用第一首歌的封面做头像
       if (songs.length > 0) {
-        document.getElementById('artist-avatar').src = songs[0].cover || './images/avatar.jpg';
+        document.getElementById('artist-avatar').src = songs[0].cover;
       } else if (videos.length > 0) {
-        document.getElementById('artist-avatar').src = videos[0].cover || './images/avatar.jpg';
+        document.getElementById('artist-avatar').src = videos[0].cover;
       }
 
       // 渲染歌曲
@@ -347,7 +343,7 @@
           div.dataset.index = idx;
           div.innerHTML =
             '<span class="artist-song-num">' + (i+1) + '</span>' +
-            '<img src="' + (track.cover || './images/avatar.jpg') + '" alt="歌曲封面" class="artist-song-cover" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<img src="' + track.cover + '" class="artist-song-cover" loading="lazy">' +
             '<div class="artist-song-info"><div class="artist-song-title">' + track.title + '</div></div>' +
             '<span class="artist-song-duration">' + formatTime(track.duration) + '</span>';
           div.addEventListener('click', function() {
@@ -373,7 +369,7 @@
           var card = document.createElement('div');
           card.className = 'artist-video-card';
           card.innerHTML =
-            '<img src="' + (v.cover || './images/avatar.jpg') + '" alt="视频封面" style="width:100%;height:160px;object-fit:cover;" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<img src="' + v.cover + '" style="width:100%;height:160px;object-fit:cover;" loading="lazy">' +
             '<div class="p-2"><div class="card-title text-truncate">' + v.title + '</div></div>';
           card.addEventListener('click', function() {
             window.location.href = 'video-player.html?id=' + v.id;

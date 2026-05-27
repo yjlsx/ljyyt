@@ -14,6 +14,8 @@
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <script src="js/theme.js"></script>
+  <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="main.css">
@@ -848,6 +850,15 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       flex: 0 0 auto;
+    }
+
+    .line-icon.icon-filled {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+
+    .line-icon.icon-spin {
+      animation: ljyytIconSpin 0.9s linear infinite;
     }
 
     .player-tab {
@@ -1857,7 +1868,13 @@
       </span>
     </a>
     <nav class="app-player-nav" aria-label="播放器页导航">
-      <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i>首页</a>
+      <a href="index.html">
+        <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"></path>
+          <path d="M5 10.5V20h14v-9.5"></path>
+        </svg>
+        首页
+      </a>
       <a class="app-search-entry" href="search.html" aria-label="搜索音乐">
         <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="m21 21-4.3-4.3"></path>
@@ -1880,12 +1897,20 @@
       <section class="player-panel player-stage">
         <div class="stage-topbar">
           <div class="stage-badge">
-            <i class="fas fa-headphones-alt"></i>
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 14v-2a8 8 0 0 1 16 0v2"></path>
+              <path d="M4 14h3v6H4v-6ZM17 14h3v6h-3v-6Z"></path>
+            </svg>
             <span id="hero-status">正在准备播放器</span>
           </div>
           <div class="stage-actions">
             <button class="stage-action" id="scroll-current-track" type="button">
-              <i class="fas fa-crosshairs me-2"></i>定位当前歌曲
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="7"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
+              </svg>
+              定位当前歌曲
             </button>
           </div>
         </div>
@@ -1898,28 +1923,28 @@
             <div class="cover-meta-panel">
               <div class="cover-meta-list">
                 <div class="cover-meta-item">
-                  <span class="cover-meta-icon"><i class="fas fa-user"></i></span>
+                  <span class="cover-meta-icon"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
                   <div class="cover-meta-copy">
                     <span class="cover-meta-label">歌手</span>
                     <span class="cover-meta-value" id="hero-artist-chip">-</span>
                   </div>
                 </div>
                 <div class="cover-meta-item">
-                  <span class="cover-meta-icon"><i class="fas fa-record-vinyl"></i></span>
+                  <span class="cover-meta-icon"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="2"></circle></svg></span>
                   <div class="cover-meta-copy">
                     <span class="cover-meta-label">专辑</span>
                     <span class="cover-meta-value" id="hero-album">纳西音乐精选</span>
                   </div>
                 </div>
                 <div class="cover-meta-item">
-                  <span class="cover-meta-icon"><i class="fas fa-clock"></i></span>
+                  <span class="cover-meta-icon"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v5l3 2"></path></svg></span>
                   <div class="cover-meta-copy">
                     <span class="cover-meta-label">时长</span>
                     <span class="cover-meta-value" id="hero-duration">0:00</span>
                   </div>
                 </div>
                 <div class="cover-meta-item">
-                  <span class="cover-meta-icon"><i class="fas fa-wave-square"></i></span>
+                  <span class="cover-meta-icon"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h3l2-7 4 14 3-9 2 2h4"></path></svg></span>
                   <div class="cover-meta-copy">
                     <span class="cover-meta-label">播放状态</span>
                     <span class="cover-meta-value" id="side-playing-state">未播放</span>
@@ -1927,7 +1952,7 @@
                 </div>
                 <div class="cover-meta-item">
                   <button class="cover-meta-icon mode-toggle" id="side-mode-toggle" type="button" aria-label="切换播放模式" title="切换播放模式">
-                    <i class="fas fa-repeat"></i>
+                    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"></path><path d="M3 11V9a3 3 0 0 1 3-3h15"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v2a3 3 0 0 1-3 3H3"></path></svg>
                   </button>
                   <div class="cover-meta-copy">
                     <span class="cover-meta-label">播放模式</span>
@@ -1945,16 +1970,16 @@
               <p id="hero-summary" class="hero-summary">中间是主题主舞台，右边是独立播放列表，底部保留真实的播放控制条。</p>
               <div class="stage-transport">
                 <button class="stage-transport-btn mode" id="stage-mode-btn" type="button" aria-label="切换播放模式" title="切换播放模式">
-                  <i class="fas fa-repeat"></i>
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"></path><path d="M3 11V9a3 3 0 0 1 3-3h15"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v2a3 3 0 0 1-3 3H3"></path></svg>
                 </button>
                 <button class="stage-transport-btn prev" id="stage-prev-btn" type="button" aria-label="上一首">
-                  <i class="fas fa-step-backward"></i>
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 20V4"></path><path d="m15 19-8-7 8-7v14Z"></path></svg>
                 </button>
                 <button class="stage-transport-btn play" id="stage-play-btn" type="button" aria-label="播放或暂停">
-                  <i class="fas fa-play"></i>
+                  <svg class="line-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7Z"></path></svg>
                 </button>
                 <button class="stage-transport-btn next" id="stage-next-btn" type="button" aria-label="下一首">
-                  <i class="fas fa-step-forward"></i>
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16"></path><path d="m9 5 8 7-8 7V5Z"></path></svg>
                 </button>
               </div>
             </div>
@@ -1993,7 +2018,7 @@
             <h3 class="queue-title" id="library-title">播放队列</h3>
             <div class="queue-count" id="queue-count"></div>
           </div>
-          <i class="fas fa-stream" style="color: var(--player-accent);"></i>
+          <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--player-accent);"><path d="M8 6h13M8 12h13M8 18h13"></path><path d="M3 6h.01M3 12h.01M3 18h.01"></path></svg>
         </div>
 
         <div class="player-tabs" role="tablist" aria-label="播放队列筛选">
@@ -2044,9 +2069,9 @@
       </div>
     </div>
     <div class="now-controls" aria-label="播放控制">
-      <button id="prev-btn" class="now-btn" type="button" aria-label="上一首"><i class="fas fa-step-backward" aria-hidden="true"></i></button>
-      <button id="play-btn" class="now-btn primary" type="button" aria-label="开始播放" aria-pressed="false"><i class="fas fa-play" aria-hidden="true"></i></button>
-      <button id="next-btn" class="now-btn" type="button" aria-label="下一首"><i class="fas fa-step-forward" aria-hidden="true"></i></button>
+      <button id="prev-btn" class="now-btn" type="button" aria-label="上一首"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 20V4"></path><path d="m15 19-8-7 8-7v14Z"></path></svg></button>
+      <button id="play-btn" class="now-btn primary" type="button" aria-label="开始播放" aria-pressed="false"><svg class="line-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7Z"></path></svg></button>
+      <button id="next-btn" class="now-btn" type="button" aria-label="下一首"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16"></path><path d="m9 5 8 7-8 7V5Z"></path></svg></button>
     </div>
     <div class="now-progress" aria-label="播放进度">
       <span id="current-time">0:00</span>
@@ -2056,12 +2081,12 @@
       <span id="total-time">0:00</span>
     </div>
     <div class="now-actions">
-      <button id="btn-mode" class="now-btn" type="button" aria-label="切换播放模式"><i class="fas fa-list-ol" aria-hidden="true"></i></button>
-      <button id="btn-fav" class="now-btn" type="button" aria-label="收藏当前歌曲" aria-pressed="false"><i class="far fa-heart" aria-hidden="true"></i></button>
-      <button id="mobile-queue-toggle-bottom" class="now-btn" type="button" aria-label="打开播放队列"><i class="fas fa-stream" aria-hidden="true"></i></button>
+      <button id="btn-mode" class="now-btn" type="button" aria-label="切换播放模式"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"></path><path d="M3 6h.01M3 12h.01M3 18h.01"></path></svg></button>
+      <button id="btn-fav" class="now-btn" type="button" aria-label="收藏当前歌曲" aria-pressed="false"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.6c0 5.4-8.8 10.4-8.8 10.4S3.2 14 3.2 8.6A4.6 4.6 0 0 1 12 6.1a4.6 4.6 0 0 1 8.8 2.5Z"></path></svg></button>
+      <button id="mobile-queue-toggle-bottom" class="now-btn" type="button" aria-label="打开播放队列"><svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"></path><path d="M3 6h.01M3 12h.01M3 18h.01"></path></svg></button>
     </div>
     <label class="now-volume" aria-label="音量">
-      <i class="fas fa-volume-up" aria-hidden="true"></i>
+      <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18 6a8 8 0 0 1 0 12"></path></svg>
       <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8" aria-label="音量">
     </label>
   </footer>

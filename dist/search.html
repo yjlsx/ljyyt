@@ -3,7 +3,7 @@
 <head>
   <meta name="referrer" content="no-referrer">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
@@ -12,12 +12,6 @@
   <!-- SEO Meta -->
   <meta name="description" content="搜索丽江音悦台 - 纳西族音乐、视频搜索结果">
   <meta name="robots" content="noindex">
-  <meta property="og:title" content="丽江音悦台 - 搜索">
-  <meta property="og:description" content="搜索丽江音悦台的音乐和视频。">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
-  <meta property="og:url" content="https://ljyyt.bbroot.com/search.html">
-  <link rel="canonical" href="https://ljyyt.bbroot.com/search.html">
 
   <!-- Preconnect to CDN -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -26,9 +20,11 @@
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <script src="js/theme.js"></script>
+  <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="main.css?v=20260526-1">
+  <link rel="stylesheet" href="main.css">
   <style>
     /* 搜索页面特定样式 */
     body {
@@ -231,7 +227,7 @@
     }
   </style>
 </head>
-<body>
+<body class="search-page">
     <!-- 导航栏 (由 components.js 注入) -->
     <div id="navbar-placeholder"></div>
 
@@ -243,7 +239,7 @@
       <div class="mt-4">
         <div class="input-group w-50 mx-auto">
           <input type="text" class="form-control form-control-lg" id="hero-search-input" placeholder="搜索音乐..." aria-label="搜索">
-          <button class="btn btn-light btn-lg" id="search-btn" aria-label="执行搜索">
+          <button class="btn btn-light btn-lg" id="search-btn">
             <i class="fas fa-search text-primary"></i>
           </button>
         </div>
@@ -316,14 +312,14 @@
 
   <!-- Bootstrap JS -->
   <!-- 组件注入必须最先加载 -->
-  <script src="components.js?v=20260526-1"></script>
+  <script src="components.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script src="videos/video_data.js"></script>
-  <script src="site-config.js?v=20260526-1"></script>
-  <script src="script.js?v=20260526-1"></script>
+  <script src="site-config.js"></script>
+  <script src="script.js"></script>
   <script src="player_state.js"></script>
-  <script src="player_enhanced.js?v=20260526-1"></script>
+  <script src="player_enhanced.js"></script>
   
   <script>
     console.log('🔍 搜索页面加载');
@@ -428,7 +424,7 @@
           musicHtml += '<div class="col-md-6 col-lg-3 mb-3 card-enter" style="animation-delay: ' + (index * 0.05) + 's">' +
             '<div class="card music-card" data-id="' + track.id + '">' +
             '<div class="card-body d-flex align-items-center p-2">' +
-            '<img src="' + (track.cover || './images/avatar.jpg') + '" alt="' + escapeHtml(track.title) + '" class="album-cover me-2" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-2" loading="lazy" decoding="async">' +
             '<div class="flex-grow-1 overflow-hidden">' +
             '<h6 class="card-title mb-1 text-truncate" title="' + track.title + '">' + track.title + '</h6>' +
             '<div class="d-flex align-items-center">' +
@@ -460,7 +456,7 @@
             '<div class="card video-card" data-id="' + track.id + '">' +
             '<div class="card-body p-0">' +
             '<div class="position-relative">' +
-            '<img src="' + (track.cover || './images/avatar.jpg') + '" alt="' + escapeHtml(track.title) + '" class="card-img-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<img src="' + track.cover + '" alt="' + track.title + '" class="card-img-top" loading="lazy" decoding="async">' +
             '<div class="position-absolute top-50 start-50 translate-middle">' +
             '<i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>' +
             '</div>' +
@@ -527,7 +523,7 @@
       } else {
         document.getElementById('current-artist').textContent = track.artist;
       }
-      document.getElementById('current-cover').src = track.cover || './images/avatar.jpg';
+      document.getElementById('current-cover').src = track.cover;
 
       // 检查是否同一首歌
       var isSameTrack = false;
@@ -647,8 +643,6 @@
       }
 
       // 2. 等待数据加载后执行搜索
-      var navForm = document.querySelector('.navbar-search-form');
-      var navInput = navForm ? navForm.querySelector('input[name="q"]') : null;
       var checkDataInterval = setInterval(function() {
         if (typeof musicData !== 'undefined' && typeof videoData !== 'undefined') {
           clearInterval(checkDataInterval);
@@ -657,7 +651,7 @@
           var query = getUrlParameter('q');
           if (query) {
             document.getElementById('hero-search-input').value = query;
-            if (navInput) navInput.value = query;
+            document.getElementById('nav-search-input').value = query;
             performSearch(query);
           }
         }
@@ -683,22 +677,30 @@
         window.location.href = 'search.html?q=' + encodeURIComponent(query);
       }
 
-      document.getElementById('search-btn').addEventListener('click', function() {
-        saveAndSearch(document.getElementById('hero-search-input').value.trim());
-      });
+      var searchBtn = document.getElementById('search-btn');
+      var heroSearchInput = document.getElementById('hero-search-input');
+      if (searchBtn && heroSearchInput) {
+        searchBtn.addEventListener('click', function() {
+          saveAndSearch(heroSearchInput.value.trim());
+        });
+      }
 
-      document.getElementById('hero-search-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          saveAndSearch(this.value.trim());
-        }
-      });
+      if (heroSearchInput) {
+        heroSearchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            saveAndSearch(this.value.trim());
+          }
+        });
+      }
 
       // 导航栏搜索
-      if (navForm && navInput) {
+      var navForm = document.getElementById('nav-search-form');
+      var navSearchInput = document.getElementById('nav-search-input');
+      if (navForm && navSearchInput) {
         navForm.addEventListener('submit', function(e) {
           e.preventDefault();
-          saveAndSearch(navInput.value.trim());
+          saveAndSearch(navSearchInput.value.trim());
         });
       }
 
@@ -723,7 +725,7 @@
   </script>
 
   <!-- 向上火箭按钮 -->
-  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()" aria-label="返回顶部">
+  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
     <i class="fas fa-rocket"></i>
   </button>
 

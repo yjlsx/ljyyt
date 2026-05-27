@@ -108,13 +108,11 @@
   }
 
   function getModeIcon(mode) {
-    var icons = {
-      'order': 'fas fa-list-ol',
-      'repeat-all': 'fas fa-redo',
-      'repeat-one': 'fas fa-redo',
-      'shuffle': 'fas fa-random'
-    };
-    return icons[mode] || 'fas fa-list-ol';
+    var icons = window.LJYYTIcons || {};
+    if (mode === 'repeat-one') return icons.repeatOne || '';
+    if (mode === 'repeat-all') return icons.repeat || '';
+    if (mode === 'shuffle') return icons.shuffle || '';
+    return icons.queue || '';
   }
 
   function readJsonList(key) {
@@ -146,8 +144,8 @@
     button.setAttribute('aria-pressed', liked ? 'true' : 'false');
     button.setAttribute('aria-label', liked ? '取消收藏当前歌曲' : '收藏当前歌曲');
     button.innerHTML = liked
-      ? '<i class="fas fa-heart" aria-hidden="true"></i>'
-      : '<i class="far fa-heart" aria-hidden="true"></i>';
+      ? ((window.LJYYTIcons && window.LJYYTIcons.heartFilled) || '♥')
+      : ((window.LJYYTIcons && window.LJYYTIcons.heart) || '♡');
   }
 
   function toggleFavorite(trackId) {
@@ -224,31 +222,28 @@
   }
 
   function updateModeActionButtons(mode) {
-    var sideIcon = modeToggleButton && modeToggleButton.querySelector('i');
-    var stageIcon = stageModeButton && stageModeButton.querySelector('i');
     var nowModeButton = document.getElementById('btn-mode');
-    var nowIcon = nowModeButton && nowModeButton.querySelector('i');
     var label = getModeLabel(mode);
-    var iconClass = getModeIcon(mode);
+    var iconMarkup = getModeIcon(mode);
 
-    if (sideIcon) {
-      sideIcon.className = iconClass;
+    if (modeToggleButton && iconMarkup) {
+      modeToggleButton.innerHTML = iconMarkup;
     }
     if (modeToggleButton) {
       modeToggleButton.title = label;
       modeToggleButton.setAttribute('aria-label', '切换播放模式，当前' + label);
     }
 
-    if (stageIcon) {
-      stageIcon.className = iconClass;
+    if (stageModeButton && iconMarkup) {
+      stageModeButton.innerHTML = iconMarkup;
     }
     if (stageModeButton) {
       stageModeButton.title = label;
       stageModeButton.setAttribute('aria-label', '切换播放模式，当前' + label);
     }
 
-    if (nowIcon) {
-      nowIcon.className = iconClass;
+    if (nowModeButton && iconMarkup) {
+      nowModeButton.innerHTML = iconMarkup;
     }
     if (nowModeButton) {
       nowModeButton.title = label;
@@ -1456,8 +1451,8 @@
     if (stagePlayButton) {
       stagePlayButton.classList.toggle('is-playing', !!(audio && !audio.paused));
       stagePlayButton.innerHTML = (audio && !audio.paused)
-        ? '<i class="fas fa-pause"></i>'
-        : '<i class="fas fa-play"></i>';
+        ? ((window.LJYYTIcons && window.LJYYTIcons.pause) || 'Pause')
+        : ((window.LJYYTIcons && window.LJYYTIcons.play) || 'Play');
       stagePlayButton.setAttribute('aria-label', (audio && !audio.paused) ? '暂停播放' : '开始播放');
       stagePlayButton.setAttribute('aria-pressed', (audio && !audio.paused) ? 'true' : 'false');
     }

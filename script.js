@@ -12960,13 +12960,12 @@ function togglePlay() {
 
 // 更新播放按钮图标
 function updatePlayButton() {
-  const icon = playBtn.querySelector('i');
   if (isPlaying) {
-    icon.className = 'fas fa-pause text-primary';
+    playBtn.innerHTML = (window.LJYYTIcons && window.LJYYTIcons.pause) || 'Pause';
     playBtn.classList.add('btn-playing');
     playBtn.setAttribute('aria-label', '暂停播放');
   } else {
-    icon.className = 'fas fa-play text-primary';
+    playBtn.innerHTML = (window.LJYYTIcons && window.LJYYTIcons.play) || 'Play';
     playBtn.classList.remove('btn-playing');
     playBtn.setAttribute('aria-label', '开始播放');
   }
@@ -13035,8 +13034,9 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
   duration.className = 'text-muted track-duration';
   duration.textContent = formatTime(track.duration);
 
-  var icon = document.createElement('i');
-  icon.className = 'fas fa-music text-primary ms-2 card-music-icon';
+  var icon = document.createElement('span');
+  icon.className = 'text-primary ms-2 card-music-icon';
+  icon.innerHTML = (window.LJYYTIcons && window.LJYYTIcons.music) || '';
   icon.setAttribute('aria-hidden', 'true');
 
   function getTrackLikedState() {
@@ -13059,8 +13059,8 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
     button.setAttribute('aria-pressed', liked ? 'true' : 'false');
     button.title = liked ? '取消收藏' : '收藏歌曲';
     button.innerHTML = liked
-      ? '<i class="fas fa-heart" aria-hidden="true"></i>'
-      : '<i class="far fa-heart" aria-hidden="true"></i>';
+      ? ((window.LJYYTIcons && window.LJYYTIcons.heartFilled) || '♥')
+      : ((window.LJYYTIcons && window.LJYYTIcons.heart) || '♡');
   }
 
   meta.appendChild(artistWrap);
@@ -13277,7 +13277,7 @@ function renderMusicList() {
   console.log('🎵 开始渲染音乐列表...');
   
   if (!musicListContainer) {
-    console.error('❌ musicListContainer 未找到');
+    console.warn('musicListContainer 未找到，跳过音乐列表渲染');
     return;
   }
 
@@ -13315,7 +13315,7 @@ function renderMusicList() {
 function renderFilteredList(tracks) {
   if (!musicListContainer) return;
   if (!tracks || tracks.length === 0) {
-    musicListContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted"><i class="fas fa-inbox fa-3x mb-3"></i><p>暂无内容</p></div>';
+    musicListContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted"><span class="empty-icon mb-3">' + ((window.LJYYTIcons && window.LJYYTIcons.inbox) || '') + '</span><p>暂无内容</p></div>';
     if (musicPaginationContainer) musicPaginationContainer.innerHTML = '';
     return;
   }
@@ -13344,7 +13344,7 @@ function renderMusicPagination() {
   let paginationHTML = '';
   
   // 上一页
-  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (musicCurrentPage === 1 ? 'disabled' : '') + ' onclick="changeMusicPage(' + (musicCurrentPage - 1) + ')"><i class="fas fa-chevron-left"></i></button>';
+  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (musicCurrentPage === 1 ? 'disabled' : '') + ' onclick="changeMusicPage(' + (musicCurrentPage - 1) + ')">' + ((window.LJYYTIcons && window.LJYYTIcons.chevronLeft) || '‹') + '</button>';
   
   // 页码逻辑
   const maxVisiblePages = 5;
@@ -13372,7 +13372,7 @@ function renderMusicPagination() {
   }
   
   // 下一页
-  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (musicCurrentPage === totalPages ? 'disabled' : '') + ' onclick="changeMusicPage(' + (musicCurrentPage + 1) + ')"><i class="fas fa-chevron-right"></i></button>';
+  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (musicCurrentPage === totalPages ? 'disabled' : '') + ' onclick="changeMusicPage(' + (musicCurrentPage + 1) + ')">' + ((window.LJYYTIcons && window.LJYYTIcons.chevronRight) || '›') + '</button>';
   
   // 跳转输入
   paginationHTML += '<div class="ms-3 d-flex align-items-center gap-2">' +
@@ -13448,7 +13448,7 @@ function renderVideoList() {
         '<div class="position-relative">' +
           '<img src="' + normalizeMediaUrl(track.cover) + '" alt="' + track.title + '" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">' +
           '<div class="position-absolute top-50 start-50 translate-middle">' +
-            '<i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>' +
+            '<span class="video-play-icon text-white" style="opacity: 0.8;">' + ((window.LJYYTIcons && window.LJYYTIcons.play) || 'Play') + '</span>' +
           '</div>' +
           '<div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">' +
             '<span class="text-white small">' + formatTime(track.duration) + '</span>' +
@@ -13485,7 +13485,7 @@ function renderVideoPagination() {
   let paginationHTML = '';
   
   // 上一页
-  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (videoCurrentPage === 1 ? 'disabled' : '') + ' onclick="changeVideoPage(' + (videoCurrentPage - 1) + ')"><i class="fas fa-chevron-left"></i></button>';
+  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (videoCurrentPage === 1 ? 'disabled' : '') + ' onclick="changeVideoPage(' + (videoCurrentPage - 1) + ')">' + ((window.LJYYTIcons && window.LJYYTIcons.chevronLeft) || '‹') + '</button>';
   
   // 页码逻辑 (5个可见)
   const maxVisiblePages = 5;
@@ -13508,7 +13508,7 @@ function renderVideoPagination() {
   }
   
   // 下一页
-  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (videoCurrentPage === totalPages ? 'disabled' : '') + ' onclick="changeVideoPage(' + (videoCurrentPage + 1) + ')"><i class="fas fa-chevron-right"></i></button>';
+  paginationHTML += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (videoCurrentPage === totalPages ? 'disabled' : '') + ' onclick="changeVideoPage(' + (videoCurrentPage + 1) + ')">' + ((window.LJYYTIcons && window.LJYYTIcons.chevronRight) || '›') + '</button>';
   
   // 跳转输入
   paginationHTML += '<div class="ms-3 d-flex align-items-center gap-2">' +
@@ -13579,16 +13579,14 @@ function initPlayerEvents() {
     });
     // 缓冲状态
     audioPlayer.addEventListener('waiting', function() {
-      var icon = playBtn.querySelector('i');
-      if (icon && isPlaying) {
-        icon.className = 'fas fa-spinner fa-spin text-primary';
+      if (isPlaying) {
+        playBtn.innerHTML = (window.LJYYTIcons && window.LJYYTIcons.spinner) || '...';
       }
     });
     audioPlayer.addEventListener('canplay', function() {
-      var icon = playBtn.querySelector('i');
-      if (icon) {
-        icon.className = isPlaying ? 'fas fa-pause text-primary' : 'fas fa-play text-primary';
-      }
+      playBtn.innerHTML = isPlaying
+        ? ((window.LJYYTIcons && window.LJYYTIcons.pause) || 'Pause')
+        : ((window.LJYYTIcons && window.LJYYTIcons.play) || 'Play');
     });
   }
   
@@ -13750,7 +13748,7 @@ function initSearch() {
   const searchInput = document.getElementById('search-input');
   
   if (!searchForm || !searchInput) {
-    console.error('❌ 搜索元素未找到');
+    console.warn('搜索表单不存在，跳过公共搜索初始化');
     return;
   }
   
@@ -13816,7 +13814,7 @@ function renderFilteredMusicList(filteredData) {
   console.log('🎵 渲染过滤后的音乐列表... 共', filteredData.length, '条');
   
   if (!musicListContainer) {
-    console.error('❌ musicListContainer 未找到');
+    console.warn('musicListContainer 未找到，跳过过滤列表渲染');
     return;
   }
   
