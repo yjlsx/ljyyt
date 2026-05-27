@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="referrer" content="no-referrer">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- SEO Meta -->
+  <meta name="description" content="丽江音悦台 - 传承纳西文化，分享民族音乐之美。收录纳西族传统音乐、民歌精选，在线收听高品质民族音乐。">
+  <meta name="keywords" content="纳西族, 丽江, 民族音乐, 纳西音乐, 丽江音悦台, 民歌, 传统音乐">
+  <meta name="author" content="丽江音悦台">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="丽江音悦台 - 纳西族音乐精选">
+  <meta property="og:description" content="传承纳西文化，分享民族音乐之美。收录纳西族传统音乐、民歌精选。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
+  <meta property="og:url" content="https://ljyyt.bbroot.com/">
+  <link rel="canonical" href="https://ljyyt.bbroot.com/">
+
+  <!-- Preconnect to CDN -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://res.wx.qq.com" crossorigin>
+  <link rel="preconnect" href="https://mmbiz.qpic.cn" crossorigin>
+
+  <title>丽江音悦台</title>
+  <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="main.css?v=20260526-1">
+</head>
+<body>
+  <!-- 导航栏 (由 components.js 注入) -->
+  <div id="navbar-placeholder"></div>
+
+
+  <!-- 艺术标语 -->
+  <div class="slogan-container">
+    <div class="slogan-wrapper">
+      <div class="slogan-line"></div>
+      <div class="slogan-text">弘扬真善美，传播好声音</div>
+      <div class="slogan-line"></div>
+    </div>
+  </div>
+
+  <!-- 音乐和视频标签页 -->
+  <section class="content-section py-5">
+    <div class="container">
+      <!-- 标签导航 -->
+      <ul class="nav nav-tabs justify-content-center mb-4" id="contentTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="music-tab" data-bs-toggle="tab" data-bs-target="#music-content" type="button" role="tab">
+            <i class="fas fa-music me-2"></i>音乐
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video-content" type="button" role="tab">
+            <i class="fas fa-video me-2"></i>视频
+          </button>
+        </li>
+      </ul>
+      
+      <!-- 标签内容 -->
+      <div class="tab-content" id="contentTabsContent">
+        <!-- 音乐内容 -->
+        <div class="tab-pane fade show active" id="music-content" role="tabpanel">
+          <div class="row" id="music-list">
+            <!-- 音乐列表将通过JavaScript动态生成 -->
+          </div>
+          <!-- 音乐分页控制器 -->
+          <div id="music-pagination" class="pagination-container d-flex justify-content-center align-items-center mt-5 flex-wrap gap-2">
+            <!-- 分页按钮将通过JS生成 -->
+          </div>
+        </div>
+        
+        <!-- 视频内容 -->
+        <div class="tab-pane fade" id="video-content" role="tabpanel">
+          <div class="row" id="video-list">
+            <!-- 视频列表将通过JavaScript动态生成 -->
+          </div>
+          <!-- 视频分页控制器 -->
+          <div id="video-pagination" class="pagination-container d-flex justify-content-center align-items-center mt-5 flex-wrap gap-2">
+            <!-- 分页按钮将通过JS生成 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于我们 -->
+  <section id="about" class="about-section bg-light py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10 text-center">
+          <div class="mb-3">
+            <i class="fas fa-music fa-2x" style="color: #667eea; opacity: 0.6;"></i>
+          </div>
+          <h3 class="mb-3">关于我们</h3>
+          <div style="width: 50px; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px; margin: 0 auto 1.5rem;"></div>
+          <p class="text-muted" style="font-size: 1.05rem; line-height: 1.8;">丽江音悦台致力于传承和推广纳西族传统音乐文化，通过现代技术手段让更多人了解和欣赏纳西族独特的音乐艺术。</p>
+          <p class="text-muted" style="font-size: 1.05rem; line-height: 1.8;">我们的使命是保护和传播纳西族音乐遗产，同时鼓励现代创作，让古老的音乐文化在新时代焕发光彩。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系我们 -->
+  <section id="contact" class="contact-section py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+          <div class="contact-card-minimal">
+            <div class="row g-0">
+              <!-- 左侧艺术装饰 -->
+              <div class="col-md-5 d-none d-md-flex align-items-center justify-content-center border-end border-light">
+                <div class="text-center p-5">
+                  <div class="mb-4">
+                    <i class="fas fa-paper-plane fa-3x" style="color: #d35400; opacity: 0.6;"></i>
+                  </div>
+                  <h4 class="fw-light mb-3" style="letter-spacing: 4px; color: #333;">写给丽江</h4>
+                  <p class="small text-muted" style="line-height: 2;">一曲纳西韵<br>万种民族情<br>期待您的声音</p>
+                </div>
+              </div>
+              
+              <!-- 右侧表单 -->
+              <div class="col-md-7">
+                <div class="p-4 p-md-5">
+                  <div class="mb-5">
+                    <h3 class="fw-bold" style="letter-spacing: 2px;">联系我们</h3>
+                    <div style="width: 30px; height: 2px; background: #d35400;"></div>
+                  </div>
+                  
+                  <form id="contactForm">
+                    <div class="mb-4">
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="nickname">您的称呼</label>
+                      <input type="text" class="form-control minimal-input" id="nickname" name="nickname" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="email">您的邮箱</label>
+                      <input type="email" class="form-control minimal-input" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="mb-5">
+                      <label class="form-label small text-uppercase fw-bold opacity-50" for="message">留言内容</label>
+                      <textarea class="form-control minimal-input" id="message" name="message" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-minimal">
+                        发送信息 <i class="fas fa-long-arrow-alt-right ms-2"></i>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p>&copy; 2026 丽江音悦台. 保留所有权利.</p>
+      <p>传承纳西文化，分享民族音乐之美</p>
+    </div>
+  </footer>
+
+  <!-- 底部播放器 (由 components.js 注入) -->
+  <div id="player-placeholder"></div>
+
+  <!-- 组件注入必须最先加载 -->
+  <script src="components.js?v=20260526-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="videos/video_data.js"></script>
+  <script src="player_state.js"></script>
+  <script src="site-config.js?v=20260526-1"></script>
+  <script src="script.js?v=20260526-1"></script>
+  <script src="player_enhanced.js?v=20260526-1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("ojiQsRL4dJSKmRPkx");
+    })();
+  </script>
+  
+  <!-- 向上火箭按钮 -->
+  <button id="scrollToTopBtn" class="scroll-to-top" type="button" aria-label="回到顶部">
+    <i class="fas fa-rocket"></i>
+  </button>
+  
+  <script>
+    // 控制台输出函数
+    function log(message) {
+      console.log(message);
+    }
+    
+    // 滚动到顶部函数
+    function scrollToTop() {
+      log('scrollToTop 被调用');
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
+      // 添加火箭发射动画效果
+      var btn = document.getElementById('scrollToTopBtn');
+      if (btn) {
+        // 简单的向上移动动画
+        btn.style.transform = 'translateY(-20px)';
+        setTimeout(function() {
+          btn.style.transform = '';
+        }, 300);
+      }
+    }
+    
+    // 显示/隐藏火箭按钮
+    function updateRocketButton() {
+      var scrollToTopBtn = document.getElementById('scrollToTopBtn');
+      if (scrollToTopBtn) {
+        var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        log('当前滚动位置：' + scrollPosition);
+        
+        // 只有滚动超过300px才显示
+        if (scrollPosition > 300) {
+          scrollToTopBtn.classList.add('show');
+          log('火箭按钮已显示');
+        } else {
+          scrollToTopBtn.classList.remove('show');
+          log('火箭按钮已隐藏');
+        }
+      }
+    }
+    
+    // 页面加载完成后检查
+    document.addEventListener('DOMContentLoaded', function() {
+      log('DOM已加载');
+      
+      var scrollToTopBtn = document.getElementById('scrollToTopBtn');
+      if (scrollToTopBtn) {
+        log('火箭按钮元素已找到');
+        
+        // 检查按钮样式
+        var computedStyle = window.getComputedStyle(scrollToTopBtn);
+        if (computedStyle.position === 'fixed') {
+          log('火箭按钮样式正确');
+        } else {
+          log('火箭按钮样式错误：position = ' + computedStyle.position);
+        }
+        
+        // 初始状态：隐藏
+        scrollToTopBtn.style.opacity = '0';
+        scrollToTopBtn.style.visibility = 'hidden';
+        log('火箭按钮初始状态：隐藏');
+        
+        // 检查滚动位置，如果超过300px则显示
+        var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollPosition > 300) {
+          scrollToTopBtn.classList.add('show');
+          log('页面加载时火箭按钮已显示');
+        }
+      } else {
+        log('错误：找不到火箭按钮元素');
+      }
+      
+      // 添加滚动事件监听器
+      window.addEventListener('scroll', updateRocketButton);
+      log('滚动事件监听器已添加');
+      
+      // 为首页链接添加点击事件
+      var homeLink = document.getElementById('home-link');
+      if (homeLink) {
+        homeLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToTop();
+        });
+      }
+
+      if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', scrollToTop);
+      }
+      
+      // 为头像添加点击事件
+      var avatar = document.querySelector('.navbar-brand img');
+      if (avatar) {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToTop();
+        });
+      }
+      
+      log('火箭按钮功能已初始化');
+      
+      // 联系我们表单处理
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault(); // 阻止默认提交行为
+          
+          // 获取表单数据
+          const nickname = document.getElementById('nickname').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const message = document.getElementById('message').value.trim();
+          
+          // 验证必填字段
+          if (!nickname || !email || !message) {
+            alert('请填写所有必填字段！');
+            return;
+          }
+          
+          // 验证邮箱格式
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            alert('请输入有效的邮箱地址！');
+            return;
+          }
+          
+          // 发送邮件
+          sendContactEmail(nickname, email, message);
+        });
+      }
+    });
+    
+    // 显示提示消息函数
+    function showToast(message, type = 'success') {
+      // 创建提示元素
+      const toast = document.createElement('div');
+      toast.className = `contact-toast toast-${type}`;
+      toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+      `;
+      
+      // 添加到页面
+      document.body.appendChild(toast);
+      
+      // 显示动画
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      // 3秒后自动消失
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+    
+    // 发送联系邮件函数
+    function sendContactEmail(nickname, email, message) {
+      // 显示发送中提示
+      const submitBtn = document.querySelector('#contactForm button[type="submit"]');
+      if (!submitBtn) {
+        console.error('找不到提交按钮');
+        return;
+      }
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = '发送中...';
+      submitBtn.disabled = true;
+      
+      if (typeof emailjs === 'undefined') {
+        showToast('邮件服务暂时不可用，请稍后重试。', 'error');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // 邮件模板参数
+      const templateParams = {
+        from_name: nickname,
+        from_email: email,
+        message: message,
+        to_email: "2509904241@qq.com", // 您的QQ邮箱
+        subject: `丽江音悦台 - 来自${nickname}的联系`
+      };
+      
+      // 使用EmailJS发送邮件
+      emailjs.send('service_aqocomv', 'template_c848a1t', templateParams)
+        .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          showToast('✨ 留言发送成功！我们会尽快回复您。', 'success');
+          // 重置表单
+          document.getElementById('contactForm').reset();
+          // 恢复按钮状态
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }, function(error) {
+          console.log('FAILED...', error);
+          showToast('❌ 发送失败，请稍后重试。', 'error');
+          // 恢复按钮状态
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        });
+    }
+  </script>
+</body>
+</html>

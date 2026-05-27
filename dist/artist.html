@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="referrer" content="no-referrer">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="丽江音悦台 - 歌手详情页">
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="丽江音悦台 - 歌手详情">
+  <meta property="og:description" content="查看丽江音悦台歌手相关歌曲与视频。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://ljyyt.bbroot.com/images/avatar.jpg">
+  <meta property="og:url" content="https://ljyyt.bbroot.com/artist.html">
+  <link rel="canonical" href="https://ljyyt.bbroot.com/artist.html">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://res.wx.qq.com" crossorigin>
+  <link rel="preconnect" href="https://mmbiz.qpic.cn" crossorigin>
+  <title>丽江音悦台</title>
+  <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="./images/avatar.jpg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="main.css?v=20260526-1">
+  <style>
+    body {
+      padding-top: 70px;
+      padding-bottom: 80px;
+      background: url('./images/yyt.png') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(245,247,250,0.88), rgba(195,207,226,0.88));
+      z-index: -1;
+    }
+    body.dark-mode::before { background: rgba(0,0,0,0.5); }
+
+    .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-size: 1.2rem; font-weight: bold; color: white; }
+    .brand-slogan { font-size: 0.7rem; color: rgba(255,255,255,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+    /* 歌手头部 */
+    .artist-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      padding: 40px;
+      color: white;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      box-shadow: 0 10px 40px rgba(102,126,234,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .artist-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .artist-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+    .artist-info h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .artist-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 12px;
+    }
+    .artist-stat {
+      text-align: center;
+    }
+    .artist-stat-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .artist-stat-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    /* 歌曲/视频列表 */
+    .section-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      padding-left: 12px;
+      border-left: 4px solid #667eea;
+      color: #333;
+    }
+    body.dark-mode .section-label { color: var(--dk-text); }
+
+    .artist-song-card {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.8);
+    }
+    .artist-song-card:hover {
+      background: rgba(102,126,234,0.1);
+      transform: translateX(4px);
+    }
+    .artist-song-card.active {
+      background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.08));
+      border-left: 3px solid #667eea;
+    }
+    .artist-song-num {
+      width: 28px;
+      font-size: 0.85rem;
+      color: #999;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .artist-song-cover {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .artist-song-info { flex: 1; min-width: 0; }
+    .artist-song-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .artist-song-duration { font-size: 0.78rem; color: #999; flex-shrink: 0; margin-left: 10px; }
+
+    body.dark-mode .artist-song-card { background: var(--dk-surface); }
+    body.dark-mode .artist-song-card:hover { background: rgba(102,126,234,0.15); }
+    body.dark-mode .artist-song-title { color: var(--dk-text); }
+    body.dark-mode .artist-song-num { color: var(--dk-muted); }
+    body.dark-mode .artist-song-duration { color: var(--dk-muted); }
+
+    /* 视频卡片 */
+    .artist-video-card {
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+    }
+    .artist-video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+    body.dark-mode .artist-video-card { background: var(--dk-surface); border-color: var(--dk-border); }
+    body.dark-mode .artist-video-card .card-title { color: var(--dk-text); }
+
+    /* 返回按钮 */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #667eea;
+      border: 1px solid rgba(102,126,234,0.3);
+      background: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .btn-back:hover { background: #667eea; color: white; border-color: #667eea; }
+    body.dark-mode .btn-back { background: var(--dk-surface); color: var(--dk-text); border-color: var(--dk-border); }
+    body.dark-mode .btn-back:hover { background: #667eea; color: white; }
+
+    @media (max-width: 768px) {
+      body {
+        padding-bottom: 96px;
+      }
+      .container[style*="max-width:1100px"] {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .artist-header { flex-direction: column; text-align: center; padding: 30px 20px; }
+      .artist-avatar { width: 90px; height: 90px; }
+      .artist-info h1 { font-size: 1.5rem; }
+      .artist-stats { justify-content: center; flex-wrap: wrap; gap: 16px; }
+    }
+
+    @media (max-width: 576px) {
+      .artist-header {
+        padding: 22px 16px;
+        gap: 18px;
+      }
+      .artist-info h1 {
+        font-size: 1.3rem;
+      }
+      .artist-song-card {
+        padding: 10px 12px;
+      }
+      .artist-song-cover {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+      }
+      .artist-song-title {
+        font-size: 0.88rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 (由 components.js 注入) -->
+  <div id="navbar-placeholder"></div>
+
+  <div class="container" style="max-width:1100px;">
+
+    <!-- 歌手头部 -->
+    <div class="artist-header" id="artist-header">
+      <img id="artist-avatar" class="artist-avatar" src="./images/avatar.jpg" alt="歌手头像">
+      <div class="artist-info">
+        <h1 id="artist-name">加载中...</h1>
+        <div class="artist-stats">
+          <div class="artist-stat">
+            <div class="artist-stat-num" id="song-count">0</div>
+            <div class="artist-stat-label">首歌曲</div>
+          </div>
+          <div class="artist-stat">
+            <div class="artist-stat-num" id="video-count">0</div>
+            <div class="artist-stat-label">个视频</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 歌曲列表 -->
+    <div id="songs-section" style="margin-bottom:40px;">
+      <h3 class="section-label"><i class="fas fa-music me-2"></i>歌曲</h3>
+      <div id="songs-list"></div>
+    </div>
+
+    <!-- 视频列表 -->
+    <div id="videos-section" style="margin-bottom:40px;">
+      <h3 class="section-label"><i class="fas fa-video me-2"></i>视频</h3>
+      <div class="row" id="videos-list"></div>
+    </div>
+  </div>
+
+  <!-- 底部播放器 (由 components.js 注入) -->
+  <div id="player-placeholder"></div>
+
+  <!-- 组件注入必须最先加载 -->
+  <script src="components.js?v=20260526-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="videos/video_data.js"></script>
+  <script src="site-config.js?v=20260526-1"></script>
+  <script src="script.js?v=20260526-1"></script>
+  <script src="player_state.js"></script>
+  <script src="player_enhanced.js?v=20260526-1"></script>
+  <script>
+    function getUrlParam(name) {
+      var r = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(location.search);
+      return r ? decodeURIComponent(r[1]) : null;
+    }
+    function formatTime(s) {
+      if (!s) return '0:00';
+      var m = Math.floor(s/60), sec = Math.floor(s%60);
+      return m + ':' + (sec<10?'0':'') + sec;
+    }
+
+    // 深色模式
+    if (localStorage.getItem('ljyyt_dark_mode') === 'true') document.body.classList.add('dark-mode');
+    var searchForm = document.getElementById('search-form');
+    if (searchForm) {
+      var db = document.createElement('button');
+      db.type = 'button';
+      db.className = 'btn btn-outline-light btn-sm';
+      db.style.cssText = 'border-radius:50%;width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:0.9rem;margin-left:12px;flex-shrink:0';
+      var isDark = document.body.classList.contains('dark-mode');
+      db.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      db.onclick = function() {
+        var d = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('ljyyt_dark_mode', d);
+        this.innerHTML = d ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      };
+      searchForm.appendChild(db);
+    }
+
+    var artistName = getUrlParam('name');
+    if (!artistName) {
+      document.getElementById('artist-name').innerText = '未指定歌手';
+      document.getElementById('songs-section').style.display = 'none';
+      document.getElementById('videos-section').style.display = 'none';
+    } else {
+      document.title = '丽江音悦台';
+      document.getElementById('artist-name').innerText = artistName;
+
+      function containsArtistName(item, targetArtist) {
+        if (!item) return false;
+        if (Array.isArray(item.artistNames) && item.artistNames.indexOf(targetArtist) !== -1) return true;
+        if (typeof splitArtistNames === 'function') {
+          return splitArtistNames(item.artist).indexOf(targetArtist) !== -1;
+        }
+        return item.artist === targetArtist;
+      }
+
+      // 筛选歌曲
+      var songs = musicData.filter(function(t) { return containsArtistName(t, artistName); });
+      var videos = videoData.filter(function(v) { return containsArtistName(v, artistName); });
+
+      document.getElementById('song-count').innerText = songs.length;
+      document.getElementById('video-count').innerText = videos.length;
+
+      // 用第一首歌的封面做头像
+      if (songs.length > 0) {
+        document.getElementById('artist-avatar').src = songs[0].cover || './images/avatar.jpg';
+      } else if (videos.length > 0) {
+        document.getElementById('artist-avatar').src = videos[0].cover || './images/avatar.jpg';
+      }
+
+      // 渲染歌曲
+      var songsList = document.getElementById('songs-list');
+      if (songs.length === 0) {
+        document.getElementById('songs-section').style.display = 'none';
+      } else {
+        songs.forEach(function(track, i) {
+          var idx = musicData.findIndex(function(t) { return t.id === track.id; });
+          var div = document.createElement('div');
+          div.className = 'artist-song-card';
+          div.dataset.index = idx;
+          div.innerHTML =
+            '<span class="artist-song-num">' + (i+1) + '</span>' +
+            '<img src="' + (track.cover || './images/avatar.jpg') + '" alt="歌曲封面" class="artist-song-cover" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<div class="artist-song-info"><div class="artist-song-title">' + track.title + '</div></div>' +
+            '<span class="artist-song-duration">' + formatTime(track.duration) + '</span>';
+          div.addEventListener('click', function() {
+            currentTrackIndex = idx;
+            loadTrack(idx);
+            playMusic();
+            // 高亮
+            songsList.querySelectorAll('.artist-song-card').forEach(function(c) { c.classList.remove('active'); });
+            this.classList.add('active');
+          });
+          songsList.appendChild(div);
+        });
+      }
+
+      // 渲染视频
+      var videosList = document.getElementById('videos-list');
+      if (videos.length === 0) {
+        document.getElementById('videos-section').style.display = 'none';
+      } else {
+        videos.forEach(function(v) {
+          var col = document.createElement('div');
+          col.className = 'col-md-6 col-lg-4 mb-3';
+          var card = document.createElement('div');
+          card.className = 'artist-video-card';
+          card.innerHTML =
+            '<img src="' + (v.cover || './images/avatar.jpg') + '" alt="视频封面" style="width:100%;height:160px;object-fit:cover;" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+            '<div class="p-2"><div class="card-title text-truncate">' + v.title + '</div></div>';
+          card.addEventListener('click', function() {
+            window.location.href = 'video-player.html?id=' + v.id;
+          });
+          col.appendChild(card);
+          videosList.appendChild(col);
+        });
+      }
+    }
+  </script>
+</body>
+</html>

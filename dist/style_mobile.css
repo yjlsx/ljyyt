@@ -1,0 +1,357 @@
+/* ============================================
+   丽江音悦台 - 完全移动端适配样式
+   ============================================ */
+
+/* 全局重置和基础优化 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================
+   超小屏幕设备 (手机竖屏, < 576px)
+   ============================================ */
+@media (max-width: 575.98px) {
+  
+  /* === 底部播放器布局 - 移动端垂直布局 === */
+  .bottom-player {
+    padding: 8px 0;
+    min-height: 110px;
+  }
+  
+  .bottom-player .container {
+    padding: 0 10px;
+  }
+  
+  .bottom-player > .container > .d-flex {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+  }
+  
+  /* 左侧：封面和标题信息 */
+  .bottom-player .current-track-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    margin: 0;
+    padding: 0 5px;
+    min-width: 0;
+    width: auto;
+  }
+  
+  .bottom-player .current-track-info img {
+    display: block;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    margin-right: 10px;
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+  
+  .bottom-player .current-track-info > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    align-items: center;
+  }
+  
+  /* 歌曲标题 - 长标题滚动效果 */
+  .bottom-player .current-track-info h6 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    display: block;
+  }
+
+  .bottom-player .current-track-info h6 span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 10s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+  }
+
+  /* 歌手信息 */
+  .bottom-player .current-track-info small {
+    font-size: 0.75rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    width: 100%;
+  }
+  
+  /* 播放控制按钮 */
+  .bottom-player .player-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0;
+    padding: 0 5px;
+    flex: 0 0 auto;
+  }
+  
+  .bottom-player #play-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 1rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .bottom-player #prev-btn,
+  .bottom-player #next-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+  
+  /* 进度条容器 - 放在底部 */
+  .bottom-player .progress-container {
+    width: 100%;
+    margin-top: 5px;
+    order: 3;
+  }
+
+  .bottom-player .progress-container .d-flex {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+  }
+  
+  .bottom-player .progress {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255, 0.3);
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+  
+  .bottom-player .progress-bar {
+    background: #fff;
+  }
+  
+  .bottom-player #current-time,
+  .bottom-player #total-time {
+    font-size: 0.65rem;
+    min-width: 30px;
+    color: rgba(255,255,255, 0.9);
+    font-weight: 500;
+    flex: 0 0 auto;
+  }
+
+  /* 列表卡片每行两个 */
+  #music-list > .col-md-6,
+  #video-list > .col-md-6 {
+    width: 50%;
+    padding: 0 5px;
+  }
+  
+  .music-card, .video-card {
+    margin-bottom: 10px;
+  }
+  
+  .music-card .album-cover {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .video-card .card-img-top {
+    height: 120px;
+  }
+
+  /* 按钮样式优化 */
+  .bottom-player .btn-outline-light {
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    color: #fff;
+  }
+  
+  .bottom-player .btn-light {
+    background: #fff;
+    color: #667eea;
+    border: none;
+  }
+
+  /* 分页适配 */
+  .pagination-container {
+    gap: 5px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  /* 底部播放器新增按钮适配 */
+  .bottom-player .player-controls {
+    gap: 0 !important;
+    flex-wrap: nowrap !important;
+  }
+  .bottom-player #btn-layout,
+  .bottom-player #btn-mode,
+  .bottom-player #btn-fav {
+    padding: 2px 5px !important;
+    font-size: 0.6rem !important;
+    margin: 0 !important;
+    min-width: 24px;
+    height: 24px;
+  }
+  /* 移动端隐藏分享和播放列表按钮（节省空间） */
+  .bottom-player #btn-share,
+  .bottom-player #btn-list,
+  .bottom-player #btn-speed {
+    display: none !important;
+  }
+
+  .bottom-player.bottom-player-collapsed {
+    transform: translateY(calc(100% - 28px)) !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    padding: 8px 0;
+    min-height: unset;
+  }
+
+  body.bottom-player-layout-player .bottom-player.bottom-player-collapsed {
+    transform: translateY(calc(100% - 28px)) !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player .container {
+    padding: 0 10px;
+  }
+
+  body.bottom-player-layout-player .bottom-player > .container > .d-flex {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player .current-track-info {
+    flex: 1 1 calc(100% - 150px) !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player .current-track-info img {
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+  }
+
+  body.bottom-player-layout-player .bottom-player .current-track-info h6 {
+    font-size: 0.82rem;
+  }
+
+  body.bottom-player-layout-player .bottom-player .current-track-info small {
+    font-size: 0.7rem;
+  }
+
+  body.bottom-player-layout-player .bottom-player .player-controls {
+    flex: 0 0 140px !important;
+    justify-content: flex-end !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player #prev-btn,
+  body.bottom-player-layout-player .bottom-player #next-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+
+  body.bottom-player-layout-player .bottom-player #play-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  body.bottom-player-layout-player .bottom-player .progress-container {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    order: 3 !important;
+  }
+
+  body.bottom-player-layout-player .bottom-player .volume-control,
+  body.bottom-player-layout-player .bottom-player #btn-mode,
+  body.bottom-player-layout-player .bottom-player #btn-fav {
+    display: none !important;
+  }
+
+  .page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pagination-container input {
+    width: 45px;
+    height: 32px;
+    font-size: 0.75rem;
+    padding: 0 4px;
+    text-align: center;
+  }
+
+  .pagination-container .btn-primary {
+    height: 32px;
+    padding: 0 8px;
+    font-size: 0.75rem;
+  }
+}
