@@ -1545,8 +1545,8 @@
 
       .player-stage {
         min-height: 0;
-        max-height: calc(100dvh - var(--app-nav-height) - var(--nowbar-height) - 22px);
-        overflow: auto;
+        max-height: none;
+        overflow: visible;
       }
 
       .stage-main {
@@ -1648,6 +1648,7 @@
         transform: none;
         padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px));
         gap: 8px;
+        overflow: visible;
       }
 
       .now-cover {
@@ -1673,6 +1674,7 @@
 
       .now-controls {
         gap: 6px;
+        flex-shrink: 0;
       }
 
       .now-btn {
@@ -1693,6 +1695,7 @@
         top: -12px;
         min-width: 0;
         display: block;
+        z-index: 2;
       }
 
       .now-progress span {
@@ -1700,7 +1703,7 @@
       }
 
       .now-progress-track {
-        height: 18px;
+        height: 36px;
       }
 
       .now-progress-line {
@@ -1708,9 +1711,7 @@
       }
 
       .now-actions,
-      .now-volume,
-      #prev-btn,
-      #next-btn {
+      .now-volume {
         display: none;
       }
 
