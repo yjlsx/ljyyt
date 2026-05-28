@@ -1443,7 +1443,18 @@
       button,
       .lyrics-search-input,
       .queue-search-input {
-        font-size: 16px;
+        font-size: 16px !important;
+        line-height: 1.35 !important;
+      }
+
+      body.music-player-page .queue-search-input,
+      body.music-player-page .lyrics-search-input,
+      body.music-player-page #queue-search-input,
+      body.music-player-page #lyrics-search-title,
+      body.music-player-page #lyrics-search-artist {
+        font-size: 16px !important;
+        line-height: 1.35 !important;
+        min-height: 44px !important;
       }
 
       html,
@@ -1737,16 +1748,16 @@
 
       body.queue-filter-open .queue-search {
         display: flex !important;
-        height: 40px !important;
-        min-height: 40px !important;
-        flex-basis: 40px !important;
+        height: 48px !important;
+        min-height: 48px !important;
+        flex-basis: 48px !important;
         margin-bottom: 12px;
         overflow: visible;
       }
 
       body.queue-filter-open .queue-search-input {
-        height: 38px !important;
-        min-height: 38px !important;
+        height: 44px !important;
+        min-height: 44px !important;
       }
 
       body.queue-open .queue-panel {

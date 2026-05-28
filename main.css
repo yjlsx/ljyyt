@@ -2209,6 +2209,7 @@ body.search-page {
   select,
   .form-control,
   .form-select,
+  .form-control-lg,
   .search-input,
   .queue-search-input,
   .lyrics-search-input,
@@ -2219,7 +2220,7 @@ body.search-page {
   #lyrics-search-title,
   #lyrics-search-artist {
     font-size: 16px !important;
-    line-height: 1.35;
+    line-height: 1.35 !important;
   }
 
   #hero-search-input,
