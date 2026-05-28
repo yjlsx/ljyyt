@@ -182,8 +182,9 @@
       width: 18px; height: 18px; border-radius: 5px;
       display: grid; place-items: center; flex: none;
       border: 1px solid var(--border); color: var(--primary-foreground);
-      background: transparent; font-size: 12px;
+      background: transparent;
     }
+    .aggregate-check .line-icon { width: 13px; height: 13px; stroke-width: 2.2; }
     .aggregate-source-option.selected .aggregate-check {
       background: var(--primary); border-color: var(--primary);
     }
@@ -203,7 +204,9 @@
       width: 100%; height: 34px; margin-top: 10px; border-radius: 9px;
       border: 1px solid color-mix(in srgb, #ef4444 30%, var(--border));
       color: #ef4444; font-size: 12px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     }
+    .danger-outline .line-icon { width: 15px; height: 15px; }
     .setting-drawer {
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
       transform: translateY(105%); transition: transform .22s ease;
@@ -239,6 +242,7 @@
     .playlist-picker { display: flex; flex-direction: column; gap: 8px; max-height: 45vh; overflow: auto; margin-top: 8px; }
     .playlist-picker button { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 10px; border-radius: 12px; background: var(--secondary); color: var(--foreground); text-align: left; }
     .playlist-picker span { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9px; background: var(--card); color: var(--primary); }
+    .playlist-picker .line-icon { width: 18px; height: 18px; }
     .content {
       flex: 1; min-height: 0; overflow-y: auto;
       padding: 12px 12px 158px;
@@ -298,8 +302,9 @@
     .source-badge.local { color: var(--muted-foreground); border-color: var(--border); background: var(--muted); }
     .dots {
       width: 30px; height: 34px; display: grid; place-items: center;
-      color: var(--muted-foreground); font-size: 17px;
+      color: var(--muted-foreground);
     }
+    .dots .line-icon, .playlist-row-action .line-icon { width: 17px; height: 17px; }
     .mv-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 11px; }
     .mv-card { min-width: 0; }
     .mv-image {
@@ -314,8 +319,9 @@
     .play span {
       display: grid; place-items: center; height: 35px; width: 35px;
       border-radius: 50%; background: rgba(255,255,255,.93);
-      color: var(--primary); font-size: 14px; padding-left: 2px;
+      color: var(--primary);
     }
+    .play .line-icon { width: 15px; height: 15px; fill: currentColor; stroke: none; transform: translateX(1px); }
     .mv-title {
       font-size: 13px; font-weight: 500; margin-top: 8px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -363,14 +369,21 @@
       width: 78px; height: 78px; flex: none; border-radius: 11px;
       display: grid; place-items: center; color: var(--primary);
       background: rgba(54,169,123,.12); border: 1px solid var(--border);
-      font-size: 31px;
     }
+    .line-icon {
+      width: 18px; height: 18px; display: block; flex: 0 0 auto;
+      fill: none; stroke: currentColor; stroke-width: 1.85;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .line-icon.icon-filled { fill: currentColor; stroke: currentColor; }
+    .heart-tile .line-icon { width: 34px; height: 34px; }
     .favorite-header h2 { margin: 0 0 5px; font-size: 16px; }
     .favorite-header p { margin: 0; color: var(--muted-foreground); font-size: 12px; }
     .favorite-actions { display: flex; gap: 8px; margin-top: 10px; }
     .round-play {
       height: 30px; min-width: 44px; padding: 0 12px; border-radius: 999px;
       background: var(--primary); color: var(--primary-foreground);
+      display: inline-grid; place-items: center;
     }
     .small-control {
       height: 30px; padding: 0 10px; border-radius: 9px;
@@ -384,8 +397,9 @@
     }
     .quick-icon {
       height: 43px; width: 43px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(54,169,123,.12); color: var(--primary); font-size: 21px;
+      background: rgba(54,169,123,.12); color: var(--primary);
     }
+    .quick-icon .line-icon { width: 21px; height: 21px; stroke-width: 1.9; }
     .playlist-head { display: flex; justify-content: space-between; align-items: center; margin: 0 2px 13px; }
     .playlist-head h2 { font-size: 17px; margin: 0; }
     .playlist-actions { display: flex; align-items: center; gap: 4px; }
@@ -393,6 +407,7 @@
       display: inline-flex; align-items: center; gap: 4px; height: 32px;
       padding: 0 8px; border-radius: 10px; color: var(--primary); font-size: 13px;
     }
+    .new .line-icon { width: 15px; height: 15px; }
     .new:hover { background: var(--secondary); }
     .playlist {
       display: flex; gap: 12px; align-items: center; padding: 9px;
@@ -401,8 +416,9 @@
     }
     .playlist-cover {
       width: 46px; height: 46px; border-radius: 10px; background: rgba(54,169,123,.12);
-      color: var(--primary); display: grid; place-items: center; font-size: 21px;
+      color: var(--primary); display: grid; place-items: center;
     }
+    .playlist-cover .line-icon { width: 22px; height: 22px; }
     .playlist p { margin: 0 0 3px; font-size: 14px; }
     .playlist small { color: var(--muted-foreground); font-size: 11px; }
     .subpage-head {
@@ -431,8 +447,9 @@
     }
     .back {
       height: 36px; width: 36px; display: grid; place-items: center;
-      border-radius: 50%; color: var(--muted-foreground); font-size: 22px; cursor: pointer;
+      border-radius: 50%; color: var(--muted-foreground); cursor: pointer;
     }
+    .back .line-icon { width: 21px; height: 21px; }
     .back:hover { background: var(--muted); color: var(--foreground); }
     .subpage-head h2 { margin: 0; font-size: 18px; font-weight: 630; }
     .playlist-view-hero {
@@ -446,6 +463,7 @@
       display: grid; place-items: center; color: var(--primary);
       background: rgba(54,169,123,.12); border: 1px solid var(--border);
     }
+    .playlist-summary-cover .line-icon,
     .playlist-summary-cover svg {
       width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
@@ -490,11 +508,12 @@
     }
     .setting-item:hover { background: color-mix(in srgb, var(--muted) 35%, var(--card)); }
     .setting-icon {
-      color: var(--primary); font-size: 18px; width: 36px; height: 36px;
+      color: var(--primary); width: 36px; height: 36px;
       border-radius: 10px; display: grid; place-items: center;
       background: color-mix(in srgb, var(--primary) 10%, transparent);
       flex: none;
     }
+    .setting-icon .line-icon { width: 18px; height: 18px; }
     .setting-copy { flex: 1; min-width: 0; }
     .setting-copy p { margin: 0; font-size: 14px; }
     .setting-copy small {
@@ -502,6 +521,12 @@
       display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px;
     }
     .setting-action { display: flex; align-items: center; gap: 8px; color: var(--muted-foreground); flex: none; }
+    .setting-chevron {
+      display: grid; place-items: center; width: 18px; height: 18px;
+      transition: transform .18s ease;
+    }
+    .setting-chevron.open { transform: rotate(90deg); }
+    .setting-chevron .line-icon { width: 16px; height: 16px; }
     .toggle {
       width: 40px; height: 23px; border-radius: 22px; position: relative;
       background: var(--primary);
@@ -568,7 +593,7 @@
       display: grid; place-items: center; border-radius: 11px;
     }
     .mini-control:hover { background: var(--muted); color: var(--foreground); }
-    .mini-control svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .mini-control svg, .mini-control .line-icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .progress {
       width: 37px; height: 37px; display: grid; place-items: center;
       border-radius: 50%; position: relative; color: var(--primary);
@@ -578,10 +603,10 @@
       border: 2px solid var(--border); border-top-color: var(--primary);
       border-right-color: var(--primary);
     }
-    .progress svg { width: 14px; height: 14px; position: relative; fill: currentColor; }
+    .progress svg, .progress .line-icon { width: 14px; height: 14px; position: relative; }
     .queue { width: 27px; height: 34px; color: var(--muted-foreground); display: grid; place-items: center; border-radius: 12px; }
     .queue:hover { background: var(--muted); color: var(--foreground); }
-    .queue svg { width: 19px; height: 19px; }
+    .queue svg, .queue .line-icon { width: 19px; height: 19px; }
     .tabs {
       height: 57px; flex: none; border-top: 1px solid rgba(120,133,130,.12);
       background: color-mix(in srgb, var(--card) 95%, transparent);
@@ -594,10 +619,10 @@
       align-items: center; justify-content: center; gap: 2px;
       color: var(--muted-foreground);
     }
-    .tab svg { height: 20px; width: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .tab svg, .tab .line-icon { height: 20px; width: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
     .tab span { font-size: 10px; font-weight: 500; }
     .tab.active { color: var(--primary); }
-    .tab.active svg { stroke-width: 2.5; }
+    .tab.active svg, .tab.active .line-icon { stroke-width: 2.5; }
     .fullscreen {
       display: none; position: absolute; z-index: 20; inset: 0;
       color: white; overflow: hidden; flex-direction: column;
@@ -615,9 +640,10 @@
       color: rgba(255,255,255,.7);
     }
     .icon-button {
-      width: 42px; height: 42px; display: grid; place-items: center; font-size: 24px; cursor: pointer;
+      width: 42px; height: 42px; display: grid; place-items: center; cursor: pointer;
       border-radius: 14px; transition: background .18s ease, color .18s ease, transform .18s ease;
     }
+    .icon-button .line-icon { width: 21px; height: 21px; }
     .icon-button:hover, .controls button:hover {
       background: rgba(255,255,255,.11); color: white;
     }
@@ -676,7 +702,8 @@
     .full-meta { padding: 4px 31px 13px; display: flex; justify-content: space-between; align-items: center; }
     .full-meta h2 { font-size: 20px; margin: 0 0 6px; }
     .full-meta p { margin: 0; font-size: 13px; color: rgba(255,255,255,.62); }
-    .like { font-size: 27px; color: var(--primary); }
+    .like { color: var(--primary); }
+    .like .line-icon { width: 26px; height: 26px; }
     .seek { margin: 0 31px; cursor: pointer; }
     .seek-line { height: 3px; background: rgba(255,255,255,.27); border-radius: 4px; position: relative; }
     .seek-line::before { content: ""; width: var(--audio-progress, 0%); position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: white; }
@@ -687,16 +714,16 @@
       border-radius: 16px; display: grid; place-items: center; transition: background .18s ease, color .18s ease, transform .18s ease;
       flex: 0 0 auto;
     }
-    .controls svg, .icon-button svg, .progress svg, .queue svg {
+    .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .progress svg, .progress .line-icon, .queue svg, .queue .line-icon {
       width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     }
-    .controls .main-play svg, .progress svg { fill: currentColor; stroke: none; }
+    .controls .main-play .icon-play, .progress .icon-play { fill: currentColor; stroke: none; }
     .player .progress svg { width: 14px; height: 14px; }
     .controls .main-play {
       height: 61px; width: 61px; border-radius: 50%; background: white; color: #101415;
       display: grid; place-items: center; font-size: 25px;
     }
-    .controls .main-play svg { width: 24px; height: 24px; }
+    .controls .main-play svg, .controls .main-play .line-icon { width: 24px; height: 24px; }
     .queue-drawer {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 70;
       height: min(75vh, 620px); transform: translateY(110%);
@@ -769,6 +796,7 @@
       height: 42px; border-radius: 13px; padding: 0 12px; display: flex; align-items: center; gap: 11px;
       text-align: left; color: var(--foreground);
     }
+    .action-list .line-icon { width: 17px; height: 17px; }
     .action-list button:hover { background: var(--muted); }
     .action-list small { margin-left: auto; color: var(--muted-foreground); font-size: 12px; }
     .queue-drawer .track { height: 72px; padding: 8px 12px 8px 14px; border-radius: 18px; gap: 14px; }
@@ -841,8 +869,8 @@
       .controls { height: 92px; padding: 12px 22px 24px; }
       .controls button { width: 45px; height: 45px; border-radius: 15px; }
       .controls .main-play { width: 58px; height: 58px; }
-      .controls svg, .icon-button svg, .queue svg { width: 21px; height: 21px; }
-      .controls .main-play svg { width: 23px; height: 23px; }
+      .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .queue svg, .queue .line-icon { width: 21px; height: 21px; }
+      .controls .main-play svg, .controls .main-play .line-icon { width: 23px; height: 23px; }
       .full-meta { padding-left: 22px; padding-right: 22px; }
       .seek { margin-left: 22px; margin-right: 22px; }
       .drawer-scrim,
@@ -880,7 +908,7 @@
         <img src="/images/avatar.jpg" alt="丽江音悦台">
         <span>丽江音悦台</span>
       </div>
-      <button class="theme-switch" type="button" aria-label="切换明暗主题" onclick="document.documentElement.classList.toggle('dark')">&#9790;</button>
+      <button class="theme-switch" type="button" aria-label="切换明暗主题" onclick="document.documentElement.classList.toggle('dark')"><span data-icon="moon"></span></button>
     </header>
     <div class="search-shell" id="search-shell">
       <div class="search-box">
@@ -909,37 +937,37 @@
           <div class="track active" onclick="chooseTrack('快乐人生', '和月圆', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="快乐人生封面">
             <div class="track-meta"><div class="track-name">快乐人生</div><div class="artist">和月圆</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('拉市斗牛之歌', '肖煜光', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="拉市斗牛之歌封面">
             <div class="track-meta"><div class="track-name">拉市斗牛之歌</div><div class="artist">肖煜光</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('无名的歌', '金甲劲松', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/mmbiz_jpg/tfpibRIwbCVibc2PsR4tYGfqbTGzujV3vibianIZTNKGZ1iac0I4XGum5yW5gGmPYgSxXUGt8WUibA76ThIibricIM8icibg/640?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="无名的歌封面">
             <div class="track-meta"><div class="track-name">无名的歌</div><div class="artist">金甲劲松</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('故乡谣', '赵郑芝', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NrCAYkYXuqd1OjLa4qTZNmGWIuQiapFCLO1tPsE7z23p6wm9sPlvaCCRcS4B2k3bZPdnbVU9UrWh4EXORhQdo31QxAYm2cdc2M/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="故乡谣封面">
             <div class="track-meta"><div class="track-name">故乡谣</div><div class="artist">赵郑芝</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('五台之歌', '和圣福 和丽龙 和丽霞 和雪芹', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NsBgRKarJntvQM8IrSr32QZQTu1ef9xyxNUDLAiaTAreTv6Ozw4u4icEib7Z7aRHEPiciaJEeKZnSAscGrVKwYNIby39piaoEkLANHU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="五台之歌封面">
             <div class="track-meta"><div class="track-name">五台之歌</div><div class="artist">和圣福 和丽龙 和丽霞 和雪芹</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('达瓦纳西努2026', '肖煜光', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="达瓦纳西努2026封面">
             <div class="track-meta"><div class="track-name">达瓦纳西努2026</div><div class="artist">肖煜光</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
           <div class="track" onclick="chooseTrack('塔城纳西民歌', '金顺、和秀山', this.querySelector('img').src)">
             <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Nc1xcvEOgqBIK5aRFc8SyhVGNDbhv51DA3mA8GqyicQqOH0tianmGImQl5KAgjtPxrnDqY2wgrNNfiaf4aaRdPQ4ssJdgAQnKLIg/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="塔城纳西民歌封面">
             <div class="track-meta"><div class="track-name">塔城纳西民歌</div><div class="artist">金顺、和秀山</div></div>
-            <span class="source">丽江曲库</span><button class="dots">&#8942;</button>
+            <span class="source">丽江曲库</span><button class="dots" aria-label="更多"><span data-icon="more"></span></button>
           </div>
         </div>
       </section>
@@ -949,38 +977,38 @@
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('鱼水相会', '和善武、金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/c3cf02ee6a8990b9ad1fed05e6774b6b.mp4')">
               <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7NCtwazibtlUHAX0kOR3k6SeALRRWKiccfHQCEtLYtb4SqVetw5eVIlKWgjbdGvvgpibtpagiawd4ib71uoBuiaibialMbjJaumd9PTPgo/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="鱼水相会 MV 封面">
-              <div class="play"><span>&#9654;</span></div>
+              <div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">鱼水相会</div><div class="mv-artist">和善武、金顺</div>
           </article>
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('回到我身边', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260125/cbaf4f66e08724960608bf0e73363915.mp4')">
               <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pz6Ou9p86dBJtyAJ4zbccIaNC7UM79zbhy3LyOwFDdzapeaRq8RMQHDvGLQdmicnGC1QZicxDRQeiaLW4gWfVxvssLodHn6xcYLI/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="回到我身边 MV 封面">
-              <div class="play"><span>&#9654;</span></div>
+              <div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">回到我身边</div><div class="mv-artist">金顺</div>
           </article>
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('缘定今生', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/e4b860b537832ead1f8b61bf4f080c82.mp4')">
-              <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9icnoQRx2z8RMuV9pKIJ4ulTg13YXSibpDbhGncCFGtia43kVBMvNWoibIIUn2vdkiaDaTIF7Jmyp8Kibw/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="缘定今生 MV 封面"><div class="play"><span>&#9654;</span></div>
+              <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9icnoQRx2z8RMuV9pKIJ4ulTg13YXSibpDbhGncCFGtia43kVBMvNWoibIIUn2vdkiaDaTIF7Jmyp8Kibw/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="缘定今生 MV 封面"><div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">缘定今生</div><div class="mv-artist">和丽刚、金顺</div>
           </article>
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('三月百花开', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/87a2fce89a250fb5c41e359194d5ab44.mp4')">
-              <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7PiceWwkuhCFXUBpfGa7F1dXHibdMgYZu3aC4ly0eykTO7cjUtd5RiaLsBGNHva9xB9R9nTFQTGYWsIyX4uzFCwEQFXRUc7gVHTpQ/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="三月百花开 MV 封面"><div class="play"><span>&#9654;</span></div>
+              <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7PiceWwkuhCFXUBpfGa7F1dXHibdMgYZu3aC4ly0eykTO7cjUtd5RiaLsBGNHva9xB9R9nTFQTGYWsIyX4uzFCwEQFXRUc7gVHTpQ/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="三月百花开 MV 封面"><div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">三月百花开</div><div class="mv-artist">金顺</div>
           </article>
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('兴余花华色', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/db33ef693b305abbb959e78811161bdb.mp4')">
-              <img src="https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7NOrjPV7ohQicsvzEib6N8kQuW4gkcujiaGpNQVKavoA98hIEO75JFDyEylIba2w1ZCJyJvG5ZN3dr1k1aibx5cQEC3mtsDpymGD8U/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="兴余花华色 MV 封面"><div class="play"><span>&#9654;</span></div>
+              <img src="https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7NOrjPV7ohQicsvzEib6N8kQuW4gkcujiaGpNQVKavoA98hIEO75JFDyEylIba2w1ZCJyJvG5ZN3dr1k1aibx5cQEC3mtsDpymGD8U/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="兴余花华色 MV 封面"><div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">兴余花华色</div><div class="mv-artist">金顺</div>
           </article>
           <article class="mv-card">
             <div class="mv-image" onclick="openVideo('游子的心', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/207470dfeca059e981dbc64b9e55803a.mp4')">
-              <img src="https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7N3eL11iaMOicXhVjic0nu0f5OfkNmEEulYn174MKjcAo8yCZHWW76qzicvIIpdbWRQYZpl65PgPJWnibjctTBj6MvnWUkKyg4jibF4k/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="游子的心 MV 封面"><div class="play"><span>&#9654;</span></div>
+              <img src="https://mmbiz.qpic.cn/mmbiz_png/jXiaTRzsmA7N3eL11iaMOicXhVjic0nu0f5OfkNmEEulYn174MKjcAo8yCZHWW76qzicvIIpdbWRQYZpl65PgPJWnibjctTBj6MvnWUkKyg4jibF4k/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt="游子的心 MV 封面"><div class="play"><span data-icon="play"></span></div>
             </div>
             <div class="mv-title">游子的心</div><div class="mv-artist">金顺</div>
           </article>
@@ -995,11 +1023,11 @@
       </div>
       <div class="view" data-view="favorites">
         <div class="favorite-header">
-          <div class="heart-tile">&#9829;</div>
+          <div class="heart-tile" data-icon="heartFilled"></div>
           <div>
             <h2>我的喜欢</h2>
             <p id="favorite-count">0 首歌曲</p>
-            <div class="favorite-actions"><button class="round-play" onclick="playFirstFavorite()">&#9654;</button><button class="small-control" onclick="clearFavorites()">清空</button><button class="small-control" onclick="showView('search')">搜索...</button></div>
+            <div class="favorite-actions"><button class="round-play" onclick="playFirstFavorite()" aria-label="播放喜欢歌曲"><span data-icon="play"></span></button><button class="small-control" onclick="clearFavorites()">清空</button><button class="small-control" onclick="showView('search')">搜索...</button></div>
           </div>
         </div>
         <div class="track-list" id="favorite-list">
@@ -1008,16 +1036,16 @@
       </div>
       <div class="view" data-view="mine">
         <div class="quick-grid">
-          <button class="quick-card" type="button" onclick="showView('history')"><span class="quick-icon">&#8634;</span><span>历史</span></button>
-          <button class="quick-card" type="button" onclick="showView('queue')"><span class="quick-icon">&#9776;</span><span>列表</span></button>
-          <button class="quick-card" type="button" onclick="showView('local')"><span class="quick-icon">&#8681;</span><span>本地</span></button>
-          <button class="quick-card" type="button" onclick="showView('settings')"><span class="quick-icon">&#9881;</span><span>设置</span></button>
+          <button class="quick-card" type="button" onclick="showView('history')"><span class="quick-icon" data-icon="history"></span><span>历史</span></button>
+          <button class="quick-card" type="button" onclick="showView('queue')"><span class="quick-icon" data-icon="list"></span><span>列表</span></button>
+          <button class="quick-card" type="button" onclick="showView('local')"><span class="quick-icon" data-icon="download"></span><span>本地</span></button>
+          <button class="quick-card" type="button" onclick="showView('settings')"><span class="quick-icon" data-icon="settings"></span><span>设置</span></button>
         </div>
-        <div class="playlist-head"><h2>我的歌单</h2><div class="playlist-actions"><button class="new" onclick="openPlaylistImportDrawer(event)">&#128279; 导入</button><button class="new" onclick="openCreatePlaylistDrawer(event)">&#8862; 新建</button></div></div>
+        <div class="playlist-head"><h2>我的歌单</h2><div class="playlist-actions"><button class="new" onclick="openPlaylistImportDrawer(event)"><span data-icon="link"></span>导入</button><button class="new" onclick="openCreatePlaylistDrawer(event)"><span data-icon="plus"></span>新建</button></div></div>
         <div id="playlist-list"><div class="empty-note">还没有创建歌单。点“新建”后才会出现用户歌单。</div></div>
       </div>
       <div class="view" data-view="library">
-        <div class="subpage-head back-only"><button class="back" onclick="showView('home')" aria-label="返回首页">&#8249;</button></div>
+        <div class="subpage-head back-only"><button class="back" onclick="showView('home')" aria-label="返回首页"><span data-icon="chevronLeft"></span></button></div>
         <div class="track-list" id="library-list">
           <div class="track active" onclick="chooseTrack('快乐人生', '和月圆', this.querySelector('img').src)"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt=""><div class="track-meta"><div class="track-name">快乐人生</div><div class="artist">和月圆</div></div><span class="source">丽江曲库</span></div>
           <div class="track" onclick="chooseTrack('拉市斗牛之歌', '肖煜光', this.querySelector('img').src)"><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt=""><div class="track-meta"><div class="track-name">拉市斗牛之歌</div><div class="artist">肖煜光</div></div><span class="source">丽江曲库</span></div>
@@ -1025,91 +1053,91 @@
         </div>
       </div>
       <div class="view" data-view="videos">
-        <div class="subpage-head back-only"><button class="back" onclick="showView('home')" aria-label="返回首页">&#8249;</button></div>
+        <div class="subpage-head back-only"><button class="back" onclick="showView('home')" aria-label="返回首页"><span data-icon="chevronLeft"></span></button></div>
         <div class="mv-grid" id="videos-list">
-          <article class="mv-card"><div class="mv-image" onclick="openVideo('鱼水相会', '和善武、金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/c3cf02ee6a8990b9ad1fed05e6774b6b.mp4')"><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7NCtwazibtlUHAX0kOR3k6SeALRRWKiccfHQCEtLYtb4SqVetw5eVIlKWgjbdGvvgpibtpagiawd4ib71uoBuiaibialMbjJaumd9PTPgo/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt=""><div class="play"><span>&#9654;</span></div></div><div class="mv-title">鱼水相会</div><div class="mv-artist">和善武、金顺</div></article>
-          <article class="mv-card"><div class="mv-image" onclick="openVideo('回到我身边', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260125/cbaf4f66e08724960608bf0e73363915.mp4')"><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pz6Ou9p86dBJtyAJ4zbccIaNC7UM79zbhy3LyOwFDdzapeaRq8RMQHDvGLQdmicnGC1QZicxDRQeiaLW4gWfVxvssLodHn6xcYLI/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt=""><div class="play"><span>&#9654;</span></div></div><div class="mv-title">回到我身边</div><div class="mv-artist">金顺</div></article>
+          <article class="mv-card"><div class="mv-image" onclick="openVideo('鱼水相会', '和善武、金顺', 'https://xcx.lijiangmusic.com/upload/1/20260124/c3cf02ee6a8990b9ad1fed05e6774b6b.mp4')"><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7NCtwazibtlUHAX0kOR3k6SeALRRWKiccfHQCEtLYtb4SqVetw5eVIlKWgjbdGvvgpibtpagiawd4ib71uoBuiaibialMbjJaumd9PTPgo/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt=""><div class="play"><span data-icon="play"></span></div></div><div class="mv-title">鱼水相会</div><div class="mv-artist">和善武、金顺</div></article>
+          <article class="mv-card"><div class="mv-image" onclick="openVideo('回到我身边', '金顺', 'https://xcx.lijiangmusic.com/upload/1/20260125/cbaf4f66e08724960608bf0e73363915.mp4')"><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/jXiaTRzsmA7Pz6Ou9p86dBJtyAJ4zbccIaNC7UM79zbhy3LyOwFDdzapeaRq8RMQHDvGLQdmicnGC1QZicxDRQeiaLW4gWfVxvssLodHn6xcYLI/640?wx_fmt=png&amp;from=appmsg" referrerpolicy="no-referrer" alt=""><div class="play"><span data-icon="play"></span></div></div><div class="mv-title">回到我身边</div><div class="mv-artist">金顺</div></article>
         </div>
       </div>
       <div class="view video-view" data-view="video">
-        <div class="subpage-head back-only"><button class="back" onclick="showView('videos')" aria-label="返回MV列表">&#8249;</button></div>
+        <div class="subpage-head back-only"><button class="back" onclick="showView('videos')" aria-label="返回MV列表"><span data-icon="chevronLeft"></span></button></div>
         <video id="preview-video" controls poster=""></video>
         <h2 id="video-title">鱼水相会</h2><p id="video-artist">和善武、金顺</p>
       </div>
       <div class="view" data-view="history">
-        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>播放历史</h2></div><button class="page-action" id="history-clear" onclick="clearHistory()" aria-label="清空播放历史" hidden><svg viewBox="0 0 24 24" width="17" height="17"><path d="M3 6h18M8 6V4h8v2m-9 4 1 10h8l1-10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>播放历史</h2></div><button class="page-action" id="history-clear" onclick="clearHistory()" aria-label="清空播放历史" hidden><span data-icon="trash"></span></button></div>
         <div class="playlist-view-hero">
-          <div class="playlist-summary-cover"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg></div>
-          <div class="playlist-summary"><h2>播放历史</h2><p id="history-summary-count">0 首歌曲</p><button class="round-play" onclick="playFirstHistory()">&#9654;</button></div>
+          <div class="playlist-summary-cover" data-icon="history"></div>
+          <div class="playlist-summary"><h2>播放历史</h2><p id="history-summary-count">0 首歌曲</p><button class="round-play" onclick="playFirstHistory()" aria-label="播放历史歌曲"><span data-icon="play"></span></button></div>
         </div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
         <div class="track-list playlist-page-list" id="history-list"><div class="empty-note">暂无歌曲</div></div>
       </div>
       <div class="view" data-view="queue">
-        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>播放列表</h2></div><button class="page-action" id="queue-clear" onclick="clearQueue()" aria-label="清空播放列表" hidden><svg viewBox="0 0 24 24" width="17" height="17"><path d="M3 6h18M8 6V4h8v2m-9 4 1 10h8l1-10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>播放列表</h2></div><button class="page-action" id="queue-clear" onclick="clearQueue()" aria-label="清空播放列表" hidden><span data-icon="trash"></span></button></div>
         <div class="playlist-view-hero">
-          <div class="playlist-summary-cover"><svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h10"/><path d="M16 10v8l5-4-5-4z" fill="currentColor" stroke="none"/></svg></div>
-          <div class="playlist-summary"><h2>播放列表</h2><p id="queue-summary-count">0 首歌曲</p><button class="round-play" onclick="playQueueFromPage()">&#9654;</button></div>
+          <div class="playlist-summary-cover" data-icon="list"></div>
+          <div class="playlist-summary"><h2>播放列表</h2><p id="queue-summary-count">0 首歌曲</p><button class="round-play" onclick="playQueueFromPage()" aria-label="播放列表歌曲"><span data-icon="play"></span></button></div>
         </div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
         <div class="track-list playlist-page-list" id="queue-list"><div class="empty-note">暂无歌曲</div></div>
       </div>
       <div class="view" data-view="local">
-        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>本地音乐</h2></div>
+        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>本地音乐</h2></div>
         <div class="empty-note">Otter 原本地音乐管理入口将在真实应用中完整保留。</div>
       </div>
       <div class="view" data-view="import">
-        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>导入歌单</h2></div>
+        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>导入歌单</h2></div>
         <div class="setting-group"><h3>支持来源</h3>
-          <div class="setting-item"><span class="setting-icon">&#128279;</span><div class="setting-copy"><p>通过 URL 添加</p><small>粘贴网易云、酷我、酷狗、咪咕等歌单链接后导入</small></div><span class="simple-select">待接入</span></div>
-          <div class="setting-item"><span class="setting-icon">&#8681;</span><div class="setting-copy"><p>本地文件导入</p><small>从备份文件恢复歌单和歌曲</small></div><span class="simple-select">待接入</span></div>
+          <div class="setting-item"><span class="setting-icon" data-icon="link"></span><div class="setting-copy"><p>通过 URL 添加</p><small>粘贴网易云、酷我、酷狗、咪咕等歌单链接后导入</small></div><span class="simple-select">待接入</span></div>
+          <div class="setting-item"><span class="setting-icon" data-icon="upload"></span><div class="setting-copy"><p>本地文件导入</p><small>从备份文件恢复歌单和歌曲</small></div><span class="simple-select">待接入</span></div>
         </div>
       </div>
       <div class="view" data-view="trash">
-        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>回收站</h2></div>
+        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>回收站</h2></div>
         <div class="empty-note">暂无删除的歌曲或歌单。后续删除内容会先放到这里，方便恢复。</div>
       </div>
       <div class="view" data-view="settings">
-        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回">&#8249;</button><h2>系统设置</h2></div>
+        <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>系统设置</h2></div>
         <div class="settings-scroll">
           <div class="setting-group"><h3>常用设置</h3>
-            <div class="setting-item"><span class="setting-icon">&#10024;</span><div class="setting-copy"><p>智能音源</p><small>&#129497;&#8205;&#9792;&#65039;自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
-            <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon">&#128251;</span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、酷我音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron">&#8250;</span></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
+            <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、酷我音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="aggregate-source-panel" id="aggregate-source-panel">
-              <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check">&#10003;</span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
-              <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check">&#10003;</span><span><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span></label>
-              <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check">&#10003;</span><span><p>网易云音乐</p><small>音源稳定，小众资源多</small></span></label>
+              <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
+              <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span></label>
+              <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span><p>网易云音乐</p><small>音源稳定，小众资源多</small></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span><p>Migu</p><small>咪咕音乐官方</small></span></label>
-              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check">&#10003;</span><span><p>酷我音乐</p><small>版权丰富，但稳定性一般</small></span></label>
-              <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check">&#10003;</span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
+              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>版权丰富，但稳定性一般</small></span></label>
+              <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span><p>Netease</p><small>网易云官方，稳定高速</small></span></label>
             </div>
-            <div class="setting-item"><span class="setting-icon">&#128266;</span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
-            <div class="setting-item"><span class="setting-icon">&#9835;</span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
-            <div class="setting-item" onclick="toggleCachePanel(event)"><span class="setting-icon">&#128190;</span><div class="setting-copy"><p>边听边缓存</p><small>播放时自动缓存，离线也能听</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="边听边缓存开启"></button><span class="setting-chevron" id="cache-chevron">&#8250;</span></div></div>
-            <div class="setting-expanded-panel" id="cache-panel"><div class="cache-stat">暂无缓存数据</div><button class="danger-outline" onclick="event.stopPropagation()">&#128465; 清空缓存</button></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
+            <div class="setting-item" onclick="toggleCachePanel(event)"><span class="setting-icon" data-icon="database"></span><div class="setting-copy"><p>边听边缓存</p><small>播放时自动缓存，离线也能听</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="边听边缓存开启"></button><span class="setting-chevron" id="cache-chevron"><span data-icon="chevronRight"></span></span></div></div>
+            <div class="setting-expanded-panel" id="cache-panel"><div class="cache-stat">暂无缓存数据</div><button class="danger-outline" onclick="event.stopPropagation()"><span data-icon="trash"></span> 清空缓存</button></div>
           </div>
           <div class="setting-group"><h3>界面设置</h3>
-            <div class="setting-item" onclick="document.documentElement.classList.toggle('dark')"><span class="setting-icon">&#127912;</span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select">浅色 / 深色</span></div></div>
-            <div class="setting-item"><span class="setting-icon">&#127991;</span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
-            <div class="setting-item"><span class="setting-icon">&#9635;</span><div class="setting-copy"><p>全屏背景</p></div><div class="setting-action"><select class="setting-select" id="background-label" onchange="setFullBackgroundMode(this.value)"><option value="theme">动态主题色</option><option value="cover" selected>模糊封面</option><option value="texture">深色质感</option></select></div></div>
+            <div class="setting-item" onclick="document.documentElement.classList.toggle('dark')"><span class="setting-icon" data-icon="palette"></span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select">浅色 / 深色</span></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="tag"></span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>全屏背景</p></div><div class="setting-action"><select class="setting-select" id="background-label" onchange="setFullBackgroundMode(this.value)"><option value="theme">动态主题色</option><option value="cover" selected>模糊封面</option><option value="texture">深色质感</option></select></div></div>
           </div>
           <div class="setting-group"><h3>下载设置</h3>
-            <div class="setting-item"><span class="setting-icon">&#9835;</span><div class="setting-copy"><p>下载音质</p><small>部分音源不支持无损下载</small></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
-            <div class="setting-item"><span class="setting-icon">&#8681;</span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
-            <div class="setting-item"><span class="setting-icon">&#128196;</span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>下载音质</p><small>部分音源不支持无损下载</small></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="fileText"></span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
           </div>
           <div class="setting-group"><h3>账号数据</h3>
-            <div class="setting-item" onclick="openSettingDrawer('netease')"><span class="setting-icon">&#128100;</span><div class="setting-copy"><p>网易云账号</p><small id="netease-login-subtitle">登录后可同步歌单</small></div><div class="setting-action"><button class="small-control" id="netease-login-action" onclick="openSettingDrawer('netease'); event.stopPropagation()">登录</button></div></div>
-            <div class="setting-item" onclick="openSettingDrawer('sync')"><span class="setting-icon">&#8635;</span><div class="setting-copy"><p>数据同步</p></div><div class="setting-action"><span class="simple-select">未配置</span></div></div>
-            <div class="setting-item" onclick="showView('trash')"><span class="setting-icon">&#128465;</span><div class="setting-copy"><p>回收站</p><small>恢复误删的歌曲和歌单</small></div><div class="setting-action"><span class="setting-chevron">&#8250;</span></div></div>
+            <div class="setting-item" onclick="openSettingDrawer('netease')"><span class="setting-icon" data-icon="user"></span><div class="setting-copy"><p>网易云账号</p><small id="netease-login-subtitle">登录后可同步歌单</small></div><div class="setting-action"><button class="small-control" id="netease-login-action" onclick="openSettingDrawer('netease'); event.stopPropagation()">登录</button></div></div>
+            <div class="setting-item" onclick="openSettingDrawer('sync')"><span class="setting-icon" data-icon="refresh"></span><div class="setting-copy"><p>数据同步</p></div><div class="setting-action"><span class="simple-select">未配置</span></div></div>
+            <div class="setting-item" onclick="showView('trash')"><span class="setting-icon" data-icon="trash"></span><div class="setting-copy"><p>回收站</p><small>恢复误删的歌曲和歌单</small></div><div class="setting-action"><span class="setting-chevron" data-icon="chevronRight"></span></div></div>
           </div>
           <div class="setting-group"><h3>高级设置</h3>
-            <div class="setting-item" onclick="openSettingDrawer('api')"><span class="setting-icon">&#127760;</span><div class="setting-copy"><p>API 地址</p><small>使用默认地址</small></div><div class="setting-action"><span class="simple-select">默认</span></div></div>
+            <div class="setting-item" onclick="openSettingDrawer('api')"><span class="setting-icon" data-icon="globe"></span><div class="setting-copy"><p>API 地址</p><small>使用默认地址</small></div><div class="setting-action"><span class="simple-select">默认</span></div></div>
           </div>
           <div class="setting-group"><h3>关于系统</h3>
-            <div class="setting-item" onclick="openSettingDrawer('version')"><span class="setting-icon">&#128205;</span><div class="setting-copy"><p>版本更新</p></div><div class="setting-action"><span class="simple-select">预览版</span><span class="setting-chevron">&#8250;</span></div></div>
-            <div class="setting-item" onclick="openSettingDrawer('logs')"><span class="setting-icon">&#9888;</span><div class="setting-copy"><p>诊断日志</p><small>用于排查运行异常或提交反馈</small></div><div class="setting-action"><span class="simple-select">暂无</span><span class="setting-chevron">&#8250;</span></div></div>
+            <div class="setting-item" onclick="openSettingDrawer('version')"><span class="setting-icon" data-icon="mapPin"></span><div class="setting-copy"><p>版本更新</p></div><div class="setting-action"><span class="simple-select">预览版</span><span class="setting-chevron" data-icon="chevronRight"></span></div></div>
+            <div class="setting-item" onclick="openSettingDrawer('logs')"><span class="setting-icon" data-icon="warning"></span><div class="setting-copy"><p>诊断日志</p><small>用于排查运行异常或提交反馈</small></div><div class="setting-action"><span class="simple-select">暂无</span><span class="setting-chevron" data-icon="chevronRight"></span></div></div>
           </div>
         </div>
       </div>
@@ -1119,37 +1147,37 @@
         <img src="https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="快乐人生封面">
         <div class="player-copy"><strong>快乐人生</strong><span>- 和月圆</span></div>
         <div class="mini-controls">
-          <button class="mini-control" aria-label="上一首" onclick="previousTrack(event)"></button>
+          <button class="mini-control" aria-label="上一首" onclick="previousTrack(event)"><span data-icon="previous"></span></button>
           <button class="progress" id="mini-play" aria-label="播放" onclick="toggleAudio(event)">
-            <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>
+            <span data-icon="play"></span>
           </button>
-          <button class="mini-control" aria-label="下一首" onclick="nextTrack(event)"></button>
+          <button class="mini-control" aria-label="下一首" onclick="nextTrack(event)"><span data-icon="next"></span></button>
           <button class="queue" aria-label="播放列表" onclick="openQueueFromMini(event)">
-            <svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path d="M16 10.5v7l5-3.5z" fill="currentColor"/></svg>
+            <span data-icon="list"></span>
           </button>
         </div>
       </div>
     </div>
     <nav class="tabs">
       <button class="tab active" data-target="home" type="button">
-        <svg viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7v8a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/></svg><span>首页</span>
+        <span data-icon="home"></span><span>首页</span>
       </button>
       <button class="tab" data-target="search" type="button">
-        <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0"/></svg><span>搜索</span>
+        <span data-icon="search"></span><span>搜索</span>
       </button>
       <button class="tab" data-target="favorites" type="button">
-        <svg viewBox="0 0 24 24"><path d="M20.8 8.5c0 5.4-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.5a4.5 4.5 0 0 1 8.8-1.2 4.5 4.5 0 0 1 8.8 1.2z"/></svg><span>喜欢</span>
+        <span data-icon="heart"></span><span>喜欢</span>
       </button>
       <button class="tab" data-target="mine" type="button">
-        <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg><span>我的</span>
+        <span data-icon="user"></span><span>我的</span>
       </button>
     </nav>
     <section class="fullscreen" id="full-player" aria-label="全屏播放器">
       <div class="fullscreen-bg"></div>
       <header class="full-header">
-        <button class="icon-button" onclick="closeFullPlayer()" aria-label="收起播放器">&#8964;</button>
+        <button class="icon-button" onclick="closeFullPlayer()" aria-label="收起播放器"><span data-icon="chevronDown"></span></button>
         <button class="mode" id="play-mode-label" onclick="cyclePlayMode(event)" type="button">列表循环</button>
-        <button class="icon-button" onclick="shareCurrentTrack()" aria-label="分享">&#8599;</button>
+        <button class="icon-button" onclick="shareCurrentTrack()" aria-label="分享"><span data-icon="share"></span></button>
       </header>
       <div class="full-main" id="full-main" onclick="toggleLyricsPanel(event)">
         <img class="full-cover" src="https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg" referrerpolicy="no-referrer" alt="快乐人生封面">
@@ -1157,7 +1185,7 @@
           <div class="meta">正在准备歌词...</div>
         </div>
       </div>
-      <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢">&#9825;</button></div>
+      <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢"><span data-icon="heart"></span></button></div>
       <div class="seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><span id="current-time">0:00</span><span id="duration-time">3:43</span></div></div>
       <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button onclick="toggleQueueDrawer(event)" aria-label="播放列表"></button></div>
     </section>
@@ -1205,6 +1233,16 @@
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = 'https://music-api.gdstudio.xyz/api.php';
+    function iconHtml(name) {
+      return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
+    }
+    function hydrateIcons(root) {
+      (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
+        var name = node.getAttribute('data-icon');
+        var html = iconHtml(name);
+        if (html) node.innerHTML = html;
+      });
+    }
     const providerSourceMap = {
       '聚合搜索': 'all',
       '丽江曲库': 'local',
@@ -1428,14 +1466,14 @@
       renderSearchHistory();
     }
     const icons = {
-      play: '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
-      pause: '<svg viewBox="0 0 24 24"><rect x="7" y="5" width="3.8" height="14" rx="1.1"/><rect x="13.2" y="5" width="3.8" height="14" rx="1.1"/></svg>',
-      skipBack: '<svg viewBox="0 0 24 24"><path d="M19 20 9 12l10-8v16zM5 19V5"/></svg>',
-      skipForward: '<svg viewBox="0 0 24 24"><path d="m5 4 10 8-10 8V4zM19 5v14"/></svg>',
-      repeat: '<svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg>',
-      repeat1: '<svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/><path d="M11 10h1v4"/></svg>',
-      shuffle: '<svg viewBox="0 0 24 24"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.5A6.5 6.5 0 0 0 9.7 13.5l.6-3A6.5 6.5 0 0 1 16.5 6H22"/><path d="M2 6h1.5A6.5 6.5 0 0 1 9 9"/></svg>',
-      listVideo: '<svg viewBox="0 0 24 24"><path d="M12 12H3"/><path d="M16 6H3"/><path d="M12 18H3"/><path d="M16 12v6l5-3-5-3z" fill="currentColor" stroke="none"/></svg>'
+      play: iconHtml('play'),
+      pause: iconHtml('pause'),
+      skipBack: iconHtml('previous'),
+      skipForward: iconHtml('next'),
+      repeat: iconHtml('repeat'),
+      repeat1: iconHtml('repeatOne'),
+      shuffle: iconHtml('shuffle'),
+      listVideo: iconHtml('list')
     };
     function updateControlIcons() {
       const mode = playModes[playModeIndex].value;
@@ -1795,7 +1833,7 @@
       const button = document.querySelector('.like');
       if (!button) return;
       const liked = favoriteTracks.some((track) => isSameTrack(track, currentTrack));
-      button.textContent = liked ? '♥' : '♡';
+      button.innerHTML = liked ? iconHtml('heartFilled') : iconHtml('heart');
       button.setAttribute('aria-label', liked ? '取消喜欢' : '喜欢');
     }
     function renderTrackRows(container, tracks, emptyText, artistSuffix) {
@@ -1807,7 +1845,7 @@
         '<div class="track" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist + (artistSuffix || '')) + '</div></div>' +
-          '<button class="dots" aria-label="更多">&#8942;</button>' +
+          '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
         '</div>'
       )).join('');
       container.querySelectorAll('.track').forEach((row, index) => {
@@ -1840,7 +1878,7 @@
         return '<div class="track" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name"><span>' + escapeMarkup(track.title) + '</span>' + badge + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
-          '<button class="dots" aria-label="更多">&#8942;</button>' +
+          '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
         '</div>';
       }).join('');
       container.querySelectorAll('.track').forEach(function(row, index) {
@@ -2027,7 +2065,7 @@
         return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
           '<div class="page-index">' + (current && !audioPlayer.paused ? '<span class="playing-bars"><i></i><i></i><i></i></span>' : (index + 1)) + '</div>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
-          '<button class="dots" aria-label="更多">&#8942;</button>' +
+          '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
         '</div>';
       }).join('');
       container.querySelectorAll('.track').forEach(function(row) {
@@ -2086,7 +2124,7 @@
         const current = isSameTrack(track, currentTrack);
         const actionButton = isDrawer
           ? '<button class="queue-remove" aria-label="删除" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
-          : '<button class="dots" aria-label="更多">&#8942;</button>';
+          : '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>';
         return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
           '<div style="position:relative;flex:none"><img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '><span class="playing-bars"><i></i><i></i><i></i></span></div>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + '</div></div>' +
@@ -2153,8 +2191,8 @@
         return;
       }
       list.innerHTML = userPlaylists.map((playlist, index) => (
-        '<div class="playlist" data-index="' + index + '" onclick="openPlaylistManageDrawer(' + index + ')"><div class="playlist-cover">&#9835;</div><div><p>' +
-        escapeMarkup(playlist.name || '未命名歌单') + '</p><small>' + getPlaylistCount(playlist) + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</small></div><button class="playlist-row-action" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="歌单更多操作">⋯</button></div>'
+        '<div class="playlist" data-index="' + index + '" onclick="openPlaylistManageDrawer(' + index + ')"><div class="playlist-cover">' + iconHtml('music') + '</div><div><p>' +
+        escapeMarkup(playlist.name || '未命名歌单') + '</p><small>' + getPlaylistCount(playlist) + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</small></div><button class="playlist-row-action" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="歌单更多操作">' + iconHtml('more') + '</button></div>'
       )).join('');
     }
     function getPlaylistCount(playlist) {
@@ -2175,6 +2213,7 @@
       document.getElementById('playlist-drawer-title').textContent = title;
       document.getElementById('playlist-drawer-desc').textContent = desc || '';
       document.getElementById('playlist-drawer-body').innerHTML = body;
+      hydrateIcons(document.getElementById('playlist-drawer-body'));
       document.getElementById('playlist-drawer').classList.add('open');
       document.getElementById('playlist-drawer-scrim').classList.add('open');
     }
@@ -2278,7 +2317,7 @@
       pendingPlaylistTrack = track;
       var body = userPlaylists.length
         ? '<div class="playlist-picker">' + userPlaylists.map(function(playlist, index) {
-            return '<button onclick="addPendingTrackToPlaylist(' + index + ')"><span>&#9835;</span><div><strong>' + escapeMarkup(playlist.name || '未命名歌单') + '</strong><small>' + getPlaylistCount(playlist) + ' 首</small></div></button>';
+            return '<button onclick="addPendingTrackToPlaylist(' + index + ')"><span data-icon="music"></span><div><strong>' + escapeMarkup(playlist.name || '未命名歌单') + '</strong><small>' + getPlaylistCount(playlist) + ' 首</small></div></button>';
           }).join('') + '</div><div class="drawer-actions"><button onclick="openCreatePlaylistDrawer(event, pendingPlaylistTrack)">新建歌单</button><button class="primary" onclick="closePlaylistDrawer()">完成</button></div>'
         : '<div class="empty-note">还没有歌单。先新建一个歌单，再把这首歌加入进去。</div><div class="drawer-actions"><button onclick="closePlaylistDrawer()">取消</button><button class="primary" onclick="openCreatePlaylistDrawer(event, pendingPlaylistTrack)">新建歌单</button></div>';
       openPlaylistDrawer('添加到歌单', track.title || '', body);
@@ -2295,7 +2334,7 @@
     function openPlaylistManageDrawer(index) {
       var playlist = userPlaylists[index];
       if (!playlist) return;
-      var body = '<div class="action-track"><div class="playlist-cover">&#9835;</div><div><strong>' + escapeMarkup(playlist.name || '未命名歌单') + '</strong><span>' + getPlaylistCount(playlist) + ' 首歌曲</span></div></div><div class="action-list"><button onclick="playPlaylist(' + index + ')">▶ 播放歌单</button><button onclick="renamePlaylist(' + index + ')">重命名</button><button onclick="deletePlaylist(' + index + ')">删除歌单</button><button onclick="closePlaylistDrawer()">关闭</button></div>';
+      var body = '<div class="action-track"><div class="playlist-cover">' + iconHtml('music') + '</div><div><strong>' + escapeMarkup(playlist.name || '未命名歌单') + '</strong><span>' + getPlaylistCount(playlist) + ' 首歌曲</span></div></div><div class="action-list"><button onclick="playPlaylist(' + index + ')">' + iconHtml('play') + ' 播放歌单</button><button onclick="renamePlaylist(' + index + ')">重命名</button><button onclick="deletePlaylist(' + index + ')">删除歌单</button><button onclick="closePlaylistDrawer()">关闭</button></div>';
       openPlaylistDrawer('歌单', '', body);
     }
     function playPlaylist(index) {
@@ -2599,7 +2638,7 @@
           '<div class="track' + (index === 0 ? ' active' : '') + '" data-index="' + index + '">' +
             '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
             '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist) + '</div></div>' +
-            '<span class="source">丽江曲库</span><button class="dots">&#8942;</button>' +
+            '<span class="source">丽江曲库</span><button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
           '</div>'
         )).join('');
         list.querySelectorAll('.track').forEach((row, index) => {
@@ -2622,7 +2661,7 @@
         list.innerHTML = videos.map((video, index) => (
           '<article class="mv-card" data-index="' + index + '"><div class="mv-image">' +
             '<img loading="lazy" src="' + escapeMarkup(safeCover(video.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
-            '<div class="play"><span>&#9654;</span></div></div>' +
+            '<div class="play"><span>' + iconHtml('play') + '</span></div></div>' +
             '<div class="mv-title">' + escapeMarkup(video.title) + '</div><div class="mv-artist">' + escapeMarkup(video.artist) + '</div></article>'
         )).join('');
         list.querySelectorAll('.mv-card').forEach((card, index) => {
@@ -2703,7 +2742,8 @@
       document.querySelectorAll('.aggregate-source-option').forEach((item) => {
         var selected = aggregatedSources.includes(item.dataset.source);
         item.classList.toggle('selected', selected);
-        item.querySelector('.aggregate-check').textContent = selected ? '\u2713' : '';
+        var check = item.querySelector('.aggregate-check');
+        if (check) check.innerHTML = selected ? iconHtml('check') : '';
       });
       document.getElementById('aggregate-source-label').textContent = aggregatedSources
         .map(function(source) { return aggregateSourceLabels[source]; })
@@ -2848,6 +2888,7 @@
     if (!restorePlaybackState()) {
       setCurrentTrack(currentTrack);
     }
+    hydrateIcons(document);
     updateControlIcons();
     setPlayIcons(false);
     updateAggregateSourceUI();
