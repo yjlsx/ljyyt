@@ -36,7 +36,7 @@
     </header>
 
     <section class="search-panel">
-      <p class="search-kicker"><strong>搜索</strong> 选择来源，查找歌曲、歌单和 MV 视频</p>
+      <p class="search-kicker"><strong>发现</strong> 浏览动态歌单，也可以搜索歌曲、歌手和 MV</p>
       <form class="search-form" id="search-form" action="search.html" method="GET" role="search">
         <div class="source-picker" id="source-picker">
           <button class="source-button" id="source-button" type="button" aria-haspopup="listbox" aria-expanded="false">
@@ -94,6 +94,37 @@
       </div>
     </section>
 
+
+    <section class="discover-section" id="discover-section" aria-label="发现歌单">
+      <div class="discover-hero-card">
+        <div class="discover-hero-copy">
+          <span class="hero-pill"><span data-icon="sparkles"></span> 动态发现</span>
+          <h1>发现适合现在播放的歌单</h1>
+          <p>歌单从丽江曲库、你的喜欢、最近播放和本地歌单自动生成；曲库更新后，这里也会跟着更新。</p>
+        </div>
+        <button class="hero-play" id="discover-play-first" type="button">
+          <span data-icon="play"></span>
+          播放推荐
+        </button>
+      </div>
+
+      <div class="section-head discover-head">
+        <div>
+          <h2>歌单来源</h2>
+          <p>和 dev 的发现页一样，先选来源，再进入对应歌单。</p>
+        </div>
+      </div>
+      <div class="source-rail" id="discover-source-rail"></div>
+
+      <div class="section-head discover-head">
+        <div>
+          <h2>为你发现</h2>
+          <p>根据曲库和本地播放数据实时生成。</p>
+        </div>
+      </div>
+      <div class="discover-playlist-rail" id="discover-playlists"></div>
+    </section>
+
     <nav class="result-tabs" aria-label="搜索结果分类">
       <button class="result-tab active" type="button" data-filter="all"><span data-icon="grid"></span>全部</button>
       <button class="result-tab" type="button" data-filter="music"><span data-icon="music"></span>歌曲</button>
@@ -101,7 +132,7 @@
       <button class="result-tab" type="button" data-filter="video"><span data-icon="video"></span>MV</button>
     </nav>
 
-    <div class="search-status" id="search-status">输入关键词搜索歌曲、歌手、MV，也可以直接进入歌单。</div>
+    <div class="search-status" id="search-status">先浏览发现歌单；输入关键词后显示搜索结果。</div>
 
     <section class="search-section" id="music-section">
       <div class="section-head">
@@ -119,8 +150,8 @@
     <section class="search-section" id="playlist-section">
       <div class="section-head">
         <div>
-          <h2>歌单</h2>
-          <p>这里显示我的歌单、喜欢、最近播放和丽江曲库入口。</p>
+          <h2>全部歌单</h2>
+          <p>动态来源、你的歌单、喜欢、最近播放和丽江曲库入口。</p>
         </div>
         <a class="section-action" href="index.html?view=mine">管理歌单</a>
       </div>

@@ -13,6 +13,7 @@
   var searchIsPlaying = false;
   var searchCurrentTrack = null;
   var searchCurrentIndex = -1;
+  var discoverPlaylists = [];
 
   var sourceMap = {
     aggregate: { label: '聚合搜索', source: 'all' },
@@ -168,6 +169,95 @@
     });
   }
 
+
+
+  function getMusicLibrary() {
+    return typeof musicData !== 'undefined' && Array.isArray(musicData) ? musicData.map(normalizeLocalTrack) : [];
+  }
+
+  function getStoredTracks(keys) {
+    var out = [];
+    keys.forEach(function(key) {
+      readStoredList(key).forEach(function(item) {
+        if (!item) return;
+        if (item.track) item = item.track;
+        if (item.trackData) item = item.trackData;
+        if (item.title || item.name) {
+          out.push(Object.assign({}, item, {
+            title: item.title || item.name,
+            artist: Array.isArray(item.artist) ? item.artist.join(' / ') : item.artist || '未知歌手',
+            cover: safeCover(item.cover || item.pic || item.picUrl),
+            source: item.source || 'local',
+            sourceLabel: item.sourceLabel || getSourceLabel(item.source || 'local')
+          }));
+        }
+      });
+    });
+    return out;
+  }
+
+  function uniqueTracks(list, limit) {
+    var seen = {};
+    return (list || []).filter(function(track) {
+      var key = String(track.source || 'local') + ':' + String(track.id || track.title || '') + ':' + String(track.artist || '');
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).slice(0, limit || 24);
+  }
+
+  function pickTracksByKeyword(library, keywords, fallbackStart, limit) {
+    var words = keywords.map(function(word) { return String(word).toLowerCase(); });
+    var picked = library.filter(function(track) {
+      var text = [track.title, track.artist, track.album].join(' ').toLowerCase();
+      return words.some(function(word) { return text.indexOf(word) !== -1; });
+    });
+    if (picked.length < Math.min(limit, 8)) {
+      picked = picked.concat(library.slice(fallbackStart || 0, (fallbackStart || 0) + limit));
+    }
+    return uniqueTracks(picked, limit);
+  }
+
+  function createDiscoverPlaylists() {
+    var library = getMusicLibrary();
+    var favorites = getStoredTracks(['ljyyt_otter_favorites', 'favoriteSongs', 'favorites']);
+    var history = getStoredTracks(['ljyyt_otter_history', 'playHistory', 'recentPlays']);
+    var userPlaylists = readStoredList('ljyyt_otter_playlists').map(function(item, index) {
+      var tracks = uniqueTracks(Array.isArray(item.tracks) ? item.tracks.map(function(track) {
+        return Object.assign({}, track, {
+          title: track.title || track.name,
+          artist: Array.isArray(track.artist) ? track.artist.join(' / ') : track.artist || '未知歌手',
+          cover: safeCover(track.cover || track.pic || track.picUrl),
+          source: track.source || 'local',
+          sourceLabel: track.sourceLabel || getSourceLabel(track.source || 'local')
+        });
+      }) : [], 36);
+      return {
+        id: 'user-' + index,
+        name: item.name || item.title || '我的歌单',
+        subtitle: '本地歌单来源',
+        source: '我的歌单',
+        icon: 'album',
+        tracks: tracks,
+        cover: tracks[0] && tracks[0].cover
+      };
+    });
+    var generated = [
+      { id: 'daily', name: '今日发现', subtitle: '从丽江曲库自动轮换', source: '动态曲库', icon: 'sparkles', tracks: uniqueTracks(library.slice(new Date().getDate() % Math.max(1, library.length)).concat(library), 24) },
+      { id: 'naxi', name: '纳西音乐精选', subtitle: '纳西/丽江关键词自动聚合', source: '丽江曲库', icon: 'music', tracks: pickTracksByKeyword(library, ['纳西', '丽江', '三部曲', '古乐', '东巴'], 0, 24) },
+      { id: 'happy', name: '快乐人生电台', subtitle: '轻快、生活感歌曲', source: '动态曲库', icon: 'radio', tracks: pickTracksByKeyword(library, ['快乐', '幸福', '欢乐', '人生', '阳光'], 12, 24) },
+      { id: 'night', name: '夜晚慢听', subtitle: '适合安静播放', source: '动态曲库', icon: 'moon', tracks: pickTracksByKeyword(library, ['月', '夜', '梦', '想念', '故乡'], 24, 24) },
+      { id: 'favorites', name: '我喜欢的音乐', subtitle: '来自你的喜欢列表', source: '本地数据', icon: 'heart', tracks: uniqueTracks(favorites, 36) },
+      { id: 'history', name: '最近播放', subtitle: '来自你的播放记录', source: '本地数据', icon: 'history', tracks: uniqueTracks(history, 36) },
+      { id: 'library', name: '丽江曲库全部', subtitle: '所有本地曲库内容', source: '丽江曲库', icon: 'database', tracks: uniqueTracks(library, 48) }
+    ];
+    return userPlaylists.concat(generated).filter(function(item) { return item.id === 'library' || item.tracks.length || item.id === 'favorites' || item.id === 'history'; });
+  }
+
+  function getDiscoverPlaylist(id) {
+    return discoverPlaylists.find(function(item) { return item.id === id; });
+  }
+
   function normalizeExternalTrack(track) {
     var source = String(track.source || '');
     var artist = Array.isArray(track.artist) ? track.artist.join(' / ') : String(track.artist || '');
@@ -257,28 +347,24 @@
 
   function getPlaylistCards(query) {
     var q = String(query || '').toLowerCase();
-    var playlists = readStoredList('ljyyt_otter_playlists').map(function(item, index) {
-      var tracks = Array.isArray(item.tracks) ? item.tracks : [];
+    var all = discoverPlaylists.map(function(item) {
       return {
-        id: 'user-' + index,
-        name: item.name || item.title || '未命名歌单',
-        count: tracks.length || Number(item.count || 0),
-        type: 'user',
-        icon: 'album'
+        id: item.id,
+        name: item.name,
+        count: item.tracks ? item.tracks.length : 0,
+        type: 'discover',
+        icon: item.icon || 'album',
+        subtitle: item.subtitle || item.source || '动态歌单',
+        source: item.source || '歌单来源',
+        cover: item.cover || item.tracks && item.tracks[0] && item.tracks[0].cover
       };
     });
-
-    var base = [
-      { id: 'liked', name: '我喜欢的音乐', count: readStoredList('ljyyt_otter_favorites').length, type: 'favorite', icon: 'heart' },
-      { id: 'history', name: '最近播放', count: readStoredList('ljyyt_otter_history').length, type: 'history', icon: 'history' },
-      { id: 'library', name: '丽江曲库', count: typeof musicData !== 'undefined' ? musicData.length : 0, type: 'library', icon: 'database' },
-      { id: 'mv', name: 'MV 视频', count: typeof videoData !== 'undefined' ? videoData.length : 0, type: 'video', icon: 'video' }
-    ];
-
-    var all = playlists.concat(base);
+    all.push({ id: 'mv', name: 'MV 视频', count: typeof videoData !== 'undefined' ? videoData.length : 0, type: 'video', icon: 'video', subtitle: '视频内容', source: '丽江视频库' });
     if (!q) return all;
     return all.filter(function(item) {
-      return String(item.name || '').toLowerCase().indexOf(q) !== -1 || item.type === 'library' || item.type === 'video';
+      return [item.name, item.subtitle, item.source].some(function(value) {
+        return String(value || '').toLowerCase().indexOf(q) !== -1;
+      }) || item.id === 'library' || item.id === 'mv';
     });
   }
 
@@ -349,31 +435,83 @@
     bindResultRows(box);
   }
 
+  function playlistCoverHtml(item) {
+    var cover = item.cover || item.tracks && item.tracks[0] && item.tracks[0].cover;
+    return cover && cover !== DEFAULT_COVER
+      ? '<img src="' + escapeHtml(safeCover(cover)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">'
+      : iconHtml(item.icon || 'album');
+  }
+
   function renderPlaylists(playlists) {
     var box = document.getElementById('playlist-results');
     if (!box) return;
     if (!playlists.length) {
-      box.innerHTML = '<div class="empty-state"><strong>还没有歌单</strong><span>到“我的”里新建或导入歌单后，这里会显示。</span></div>';
+      box.innerHTML = '<div class="empty-state"><strong>还没有歌单</strong><span>曲库或本地歌单更新后，这里会自动出现。</span></div>';
       return;
     }
     box.innerHTML = playlists.map(function(item) {
       return '<button class="playlist-card" type="button" data-playlist="' + escapeHtml(item.id) + '">' +
-        '<span class="playlist-cover">' + iconHtml(item.icon || 'album') + '</span>' +
-        '<span><strong>' + escapeHtml(item.name) + '</strong><span>' + Number(item.count || 0) + ' 首/个</span></span>' +
+        '<span class="playlist-cover">' + playlistCoverHtml(item) + '</span>' +
+        '<span class="playlist-meta"><strong>' + escapeHtml(item.name) + '</strong><span>' + escapeHtml(item.subtitle || item.source || '动态歌单') + '</span><em>' + Number(item.count || 0) + ' 首 · ' + escapeHtml(item.source || '来源') + '</em></span>' +
       '</button>';
     }).join('');
-    box.querySelectorAll('[data-playlist]').forEach(function(button) {
+    bindPlaylistButtons(box);
+  }
+
+  function bindPlaylistButtons(root) {
+    root.querySelectorAll('[data-playlist]').forEach(function(button) {
       button.addEventListener('click', function() {
-        var id = this.getAttribute('data-playlist');
-        if (id === 'mv') {
-          location.href = 'videos.html';
-        } else if (id === 'library') {
-          location.href = 'player.html';
-        } else {
-          location.href = 'index.html?view=mine';
-        }
+        openDiscoverPlaylist(this.getAttribute('data-playlist'));
       });
     });
+  }
+
+  function renderDiscover() {
+    discoverPlaylists = createDiscoverPlaylists();
+    var sourceRail = document.getElementById('discover-source-rail');
+    var playlistRail = document.getElementById('discover-playlists');
+    if (sourceRail) {
+      sourceRail.innerHTML = discoverPlaylists.slice(0, 7).map(function(item) {
+        return '<button class="source-card" type="button" data-playlist="' + escapeHtml(item.id) + '">' +
+          '<span class="source-card-icon">' + iconHtml(item.icon || 'album') + '</span>' +
+          '<strong>' + escapeHtml(item.source || item.name) + '</strong>' +
+          '<small>' + escapeHtml(item.name) + '</small>' +
+        '</button>';
+      }).join('');
+      bindPlaylistButtons(sourceRail);
+    }
+    if (playlistRail) {
+      playlistRail.innerHTML = discoverPlaylists.slice(0, 10).map(function(item) {
+        return '<button class="discover-playlist-card" type="button" data-playlist="' + escapeHtml(item.id) + '">' +
+          '<span class="discover-cover">' + playlistCoverHtml(item) + '</span>' +
+          '<span class="discover-card-copy"><strong>' + escapeHtml(item.name) + '</strong><span>' + escapeHtml(item.subtitle || item.source || '动态歌单') + '</span><em>' + (item.tracks ? item.tracks.length : 0) + ' 首</em></span>' +
+        '</button>';
+      }).join('');
+      bindPlaylistButtons(playlistRail);
+    }
+    var hero = document.getElementById('discover-play-first');
+    if (hero) hero.onclick = function() { openDiscoverPlaylist(discoverPlaylists[0] && discoverPlaylists[0].id); };
+  }
+
+  function openDiscoverPlaylist(id) {
+    if (id === 'mv') {
+      location.href = 'videos.html';
+      return;
+    }
+    var list = getDiscoverPlaylist(id);
+    if (!list || !list.tracks || !list.tracks.length) {
+      if (id === 'favorites' || id === 'history') location.href = 'index.html?view=mine';
+      else location.href = 'player.html';
+      return;
+    }
+    currentResults.music = list.tracks;
+    currentResults.video = [];
+    currentResults.playlists = getPlaylistCards('');
+    var status = document.getElementById('search-status');
+    if (status) status.textContent = '正在浏览「' + list.name + '」 · ' + list.tracks.length + ' 首 · 来源：' + (list.source || '动态歌单');
+    renderTrackRows(list.tracks);
+    applyFilter('music');
+    document.getElementById('music-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function bindResultRows(root) {
@@ -406,7 +544,7 @@
     if (status) {
       status.textContent = query
         ? '找到 ' + total + ' 个相关内容 · 来源：' + (sourceMap[activeSource] && sourceMap[activeSource].label || '聚合搜索')
-        : '输入关键词搜索歌曲、歌手、MV，也可以直接进入歌单。';
+        : '浏览动态发现歌单，或输入关键词搜索歌曲、歌手、MV。';
     }
     renderTrackRows(currentResults.music);
     renderVideoRows(currentResults.video);
@@ -723,6 +861,7 @@
       var query = getUrlParameter('q');
       var input = document.getElementById('hero-search-input');
       if (input && query) input.value = query;
+      renderDiscover();
       displayResults({ music: [], video: [], playlists: getPlaylistCards(query) }, query);
       if (query) performSearch(query);
     });
