@@ -359,6 +359,51 @@
       border: 1px solid var(--border);
     }
     .history-chip:hover { border-color: color-mix(in srgb, var(--primary) 40%, var(--border)); color: var(--primary); }
+    .search-tabs {
+      display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 12px;
+      scrollbar-width: none;
+    }
+    .search-tabs::-webkit-scrollbar { display: none; }
+    .search-tab {
+      flex: none; height: 32px; padding: 0 13px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--secondary); color: var(--muted-foreground);
+      border: 1px solid transparent; font-size: 12px;
+    }
+    .search-tab.active {
+      background: var(--primary); color: var(--primary-foreground);
+      border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+    }
+    .search-tab .line-icon { width: 15px; height: 15px; }
+    .search-section { margin-bottom: 14px; }
+    .search-section.hidden { display: none; }
+    .search-section-title {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 2px 2px 8px; color: var(--muted-foreground); font-size: 12px;
+    }
+    .search-section-title strong { color: var(--foreground); font-size: 14px; }
+    .search-playlists {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .search-playlist-card {
+      min-height: 92px; padding: 12px; border-radius: 14px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--border);
+      text-align: left; color: var(--foreground);
+    }
+    .search-playlist-card:hover { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); }
+    .search-playlist-icon {
+      width: 34px; height: 34px; border-radius: 11px;
+      display: grid; place-items: center;
+      background: rgba(54,169,123,.11); color: var(--primary);
+    }
+    .search-playlist-icon .line-icon { width: 18px; height: 18px; }
+    .search-playlist-card strong {
+      display: block; margin-top: 10px; font-size: 13px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .search-playlist-card span { color: var(--muted-foreground); font-size: 11px; }
     .favorite-header {
       display: flex; gap: 14px; align-items: flex-end;
       margin: -12px -12px 13px; padding: 15px 15px 14px;
@@ -1022,9 +1067,25 @@
       </div>
       <div class="view" data-view="search">
         <div class="search-history" id="search-history"></div>
-        <div class="section-head" id="search-head" hidden><h2>搜索结果</h2><span class="more">按相关度</span></div>
+        <div class="search-tabs" id="search-tabs" hidden>
+          <button class="search-tab active" type="button" data-search-filter="songs"><span data-icon="music"></span>歌曲</button>
+          <button class="search-tab" type="button" data-search-filter="playlists"><span data-icon="album"></span>歌单</button>
+          <button class="search-tab" type="button" data-search-filter="videos"><span data-icon="video"></span>MV</button>
+        </div>
+        <div class="section-head" id="search-head" hidden><h2>搜索结果</h2><span class="more" id="search-count-label">按相关度</span></div>
         <p class="result-note" id="search-note" hidden></p>
-        <div class="track-list" id="search-results"></div>
+        <section class="search-section" id="search-songs-section">
+          <div class="search-section-title"><strong>歌曲</strong><span id="search-song-count">0 首</span></div>
+          <div class="track-list" id="search-results"></div>
+        </section>
+        <section class="search-section" id="search-playlists-section">
+          <div class="search-section-title"><strong>歌单</strong><button class="more" type="button" onclick="showView('mine')">管理歌单</button></div>
+          <div class="search-playlists" id="search-playlists"></div>
+        </section>
+        <section class="search-section" id="search-videos-section">
+          <div class="search-section-title"><strong>MV 视频</strong><span id="search-video-count">0 个</span></div>
+          <div class="track-list" id="search-videos"></div>
+        </section>
       </div>
       <div class="view" data-view="favorites">
         <div class="favorite-header">
@@ -1272,6 +1333,9 @@
     let libraryTracks = [];
     let currentTrackIndex = 0;
     let activeProvider = '聚合搜索';
+    let activeSearchFilter = 'songs';
+    let currentSearchState = { songs: [], playlists: [], videos: [] };
+    let searchVideoCache = [];
     let aggregatedSources = readStoredList('ljyyt_otter_aggregated_sources');
     if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
     let lyricsRequestId = 0;
@@ -1451,7 +1515,7 @@
         chip.addEventListener('click', () => {
           const input = document.getElementById('search-input');
           input.value = chip.dataset.query || '';
-          performSearch();
+          performSearch({ remember: false });
         });
       });
     }
@@ -1803,11 +1867,11 @@
       } else if (action === 'artist') {
         document.getElementById('search-input').value = track.artist || '';
         showView('search');
-        performSearch();
+        performSearch({ remember: false });
       } else if (action === 'album' && track.album) {
         document.getElementById('search-input').value = track.album;
         showView('search');
-        performSearch();
+        performSearch({ remember: false });
       }
       closeTrackActionDrawer();
     }
@@ -1880,6 +1944,7 @@
     function renderSearchRows(tracks, sourceLabel) {
       var container = document.getElementById('search-results');
       if (!container) return;
+      document.getElementById('search-song-count').textContent = tracks.length + ' 首';
       if (!tracks.length) {
         container.innerHTML = '<div class="empty-note">没有找到匹配歌曲，换个关键词试试。</div>';
         return;
@@ -1908,6 +1973,95 @@
           openFullPlayer();
           playCurrentTrack();
         });
+      });
+    }
+    async function ensureSearchVideos() {
+      if (searchVideoCache.length) return searchVideoCache;
+      searchVideoCache = await readSourceArray('/videos/video_data.js', 'const videoData');
+      return searchVideoCache;
+    }
+    function getSearchPlaylistCards(query) {
+      var normalizedQuery = String(query || '').toLowerCase();
+      var userCards = userPlaylists.map(function(playlist, index) {
+        var tracks = Array.isArray(playlist.tracks) ? playlist.tracks : [];
+        return {
+          id: 'user:' + index,
+          title: playlist.name || playlist.title || '未命名歌单',
+          count: tracks.length || Number(playlist.count || 0),
+          icon: 'album'
+        };
+      });
+      var baseCards = [
+        { id: 'favorites', title: '我的喜欢', count: favoriteTracks.length, icon: 'heart' },
+        { id: 'history', title: '最近播放', count: historyTracks.length, icon: 'history' },
+        { id: 'queue', title: '播放列表', count: playQueue.length, icon: 'list' },
+        { id: 'library', title: '丽江曲库', count: libraryTracks.length || 0, icon: 'database' }
+      ];
+      var cards = userCards.concat(baseCards);
+      if (!normalizedQuery) return cards;
+      return cards.filter(function(card) {
+        return String(card.title || '').toLowerCase().includes(normalizedQuery) || ['library', 'favorites', 'history'].includes(card.id);
+      });
+    }
+    function renderSearchPlaylists(cards) {
+      var container = document.getElementById('search-playlists');
+      if (!container) return;
+      if (!cards.length) {
+        container.innerHTML = '<div class="empty-note">还没有匹配歌单。到“我的”里新建或导入歌单后会显示在这里。</div>';
+        return;
+      }
+      container.innerHTML = cards.map(function(card) {
+        return '<button class="search-playlist-card" type="button" data-playlist="' + escapeMarkup(card.id) + '">' +
+          '<span class="search-playlist-icon">' + iconHtml(card.icon || 'album') + '</span>' +
+          '<span><strong>' + escapeMarkup(card.title) + '</strong><span>' + Number(card.count || 0) + ' 首</span></span>' +
+        '</button>';
+      }).join('');
+      container.querySelectorAll('[data-playlist]').forEach(function(card) {
+        card.addEventListener('click', function() {
+          var id = card.dataset.playlist || '';
+          if (id === 'favorites') showView('favorites');
+          else if (id === 'history') showView('history');
+          else if (id === 'queue') showView('queue');
+          else if (id === 'library') showView('library');
+          else showView('mine');
+        });
+      });
+    }
+    function renderSearchVideos(videos) {
+      var container = document.getElementById('search-videos');
+      if (!container) return;
+      document.getElementById('search-video-count').textContent = videos.length + ' 个';
+      if (!videos.length) {
+        container.innerHTML = '<div class="empty-note">没有找到匹配 MV，换个关键词试试。</div>';
+        return;
+      }
+      container.innerHTML = videos.map(function(video, index) {
+        return '<div class="track" data-index="' + index + '">' +
+          '<img loading="lazy" src="' + escapeMarkup(safeCover(video.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
+          '<div class="track-meta"><div class="track-name">' + escapeMarkup(video.title || '未命名视频') + '</div><div class="artist">' + escapeMarkup(video.artist || '未知') + '<span class="source-badge bilibili">MV</span></div></div>' +
+          '<button class="dots" aria-label="播放视频">' + iconHtml('play') + '</button>' +
+        '</div>';
+      }).join('');
+      container.querySelectorAll('.track').forEach(function(row) {
+        row.addEventListener('click', function() {
+          var video = videos[Number(row.dataset.index) || 0];
+          if (video) openVideo(video.title, video.artist, video.src, video.cover);
+        });
+      });
+    }
+    function applySearchFilter(filter) {
+      activeSearchFilter = filter || activeSearchFilter || 'songs';
+      document.querySelectorAll('.search-tab').forEach(function(tab) {
+        tab.classList.toggle('active', tab.dataset.searchFilter === activeSearchFilter);
+      });
+      var map = {
+        songs: 'search-songs-section',
+        playlists: 'search-playlists-section',
+        videos: 'search-videos-section'
+      };
+      Object.keys(map).forEach(function(key) {
+        var section = document.getElementById(map[key]);
+        if (section) section.classList.toggle('hidden', key !== activeSearchFilter);
       });
     }
     function getSourceLabel(source) {
@@ -1979,25 +2133,34 @@
         return '';
       }
     }
-    async function performSearch() {
+    async function performSearch(options) {
+      options = options || {};
       var input = document.getElementById('search-input');
       var note = document.getElementById('search-note');
       var head = document.getElementById('search-head');
       var resultsBox = document.getElementById('search-results');
       var query = String(input && input.value || '').trim().toLowerCase();
+      var tabs = document.getElementById('search-tabs');
       showView('search');
       if (!query) {
         head.hidden = true;
         note.hidden = true;
         note.textContent = '';
+        if (tabs) tabs.hidden = true;
         resultsBox.innerHTML = '';
+        renderSearchPlaylists(getSearchPlaylistCards(''));
+        renderSearchVideos([]);
+        currentSearchState = { songs: [], playlists: getSearchPlaylistCards(''), videos: [] };
+        applySearchFilter('songs');
         renderSearchHistory();
         return;
       }
-      rememberSearchQuery(query);
+      if (options.remember) rememberSearchQuery(query);
       renderSearchHistory();
       head.hidden = false;
-      note.hidden = true;
+      if (tabs) tabs.hidden = false;
+      note.hidden = false;
+      note.textContent = '正在搜索 "' + query + '" · 来源：' + activeProvider;
       try {
         var providerSource = providerSourceMap[activeProvider] || 'all';
         var tracks = await ensureLibraryTracks();
@@ -2030,18 +2193,38 @@
           ? localResults
           : (providerSource === 'all' ? (shouldSearchLocal ? localResults : []).concat(externalResults) : externalResults);
 
+        var videos = [];
+        if (providerSource === 'local' || providerSource === 'all') {
+          var allVideos = await ensureSearchVideos().catch(function() { return []; });
+          videos = allVideos.filter(function(video) {
+            return [video.title, video.artist, video.description].some(function(value) {
+              return String(value || '').toLowerCase().includes(query);
+            });
+          }).slice(0, 30);
+        }
+        var playlists = getSearchPlaylistCards(query);
+        currentSearchState = { songs: results, playlists: playlists, videos: videos };
+        document.getElementById('search-count-label').textContent = (results.length + playlists.length + videos.length) + ' 个结果';
         renderSearchRows(results, activeProvider);
+        renderSearchPlaylists(playlists);
+        renderSearchVideos(videos);
+        note.textContent = '来源：' + activeProvider + ' · 歌曲 ' + results.length + ' · 歌单 ' + playlists.length + ' · MV ' + videos.length;
+        if (!results.length && playlists.length) applySearchFilter('playlists');
+        else applySearchFilter(activeSearchFilter || 'songs');
         if (!results.length && activeProvider === 'Migu') {
           resultsBox.innerHTML = '<div class="empty-note">Migu 是 Otter 官方接口来源，不走 GD 搜索 API；下一步需要把 Otter 的 Migu 官方搜索模块移到 Worker。</div>';
         }
       } catch (error) {
         resultsBox.innerHTML = '<div class="empty-note">搜索暂时不可用，请刷新后重试。</div>';
+        renderSearchPlaylists(getSearchPlaylistCards(query));
+        renderSearchVideos([]);
+        applySearchFilter('songs');
       }
     }
     function handleSearchKey(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
-        performSearch();
+        performSearch({ remember: true });
       }
     }
     function renderFavorites() {
@@ -2774,14 +2957,17 @@
       }
       writeStoredObject('ljyyt_otter_aggregated_sources', aggregatedSources);
       updateAggregateSourceUI();
-      if (activeProvider === '聚合搜索') performSearch();
+      if (activeProvider === '聚合搜索') performSearch({ remember: false });
     }
+    document.querySelectorAll('.search-tab').forEach((tab) => {
+      tab.addEventListener('click', () => applySearchFilter(tab.dataset.searchFilter || 'songs'));
+    });
     document.querySelectorAll('.source-option').forEach((option) => {
       option.addEventListener('click', (event) => {
         event.stopPropagation();
         syncProviderSelection(option.dataset.provider);
         showView('search');
-        performSearch();
+        performSearch({ remember: false });
       });
     });
     document.addEventListener('click', () => {
