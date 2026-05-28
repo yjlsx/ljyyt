@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>丽江音悦台</title>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('ljyyt_theme') || 'light';
+        if (theme === 'system') {
+          theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark-mode', theme === 'dark');
+      } catch (error) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="css/player-app.css?v=20260528b">
+</head>
+<body class="player-app-page">
+  <div class="app-bg" aria-hidden="true"></div>
+
+  <header class="player-topbar">
+    <a class="brand-lockup" href="index.html" aria-label="返回丽江音悦台首页">
+      <span class="brand-mark">丽</span>
+      <span>
+        <strong>丽江音悦台</strong>
+        <small>纳西音乐播放器</small>
+      </span>
+    </a>
+
+    <nav class="player-nav" aria-label="播放器导航">
+      <a href="index.html" data-icon="home">首页</a>
+      <a href="search.html" data-icon="search">搜索</a>
+      <a href="playlists.html" data-icon="album">歌单</a>
+      <button type="button" id="top-queue-btn" data-icon="queue" aria-label="打开播放队列">队列</button>
+    </nav>
+  </header>
+
+  <main class="player-shell" id="player-shell">
+    <section class="player-stage" aria-label="当前播放">
+      <div class="cover-wrap">
+        <div class="cover-glow" id="cover-glow"></div>
+        <img id="stage-cover" class="stage-cover" src="images/avatar.jpg" alt="当前歌曲封面">
+      </div>
+
+      <div class="track-identity">
+        <p class="eyebrow">Now Playing</p>
+        <h1 id="stage-title">丽江音悦台</h1>
+        <p id="stage-artist">选择一首歌曲开始播放</p>
+      </div>
+
+      <div class="stage-actions" aria-label="播放控制">
+        <button class="icon-btn" type="button" id="stage-fav-btn" aria-label="收藏当前歌曲"></button>
+        <button class="transport-btn" type="button" id="stage-prev-btn" aria-label="上一首"></button>
+        <button class="transport-btn primary" type="button" id="stage-play-btn" aria-label="播放"></button>
+        <button class="transport-btn" type="button" id="stage-next-btn" aria-label="下一首"></button>
+        <button class="icon-btn" type="button" id="stage-mode-btn" aria-label="切换播放模式"></button>
+      </div>
+
+      <section class="lyrics-card" aria-label="歌词">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Lyrics</p>
+            <h2>歌词</h2>
+          </div>
+          <button type="button" id="lyrics-retry-btn" class="ghost-btn">搜索歌词</button>
+        </div>
+        <div id="lyrics-lines" class="lyrics-lines" aria-live="polite">
+          <p class="lyrics-empty">暂无歌词，正在尝试匹配</p>
+        </div>
+      </section>
+    </section>
+
+    <aside class="player-queue" id="queue-panel" aria-label="播放队列">
+      <div class="queue-handle" aria-hidden="true"></div>
+      <div class="section-head queue-head">
+        <div>
+          <p class="section-kicker">Queue</p>
+          <h2>播放队列</h2>
+        </div>
+        <button type="button" id="queue-close-btn" class="icon-btn queue-close" aria-label="关闭播放队列"></button>
+      </div>
+
+      <button type="button" id="queue-filter-toggle" class="ghost-btn queue-filter-toggle">筛选队列</button>
+      <label class="queue-search" for="queue-search-input">
+        <span class="queue-search-icon" data-icon="search"></span>
+        <input id="queue-search-input" type="search" placeholder="过滤当前队列" autocomplete="off">
+      </label>
+
+      <div id="queue-list" class="queue-list" role="listbox" aria-label="歌曲列表"></div>
+    </aside>
+  </main>
+
+  <footer class="nowbar" aria-label="底部播放控制">
+    <div class="now-track">
+      <img id="now-cover" src="images/avatar.jpg" alt="当前歌曲封面">
+      <div class="now-copy">
+        <strong id="now-title">丽江音悦台</strong>
+        <span id="now-artist">未播放</span>
+      </div>
+    </div>
+
+    <div class="now-controls">
+      <button type="button" id="now-mode-btn" class="now-btn" aria-label="切换播放模式"></button>
+      <button type="button" id="now-prev-btn" class="now-btn" aria-label="上一首"></button>
+      <button type="button" id="now-play-btn" class="now-btn primary" aria-label="播放"></button>
+      <button type="button" id="now-next-btn" class="now-btn" aria-label="下一首"></button>
+      <button type="button" id="now-fav-btn" class="now-btn" aria-label="收藏当前歌曲"></button>
+    </div>
+
+    <div class="now-progress">
+      <span id="current-time">0:00</span>
+      <div id="progress-hit" class="progress-hit" role="slider" aria-label="播放进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+      <span id="duration-time">0:00</span>
+    </div>
+  </footer>
+
+  <audio id="player-audio" preload="metadata"></audio>
+
+  <script src="site-config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/music-data.js?v=20260528"></script>
+  <script src="js/player-app.js?v=20260528"></script>
+</body>
+</html>
