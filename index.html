@@ -1033,8 +1033,8 @@
     <div class="search-shell" id="search-shell">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="showView('search'); performSearch({ remember: false })" oninput="performSearch()" onkeydown="handleSearchKey(event)">
-        <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event)"><span data-icon="close"></span></button>
+        <input class="search-input" id="home-search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" oninput="syncHomeSearchInput()" onkeydown="handleHomeSearchKey(event)">
+        <button class="search-clear" id="home-search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'home')"><span data-icon="close"></span></button>
         <div class="provider-wrap">
           <button class="provider" type="button" id="provider-button" onclick="toggleProvider(event)"><span id="provider-label">聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
           <div class="source-menu" id="source-menu">
@@ -1591,6 +1591,31 @@
       loadLyricsForTrack(currentTrack);
       return true;
     }
+
+    function getSearchInput() {
+      return document.querySelector('[data-view="search"] #search-input') || document.getElementById('search-input');
+    }
+    function getHomeSearchInput() {
+      return document.getElementById('home-search-input');
+    }
+    function syncHomeSearchInput() {
+      var homeInput = getHomeSearchInput();
+      var searchInput = getSearchInput();
+      if (homeInput && searchInput && homeInput !== searchInput) {
+        searchInput.value = homeInput.value;
+      }
+      updateSearchClearButton();
+    }
+    function handleHomeSearchKey(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        var homeInput = getHomeSearchInput();
+        var searchInput = getSearchInput();
+        if (homeInput && searchInput) searchInput.value = homeInput.value;
+        showView('search');
+        performSearch({ remember: true });
+      }
+    }
     function renderSearchHistory() {
       const box = document.getElementById('search-history');
       if (!box) return;
@@ -1607,7 +1632,7 @@
         ).join('') + '</div>';
       box.querySelectorAll('.history-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
-          const input = document.getElementById('search-input');
+          const input = getSearchInput();
           input.value = chip.dataset.query || '';
           performSearch({ remember: false });
         });
@@ -1629,19 +1654,32 @@
       renderSearchHistory();
     }
     function updateSearchClearButton() {
-      const input = document.getElementById('search-input');
-      const button = document.getElementById('search-clear');
-      if (!button) return;
-      button.classList.toggle('visible', !!String(input?.value || '').trim());
+      const searchInput = getSearchInput();
+      const homeInput = getHomeSearchInput();
+      const searchButton = document.getElementById('search-clear');
+      const homeButton = document.getElementById('home-search-clear');
+      if (searchButton) searchButton.classList.toggle('visible', !!String(searchInput?.value || '').trim());
+      if (homeButton) homeButton.classList.toggle('visible', !!String(homeInput?.value || '').trim());
     }
-    function clearHomeSearch(event) {
+    function clearHomeSearch(event, scope) {
       event?.preventDefault();
       event?.stopPropagation();
-      const input = document.getElementById('search-input');
-      if (input) {
-        input.value = '';
-        input.focus();
+      const homeInput = getHomeSearchInput();
+      const searchInput = getSearchInput();
+      if (scope === 'home') {
+        if (homeInput) {
+          homeInput.value = '';
+          homeInput.focus({ preventScroll: true });
+        }
+        if (searchInput) searchInput.value = '';
+        updateSearchClearButton();
+        return;
       }
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus({ preventScroll: true });
+      }
+      if (homeInput) homeInput.value = '';
       performSearch({ remember: false });
       updateSearchClearButton();
     }
@@ -1976,11 +2014,11 @@
         openAddToPlaylistDrawer(track);
         return;
       } else if (action === 'artist') {
-        document.getElementById('search-input').value = track.artist || '';
+        getSearchInput().value = track.artist || '';
         showView('search');
         performSearch({ remember: false });
       } else if (action === 'album' && track.album) {
-        document.getElementById('search-input').value = track.album;
+        getSearchInput().value = track.album;
         showView('search');
         performSearch({ remember: false });
       }
@@ -2273,7 +2311,7 @@
     }
     async function performSearch(options) {
       options = options || {};
-      var input = document.getElementById('search-input');
+      var input = getSearchInput();
       var note = document.getElementById('search-note');
       var head = document.getElementById('search-head');
       var resultsBox = document.getElementById('search-results');
@@ -3197,7 +3235,7 @@
       if (view === 'search' || query) {
         showView('search');
         if (query) {
-          document.getElementById('search-input').value = query;
+          getSearchInput().value = query;
           resetSearchFilter();
           performSearch({ remember: false });
         } else {
