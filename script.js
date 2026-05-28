@@ -13760,15 +13760,15 @@ function initSearch() {
       return;
     }
     
-    console.log('🔍 跳转到搜索页面:', query);
+    console.log('🔍 切换到发现页:', query);
     
     // 跳转前强制保存播放状态
     if (typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
       savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], audioPlayer.volume);
     }
     
-    // 跳转到搜索页面
-    window.location.href = 'search.html?q=' + encodeURIComponent(query);
+    // 统一进入 index 内的“发现”Tab，避免独立 search.html 与移动端 app 状态不一致
+    window.location.href = 'index.html?view=search&q=' + encodeURIComponent(query);
   });
   
   console.log('✅ 搜索功能初始化完成');

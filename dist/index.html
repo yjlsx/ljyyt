@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -361,7 +361,7 @@
       border-radius: 50%; background: rgba(255,255,255,.93);
       color: var(--primary);
     }
-    .play .line-icon { width: 15px; height: 15px; fill: currentColor; stroke: none; transform: translateX(1px); }
+    .play .line-icon { width: 15px; height: 15px; transform: translateX(1px); }
     .mv-title {
       font-size: 13px; font-weight: 500; margin-top: 8px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -423,8 +423,8 @@
     }
     .search-section-title strong { color: var(--foreground); font-size: 14px; }
     .search-playlists {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px 10px;
     }
     .search-playlist-card {
       min-height: 92px; padding: 12px; border-radius: 14px;
@@ -434,17 +434,120 @@
     }
     .search-playlist-card:hover { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); }
 
-    .discovery-view { padding-bottom: 22px; }
-    .index-discover-header { margin: 2px 0 14px; }
-    .index-discover-header h1 { margin: 0 0 4px; font-size: 30px; letter-spacing: -0.04em; }
-    .index-discover-header p { margin: 0; color: var(--muted-foreground); font-size: 13px; }
-    .index-discover-search { margin: 0 0 18px; }
-    .discover-playlist-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(132px, 42vw); gap: 12px; overflow-x: auto; padding: 2px 2px 10px; scrollbar-width: none; }
-    .discover-playlist-rail::-webkit-scrollbar { display: none; }
-    .discover-playlist-card { min-height: 142px; border-radius: 22px; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 90%, transparent); color: var(--foreground); padding: 14px; text-align: left; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow); }
-    .discover-playlist-card .discover-cover { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(54,169,123,.12); color: var(--primary); }
-    .discover-playlist-card strong { display: block; margin-top: 10px; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .discover-playlist-card span:last-child { color: var(--muted-foreground); font-size: 12px; }
+    .discovery-view { padding: 0; min-height: 100%; background: color-mix(in srgb, var(--background) 50%, transparent); }
+    .index-discover-header { display: none; }
+    .index-discover-search {
+      position: sticky; top: -12px; z-index: 22;
+      margin: -12px -12px 0; padding: 12px 12px 9px;
+      background: color-mix(in srgb, var(--background) 90%, transparent);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+    }
+    .discover-search-card { margin: 0; }
+    .discover-search-box {
+      height: 44px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--muted) 42%, transparent);
+      border: 0;
+      box-shadow: none;
+      padding: 0 9px 0 12px;
+      transition: background .18s ease, box-shadow .18s ease;
+    }
+    .discover-search-box:focus-within {
+      background: var(--background);
+      box-shadow: 0 0 0 1px var(--ring), 0 2px 10px rgba(16,30,28,.05);
+    }
+    .discover-search-box .line-icon { width: 16px; height: 16px; }
+    .discover-search-box .provider { height: 28px; min-width: 72px; padding-left: 9px; font-size: 12px; }
+    .discover-category-row {
+      position: sticky; top: 41px; z-index: 21;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 7px 12px 8px;
+      margin: 0 -12px 0;
+      background: color-mix(in srgb, var(--background) 90%, transparent);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+      mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+    }
+    .discover-category-row::-webkit-scrollbar { display: none; }
+    .discover-category-chip {
+      flex: none;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--secondary) 30%, transparent);
+      color: var(--muted-foreground);
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      border: 0;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+    .discover-category-chip.active { background: var(--primary); color: var(--primary-foreground); box-shadow: 0 1px 8px rgba(54,169,123,.18); }
+    .discover-category-chip:active, .discover-grid-toggle:active { transform: scale(.96); }
+    .discover-grid-toggle {
+      width: 32px; height: 32px; border-radius: 50%; flex: none;
+      display: grid; place-items: center;
+      background: color-mix(in srgb, var(--secondary) 50%, transparent);
+      color: var(--muted-foreground);
+      border: 0;
+    }
+    .discover-grid-toggle .line-icon { width: 16px; height: 16px; }
+    .index-discover-section { padding: 16px 4px 96px; }
+    .discover-playlist-rail {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px 12px;
+      padding: 0;
+    }
+    .discover-playlist-card {
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--foreground);
+      padding: 0;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform .18s ease;
+    }
+    .discover-playlist-card:active { transform: translateY(-2px); }
+    .discover-cover {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--muted);
+      box-shadow: 0 4px 12px rgba(16,30,28,.10), inset 0 0 0 1px rgba(0,0,0,.05);
+    }
+    .discover-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+    .discover-playlist-card:hover .discover-cover img { transform: scale(1.1); }
+    .discover-cover::after, .discover-play-count { display: none; }
+    .discover-playlist-card strong {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+      margin: 0 2px;
+      font-size: 13px;
+      line-height: 1.38;
+      font-weight: 500;
+      color: color-mix(in srgb, var(--foreground) 82%, transparent);
+      letter-spacing: -.01em;
+      transition: color .18s ease;
+    }
+    .discover-playlist-card:hover strong { color: var(--primary); }
+    .discover-playlist-card span:last-child { display: none; }
+    .discover-results-active .index-discover-section,
+    .discover-results-active .discover-category-row { display: none; }
     .search-playlist-icon {
       width: 34px; height: 34px; border-radius: 11px;
       display: grid; place-items: center;
@@ -469,10 +572,11 @@
     }
     .line-icon {
       width: 18px; height: 18px; display: block; flex: 0 0 auto;
-      fill: none; stroke: currentColor; stroke-width: 1.85;
+      fill: none; stroke: currentColor; stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
     }
     .line-icon.icon-filled { fill: currentColor; stroke: currentColor; }
+    .line-icon.icon-play polygon { fill: none; }
     .heart-tile .line-icon { width: 34px; height: 34px; }
     .favorite-header h2 { margin: 0 0 5px; font-size: 16px; }
     .favorite-header p { margin: 0; color: var(--muted-foreground); font-size: 12px; }
@@ -824,9 +928,19 @@
     .full-meta p { margin: 0; font-size: 13px; color: rgba(255,255,255,.62); }
     .like { color: var(--primary); }
     .like .line-icon { width: 26px; height: 26px; }
-    .seek { margin: 0 31px; cursor: pointer; }
-    .seek-line { height: 3px; background: rgba(255,255,255,.27); border-radius: 4px; position: relative; }
-    .seek-line::before { content: ""; width: var(--audio-progress, 0%); position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: white; }
+    .seek {
+      margin: 0 31px;
+      min-height: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+    }
+    .seek-line { height: 5px; background: rgba(255,255,255,.27); border-radius: 999px; position: relative; }
+    .seek-line::before { content: ""; width: var(--audio-progress, 0%); position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: white; }
+    .seek-line::after { content: ""; position: absolute; left: calc(var(--audio-progress, 0%) - 6px); top: 50%; width: 12px; height: 12px; transform: translateY(-50%); border-radius: 50%; background: white; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
     .times { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.45); margin-top: 8px; }
     .controls { height: 100px; padding: 15px 31px 27px; display: flex; align-items: center; justify-content: space-between; }
     .controls button {
@@ -1137,7 +1251,7 @@
       </section>
       </div>
       <div class="view discovery-view" data-view="search">
-        <header class="discover-app-header index-discover-header">
+        <header class="discover-app-header index-discover-header" aria-hidden="true">
           <div>
             <h1>发现</h1>
             <p>搜索歌曲、歌手、专辑和歌单</p>
@@ -1146,18 +1260,26 @@
         <section class="discover-search-card index-discover-search" aria-label="搜索">
           <div class="search-box discover-search-box" role="search">
             <span data-icon="search"></span>
-            <input class="search-input" id="search-input" type="search" placeholder="搜索" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="performSearch({ remember: false })" oninput="performSearch()" onkeydown="handleSearchKey(event)">
+            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
             <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event)"><span data-icon="close"></span></button>
+            <div class="provider-wrap">
+              <button class="provider" type="button" id="discover-provider-button" onclick="toggleProvider(event)"><span>聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+            </div>
           </div>
           <div class="search-history" id="search-history"></div>
         </section>
+        <nav class="discover-category-row" aria-label="发现分类">
+          <button class="discover-category-chip active" type="button" data-discover-category="全部">全部</button>
+          <button class="discover-category-chip" type="button" data-discover-category="推荐">推荐</button>
+          <button class="discover-category-chip" type="button" data-discover-category="精选">精选</button>
+          <button class="discover-category-chip" type="button" data-discover-category="华语">华语</button>
+          <button class="discover-category-chip" type="button" data-discover-category="欧美">欧美</button>
+          <button class="discover-category-chip" type="button" data-discover-category="流行">流行</button>
+          <button class="discover-category-chip" type="button" data-discover-category="播客">播客</button>
+          <button class="discover-category-chip" type="button" data-discover-category="我的">我的</button>
+          <button class="discover-grid-toggle" type="button" aria-label="更多分类"><span data-icon="grid"></span></button>
+        </nav>
         <section class="discover-section index-discover-section" aria-label="发现歌单">
-          <div class="section-head discover-head">
-            <div>
-              <h2>歌单</h2>
-              <p>播放列表、最近播放、喜欢和我的歌单。</p>
-            </div>
-          </div>
           <div class="discover-playlist-rail" id="index-discover-playlists"></div>
         </section>
         <nav class="result-tabs search-tabs" id="search-tabs" hidden aria-label="搜索结果分类">
@@ -1323,7 +1445,7 @@
         <span data-icon="home"></span><span>首页</span>
       </button>
       <button class="tab" data-target="search" type="button">
-        <span data-icon="search"></span><span>搜索</span>
+        <span data-icon="search"></span><span>发现</span>
       </button>
       <button class="tab" data-target="favorites" type="button">
         <span data-icon="heart"></span><span>喜欢</span>
@@ -1346,7 +1468,7 @@
         </div>
       </div>
       <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢"><span data-icon="heart"></span></button></div>
-      <div class="seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><span id="current-time">0:00</span><span id="duration-time">3:43</span></div></div>
+      <div class="seek" id="full-seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><span id="current-time">0:00</span><span id="duration-time">3:43</span></div></div>
       <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button onclick="toggleQueueDrawer(event)" aria-label="播放列表"></button></div>
     </section>
     <div class="drawer-scrim" id="queue-scrim" onclick="closeQueueDrawer(event)"></div>
@@ -2076,16 +2198,50 @@
       if (button) button.textContent = '已开始下载';
       setTimeout(closeTrackActionDrawer, 500);
     }
-    function seekAudio(event) {
+    let isSeekingAudio = false;
+    function applySeekFromClientX(clientX) {
+      const seek = document.getElementById('full-seek');
       const line = document.getElementById('seek-line');
-      const rect = line.getBoundingClientRect();
+      const rect = (seek || line).getBoundingClientRect();
       const duration = audioPlayer.duration || currentTrack.duration || 0;
       if (!duration || !rect.width) return;
-      const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
       audioPlayer.currentTime = duration * ratio;
       document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
       line.style.setProperty('--audio-progress', (ratio * 100) + '%');
       updateMiniProgress(ratio * 100);
+    }
+    function seekAudio(event) {
+      if (!event) return;
+      event.preventDefault?.();
+      event.stopPropagation?.();
+      applySeekFromClientX(event.clientX || 0);
+    }
+    function initSeekDragging() {
+      const seek = document.getElementById('full-seek');
+      if (!seek || seek.dataset.dragReady) return;
+      seek.dataset.dragReady = 'true';
+      seek.addEventListener('pointerdown', function(event) {
+        if (event.button !== undefined && event.button !== 0) return;
+        isSeekingAudio = true;
+        seek.setPointerCapture?.(event.pointerId);
+        applySeekFromClientX(event.clientX);
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      seek.addEventListener('pointermove', function(event) {
+        if (!isSeekingAudio) return;
+        applySeekFromClientX(event.clientX);
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      function endSeek(event) {
+        if (!isSeekingAudio) return;
+        isSeekingAudio = false;
+        try { seek.releasePointerCapture?.(event.pointerId); } catch (error) {}
+      }
+      seek.addEventListener('pointerup', endSeek);
+      seek.addEventListener('pointercancel', endSeek);
     }
     function toggleLike(event, button) {
       if (event) event.stopPropagation();
@@ -2181,73 +2337,72 @@
       searchVideoCache = await readSourceArray('/videos/video_data.js', 'const videoData');
       return searchVideoCache;
     }
+    const discoverCards = [
+      { id: 'd1', title: '梁博 黑胶精选', tag: '精选', query: '梁博', plays: '12.8万', cover: 'https://p1.music.126.net/4k27oBfmdPViozETgRvhjQ==/109951169664420958.jpg?param=300y300' },
+      { id: 'd2', title: '陈粒：小梦大半', tag: '华语', query: '陈粒', plays: '9.6万', cover: 'https://p1.music.126.net/fbE4n1_4-um_h6iI_DG3rQ==/109951169901732764.jpg?param=300y300' },
+      { id: 'd3', title: '许巍 旅行路上的风', tag: '华语', query: '许巍', plays: '18.2万', cover: 'https://p1.music.126.net/tNf2nZEVLlp19Y3E7WaP0A==/109951169391416580.jpg?param=300y300' },
+      { id: 'd4', title: '欧美独立流行精选', tag: '欧美', query: '欧美 流行', plays: '21.4万', cover: 'https://p1.music.126.net/JIjZP7SMx3Hc0hpj6uPfjQ==/109951169497627821.jpg?param=300y300' },
+      { id: 'd5', title: '流行热歌 | 今日循环', tag: '流行', query: '流行', plays: '32.1万', cover: 'https://p1.music.126.net/RzqBi4L7wJ92zsRRfNLnXA==/109951169705138928.jpg?param=300y300' },
+      { id: 'd6', title: '夜晚开车听的歌', tag: '精选', query: '夜晚 开车', plays: '16.5万', cover: 'https://p1.music.126.net/43oYtdb7V2Q1i3KqzswZAw==/109951169512233821.jpg?param=300y300' },
+      { id: 'd7', title: '纳西民歌与丽江声音', tag: '推荐', query: '纳西', plays: '本站', cover: 'https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg' },
+      { id: 'd8', title: '民谣里的山川湖海', tag: '华语', query: '民谣', plays: '27.9万', cover: 'https://p1.music.126.net/o0yk4gq8aX2MKIHidquj3A==/109951169693053888.jpg?param=300y300' },
+      { id: 'd9', title: '轻松工作背景音乐', tag: '精选', query: '轻音乐', plays: '42.0万', cover: 'https://p1.music.126.net/HBI6aMfi8uvbD1GLSgs6yA==/109951169499195389.jpg?param=300y300' }
+    ];
+    let activeDiscoverCategory = '全部';
+
     function getSearchPlaylistCards(query) {
-      var normalizedQuery = String(query || '').toLowerCase();
-      var userCards = userPlaylists.map(function(playlist, index) {
-        var tracks = Array.isArray(playlist.tracks) ? playlist.tracks : [];
-        return {
-          id: 'user:' + index,
-          title: playlist.name || playlist.title || '未命名歌单',
-          count: tracks.length || Number(playlist.count || 0),
-          icon: 'album'
-        };
+      var normalizedQuery = String(query || '').trim().toLowerCase();
+      var cards = discoverCards.filter(function(card) {
+        var matchCategory = activeDiscoverCategory === '全部' || card.tag === activeDiscoverCategory;
+        var matchQuery = !normalizedQuery || [card.title, card.tag, card.query].some(function(value) {
+          return String(value || '').toLowerCase().includes(normalizedQuery);
+        });
+        return matchCategory && matchQuery;
       });
-      var baseCards = [
-        { id: 'favorites', title: '我的喜欢', count: favoriteTracks.length, icon: 'heart' },
-        { id: 'history', title: '最近播放', count: historyTracks.length, icon: 'history' },
-        { id: 'queue', title: '播放列表', count: playQueue.length, icon: 'list' },
-        { id: 'library', title: '丽江曲库', count: libraryTracks.length || 0, icon: 'database' }
-      ];
-      var cards = userCards.concat(baseCards);
-      if (!normalizedQuery) return cards;
-      return cards.filter(function(card) {
-        return String(card.title || '').toLowerCase().includes(normalizedQuery) || ['library', 'favorites', 'history'].includes(card.id);
-      });
+      return cards.length ? cards : discoverCards.filter(function(card) { return activeDiscoverCategory === '全部' || card.tag === activeDiscoverCategory; });
+    }
+
+    function openDiscoverCard(card) {
+      if (!card) return;
+      var input = getSearchInput();
+      if (input) input.value = card.query || card.title || '';
+      resetSearchFilter();
+      performSearch({ remember: true });
     }
 
     function renderIndexDiscoverPlaylists() {
       var rail = document.getElementById('index-discover-playlists');
       if (!rail) return;
       var cards = getSearchPlaylistCards('');
-      rail.innerHTML = cards.map(function(card) {
-        return '<button class="discover-playlist-card search-playlist-card" type="button" data-playlist="' + escapeMarkup(card.id) + '">' +
-          '<span class="discover-cover search-playlist-icon">' + iconHtml(card.icon || 'album') + '</span>' +
+      rail.innerHTML = cards.map(function(card, index) {
+        return '<button class="discover-playlist-card" type="button" data-discover-card="' + index + '">' +
+          '<span class="discover-cover"><img loading="lazy" src="' + escapeMarkup(card.cover || DEFAULT_COVER) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '></span>' +
           '<strong>' + escapeMarkup(card.title) + '</strong>' +
-          '<span>' + Number(card.count || 0) + ' 首</span>' +
         '</button>';
       }).join('');
-      rail.querySelectorAll('[data-playlist]').forEach(function(card) {
-        card.addEventListener('click', function() {
-          var id = card.dataset.playlist || '';
-          if (id === 'favorites') showView('favorites');
-          else if (id === 'history') showView('history');
-          else if (id === 'queue') showView('queue');
-          else if (id === 'library') showView('library');
-          else showView('mine');
+      rail.querySelectorAll('[data-discover-card]').forEach(function(cardNode) {
+        cardNode.addEventListener('click', function() {
+          openDiscoverCard(cards[Number(cardNode.dataset.discoverCard) || 0]);
         });
       });
     }
+
     function renderSearchPlaylists(cards) {
       var container = document.getElementById('search-playlists');
       if (!container) return;
       if (!cards.length) {
-        container.innerHTML = '<div class="empty-note">还没有匹配歌单。到“我的”里新建或导入歌单后会显示在这里。</div>';
+        container.innerHTML = '<div class="empty-note">没有找到匹配歌单，换个关键词试试。</div>';
         return;
       }
-      container.innerHTML = cards.map(function(card) {
-        return '<button class="search-playlist-card" type="button" data-playlist="' + escapeMarkup(card.id) + '">' +
-          '<span class="search-playlist-icon">' + iconHtml(card.icon || 'album') + '</span>' +
-          '<span><strong>' + escapeMarkup(card.title) + '</strong><span>' + Number(card.count || 0) + ' 首</span></span>' +
+      container.innerHTML = cards.map(function(card, index) {
+        return '<button class="discover-playlist-card search-playlist-card" type="button" data-search-playlist="' + index + '">' +
+          '<span class="discover-cover"><img loading="lazy" src="' + escapeMarkup(card.cover || DEFAULT_COVER) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '></span>' +
+          '<strong>' + escapeMarkup(card.title) + '</strong>' +
         '</button>';
       }).join('');
-      container.querySelectorAll('[data-playlist]').forEach(function(card) {
-        card.addEventListener('click', function() {
-          var id = card.dataset.playlist || '';
-          if (id === 'favorites') showView('favorites');
-          else if (id === 'history') showView('history');
-          else if (id === 'queue') showView('queue');
-          else if (id === 'library') showView('library');
-          else showView('mine');
+      container.querySelectorAll('[data-search-playlist]').forEach(function(cardNode) {
+        cardNode.addEventListener('click', function() {
+          openDiscoverCard(cards[Number(cardNode.dataset.searchPlaylist) || 0]);
         });
       });
     }
@@ -2371,17 +2526,19 @@
       var tabs = document.getElementById('search-tabs');
       showView('search');
       updateSearchClearButton();
+      document.querySelector('[data-view="search"]')?.classList.toggle('discover-results-active', !!query);
       if (!query) {
         head.hidden = true;
         note.hidden = true;
         note.textContent = '';
         if (tabs) tabs.hidden = true;
         resultsBox.innerHTML = '';
+        document.getElementById('search-songs-section').classList.add('hidden');
+        document.getElementById('search-playlists-section').classList.add('hidden');
+        document.getElementById('search-videos-section').classList.add('hidden');
         var defaultPlaylists = getSearchPlaylistCards('');
-        renderSearchPlaylists(defaultPlaylists);
-        renderSearchVideos([]);
         currentSearchState = { songs: [], playlists: defaultPlaylists, videos: [] };
-        applySearchFilter('playlists');
+        renderIndexDiscoverPlaylists();
         renderSearchHistory();
         return;
       }
@@ -2449,6 +2606,14 @@
         renderSearchVideos([]);
         applySearchFilter('songs');
       }
+    }
+    function handleDiscoverSearchInput() {
+      updateSearchClearButton();
+      var input = getSearchInput();
+      var hasQuery = !!String(input && input.value || '').trim();
+      document.querySelector('[data-view="search"]')?.classList.toggle('discover-results-active', hasQuery);
+      if (hasQuery) performSearch({ remember: false });
+      else performSearch({ remember: false });
     }
     function handleSearchKey(event) {
       if (event.key === 'Enter') {
@@ -3230,6 +3395,8 @@
     function syncProviderSelection(provider) {
       activeProvider = provider || '聚合搜索';
       document.getElementById('provider-label').textContent = activeProvider;
+      var discoverProvider = document.querySelector('#discover-provider-button span');
+      if (discoverProvider) discoverProvider.textContent = activeProvider;
       document.querySelectorAll('.source-option').forEach((item) => {
         item.classList.toggle('selected', item.dataset.provider === activeProvider);
       });
@@ -3262,6 +3429,13 @@
     }
     document.querySelectorAll('.search-tab').forEach((tab) => {
       tab.addEventListener('click', () => applySearchFilter(tab.dataset.searchFilter || 'songs'));
+    });
+    document.querySelectorAll('.discover-category-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        activeDiscoverCategory = chip.dataset.discoverCategory || '全部';
+        document.querySelectorAll('.discover-category-chip').forEach((item) => item.classList.toggle('active', item === chip));
+        renderIndexDiscoverPlaylists();
+      });
     });
     document.querySelectorAll('.source-option').forEach((option) => {
       option.addEventListener('click', (event) => {
@@ -3406,12 +3580,14 @@
       }
     });
     audioPlayer.addEventListener('timeupdate', () => {
-      const duration = audioPlayer.duration || currentTrack.duration || 0;
-      const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
-      document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
-      document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
-      updateMiniProgress(progress);
-      syncLyrics();
+      if (!isSeekingAudio) {
+        const duration = audioPlayer.duration || currentTrack.duration || 0;
+        const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
+        document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
+        document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
+        updateMiniProgress(progress);
+        syncLyrics();
+      }
       savePlaybackState();
     });
     window.addEventListener('beforeunload', savePlaybackState);
@@ -3429,6 +3605,7 @@
       setCurrentTrack(currentTrack);
     }
     hydrateIcons(document);
+    initSeekDragging();
     updateControlIcons();
     setPlayIcons(false);
     initSettings();

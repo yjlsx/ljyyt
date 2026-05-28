@@ -13,8 +13,8 @@ if (searchForm && searchInput) {
     var query = searchInput.value.trim();
     if (query) {
       console.log('🔍 搜索:', query);
-      // 跳转到搜索页面
-      window.location.href = 'search.html?q=' + encodeURIComponent(query);
+      // 统一进入 index 内的发现 Tab
+      window.location.href = 'index.html?view=search&q=' + encodeURIComponent(query);
     }
   });
   
@@ -25,7 +25,7 @@ if (searchForm && searchInput) {
       var query = searchInput.value.trim();
       if (query) {
         console.log('🔍 搜索:', query);
-        window.location.href = 'search.html?q=' + encodeURIComponent(query);
+        window.location.href = 'index.html?view=search&q=' + encodeURIComponent(query);
       }
     }
   });
