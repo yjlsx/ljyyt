@@ -597,13 +597,18 @@
     .progress {
       width: 37px; height: 37px; display: grid; place-items: center;
       border-radius: 50%; position: relative; color: var(--primary);
+      --mini-progress: 0%;
     }
     .progress::before {
-      content: ""; position: absolute; inset: 2px; border-radius: 50%;
-      border: 2px solid var(--border); border-top-color: var(--primary);
-      border-right-color: var(--primary);
+      content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(var(--primary) var(--mini-progress), var(--border) 0);
     }
-    .progress svg, .progress .line-icon { width: 14px; height: 14px; position: relative; }
+    .progress::after {
+      content: ""; position: absolute; inset: 3px; border-radius: 50%;
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 45%, transparent);
+    }
+    .progress svg, .progress .line-icon { width: 14px; height: 14px; position: relative; z-index: 1; }
     .queue { width: 27px; height: 34px; color: var(--muted-foreground); display: grid; place-items: center; border-radius: 12px; }
     .queue:hover { background: var(--muted); color: var(--foreground); }
     .queue svg, .queue .line-icon { width: 19px; height: 19px; }
@@ -1496,6 +1501,12 @@
       updateControlIcons();
       renderQueue();
     }
+    function updateMiniProgress(progress) {
+      const mini = document.getElementById('mini-play');
+      if (!mini) return;
+      const value = Math.max(0, Math.min(100, Number(progress) || 0));
+      mini.style.setProperty('--mini-progress', value + '%');
+    }
     function updateTrackUi(track) {
       const cover = safeCover(track.cover);
       document.querySelector('.player-copy strong').textContent = track.title;
@@ -1508,6 +1519,7 @@
       document.getElementById('duration-time').textContent = formatDuration(track.duration || audioPlayer.duration);
       document.getElementById('current-time').textContent = '0:00';
       document.getElementById('seek-line').style.setProperty('--audio-progress', '0%');
+      updateMiniProgress(0);
     }
     function setCurrentTrack(track) {
       currentTrack = {
@@ -1808,6 +1820,7 @@
       audioPlayer.currentTime = duration * ratio;
       document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
       line.style.setProperty('--audio-progress', (ratio * 100) + '%');
+      updateMiniProgress(ratio * 100);
     }
     function toggleLike(event, button) {
       if (event) event.stopPropagation();
@@ -2865,6 +2878,7 @@
         const duration = audioPlayer.duration || currentTrack.duration || 0;
         const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
         document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
+        updateMiniProgress(progress);
         restoredPlaybackTime = 0;
       }
     });
@@ -2873,6 +2887,7 @@
       const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
       document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
       document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
+      updateMiniProgress(progress);
       syncLyrics();
       savePlaybackState();
     });
