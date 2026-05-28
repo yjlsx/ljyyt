@@ -115,16 +115,28 @@
       color: var(--foreground); font: inherit; font-size: 14px;
     }
     .search-input::placeholder { color: var(--muted-foreground); opacity: .78; }
+    .search-clear {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: grid; place-items: center; flex: none;
+      color: var(--muted-foreground);
+      opacity: 0; transform: scale(.9); pointer-events: none;
+      transition: opacity .16s ease, transform .16s ease, background .16s ease, color .16s ease;
+    }
+    .search-clear.visible {
+      opacity: 1; transform: scale(1); pointer-events: auto;
+    }
+    .search-clear:hover { background: var(--muted); color: var(--foreground); }
+    .search-clear .line-icon { width: 14px; height: 14px; }
     .provider {
       height: 32px;
       display: flex; align-items: center; gap: 6px;
-      font-size: 12px; color: var(--foreground);
-      padding: 0 9px 0 11px;
-      border-radius: 999px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      box-shadow: 0 1px 5px rgba(0,0,0,.04);
+      font-size: 12px; color: var(--muted-foreground);
+      padding: 0 4px 0 11px;
+      border-left: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+      border-radius: 0;
+      background: transparent;
     }
+    .provider:hover { color: var(--foreground); }
     @media (max-width: 768px) {
       input,
       textarea,
@@ -992,6 +1004,7 @@
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="showView('search'); performSearch({ remember: false })" oninput="performSearch()" onkeydown="handleSearchKey(event)">
+        <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event)"><span data-icon="close"></span></button>
         <div class="provider-wrap">
           <button class="provider" type="button" id="provider-button" onclick="toggleProvider(event)"><span id="provider-label">聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
           <div class="source-menu" id="source-menu">
@@ -1561,6 +1574,23 @@
         box.hidden = true;
       }
       renderSearchHistory();
+    }
+    function updateSearchClearButton() {
+      const input = document.getElementById('search-input');
+      const button = document.getElementById('search-clear');
+      if (!button) return;
+      button.classList.toggle('visible', !!String(input?.value || '').trim());
+    }
+    function clearHomeSearch(event) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      const input = document.getElementById('search-input');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      performSearch({ remember: false });
+      updateSearchClearButton();
     }
     const icons = {
       play: iconHtml('play'),
@@ -2174,6 +2204,7 @@
       var query = String(input && input.value || '').trim().toLowerCase();
       var tabs = document.getElementById('search-tabs');
       showView('search');
+      updateSearchClearButton();
       if (!query) {
         head.hidden = true;
         note.hidden = true;
@@ -2191,7 +2222,7 @@
       if (options.remember) rememberSearchQuery(query);
       renderSearchHistory();
       head.hidden = false;
-      if (tabs) tabs.hidden = false;
+      if (tabs) tabs.hidden = true;
       note.hidden = false;
       note.textContent = '正在搜索 "' + query + '" · 来源：' + activeProvider;
       try {
@@ -2242,8 +2273,7 @@
         renderSearchPlaylists(playlists);
         renderSearchVideos(videos);
         note.textContent = '来源：' + activeProvider + ' · 歌曲 ' + results.length + ' · 歌单 ' + playlists.length + ' · MV ' + videos.length;
-        if (!results.length && playlists.length) applySearchFilter('playlists');
-        else applySearchFilter(activeSearchFilter || 'songs');
+        applySearchFilter('songs');
         if (!results.length && activeProvider === 'Migu') {
           resultsBox.innerHTML = '<div class="empty-note">Migu 是 Otter 官方接口来源，不走 GD 搜索 API；下一步需要把 Otter 的 Migu 官方搜索模块移到 Worker。</div>';
         }
@@ -3047,6 +3077,34 @@
         openTrackActionDrawer(queue[index] || currentTrack);
       }
     });
+    function applyInitialRoute() {
+      var params = new URLSearchParams(window.location.search);
+      var view = params.get('view');
+      var query = params.get('q') || params.get('keyword') || '';
+      var source = params.get('source') || '';
+      var sourceMap = {
+        aggregate: '聚合搜索',
+        all: '聚合搜索',
+        local: '丽江曲库',
+        joox: 'Joox',
+        netease: '网易云音乐',
+        kuwo: '酷我音乐',
+        migu: 'Migu',
+        bilibili: 'B站',
+        _netease: 'Netease'
+      };
+      if (source && sourceMap[source]) syncProviderSelection(sourceMap[source]);
+      if (view === 'search' || query) {
+        showView('search');
+        if (query) {
+          document.getElementById('search-input').value = query;
+          resetSearchFilter();
+          performSearch({ remember: false });
+        } else {
+          renderSearchHistory();
+        }
+      }
+    }
     async function chooseTrack(name, artist, cover, src, duration) {
       pausePreviewVideo();
       setQueueDrawerOpen(false);
@@ -3135,6 +3193,7 @@
     renderPlaylists();
     renderSearchHistory();
     updateNeteaseLoginSetting();
+    applyInitialRoute();
   </script>
 </body>
 </html>
