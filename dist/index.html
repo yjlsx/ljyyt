@@ -1288,7 +1288,7 @@
       <button class="tab active" data-target="home" type="button">
         <span data-icon="home"></span><span>首页</span>
       </button>
-      <button class="tab" data-target="search" type="button">
+      <button class="tab" data-target="discover" type="button" onclick="window.location.href='search.html'">
         <span data-icon="search"></span><span>搜索</span>
       </button>
       <button class="tab" data-target="favorites" type="button">
@@ -2990,6 +2990,10 @@
       video.load();
     }
     function showView(target) {
+      if (target === 'search') {
+        window.location.href = 'search.html';
+        return;
+      }
       setQueueDrawerOpen(false);
       closeTrackActionDrawer();
       closeSettingDrawer();
