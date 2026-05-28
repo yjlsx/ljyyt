@@ -234,24 +234,24 @@
       }) : [], 36);
       return {
         id: 'user-' + index,
-        name: item.name || item.title || '我的歌单',
-        subtitle: '本地歌单来源',
-        source: '我的歌单',
+        name: item.name || item.title || '歌单',
+        subtitle: '歌单',
+        source: '歌单',
         icon: 'album',
         tracks: tracks,
         cover: tracks[0] && tracks[0].cover
       };
     });
+    var queueTracks = uniqueTracks(history.concat(pickTracksByKeyword(library, ['快乐', '幸福', '欢乐', '人生', '阳光'], 12, 24)), 36);
     var generated = [
-      { id: 'daily', name: '今日发现', subtitle: '从丽江曲库自动轮换', source: '动态曲库', icon: 'sparkles', tracks: uniqueTracks(library.slice(new Date().getDate() % Math.max(1, library.length)).concat(library), 24) },
-      { id: 'naxi', name: '纳西音乐精选', subtitle: '纳西/丽江关键词自动聚合', source: '丽江曲库', icon: 'music', tracks: pickTracksByKeyword(library, ['纳西', '丽江', '三部曲', '古乐', '东巴'], 0, 24) },
-      { id: 'happy', name: '快乐人生电台', subtitle: '轻快、生活感歌曲', source: '动态曲库', icon: 'radio', tracks: pickTracksByKeyword(library, ['快乐', '幸福', '欢乐', '人生', '阳光'], 12, 24) },
-      { id: 'night', name: '夜晚慢听', subtitle: '适合安静播放', source: '动态曲库', icon: 'moon', tracks: pickTracksByKeyword(library, ['月', '夜', '梦', '想念', '故乡'], 24, 24) },
-      { id: 'favorites', name: '我喜欢的音乐', subtitle: '来自你的喜欢列表', source: '本地数据', icon: 'heart', tracks: uniqueTracks(favorites, 36) },
-      { id: 'history', name: '最近播放', subtitle: '来自你的播放记录', source: '本地数据', icon: 'history', tracks: uniqueTracks(history, 36) },
-      { id: 'library', name: '丽江曲库全部', subtitle: '所有本地曲库内容', source: '丽江曲库', icon: 'database', tracks: uniqueTracks(library, 48) }
+      { id: 'queue', name: '播放列表', subtitle: '当前推荐', source: '播放列表', icon: 'queue', tracks: queueTracks },
+      { id: 'history', name: '最近播放', subtitle: '播放历史', source: '最近播放', icon: 'history', tracks: uniqueTracks(history, 36) },
+      { id: 'favorites', name: '喜欢', subtitle: '我的喜欢', source: '喜欢', icon: 'heart', tracks: uniqueTracks(favorites, 36) },
+      { id: 'daily', name: '发现', subtitle: '自动更新', source: '发现', icon: 'sparkles', tracks: uniqueTracks(library.slice(new Date().getDate() % Math.max(1, library.length)).concat(library), 24) },
+      { id: 'library', name: '全部歌曲', subtitle: '丽江曲库', source: '曲库', icon: 'database', tracks: uniqueTracks(library, 48) },
+      { id: 'naxi', name: '丽江曲库', subtitle: '纳西音乐', source: '曲库', icon: 'music', tracks: pickTracksByKeyword(library, ['纳西', '丽江', '三部曲', '古乐', '东巴'], 0, 24) }
     ];
-    return userPlaylists.concat(generated).filter(function(item) { return item.id === 'library' || item.tracks.length || item.id === 'favorites' || item.id === 'history'; });
+    return generated.concat(userPlaylists).filter(function(item) { return item.id === 'library' || item.id === 'queue' || item.tracks.length || item.id === 'favorites' || item.id === 'history'; });
   }
 
   function getDiscoverPlaylist(id) {
@@ -359,7 +359,7 @@
         cover: item.cover || item.tracks && item.tracks[0] && item.tracks[0].cover
       };
     });
-    all.push({ id: 'mv', name: 'MV 视频', count: typeof videoData !== 'undefined' ? videoData.length : 0, type: 'video', icon: 'video', subtitle: '视频内容', source: '丽江视频库' });
+    all.push({ id: 'mv', name: 'MV', count: typeof videoData !== 'undefined' ? videoData.length : 0, type: 'video', icon: 'video', subtitle: '视频', source: '视频' });
     if (!q) return all;
     return all.filter(function(item) {
       return [item.name, item.subtitle, item.source].some(function(value) {
@@ -508,7 +508,7 @@
     currentResults.video = [];
     currentResults.playlists = getPlaylistCards('');
     var status = document.getElementById('search-status');
-    if (status) status.textContent = '正在浏览「' + list.name + '」 · ' + list.tracks.length + ' 首 · 来源：' + (list.source || '动态歌单');
+    if (status) status.textContent = list.name + ' · ' + list.tracks.length + ' 首';
     renderTrackRows(list.tracks);
     applyFilter('music');
     document.getElementById('music-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -544,7 +544,7 @@
     if (status) {
       status.textContent = query
         ? '找到 ' + total + ' 个相关内容 · 来源：' + (sourceMap[activeSource] && sourceMap[activeSource].label || '聚合搜索')
-        : '浏览动态发现歌单，或输入关键词搜索歌曲、歌手、MV。';
+        : '发现音乐，或搜索歌曲。';
     }
     renderTrackRows(currentResults.music);
     renderVideoRows(currentResults.video);
@@ -862,7 +862,8 @@
       var input = document.getElementById('hero-search-input');
       if (input && query) input.value = query;
       renderDiscover();
-      displayResults({ music: [], video: [], playlists: getPlaylistCards(query) }, query);
+      var defaultList = discoverPlaylists[0] || { tracks: [] };
+      displayResults({ music: defaultList.tracks || [], video: [], playlists: getPlaylistCards(query) }, query);
       if (query) performSearch(query);
     });
   });

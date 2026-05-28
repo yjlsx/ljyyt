@@ -17,75 +17,37 @@
   <script src="js/icons.js"></script>
   <link rel="stylesheet" href="css/search-app.css">
 </head>
-<body class="search-page">
-  <main class="search-app" aria-label="搜索">
-    <header class="search-topbar">
-      <a class="search-brand" href="index.html" aria-label="返回丽江音悦台首页">
-        <span class="search-brand-mark" data-icon="music"></span>
-        <span class="search-brand-copy">
-          <strong>丽江音悦台</strong>
-          <span>搜索音乐、歌单和 MV</span>
-        </span>
-      </a>
-      <nav class="search-nav" aria-label="页面导航">
-        <a href="index.html" aria-label="首页"><span data-icon="home"></span><span>首页</span></a>
-        <a class="active" href="search.html" aria-label="搜索"><span data-icon="search"></span><span>搜索</span></a>
-        <a href="index.html?view=mine" aria-label="我的"><span data-icon="user"></span><span>我的</span></a>
-        <a href="player.html" aria-label="播放页"><span data-icon="album"></span><span>播放</span></a>
-      </nav>
+<body class="search-page discovery-mode">
+  <main class="search-app" aria-label="发现">
+    <header class="discover-app-header">
+      <h1>发现</h1>
+      <p>搜索歌曲、歌手、专辑和歌单</p>
     </header>
 
-    <section class="search-panel">
-      <p class="search-kicker"><strong>发现</strong> 浏览动态歌单，也可以搜索歌曲、歌手和 MV</p>
-      <form class="search-form" id="search-form" action="search.html" method="GET" role="search">
-        <div class="source-picker" id="source-picker">
+    <section class="discover-search-card" aria-label="搜索">
+      <form class="search-form discover-search-form" id="search-form" action="search.html" method="GET" role="search">
+        <div class="source-picker sr-only" id="source-picker" aria-hidden="true">
           <button class="source-button" id="source-button" type="button" aria-haspopup="listbox" aria-expanded="false">
             <span data-icon="radio"></span>
             <span id="source-label">聚合搜索</span>
             <span data-icon="chevronDown"></span>
           </button>
           <div class="source-menu" id="source-menu" role="listbox" aria-label="选择搜索来源">
-            <button class="source-option active" type="button" data-source="aggregate">
-              <span><strong>聚合搜索</strong><br><small>丽江曲库 + 已启用音源</small></span>
-              <span data-icon="check"></span>
-            </button>
-            <button class="source-option" type="button" data-source="local">
-              <span><strong>丽江曲库</strong><br><small>本站纳西音乐和视频</small></span>
-              <span data-icon="database"></span>
-            </button>
-            <button class="source-option" type="button" data-source="joox">
-              <span><strong>Joox</strong><br><small>海外华语/流行音乐源</small></span>
-              <span data-icon="globe"></span>
-            </button>
-            <button class="source-option" type="button" data-source="netease">
-              <span><strong>网易云</strong><br><small>小众音乐匹配较多</small></span>
-              <span data-icon="music"></span>
-            </button>
-            <button class="source-option" type="button" data-source="kuwo">
-              <span><strong>酷我</strong><br><small>曲库覆盖较广</small></span>
-              <span data-icon="headphones"></span>
-            </button>
-            <button class="source-option" type="button" data-source="migu">
-              <span><strong>Migu</strong><br><small>咪咕音乐来源</small></span>
-              <span data-icon="radio"></span>
-            </button>
-            <button class="source-option" type="button" data-source="bilibili">
-              <span><strong>B站</strong><br><small>用户上传音乐内容</small></span>
-              <span data-icon="video"></span>
-            </button>
-            <button class="source-option" type="button" data-source="_netease">
-              <span><strong>Netease</strong><br><small>网易云备用接口</small></span>
-              <span data-icon="refresh"></span>
-            </button>
+            <button class="source-option active" type="button" data-source="aggregate"><span><strong>聚合搜索</strong><br><small>丽江曲库 + 已启用音源</small></span><span data-icon="check"></span></button>
+            <button class="source-option" type="button" data-source="local"><span><strong>丽江曲库</strong><br><small>本站纳西音乐和视频</small></span><span data-icon="database"></span></button>
+            <button class="source-option" type="button" data-source="joox"><span><strong>Joox</strong><br><small>海外华语/流行音乐源</small></span><span data-icon="globe"></span></button>
+            <button class="source-option" type="button" data-source="netease"><span><strong>网易云</strong><br><small>小众音乐匹配较多</small></span><span data-icon="music"></span></button>
+            <button class="source-option" type="button" data-source="kuwo"><span><strong>酷我</strong><br><small>曲库覆盖较广</small></span><span data-icon="headphones"></span></button>
+            <button class="source-option" type="button" data-source="migu"><span><strong>Migu</strong><br><small>咪咕音乐来源</small></span><span data-icon="radio"></span></button>
+            <button class="source-option" type="button" data-source="bilibili"><span><strong>B站</strong><br><small>用户上传音乐内容</small></span><span data-icon="video"></span></button>
+            <button class="source-option" type="button" data-source="_netease"><span><strong>Netease</strong><br><small>网易云备用接口</small></span><span data-icon="refresh"></span></button>
           </div>
         </div>
         <label class="search-input-wrap" for="hero-search-input">
           <span data-icon="search"></span>
-          <input type="search" id="hero-search-input" name="q" placeholder="搜索歌曲、歌手、歌单、MV..." aria-label="搜索音乐" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search">
+          <input type="search" id="hero-search-input" name="q" placeholder="搜索" aria-label="搜索" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search">
         </label>
-        <button class="search-submit" id="search-btn" type="submit" aria-label="搜索">
-          <span data-icon="search"></span>
-        </button>
+        <button class="search-submit" id="search-btn" type="submit" aria-label="搜索"><span data-icon="search"></span></button>
       </form>
       <div class="search-history" id="search-history" hidden>
         <span>搜索记录</span>
@@ -94,32 +56,11 @@
       </div>
     </section>
 
-
     <section class="discover-section" id="discover-section" aria-label="发现歌单">
-      <div class="discover-hero-card">
-        <div class="discover-hero-copy">
-          <span class="hero-pill"><span data-icon="sparkles"></span> 动态发现</span>
-          <h1>发现适合现在播放的歌单</h1>
-          <p>歌单从丽江曲库、你的喜欢、最近播放和本地歌单自动生成；曲库更新后，这里也会跟着更新。</p>
-        </div>
-        <button class="hero-play" id="discover-play-first" type="button">
-          <span data-icon="play"></span>
-          播放推荐
-        </button>
-      </div>
-
       <div class="section-head discover-head">
         <div>
-          <h2>歌单来源</h2>
-          <p>和 dev 的发现页一样，先选来源，再进入对应歌单。</p>
-        </div>
-      </div>
-      <div class="source-rail" id="discover-source-rail"></div>
-
-      <div class="section-head discover-head">
-        <div>
-          <h2>为你发现</h2>
-          <p>根据曲库和本地播放数据实时生成。</p>
+          <h2>歌单</h2>
+          <p>播放列表、最近播放、喜欢和我的歌单。</p>
         </div>
       </div>
       <div class="discover-playlist-rail" id="discover-playlists"></div>
@@ -132,28 +73,26 @@
       <button class="result-tab" type="button" data-filter="video"><span data-icon="video"></span>MV</button>
     </nav>
 
-    <div class="search-status" id="search-status">先浏览发现歌单；输入关键词后显示搜索结果。</div>
+    <div class="search-status" id="search-status">发现音乐，或搜索歌曲。</div>
 
     <section class="search-section" id="music-section">
       <div class="section-head">
         <div>
           <h2>歌曲</h2>
-          <p>点击歌曲即可播放，右侧更多按钮可进入操作菜单。</p>
+          <p>点击播放。</p>
         </div>
-        <a class="section-action" href="player.html">进入播放页</a>
       </div>
       <div class="track-list-app" id="music-results">
-        <div class="empty-state"><strong>先搜索一首歌</strong><span>聚合搜索会同时查找丽江曲库和已启用音源。</span></div>
+        <div class="empty-state"><strong>发现</strong><span>选择歌单或搜索歌曲。</span></div>
       </div>
     </section>
 
     <section class="search-section" id="playlist-section">
       <div class="section-head">
         <div>
-          <h2>全部歌单</h2>
-          <p>动态来源、你的歌单、喜欢、最近播放和丽江曲库入口。</p>
+          <h2>歌单</h2>
+          <p>播放列表、最近播放、喜欢和曲库来源。</p>
         </div>
-        <a class="section-action" href="index.html?view=mine">管理歌单</a>
       </div>
       <div class="playlist-grid-app" id="playlist-results"></div>
     </section>
@@ -161,8 +100,8 @@
     <section class="search-section" id="video-section">
       <div class="section-head">
         <div>
-          <h2>MV 视频</h2>
-          <p>来自丽江音悦台的视频内容。</p>
+          <h2>MV</h2>
+          <p>视频内容。</p>
         </div>
       </div>
       <div class="track-list-app" id="video-results">
@@ -172,12 +111,12 @@
   </main>
 
   <audio id="search-audio" preload="metadata"></audio>
-  <footer class="search-mini-player" id="search-mini-player" aria-label="搜索页播放控制">
+  <footer class="search-mini-player" id="search-mini-player" aria-label="播放控制">
     <button class="mini-track" id="mini-player-link" type="button" aria-label="进入播放页">
       <span class="mini-cover" id="mini-cover"><span data-icon="music"></span></span>
       <span class="mini-copy">
         <strong id="mini-title">请选择一首歌曲</strong>
-        <span id="mini-artist">搜索后点击歌曲即可播放</span>
+        <span id="mini-artist">点击歌曲即可播放</span>
       </span>
     </button>
     <div class="mini-controls">
@@ -186,6 +125,13 @@
       <button class="mini-btn" id="mini-next" type="button" aria-label="下一首"><span data-icon="next"></span></button>
     </div>
   </footer>
+
+  <nav class="discover-tabbar" aria-label="底部导航">
+    <a class="active" href="search.html" aria-label="发现"><span data-icon="search"></span><strong>发现</strong></a>
+    <a href="index.html?view=favorites" aria-label="喜欢"><span data-icon="heart"></span><strong>喜欢</strong></a>
+    <a href="index.html?view=mine" aria-label="我的"><span data-icon="user"></span><strong>我的</strong></a>
+  </nav>
+
   <div class="action-scrim" id="search-action-scrim"></div>
   <aside class="action-sheet" id="search-action-sheet" aria-label="歌曲操作"></aside>
 
