@@ -1028,7 +1028,7 @@
         <img src="/images/avatar.jpg" alt="丽江音悦台">
         <span>丽江音悦台</span>
       </div>
-      <button class="theme-switch" type="button" aria-label="切换明暗主题" onclick="document.documentElement.classList.toggle('dark')"><span data-icon="moon"></span></button>
+      <button class="theme-switch" type="button" aria-label="切换明暗主题" onclick="toggleThemeSetting(event)"><span data-icon="moon"></span></button>
     </header>
     <div class="search-shell" id="search-shell">
       <div class="search-box">
@@ -1261,7 +1261,7 @@
         <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>系统设置</h2></div>
         <div class="settings-scroll">
           <div class="setting-group"><h3>常用设置</h3>
-            <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" data-setting="smartSource" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
             <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、酷我音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="aggregate-source-panel" id="aggregate-source-panel">
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
@@ -1272,20 +1272,20 @@
               <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span><p>Netease</p><small>网易云官方，稳定高速</small></span></label>
             </div>
-            <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" data-setting="volume" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
             <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
-            <div class="setting-item" onclick="toggleCachePanel(event)"><span class="setting-icon" data-icon="database"></span><div class="setting-copy"><p>边听边缓存</p><small>播放时自动缓存，离线也能听</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="边听边缓存开启"></button><span class="setting-chevron" id="cache-chevron"><span data-icon="chevronRight"></span></span></div></div>
+            <div class="setting-item" onclick="toggleCachePanel(event)"><span class="setting-icon" data-icon="database"></span><div class="setting-copy"><p>边听边缓存</p><small>播放时自动缓存，离线也能听</small></div><div class="setting-action"><button class="toggle" data-setting="cacheWhilePlaying" onclick="toggleSetting(event, this)" aria-label="边听边缓存开启"></button><span class="setting-chevron" id="cache-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="setting-expanded-panel" id="cache-panel"><div class="cache-stat">暂无缓存数据</div><button class="danger-outline" onclick="event.stopPropagation()"><span data-icon="trash"></span> 清空缓存</button></div>
           </div>
           <div class="setting-group"><h3>界面设置</h3>
-            <div class="setting-item" onclick="document.documentElement.classList.toggle('dark')"><span class="setting-icon" data-icon="palette"></span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select">浅色 / 深色</span></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="tag"></span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>全屏背景</p></div><div class="setting-action"><select class="setting-select" id="background-label" onchange="setFullBackgroundMode(this.value)"><option value="theme">动态主题色</option><option value="cover" selected>模糊封面</option><option value="texture">深色质感</option></select></div></div>
+            <div class="setting-item" onclick="toggleThemeSetting(event)"><span class="setting-icon" data-icon="palette"></span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select" id="theme-setting-label">浅色 / 深色</span></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="tag"></span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" data-setting="showSourceLabels" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>全屏背景</p></div><div class="setting-action"><select class="setting-select" id="background-label" data-setting="fullBackgroundMode" onchange="setFullBackgroundMode(this.value)"><option value="theme">动态主题色</option><option value="cover" selected>模糊封面</option><option value="texture">深色质感</option></select></div></div>
           </div>
           <div class="setting-group"><h3>下载设置</h3>
             <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>下载音质</p><small>部分音源不支持无损下载</small></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="fileText"></span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" data-setting="embedCover" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="fileText"></span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" data-setting="embedLyrics" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
           </div>
           <div class="setting-group"><h3>账号数据</h3>
             <div class="setting-item" onclick="openSettingDrawer('netease')"><span class="setting-icon" data-icon="user"></span><div class="setting-copy"><p>网易云账号</p><small id="netease-login-subtitle">登录后可同步歌单</small></div><div class="setting-action"><button class="small-control" id="netease-login-action" onclick="openSettingDrawer('netease'); event.stopPropagation()">登录</button></div></div>
@@ -1521,6 +1521,21 @@
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {}
+    }
+    const SETTINGS_KEY = 'ljyyt_otter_settings';
+    const defaultSettings = {
+      smartSource: true,
+      cacheWhilePlaying: true,
+      showSourceLabels: true,
+      embedCover: true,
+      embedLyrics: true,
+      volume: 100,
+      fullBackgroundMode: 'cover',
+      theme: 'light'
+    };
+    let appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
+    function saveAppSettings() {
+      writeStoredObject(SETTINGS_KEY, appSettings);
     }
     function escapeMarkup(value) {
       return String(value || '').replace(/[&<>"']/g, (char) => ({
@@ -1774,15 +1789,28 @@
       }
       return { title: name, artist, cover, src: currentTrack.src, duration: currentTrack.duration };
     }
+    async function ensurePlayableTrackUrl(track) {
+      if (!track) return '';
+      if (track.src) return track.src;
+      if (track.source && track.source !== 'local') {
+        track.src = await resolveExternalTrackUrl(track);
+        if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
+      }
+      return track.src || '';
+    }
     async function playCurrentTrack() {
       pausePreviewVideo();
+      if (!currentTrack) return;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
-      if (!currentTrack.src && currentTrack.source && currentTrack.source !== 'local') {
-        currentTrack.src = await resolveExternalTrackUrl(currentTrack);
-        if (currentTrack.src) {
-          audioPlayer.src = currentTrack.src;
-          audioPlayer.load();
-        }
+      var playableUrl = await ensurePlayableTrackUrl(currentTrack);
+      if (playableUrl && audioPlayer.src !== playableUrl) {
+        audioPlayer.src = playableUrl;
+        audioPlayer.load();
+      }
+      if (!playableUrl) {
+        setPlayIcons(false);
+        alert('当前音源暂时无法播放，请换一个音源或稍后重试。');
+        return;
       }
       try {
         if (restoredPlaybackTime && audioPlayer.readyState > 0) {
@@ -2013,6 +2041,9 @@
         closeTrackActionDrawer();
         openAddToPlaylistDrawer(track);
         return;
+      } else if (action === 'download') {
+        downloadTrack(track);
+        return;
       } else if (action === 'artist') {
         getSearchInput().value = track.artist || '';
         showView('search');
@@ -2023,6 +2054,27 @@
         performSearch({ remember: false });
       }
       closeTrackActionDrawer();
+    }
+    async function downloadTrack(track) {
+      if (!track) return;
+      var button = document.querySelector('#action-drawer-content [data-action="download"]');
+      if (button) button.textContent = '正在准备下载...';
+      var url = await ensurePlayableTrackUrl(track);
+      if (!url) {
+        if (button) button.textContent = '下载失败，请换音源';
+        alert('当前歌曲地址解析失败，暂时无法下载。');
+        return;
+      }
+      var link = document.createElement('a');
+      var filename = (track.title || 'song') + ' - ' + (track.artist || 'unknown') + '.mp3';
+      link.href = url;
+      link.download = filename.replace(/[\/:*?"<>|]+/g, '_');
+      link.rel = 'noopener';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if (button) button.textContent = '已开始下载';
+      setTimeout(closeTrackActionDrawer, 500);
     }
     function seekAudio(event) {
       const line = document.getElementById('seek-line');
@@ -2877,13 +2929,50 @@
     }
     function setSettingsVolume(value) {
       var normalized = Math.max(0, Math.min(100, Number(value) || 0));
+      appSettings.volume = normalized;
+      saveAppSettings();
       audioPlayer.volume = normalized / 100;
-      document.getElementById('volume-label').textContent = normalized + '%';
+      var label = document.getElementById('volume-label');
+      if (label) label.textContent = normalized + '%';
+      var slider = document.querySelector('[data-setting="volume"]');
+      if (slider) slider.value = normalized;
     }
     function setFullBackgroundMode(value) {
+      value = ['theme', 'cover', 'texture'].includes(value) ? value : 'cover';
+      appSettings.fullBackgroundMode = value;
+      saveAppSettings();
       blurredBackground = value === 'cover';
-      document.querySelector('.fullscreen-bg').style.display = value === 'cover' ? 'block' : 'none';
-      document.getElementById('full-player').dataset.background = value;
+      var bg = document.querySelector('.fullscreen-bg');
+      if (bg) bg.style.display = value === 'cover' ? 'block' : 'none';
+      var full = document.getElementById('full-player');
+      if (full) full.dataset.background = value;
+      var select = document.getElementById('background-label');
+      if (select) select.value = value;
+    }
+    function toggleThemeSetting(event) {
+      if (event) event.stopPropagation();
+      var next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+      appSettings.theme = next;
+      saveAppSettings();
+      applyThemeSetting();
+    }
+    function applyThemeSetting() {
+      var dark = appSettings.theme === 'dark';
+      document.documentElement.classList.toggle('dark', dark);
+      var label = document.getElementById('theme-setting-label');
+      if (label) label.textContent = dark ? '深色' : '浅色';
+    }
+    function initSettings() {
+      appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
+      document.querySelectorAll('.toggle[data-setting]').forEach(function(button) {
+        var key = button.dataset.setting;
+        var enabled = appSettings[key] !== false;
+        button.classList.toggle('off', !enabled);
+        button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      });
+      applyThemeSetting();
+      setSettingsVolume(appSettings.volume);
+      setFullBackgroundMode(appSettings.fullBackgroundMode);
     }
     function toggleCachePanel(event) {
       event.stopPropagation();
@@ -2981,13 +3070,24 @@
         var key = payload && (payload.unikey || (payload.data && payload.data.unikey));
         if (!key) throw new Error('二维码 key 为空');
         var qrUrl = 'https://music.163.com/login?codekey=' + encodeURIComponent(key);
-        var qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=' + encodeURIComponent(qrUrl);
-        document.getElementById('netease-qr-box').innerHTML =
-          '<img src="' + qrImage + '" alt="网易云登录二维码" style="width:180px;height:180px;border-radius:12px;background:#fff;padding:8px;display:block;margin:0 auto 10px">' +
-          '<div>请使用网易云音乐 APP 扫码</div>';
+        var qrImage = '';
+        try {
+          var createResponse = await fetch(neteaseApiBase + '/login/qr/create?key=' + encodeURIComponent(key) + '&qrimg=true&timestamp=' + Date.now());
+          if (createResponse.ok) {
+            var createPayload = await createResponse.json();
+            qrImage = createPayload.qrimg || (createPayload.data && createPayload.data.qrimg) || '';
+          }
+        } catch (error) {}
+        if (!qrImage) qrImage = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=' + encodeURIComponent(qrUrl);
+        var box = document.getElementById('netease-qr-box');
+        if (box) {
+          box.innerHTML =
+            '<img src="' + qrImage + '" alt="网易云登录二维码" style="width:180px;height:180px;border-radius:12px;background:#fff;padding:8px;display:block;margin:0 auto 10px" onerror="this.style.display=\'none\';this.nextElementSibling.textContent=\'二维码图片加载失败，请点刷新二维码重试。\';">' +
+            '<div>请使用网易云音乐 APP 扫码</div>';
+        }
         pollNeteaseQrStatus(key);
       } catch (error) {
-        renderNeteaseLoginDrawer('二维码获取失败，请稍后重试。');
+        renderNeteaseLoginDrawer('二维码获取失败，请检查网络后点刷新重试。');
       }
     }
     async function pollNeteaseQrStatus(key) {
@@ -3156,7 +3256,7 @@
       } else {
         aggregatedSources = aggregatedSources.concat(source);
       }
-      writeStoredObject('ljyyt_otter_aggregated_sources', aggregatedSources);
+      writeStoredList('ljyyt_otter_aggregated_sources', aggregatedSources);
       updateAggregateSourceUI();
       if (activeProvider === '聚合搜索') performSearch({ remember: false });
     }
@@ -3265,7 +3365,14 @@
     }
     function toggleSetting(event, element) {
       event.stopPropagation();
-      element.classList.toggle('off');
+      var key = element && element.dataset && element.dataset.setting;
+      var enabled = element.classList.contains('off');
+      element.classList.toggle('off', !enabled);
+      element.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      if (key) {
+        appSettings[key] = enabled;
+        saveAppSettings();
+      }
     }
     function openFullPlayer() {
       pausePreviewVideo();
@@ -3324,6 +3431,7 @@
     hydrateIcons(document);
     updateControlIcons();
     setPlayIcons(false);
+    initSettings();
     updateAggregateSourceUI();
     renderFavorites();
     renderHistory();
