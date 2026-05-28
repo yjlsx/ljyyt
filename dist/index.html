@@ -433,6 +433,18 @@
       text-align: left; color: var(--foreground);
     }
     .search-playlist-card:hover { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); }
+
+    .discovery-view { padding-bottom: 22px; }
+    .index-discover-header { margin: 2px 0 14px; }
+    .index-discover-header h1 { margin: 0 0 4px; font-size: 30px; letter-spacing: -0.04em; }
+    .index-discover-header p { margin: 0; color: var(--muted-foreground); font-size: 13px; }
+    .index-discover-search { margin: 0 0 18px; }
+    .discover-playlist-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(132px, 42vw); gap: 12px; overflow-x: auto; padding: 2px 2px 10px; scrollbar-width: none; }
+    .discover-playlist-rail::-webkit-scrollbar { display: none; }
+    .discover-playlist-card { min-height: 142px; border-radius: 22px; border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 90%, transparent); color: var(--foreground); padding: 14px; text-align: left; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow); }
+    .discover-playlist-card .discover-cover { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(54,169,123,.12); color: var(--primary); }
+    .discover-playlist-card strong { display: block; margin-top: 10px; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .discover-playlist-card span:last-child { color: var(--muted-foreground); font-size: 12px; }
     .search-playlist-icon {
       width: 34px; height: 34px; border-radius: 11px;
       display: grid; place-items: center;
@@ -1124,25 +1136,47 @@
         </div>
       </section>
       </div>
-      <div class="view" data-view="search">
-        <div class="search-history" id="search-history"></div>
-        <div class="search-tabs" id="search-tabs" hidden>
-          <button class="search-tab active" type="button" data-search-filter="songs"><span data-icon="music"></span>歌曲</button>
-          <button class="search-tab" type="button" data-search-filter="playlists"><span data-icon="album"></span>歌单</button>
-          <button class="search-tab" type="button" data-search-filter="videos"><span data-icon="video"></span>MV</button>
-        </div>
+      <div class="view discovery-view" data-view="search">
+        <header class="discover-app-header index-discover-header">
+          <div>
+            <h1>发现</h1>
+            <p>搜索歌曲、歌手、专辑和歌单</p>
+          </div>
+        </header>
+        <section class="discover-search-card index-discover-search" aria-label="搜索">
+          <div class="search-box discover-search-box" role="search">
+            <span data-icon="search"></span>
+            <input class="search-input" id="search-input" type="search" placeholder="搜索" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="performSearch({ remember: false })" oninput="performSearch()" onkeydown="handleSearchKey(event)">
+            <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event)"><span data-icon="close"></span></button>
+          </div>
+          <div class="search-history" id="search-history"></div>
+        </section>
+        <section class="discover-section index-discover-section" aria-label="发现歌单">
+          <div class="section-head discover-head">
+            <div>
+              <h2>歌单</h2>
+              <p>播放列表、最近播放、喜欢和我的歌单。</p>
+            </div>
+          </div>
+          <div class="discover-playlist-rail" id="index-discover-playlists"></div>
+        </section>
+        <nav class="result-tabs search-tabs" id="search-tabs" hidden aria-label="搜索结果分类">
+          <button class="result-tab search-tab active" type="button" data-search-filter="songs"><span data-icon="music"></span>歌曲</button>
+          <button class="result-tab search-tab" type="button" data-search-filter="playlists"><span data-icon="album"></span>歌单</button>
+          <button class="result-tab search-tab" type="button" data-search-filter="videos"><span data-icon="video"></span>MV</button>
+        </nav>
         <div class="section-head" id="search-head" hidden><h2>搜索结果</h2><span class="more" id="search-count-label">按相关度</span></div>
-        <p class="result-note" id="search-note" hidden></p>
+        <p class="result-note search-status" id="search-note" hidden></p>
         <section class="search-section" id="search-songs-section">
           <div class="search-section-title"><strong>歌曲</strong><span id="search-song-count">0 首</span></div>
           <div class="track-list" id="search-results"></div>
         </section>
         <section class="search-section" id="search-playlists-section">
           <div class="search-section-title"><strong>歌单</strong><button class="more" type="button" onclick="showView('mine')">管理歌单</button></div>
-          <div class="search-playlists" id="search-playlists"></div>
+          <div class="search-playlists playlist-grid-app" id="search-playlists"></div>
         </section>
         <section class="search-section" id="search-videos-section">
-          <div class="search-section-title"><strong>MV 视频</strong><span id="search-video-count">0 个</span></div>
+          <div class="search-section-title"><strong>MV</strong><span id="search-video-count">0 个</span></div>
           <div class="track-list" id="search-videos"></div>
         </section>
       </div>
@@ -1288,7 +1322,7 @@
       <button class="tab active" data-target="home" type="button">
         <span data-icon="home"></span><span>首页</span>
       </button>
-      <button class="tab" data-target="discover" type="button" onclick="window.location.href='search.html'">
+      <button class="tab" data-target="search" type="button">
         <span data-icon="search"></span><span>搜索</span>
       </button>
       <button class="tab" data-target="favorites" type="button">
@@ -2078,6 +2112,29 @@
       if (!normalizedQuery) return cards;
       return cards.filter(function(card) {
         return String(card.title || '').toLowerCase().includes(normalizedQuery) || ['library', 'favorites', 'history'].includes(card.id);
+      });
+    }
+
+    function renderIndexDiscoverPlaylists() {
+      var rail = document.getElementById('index-discover-playlists');
+      if (!rail) return;
+      var cards = getSearchPlaylistCards('');
+      rail.innerHTML = cards.map(function(card) {
+        return '<button class="discover-playlist-card search-playlist-card" type="button" data-playlist="' + escapeMarkup(card.id) + '">' +
+          '<span class="discover-cover search-playlist-icon">' + iconHtml(card.icon || 'album') + '</span>' +
+          '<strong>' + escapeMarkup(card.title) + '</strong>' +
+          '<span>' + Number(card.count || 0) + ' 首</span>' +
+        '</button>';
+      }).join('');
+      rail.querySelectorAll('[data-playlist]').forEach(function(card) {
+        card.addEventListener('click', function() {
+          var id = card.dataset.playlist || '';
+          if (id === 'favorites') showView('favorites');
+          else if (id === 'history') showView('history');
+          else if (id === 'queue') showView('queue');
+          else if (id === 'library') showView('library');
+          else showView('mine');
+        });
       });
     }
     function renderSearchPlaylists(cards) {
@@ -2990,10 +3047,6 @@
       video.load();
     }
     function showView(target) {
-      if (target === 'search') {
-        window.location.href = 'search.html';
-        return;
-      }
       setQueueDrawerOpen(false);
       closeTrackActionDrawer();
       closeSettingDrawer();
@@ -3017,7 +3070,7 @@
       if (target === 'history') renderHistory();
       if (target === 'queue') renderQueue();
       if (target === 'mine') renderPlaylists();
-      if (target === 'search') renderSearchHistory();
+      if (target === 'search') { renderSearchHistory(); renderIndexDiscoverPlaylists(); }
     }
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
