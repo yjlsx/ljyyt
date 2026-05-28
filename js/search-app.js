@@ -299,7 +299,7 @@
 
   async function searchExternalSource(query, source) {
     var url = GD_MUSIC_API + '?types=search&source=' + encodeURIComponent(source) +
-      '&name=' + encodeURIComponent(query) + '&count=20&pages=1';
+      '&name=' + encodeURIComponent(query) + '&count=50&pages=1';
     var response = await fetch(url);
     if (!response.ok) throw new Error(source + ' search failed');
     var payload = await response.json();
@@ -330,7 +330,7 @@
       return [track.title, track.artist, track.album].some(function(value) {
         return String(value || '').toLowerCase().indexOf(q) !== -1;
       });
-    }).slice(0, 60).map(normalizeLocalTrack);
+    }).map(normalizeLocalTrack);
   }
 
   function getVideoResults(query) {

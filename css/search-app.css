@@ -185,6 +185,151 @@ body {
   bottom: calc(var(--discover-tabbar-height, 70px) + var(--safe-bottom) + 18px);
 }
 
+
+.discover-theme-toggle {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.discover-theme-toggle .line-icon {
+  width: 20px;
+  height: 20px;
+}
+
+html[data-theme="light"] body.search-page,
+body.search-page.light-mode {
+  --search-bg: #f8fafc;
+  --search-surface: rgba(255, 255, 255, 0.78);
+  --search-surface-strong: rgba(255, 255, 255, 0.96);
+  --search-border: rgba(15, 23, 42, 0.1);
+  --search-muted: rgba(51, 65, 85, 0.68);
+  --search-soft: rgba(15, 23, 42, 0.055);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(69, 213, 195, 0.18), transparent 31%),
+    radial-gradient(circle at 88% 0%, rgba(59, 130, 246, 0.12), transparent 34%),
+    linear-gradient(180deg, #f8fafc 0%, #eef5f8 48%, #e8eef4 100%) !important;
+  color: #0f172a;
+}
+
+html[data-theme="light"] body.search-page::before,
+body.search-page.light-mode::before {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  opacity: 0.7;
+}
+
+html[data-theme="light"] .discover-app-header h1,
+body.search-page.light-mode .discover-app-header h1,
+html[data-theme="light"] .section-head h2,
+body.search-page.light-mode .section-head h2,
+html[data-theme="light"] .row-title,
+body.search-page.light-mode .row-title,
+html[data-theme="light"] .discover-card-copy strong,
+body.search-page.light-mode .discover-card-copy strong,
+html[data-theme="light"] .playlist-card strong,
+body.search-page.light-mode .playlist-card strong {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .discover-app-header p,
+body.search-page.light-mode .discover-app-header p,
+html[data-theme="light"] .section-head p,
+body.search-page.light-mode .section-head p,
+html[data-theme="light"] .search-status,
+body.search-page.light-mode .search-status,
+html[data-theme="light"] .row-sub,
+body.search-page.light-mode .row-sub,
+html[data-theme="light"] .discover-card-copy span,
+html[data-theme="light"] .discover-card-copy em,
+body.search-page.light-mode .discover-card-copy span,
+body.search-page.light-mode .discover-card-copy em {
+  color: rgba(51, 65, 85, 0.68);
+}
+
+html[data-theme="light"] .discover-search-card,
+body.search-page.light-mode .discover-search-card,
+html[data-theme="light"] .discover-tabbar,
+body.search-page.light-mode .discover-tabbar,
+html[data-theme="light"] .search-mini-player,
+body.search-page.light-mode .search-mini-player {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .search-input-wrap,
+body.search-page.light-mode .search-input-wrap,
+html[data-theme="light"] .discover-theme-toggle,
+body.search-page.light-mode .discover-theme-toggle,
+html[data-theme="light"] .result-tabs,
+body.search-page.light-mode .result-tabs,
+html[data-theme="light"] .track-row,
+html[data-theme="light"] .video-row,
+html[data-theme="light"] .playlist-card,
+html[data-theme="light"] .discover-playlist-card,
+body.search-page.light-mode .track-row,
+body.search-page.light-mode .video-row,
+body.search-page.light-mode .playlist-card,
+body.search-page.light-mode .discover-playlist-card {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .search-input-wrap input,
+body.search-page.light-mode .search-input-wrap input {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .search-input-wrap input::placeholder,
+body.search-page.light-mode .search-input-wrap input::placeholder {
+  color: rgba(51, 65, 85, 0.52);
+}
+
+html[data-theme="light"] .result-tab,
+body.search-page.light-mode .result-tab,
+html[data-theme="light"] .discover-tabbar a,
+body.search-page.light-mode .discover-tabbar a,
+html[data-theme="light"] .mini-copy span,
+body.search-page.light-mode .mini-copy span {
+  color: rgba(51, 65, 85, 0.64);
+}
+
+html[data-theme="light"] .result-tab.active,
+body.search-page.light-mode .result-tab.active {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+html[data-theme="light"] .discover-tabbar a.active,
+body.search-page.light-mode .discover-tabbar a.active,
+html[data-theme="light"] .section-action,
+body.search-page.light-mode .section-action {
+  color: #0891b2;
+}
+
+html[data-theme="light"] .mini-title,
+body.search-page.light-mode .mini-title,
+html[data-theme="light"] .mini-copy strong,
+body.search-page.light-mode .mini-copy strong {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .mini-btn,
+body.search-page.light-mode .mini-btn {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+}
+
 body.search-page {
   min-height: 100dvh;
   margin: 0;
@@ -1192,232 +1337,3 @@ body.search-page .navbar {
 }
 
 @media (max-width: 768px) {
-  
-body.search-page {
-    --search-mini-height: 92px;
-    padding-bottom: calc(var(--search-mini-height) + env(safe-area-inset-bottom, 0px) + 28px) !important;
-  }
-
-  body.search-page input,
-  body.search-page textarea,
-  body.search-page select,
-  body.search-page button,
-  body.search-page .form-control,
-  body.search-page .form-control-lg,
-  body.search-page #hero-search-input,
-  body.search-page #nav-search-input,
-  body.search-page #search-input {
-    font-size: 16px !important;
-    line-height: 1.35 !important;
-  }
-
-  .search-app {
-    width: min(100% - 20px, 640px);
-    padding-top: max(12px, env(safe-area-inset-top));
-  }
-
-  .search-topbar {
-    align-items: flex-start;
-  }
-
-  .search-brand-copy span {
-    display: none;
-  }
-
-  .search-nav {
-    gap: 3px;
-    padding: 4px;
-  }
-
-  .search-nav a {
-    width: 38px;
-    min-width: 38px;
-    height: 36px;
-    padding: 0;
-  }
-
-  .search-nav a span {
-    display: none;
-  }
-
-  .search-panel {
-    border-radius: 24px;
-    padding: 13px;
-  }
-
-  .discover-app-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 12px;
-  }
-
-  .discover-app-header p {
-    white-space: normal;
-  }
-
-  .discover-search-card {
-    border-radius: 22px;
-  }
-
-  .discover-search-form {
-    grid-template-columns: minmax(0, 1fr) 44px;
-  }
-
-  .discovery-mode .search-input-wrap,
-  .discovery-mode .search-submit {
-    min-height: 44px;
-    height: 44px;
-  }
-
-  .discover-tabbar {
-    left: 8px;
-    right: 8px;
-    border-radius: 22px;
-  }
-
-
-  .discover-hero-card {
-    min-height: 166px;
-    grid-template-columns: 1fr;
-    align-items: start;
-    padding: 18px;
-    border-radius: 26px;
-  }
-
-  .hero-play {
-    width: max-content;
-    height: 44px;
-  }
-
-  .source-rail {
-    grid-auto-columns: 132px;
-  }
-
-  .discover-playlist-rail {
-    grid-auto-columns: 158px;
-  }
-
-  .discover-playlist-card {
-    min-height: 222px;
-    grid-template-rows: 116px minmax(0, 1fr);
-  }
-
-  .discover-cover {
-    height: 116px;
-  }
-
-
-  .search-kicker strong {
-    display: block;
-    font-size: 19px;
-    margin: 0 0 4px;
-  }
-
-  .search-form {
-    grid-template-columns: 1fr 46px;
-  }
-
-  .source-picker {
-    grid-column: 1 / -1;
-  }
-
-  .source-button {
-    justify-content: space-between;
-  }
-
-  .search-input-wrap,
-  .search-submit {
-    height: 46px;
-  }
-
-  .playlist-grid-app {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .track-row,
-  .video-row {
-    grid-template-columns: 46px minmax(0, 1fr) auto;
-    padding: 8px;
-  }
-
-  .row-cover {
-    width: 46px;
-    height: 46px;
-  }
-
-  .row-duration {
-    display: none;
-  }
-
-  .search-mini-player {
-    width: calc(100% - 18px);
-    min-height: var(--search-mini-height);
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 24px;
-  }
-
-  .mini-track {
-    grid-template-columns: 46px minmax(0, 1fr);
-    gap: 10px;
-  }
-
-  .mini-cover {
-    width: 46px;
-    height: 46px;
-    border-radius: 16px;
-  }
-
-  .mini-controls {
-    gap: 4px;
-  }
-
-  .mini-btn {
-    width: 38px;
-    height: 38px;
-  }
-
-  .mini-play {
-    width: 44px;
-    height: 44px;
-  }
-
-}
-
-@media (max-width: 420px) {
-  .playlist-grid-app {
-    grid-template-columns: 1fr;
-  }
-
-  .source-rail {
-    grid-auto-columns: 124px;
-  }
-
-  .discover-playlist-rail {
-    grid-auto-columns: 148px;
-  }
-
-
-  .section-head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .search-brand-mark {
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-  }
-
-  .search-nav a {
-    width: 34px;
-    min-width: 34px;
-  }
-
-  .mini-controls .mini-btn:not(.mini-play) {
-    display: none;
-  }
-
-}
