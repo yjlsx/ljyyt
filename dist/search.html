@@ -8,15 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- SEO Meta -->
-  <meta name="description" content="搜索丽江音悦台 - 纳西族音乐、视频搜索结果">
+  <meta name="description" content="丽江音悦台搜索 - 搜索纳西音乐、歌单、MV 视频和聚合音源">
   <meta name="robots" content="noindex">
-
-  <!-- Preconnect to CDN -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-
   <title>丽江音悦台</title>
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
@@ -24,826 +17,142 @@
   <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
-  <style>
-    /* 搜索页面特定样式 */
-    body {
-      padding-top: 80px;
-      background: url('./images/yyt.png') no-repeat center center fixed !important;
-      background-size: cover !important;
-      min-height: 100vh !important;
-      position: relative !important;
-    }
-
-    body::before {
-      content: '' !important;
-      position: fixed !important;
-      inset: 0 !important;
-      background: linear-gradient(135deg, rgba(245,247,250,0.88), rgba(195,207,226,0.88)) !important;
-      z-index: -1 !important;
-    }
-
-    @media (max-width: 768px) {
-      body::before {
-        background: linear-gradient(135deg, rgba(245,247,250,0.92), rgba(195,207,226,0.92)) !important;
-      }
-    }
-
-    /* 导航栏品牌 */
-    .navbar-brand {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-    }
-    .navbar-brand .d-flex.flex-column {
-      align-items: flex-start !important;
-    }
-    .brand-name {
-      font-size: 1.2rem !important;
-      font-weight: bold !important;
-      color: white !important;
-    }
-    .brand-slogan {
-      font-size: 0.7rem !important;
-      color: rgba(255, 255, 255, 0.8) !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      max-width: 200px !important;
-    }
-    @media (max-width: 576px) {
-      .brand-slogan {
-        font-size: 0.6rem !important;
-        max-width: 150px !important;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .search-hero {
-        padding: 2rem 0;
-      }
-      .search-hero .display-4 {
-        font-size: 2rem;
-      }
-      .search-hero .lead {
-        font-size: 1rem;
-      }
-      .search-hero .input-group {
-        width: min(100%, 520px) !important;
-      }
-      .search-results-box {
-        padding: 18px;
-      }
-      .search-filter-tabs {
-        justify-content: flex-start !important;
-        flex-wrap: wrap;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .search-hero .input-group {
-        width: 100% !important;
-      }
-      .search-hero .form-control,
-      .search-hero .btn {
-        min-height: 48px;
-      }
-      .filter-tab {
-        padding: 8px 18px;
-      }
-      .album-cover {
-        width: 64px;
-        height: 64px;
-      }
-      .tab-content {
-        min-height: 320px;
-      }
-    }
-
-    /* 搜索横幅 */
-    .search-hero {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 3rem 0;
-      margin-bottom: 2rem;
-    }
-
-    .search-results-title {
-      color: white;
-      margin-bottom: 1.5rem;
-      display: inline-block;
-      padding: 8px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-    }
-    .search-results-title.music-title {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-    .search-results-title.video-title {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
-    }
-
-    /* 筛选标签 */
-    .filter-tab {
-      padding: 8px 24px;
-      border: none;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      background: rgba(0, 0, 0, 0.06);
-      color: #555;
-      transition: all 0.3s ease;
-      user-select: none;
-    }
-    .filter-tab:hover {
-      background: rgba(0, 0, 0, 0.1);
-      color: #333;
-    }
-    .filter-tab.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-
-    /* 搜索结果容器 */
-    .search-results-box {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-
-    /* 卡片进入动画 */
-    @keyframes cardFadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .card-enter {
-      opacity: 0;
-      animation: cardFadeIn 0.4s ease forwards;
-    }
-
-    /* 搜索关键词高亮 */
-    .search-query-text {
-      color: #FFD700;
-      font-weight: 700;
-    }
-
-    /* 无结果状态 */
-    .no-results-box {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      padding: 50px 20px;
-    }
-    .no-results-box .no-results-icon {
-      opacity: 0.5;
-    }
-
-    [data-icon],
-    .search-results-title .line-icon,
-    .filter-tab .line-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      vertical-align: -0.16em;
-    }
-
-    .no-results-icon .line-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto;
-    }
-
-    .video-play-icon .line-icon {
-      width: 48px;
-      height: 48px;
-      stroke-width: 1.55;
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
-    }
-
-    /* 音乐/视频卡片基础 */
-    .music-card, .video-card {
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .music-card:hover, .video-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-    .music-card.active, .video-card.active {
-      border: 2px solid #667eea;
-      background-color: #f8f9fa;
-    }
-    .album-cover {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .tab-content {
-      min-height: 400px;
-    }
-
-    @media (max-width: 768px) {
-      html,
-      body {
-        max-width: 100%;
-        overflow-x: hidden !important;
-      }
-
-      body.search-page {
-        width: 100%;
-        max-width: 100vw;
-        overflow-x: hidden !important;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      body.search-page input,
-      body.search-page textarea,
-      body.search-page select,
-      body.search-page button,
-      body.search-page .form-control,
-      body.search-page .form-control-lg,
-      body.search-page #hero-search-input,
-      body.search-page #nav-search-input,
-      body.search-page #search-input {
-        font-size: 16px !important;
-        line-height: 1.35 !important;
-      }
-
-      body.search-page #hero-search-input,
-      body.search-page #nav-search-input,
-      body.search-page #search-input {
-        min-height: 48px !important;
-        transform: none !important;
-        zoom: 1 !important;
-      }
-
-      body.search-page .search-hero .input-group {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-      }
-
-      body.search-page .search-hero .container,
-      body.search-page .search-container,
-      body.search-page .container {
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/search-app.css">
 </head>
 <body class="search-page">
-    <!-- 导航栏 (由 components.js 注入) -->
-    <div id="navbar-placeholder"></div>
+  <main class="search-app" aria-label="搜索">
+    <header class="search-topbar">
+      <a class="search-brand" href="index.html" aria-label="返回丽江音悦台首页">
+        <span class="search-brand-mark" data-icon="music"></span>
+        <span class="search-brand-copy">
+          <strong>丽江音悦台</strong>
+          <span>搜索音乐、歌单和 MV</span>
+        </span>
+      </a>
+      <nav class="search-nav" aria-label="页面导航">
+        <a href="index.html" aria-label="首页"><span data-icon="home"></span><span>首页</span></a>
+        <a class="active" href="search.html" aria-label="搜索"><span data-icon="search"></span><span>搜索</span></a>
+        <a href="index.html?view=mine" aria-label="我的"><span data-icon="user"></span><span>我的</span></a>
+        <a href="player.html" aria-label="播放页"><span data-icon="album"></span><span>播放</span></a>
+      </nav>
+    </header>
 
-  <!-- 搜索横幅 -->
-  <header class="search-hero py-5">
-    <div class="container text-center text-white">
-      <h1 class="display-4 fw-bold">搜索结果</h1>
-      <p class="lead" id="search-hero-query">传承纳西文化，分享民族音乐之美</p>
-      <div class="mt-4">
-        <div class="input-group w-50 mx-auto">
-          <input type="search" class="form-control form-control-lg" id="hero-search-input" placeholder="搜索音乐..." aria-label="搜索" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search">
-          <button class="btn btn-light btn-lg" id="search-btn">
-            <span class="text-primary" data-icon="search"></span>
+    <section class="search-panel">
+      <p class="search-kicker"><strong>搜索</strong> 选择来源，查找歌曲、歌单和 MV 视频</p>
+      <form class="search-form" id="search-form" action="search.html" method="GET" role="search">
+        <div class="source-picker" id="source-picker">
+          <button class="source-button" id="source-button" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span data-icon="radio"></span>
+            <span id="source-label">聚合搜索</span>
+            <span data-icon="chevronDown"></span>
           </button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- 搜索结果内容 -->
-  <section class="search-container" style="padding: 20px 0;">
-    <div class="container">
-      <!-- 筛选标签 -->
-      <div class="search-filter-tabs d-flex justify-content-center gap-2 mb-4">
-        <button class="filter-tab active" data-filter="all" type="button">
-          <span class="me-1" data-icon="grid"></span> 全部
-        </button>
-        <button class="filter-tab" data-filter="music" type="button">
-          <span class="me-1" data-icon="music"></span> 音乐
-        </button>
-        <button class="filter-tab" data-filter="video" type="button">
-          <span class="me-1" data-icon="video"></span> 视频
-        </button>
-      </div>
-
-      <div class="search-results-box">
-        <!-- 搜索统计 -->
-        <div class="alert alert-info mb-4" id="search-stats" style="display: none;">
-          找到 <span id="total-count">0</span> 个结果 (<span id="music-count">0</span> 首音乐, <span id="video-count">0</span> 个视频)
-        </div>
-        
-        <!-- 音乐结果 -->
-        <div id="music-section">
-          <h3 class="search-results-title music-title">
-            <span class="me-2" data-icon="music"></span>音乐
-          </h3>
-          <div class="row" id="music-results">
-            <!-- 音乐结果将通过JavaScript动态生成 -->
+          <div class="source-menu" id="source-menu" role="listbox" aria-label="选择搜索来源">
+            <button class="source-option active" type="button" data-source="aggregate">
+              <span><strong>聚合搜索</strong><br><small>丽江曲库 + 已启用音源</small></span>
+              <span data-icon="check"></span>
+            </button>
+            <button class="source-option" type="button" data-source="local">
+              <span><strong>丽江曲库</strong><br><small>本站纳西音乐和视频</small></span>
+              <span data-icon="database"></span>
+            </button>
+            <button class="source-option" type="button" data-source="joox">
+              <span><strong>Joox</strong><br><small>海外华语/流行音乐源</small></span>
+              <span data-icon="globe"></span>
+            </button>
+            <button class="source-option" type="button" data-source="netease">
+              <span><strong>网易云</strong><br><small>小众音乐匹配较多</small></span>
+              <span data-icon="music"></span>
+            </button>
+            <button class="source-option" type="button" data-source="kuwo">
+              <span><strong>酷我</strong><br><small>曲库覆盖较广</small></span>
+              <span data-icon="headphones"></span>
+            </button>
+            <button class="source-option" type="button" data-source="migu">
+              <span><strong>Migu</strong><br><small>咪咕音乐来源</small></span>
+              <span data-icon="radio"></span>
+            </button>
+            <button class="source-option" type="button" data-source="bilibili">
+              <span><strong>B站</strong><br><small>用户上传音乐内容</small></span>
+              <span data-icon="video"></span>
+            </button>
+            <button class="source-option" type="button" data-source="_netease">
+              <span><strong>Netease</strong><br><small>网易云备用接口</small></span>
+              <span data-icon="refresh"></span>
+            </button>
           </div>
         </div>
-        
-        <!-- 视频结果 -->
-        <div id="video-section">
-          <h3 class="search-results-title video-title mt-4">
-            <span class="me-2" data-icon="video"></span>视频
-          </h3>
-          <div class="row" id="video-results">
-            <!-- 视频结果将通过JavaScript动态生成 -->
-          </div>
+        <label class="search-input-wrap" for="hero-search-input">
+          <span data-icon="search"></span>
+          <input type="search" id="hero-search-input" name="q" placeholder="搜索歌曲、歌手、歌单、MV..." aria-label="搜索音乐" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search">
+        </label>
+        <button class="search-submit" id="search-btn" type="submit" aria-label="搜索">
+          <span data-icon="search"></span>
+        </button>
+      </form>
+      <div class="search-history" id="search-history" hidden>
+        <span>搜索记录</span>
+        <div class="history-list" id="history-list"></div>
+        <button class="history-clear" id="history-clear" type="button">清空</button>
+      </div>
+    </section>
+
+    <nav class="result-tabs" aria-label="搜索结果分类">
+      <button class="result-tab active" type="button" data-filter="all"><span data-icon="grid"></span>全部</button>
+      <button class="result-tab" type="button" data-filter="music"><span data-icon="music"></span>歌曲</button>
+      <button class="result-tab" type="button" data-filter="playlists"><span data-icon="album"></span>歌单</button>
+      <button class="result-tab" type="button" data-filter="video"><span data-icon="video"></span>MV</button>
+    </nav>
+
+    <div class="search-status" id="search-status">输入关键词搜索歌曲、歌手、MV，也可以直接进入歌单。</div>
+
+    <section class="search-section" id="music-section">
+      <div class="section-head">
+        <div>
+          <h2>歌曲</h2>
+          <p>点击歌曲即可播放，右侧更多按钮可进入操作菜单。</p>
         </div>
-        
-        <!-- 无结果提示 -->
-        <div class="text-center py-5 no-results-box" id="no-results" style="display: none;">
-          <span class="no-results-icon mb-3" data-icon="search" style="color: #667eea; opacity: 0.4;"></span>
-          <h5 class="mt-3 mb-2" style="color: #555;">未找到相关结果</h5>
-          <p class="text-muted small">换个关键词试试吧</p>
+        <a class="section-action" href="player.html">进入播放页</a>
+      </div>
+      <div class="track-list-app" id="music-results">
+        <div class="empty-state"><strong>先搜索一首歌</strong><span>聚合搜索会同时查找丽江曲库和已启用音源。</span></div>
+      </div>
+    </section>
+
+    <section class="search-section" id="playlist-section">
+      <div class="section-head">
+        <div>
+          <h2>歌单</h2>
+          <p>这里显示我的歌单、喜欢、最近播放和丽江曲库入口。</p>
+        </div>
+        <a class="section-action" href="index.html?view=mine">管理歌单</a>
+      </div>
+      <div class="playlist-grid-app" id="playlist-results"></div>
+    </section>
+
+    <section class="search-section" id="video-section">
+      <div class="section-head">
+        <div>
+          <h2>MV 视频</h2>
+          <p>来自丽江音悦台的视频内容。</p>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="track-list-app" id="video-results">
+        <div class="empty-state"><strong>搜索后显示 MV</strong><span>视频点击后进入视频播放页。</span></div>
+      </div>
+    </section>
+  </main>
 
-  <!-- 页脚 -->
-  <footer class="bg-dark text-white py-4">
-    <div class="container text-center">
-      <p>&copy; 2026 丽江音悦台. 保留所有权利.</p>
-      <p>传承纳西文化，分享民族音乐之美</p>
-    </div>
-  </footer>
-
-  <!-- 底部播放器 (由 components.js 注入) -->
   <div id="player-placeholder"></div>
+  <div class="action-scrim" id="search-action-scrim"></div>
+  <aside class="action-sheet" id="search-action-sheet" aria-label="歌曲操作"></aside>
 
-  <!-- Bootstrap JS -->
-  <!-- 组件注入必须最先加载 -->
   <script src="components.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script src="videos/video_data.js"></script>
   <script src="site-config.js"></script>
   <script src="script.js"></script>
   <script src="player_state.js"></script>
   <script src="player_enhanced.js"></script>
-  
-  <script>
-    console.log('🔍 搜索页面加载');
-
-    function iconHtml(name) {
-      return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
-    }
-
-    function hydrateSearchIcons(root) {
-      (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
-        node.innerHTML = iconHtml(node.getAttribute('data-icon'));
-      });
-    }
-
-    // 获取URL参数
-    function getUrlParameter(name) {
-      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-      var results = regex.exec(location.search);
-      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-    }
-
-    // 格式化时间
-    function formatTime(seconds) {
-      if (!seconds || isNaN(seconds)) return '00:00';
-      var min = Math.floor(seconds / 60);
-      var sec = Math.floor(seconds % 60);
-      return (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
-    }
-
-    function escapeHtml(value) {
-      return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function buildArtistLinksHtml(artistValue) {
-      var names = (typeof splitArtistNames === 'function')
-        ? splitArtistNames(artistValue)
-        : String(artistValue || '').split(/[、，,\s]+/).filter(Boolean);
-
-      if (!names.length) {
-        return escapeHtml(String(artistValue || '未知艺术家').trim() || '未知艺术家');
-      }
-
-      return names.map(function(name) {
-        var safeName = escapeHtml(name);
-        return '<a href="artist.html?name=' + encodeURIComponent(name) + '" class="artist-link" onclick="event.stopPropagation()">' + safeName + '</a>';
-      }).join('、');
-    }
-
-    // 搜索函数
-    function search(query) {
-      query = query.toLowerCase().trim();
-      if (!query) {
-        return { music: [], video: [] };
-      }
-
-      var results = { music: [], video: [] };
-
-      // 搜索音乐
-      if (typeof musicData !== 'undefined') {
-        results.music = musicData.filter(function(track) {
-          return track.title.toLowerCase().indexOf(query) !== -1 ||
-                 track.artist.toLowerCase().indexOf(query) !== -1;
-        });
-      }
-
-      // 搜索视频
-      if (typeof videoData !== 'undefined') {
-        results.video = videoData.filter(function(video) {
-          return video.title.toLowerCase().indexOf(query) !== -1 ||
-                 video.artist.toLowerCase().indexOf(query) !== -1 ||
-                 (video.description && video.description.toLowerCase().indexOf(query) !== -1);
-        });
-      }
-
-      return results;
-    }
-
-    // 当前筛选状态
-    var currentFilter = 'all';
-    var currentResults = { music: [], video: [] };
-
-    // 显示搜索结果
-    function displayResults(results) {
-      currentResults = results;
-      var musicContainer = document.getElementById('music-results');
-      var videoContainer = document.getElementById('video-results');
-      var noResultsDiv = document.getElementById('no-results');
-      var searchStats = document.getElementById('search-stats');
-      var totalCount = document.getElementById('total-count');
-      var musicCount = document.getElementById('music-count');
-      var videoCount = document.getElementById('video-count');
-
-      // 更新计数
-      var total = results.music.length + results.video.length;
-      totalCount.textContent = total;
-      musicCount.textContent = results.music.length;
-      videoCount.textContent = results.video.length;
-
-      // 显示统计信息
-      searchStats.style.display = total > 0 ? 'block' : 'none';
-
-      // 渲染音乐结果
-      if (results.music.length > 0) {
-        var musicHtml = '';
-        results.music.forEach(function(track, index) {
-          musicHtml += '<div class="col-md-6 col-lg-3 mb-3 card-enter" style="animation-delay: ' + (index * 0.05) + 's">' +
-            '<div class="card music-card" data-id="' + track.id + '">' +
-            '<div class="card-body d-flex align-items-center p-2">' +
-            '<img src="' + track.cover + '" alt="' + track.title + '" class="album-cover me-2" loading="lazy" decoding="async">' +
-            '<div class="flex-grow-1 overflow-hidden">' +
-            '<h6 class="card-title mb-1 text-truncate" title="' + track.title + '">' + track.title + '</h6>' +
-            '<div class="d-flex align-items-center">' +
-            '<p class="card-text text-muted mb-0 small text-truncate me-2" title="' + track.artist + '">' + buildArtistLinksHtml(track.artist) + '</p>' +
-            '<small class="text-muted track-duration">' + formatTime(track.duration) + '</small>' +
-            '</div></div>' +
-            '<span class="text-primary ms-2 card-music-icon">' + iconHtml('music') + '</span>' +
-            '</div></div></div>';
-        });
-        musicContainer.innerHTML = musicHtml;
-
-        // 绑定音乐卡片点击
-        document.querySelectorAll('.music-card').forEach(function(card) {
-          card.addEventListener('click', function() {
-            var trackId = parseInt(this.getAttribute('data-id'));
-            console.log('🎵 点击了音乐卡片 ID:', trackId);
-            playMusicById(trackId);
-          });
-        });
-      } else {
-        musicContainer.innerHTML = '<p class="text-muted">未找到相关音乐</p>';
-      }
-
-      // 渲染视频结果
-      if (results.video.length > 0) {
-        var videoHtml = '';
-        results.video.forEach(function(track, index) {
-          videoHtml += '<div class="col-md-6 col-lg-4 mb-4 card-enter" style="animation-delay: ' + (index * 0.05) + 's">' +
-            '<div class="card video-card" data-id="' + track.id + '">' +
-            '<div class="card-body p-0">' +
-            '<div class="position-relative">' +
-            '<img src="' + track.cover + '" alt="' + track.title + '" class="card-img-top" loading="lazy" decoding="async">' +
-            '<div class="position-absolute top-50 start-50 translate-middle">' +
-            '<span class="text-white video-play-icon" style="opacity: 0.86;">' + iconHtml('play') + '</span>' +
-            '</div>' +
-            '<div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">' +
-            '<span class="text-white small">' + formatTime(track.duration) + '</span>' +
-            '</div></div></div>' +
-            '<div class="p-3">' +
-            '<h6 class="card-title mb-1">' + track.title + '</h6>' +
-            '<p class="card-text text-muted mb-0 small">' + buildArtistLinksHtml(track.artist) + '</p>' +
-            '</div></div></div>';
-        });
-        videoContainer.innerHTML = videoHtml;
-
-        // 绑定视频卡片点击
-        document.querySelectorAll('.video-card').forEach(function(card) {
-          card.addEventListener('click', function() {
-            var videoId = parseInt(this.getAttribute('data-id'));
-            console.log('🎬 点击了视频卡片 ID:', videoId);
-            window.location.href = 'video-player.html?id=' + videoId + '&autoplay=true';
-          });
-        });
-      } else {
-        videoContainer.innerHTML = '<p class="text-muted">未找到相关视频</p>';
-      }
-
-      // 显示/隐藏无结果提示
-      noResultsDiv.style.display = total === 0 ? 'block' : 'none';
-
-      // 应用当前筛选
-      applyFilter(currentFilter);
-    }
-
-    // 应用筛选
-    function applyFilter(filter) {
-      currentFilter = filter;
-      var musicSection = document.getElementById('music-section');
-      var videoSection = document.getElementById('video-section');
-
-      if (filter === 'all') {
-        musicSection.style.display = currentResults.music.length > 0 ? '' : 'none';
-        videoSection.style.display = currentResults.video.length > 0 ? '' : 'none';
-      } else if (filter === 'music') {
-        musicSection.style.display = '';
-        videoSection.style.display = 'none';
-      } else if (filter === 'video') {
-        musicSection.style.display = 'none';
-        videoSection.style.display = '';
-      }
-    }
-
-    // 根据ID播放音乐
-    function playMusicById(id) {
-      var track = musicData.find(function(t) { return t.id === id; });
-      if (!track) return;
-
-      console.log('🎵 开始播放音乐:', track.title);
-      currentTrackIndex = musicData.findIndex(function(t) { return t.id === id; });
-      isPlaying = true;
-
-      // 更新底部播放器UI
-      document.getElementById('current-title').textContent = track.title;
-      if (typeof setArtistElementContent === 'function') {
-        setArtistElementContent(document.getElementById('current-artist'), track.artist, false);
-      } else {
-        document.getElementById('current-artist').textContent = track.artist;
-      }
-      document.getElementById('current-cover').src = track.cover;
-
-      // 检查是否同一首歌
-      var isSameTrack = false;
-      try {
-        var currentSrc = new URL(audioPlayer.src).href;
-        var trackSrc = new URL(track.src, window.location.href).href;
-        isSameTrack = currentSrc === trackSrc;
-      } catch(e) {}
-
-      if (!isSameTrack) {
-        audioPlayer.src = track.src;
-
-        // 恢复播放进度
-        try {
-          var savedState = JSON.parse(localStorage.getItem('playerState'));
-          if (savedState && savedState.trackId === track.id && savedState.currentTime > 0) {
-            audioPlayer.addEventListener('loadedmetadata', function onMeta() {
-              audioPlayer.removeEventListener('loadedmetadata', onMeta);
-              audioPlayer.currentTime = savedState.currentTime;
-            });
-          }
-        } catch(e) {}
-      }
-
-      // 恢复音量
-      try {
-        var savedState = JSON.parse(localStorage.getItem('playerState'));
-        if (savedState && savedState.volume !== undefined) {
-          audioPlayer.volume = savedState.volume;
-          if (volumeSlider) volumeSlider.value = savedState.volume;
-        }
-      } catch(e) {}
-
-      // 播放
-      audioPlayer.play().then(function() {
-        isPlaying = true;
-        updatePlayButton();
-        if (typeof savePlayerState === 'function') {
-          savePlayerState(track.id, audioPlayer.currentTime, isPlaying, track, audioPlayer.volume);
-        }
-      }).catch(function(error) {
-        console.error('❌ 播放失败:', error);
-        isPlaying = false;
-        updatePlayButton();
-      });
-
-      updatePlayButton();
-    }
-
-    // 执行搜索
-    function performSearch(query) {
-      console.log('🔍 开始搜索:', query);
-
-      // 更新横幅
-      var heroQuery = document.getElementById('search-hero-query');
-      if (heroQuery) {
-        heroQuery.innerHTML = '正在搜索 "<span class="search-query-text">' + query.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>" 的结果';
-      }
-
-      setTimeout(function() {
-        try {
-          var results = search(query);
-          console.log('✅ 搜索完成: 音乐', results.music.length, '个, 视频', results.video.length, '个');
-          displayResults(results);
-        } catch (error) {
-          console.error('❌ 搜索失败:', error);
-          alert('搜索失败: ' + error.message);
-        }
-      }, 100);
-    }
-
-    // === 页面初始化（单个 DOMContentLoaded） ===
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('✅ 搜索页面 DOM 加载完成');
-      hydrateSearchIcons(document);
-      document.querySelectorAll('input[type="search"], input[name="q"], #hero-search-input, #nav-search-input').forEach(function(input) {
-        input.setAttribute('autocomplete', 'off');
-        input.setAttribute('autocorrect', 'off');
-        input.setAttribute('autocapitalize', 'none');
-        input.setAttribute('spellcheck', 'false');
-        input.setAttribute('inputmode', 'search');
-      });
-
-      // 1. 恢复播放器状态
-      if (!window._playerStateRestored && typeof restorePlayerState === 'function' && typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
-        try {
-          var savedState = restorePlayerState();
-          if (savedState && savedState.trackData) {
-            console.log('🔄 恢复播放器状态:', savedState.trackData.title);
-            var trackIndex = musicData.findIndex(function(t) { return t.id === savedState.trackId; });
-            if (trackIndex !== -1) {
-              currentTrackIndex = trackIndex;
-              document.getElementById('current-title').textContent = savedState.trackData.title;
-              if (typeof setArtistElementContent === 'function') {
-                setArtistElementContent(document.getElementById('current-artist'), savedState.trackData.artist, false);
-              } else {
-                document.getElementById('current-artist').textContent = savedState.trackData.artist;
-              }
-              document.getElementById('current-cover').src = savedState.trackData.cover;
-              audioPlayer.src = savedState.trackData.src;
-
-              if (savedState.volume !== undefined) {
-                audioPlayer.volume = savedState.volume;
-                if (volumeSlider) volumeSlider.value = savedState.volume;
-              }
-
-              audioPlayer.addEventListener('loadedmetadata', function onMeta() {
-                audioPlayer.removeEventListener('loadedmetadata', onMeta);
-                audioPlayer.currentTime = savedState.currentTime;
-                if (savedState.isPlaying) {
-                  audioPlayer.play().then(function() {
-                    isPlaying = true;
-                    updatePlayButton();
-                  }).catch(function() {
-                    isPlaying = false;
-                    updatePlayButton();
-                  });
-                }
-              });
-            }
-          }
-        } catch (error) {
-          console.error('❌ 恢复播放器状态出错:', error);
-        }
-      }
-
-      // 2. 等待数据加载后执行搜索
-      var checkDataInterval = setInterval(function() {
-        if (typeof musicData !== 'undefined' && typeof videoData !== 'undefined') {
-          clearInterval(checkDataInterval);
-          console.log('✅ 数据加载完成: 音乐', musicData.length, '首, 视频', videoData.length, '个');
-
-          var query = getUrlParameter('q');
-          if (query) {
-            document.getElementById('hero-search-input').value = query;
-            document.getElementById('nav-search-input').value = query;
-            performSearch(query);
-          }
-        }
-      }, 100);
-
-      // 数据加载超时检查
-      setTimeout(function() {
-        if (typeof musicData === 'undefined' || typeof videoData === 'undefined') {
-          console.error('❌ 数据加载超时');
-          var stats = document.getElementById('search-stats');
-          stats.innerHTML = '<p class="text-danger">数据加载失败，请刷新页面重试</p>';
-          stats.style.display = 'block';
-        }
-      }, 5000);
-
-      // 3. 搜索按钮和键盘事件
-      function saveAndSearch(query) {
-        if (!query) return;
-        // 保存播放状态
-        if (typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
-          savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], audioPlayer.volume);
-        }
-        window.location.href = 'search.html?q=' + encodeURIComponent(query);
-      }
-
-      var searchBtn = document.getElementById('search-btn');
-      var heroSearchInput = document.getElementById('hero-search-input');
-      if (searchBtn && heroSearchInput) {
-        searchBtn.addEventListener('click', function() {
-          saveAndSearch(heroSearchInput.value.trim());
-        });
-      }
-
-      if (heroSearchInput) {
-        heroSearchInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            saveAndSearch(this.value.trim());
-          }
-        });
-      }
-
-      // 导航栏搜索
-      var navForm = document.getElementById('nav-search-form');
-      var navSearchInput = document.getElementById('nav-search-input');
-      if (navForm && navSearchInput) {
-        navForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          saveAndSearch(navSearchInput.value.trim());
-        });
-      }
-
-      // 4. 筛选标签切换
-      document.querySelectorAll('.filter-tab').forEach(function(tab) {
-        tab.addEventListener('click', function() {
-          // 更新 active 状态
-          document.querySelectorAll('.filter-tab').forEach(function(t) {
-            t.classList.remove('active');
-          });
-          this.classList.add('active');
-
-          // 应用筛选
-          var filter = this.getAttribute('data-filter');
-          console.log('🏷️ 切换筛选:', filter);
-          applyFilter(filter);
-        });
-      });
-
-      console.log('✅ 搜索页面初始化完成');
-    });
-  </script>
-
-  <!-- 向上火箭按钮 -->
-  <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
-    <span data-icon="rocket"></span>
-  </button>
-
-  <script>
-    // 滚动到顶部
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      var btn = document.getElementById('scrollToTopBtn');
-      if (btn) {
-        btn.style.transform = 'translateY(-20px)';
-        setTimeout(function() { btn.style.transform = ''; }, 300);
-      }
-    }
-
-    function updateRocketButton() {
-      var btn = document.getElementById('scrollToTopBtn');
-      if (btn) {
-        var pos = window.pageYOffset || document.documentElement.scrollTop;
-        if (pos > 300) {
-          btn.classList.add('show');
-        } else {
-          btn.classList.remove('show');
-        }
-      }
-    }
-
-    window.addEventListener('scroll', updateRocketButton);
-    document.addEventListener('DOMContentLoaded', function() {
-      updateRocketButton();
-    });
-  </script>
+  <script src="js/search-app.js"></script>
 </body>
 </html>
