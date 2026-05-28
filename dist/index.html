@@ -100,13 +100,14 @@
     .search-shell.hidden { display: none; }
     .search-box {
       height: 44px;
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--muted) 76%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 72%, transparent);
       display: flex;
       align-items: center;
-      padding: 0 12px;
-      gap: 10px;
+      padding: 0 8px 0 13px;
+      gap: 9px;
       color: var(--muted-foreground);
+      border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
     }
     .search-box svg { width: 17px; height: 17px; }
     .search-input {
@@ -115,10 +116,14 @@
     }
     .search-input::placeholder { color: var(--muted-foreground); opacity: .78; }
     .provider {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 12px; color: var(--muted-foreground);
-      padding-left: 10px;
-      border-left: 1px solid var(--border);
+      height: 32px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--foreground);
+      padding: 0 9px 0 11px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 5px rgba(0,0,0,.04);
     }
     @media (max-width: 768px) {
       input,
@@ -149,16 +154,39 @@
       pointer-events: none;
     }
     .source-menu {
-      display: none; position: absolute; top: 35px; right: 0; z-index: 15;
-      min-width: 142px; padding: 6px; border-radius: 12px;
+      display: none; position: absolute; top: 40px; right: 0; z-index: 45;
+      min-width: 238px; padding: 7px; border-radius: 16px;
       background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow);
     }
     .source-menu.open { display: block; }
     .source-option {
-      width: 100%; display: block; height: 31px; padding: 0 9px;
-      border-radius: 8px; text-align: left; font-size: 12px; cursor: pointer;
+      width: 100%; min-height: 45px; padding: 7px 9px;
+      border-radius: 12px; text-align: left; font-size: 12px; cursor: pointer;
+      display: grid; grid-template-columns: 30px minmax(0,1fr) 18px;
+      align-items: center; gap: 9px; color: var(--foreground);
     }
     .source-option:hover, .source-option.selected { background: var(--secondary); color: var(--primary); }
+    .source-option-icon {
+      width: 30px; height: 30px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: color-mix(in srgb, var(--primary) 10%, var(--secondary));
+      color: var(--primary);
+    }
+    .source-option-icon .line-icon { width: 16px; height: 16px; }
+    .source-option strong {
+      display: block; font-size: 12px; line-height: 1.1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .source-option small {
+      display: block; margin-top: 3px; color: var(--muted-foreground);
+      font-size: 10px; line-height: 1.1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .source-option-check {
+      display: grid; place-items: center; opacity: 0;
+    }
+    .source-option.selected .source-option-check { opacity: 1; }
+    .source-option-check .line-icon { width: 15px; height: 15px; stroke-width: 2.2; }
     .setting-source-wrap { position: relative; }
     .setting-source-button {
       display: inline-flex; align-items: center; gap: 6px;
@@ -963,18 +991,18 @@
     <div class="search-shell" id="search-shell">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." onfocus="showView('search')" oninput="performSearch()" onkeydown="handleSearchKey(event)">
+        <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="showView('search'); performSearch({ remember: false })" oninput="performSearch()" onkeydown="handleSearchKey(event)">
         <div class="provider-wrap">
           <button class="provider" type="button" id="provider-button" onclick="toggleProvider(event)"><span id="provider-label">聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
           <div class="source-menu" id="source-menu">
-            <button class="source-option selected" data-provider="聚合搜索">聚合搜索</button>
-            <button class="source-option" data-provider="丽江曲库">丽江曲库</button>
-            <button class="source-option" data-provider="Joox">Joox</button>
-            <button class="source-option" data-provider="网易云音乐">网易云音乐</button>
-            <button class="source-option" data-provider="酷我音乐">酷我音乐</button>
-            <button class="source-option" data-provider="Migu">Migu</button>
-            <button class="source-option" data-provider="B站">B站</button>
-            <button class="source-option" data-provider="Netease">Netease</button>
+            <button class="source-option selected" data-provider="聚合搜索"><span class="source-option-icon" data-icon="radio"></span><span><strong>聚合搜索</strong><small>按设置里的多选音源搜索</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>曲库覆盖较广</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="B站"><span class="source-option-icon" data-icon="video"></span><span><strong>B站</strong><small>用户上传音乐内容</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="Netease"><span class="source-option-icon" data-icon="refresh"></span><span><strong>Netease</strong><small>网易云备用接口</small></span><span class="source-option-check" data-icon="check"></span></button>
           </div>
         </div>
       </div>
@@ -2064,6 +2092,10 @@
         if (section) section.classList.toggle('hidden', key !== activeSearchFilter);
       });
     }
+    function resetSearchFilter() {
+      activeSearchFilter = 'songs';
+      applySearchFilter('songs');
+    }
     function getSourceLabel(source) {
       return {
         local: '丽江曲库',
@@ -2148,10 +2180,11 @@
         note.textContent = '';
         if (tabs) tabs.hidden = true;
         resultsBox.innerHTML = '';
-        renderSearchPlaylists(getSearchPlaylistCards(''));
+        var defaultPlaylists = getSearchPlaylistCards('');
+        renderSearchPlaylists(defaultPlaylists);
         renderSearchVideos([]);
-        currentSearchState = { songs: [], playlists: getSearchPlaylistCards(''), videos: [] };
-        applySearchFilter('songs');
+        currentSearchState = { songs: [], playlists: defaultPlaylists, videos: [] };
+        applySearchFilter('playlists');
         renderSearchHistory();
         return;
       }
@@ -2967,6 +3000,7 @@
         event.stopPropagation();
         syncProviderSelection(option.dataset.provider);
         showView('search');
+        resetSearchFilter();
         performSearch({ remember: false });
       });
     });
