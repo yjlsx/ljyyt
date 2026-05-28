@@ -10,7 +10,7 @@
   // 判断当前页面
   var path = (location.pathname || '').toLowerCase();
   var page = 'index';
-  if (path.includes('music-player'))    page = 'music';
+  if (path.includes('music-player') || path.includes('player.html')) page = 'music';
   if (path.includes('ranking'))         page = 'ranking';
   if (path.includes('search'))          page = 'search';
   if (path.includes('artist'))          page = 'artist';
@@ -39,7 +39,7 @@
         '<div class="collapse navbar-collapse" id="navbarNav">' +
           '<ul class="navbar-nav me-auto">' +
             a('index.html',    '首页',    null,              page === 'index') +
-            a('music-player.html', '播放器', 'fa-compact-disc', page === 'music') +
+            a('player.html', '播放器', 'fa-compact-disc', page === 'music') +
             a('ranking.html',  '排行榜',  'fa-trophy',        page === 'ranking') +
             a('#about',        '关于我们', null,              false) +
           '</ul>' +

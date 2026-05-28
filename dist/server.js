@@ -8,16 +8,8 @@ const ROOT = __dirname;
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = Number(process.env.PORT || 3000);
 const LYRICS_FILE = path.join(ROOT, 'data', 'lyrics.json');
-const AUDIO_SOURCES_FILE = path.resolve(ROOT, process.env.AUDIO_SOURCES_FILE || path.join('data', 'audio-sources.json'));
 const THIRD_PARTY_LYRICS_URL = process.env.LYRICS_SEARCH_URL || '';
-const AUDIO_RESOLVER_URL = process.env.AUDIO_RESOLVER_URL || '';
-const AUDIO_SOURCE_PRIORITY = String(process.env.AUDIO_SOURCE_PRIORITY || 'library-first').toLowerCase();
-const AUDIO_PROXY_MODE = String(process.env.AUDIO_PROXY_MODE || 'off').toLowerCase();
-const AUDIO_PROXY_ALLOWLIST = String(process.env.AUDIO_PROXY_ALLOWLIST || '')
-  .split(',')
-  .map((item) => item.trim().toLowerCase())
-  .filter(Boolean);
-const DEFAULT_SOURCES = ['kugou', 'rangotec', 'kuwo', 'netease', 'qq', 'local'];
+const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq', 'local'];
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -105,22 +97,8 @@ function splitLines(raw) {
 
   return String(raw || '')
     .split(/\r?\n/)
-    .map((line) => line.replace(/^(?:\[[^\]]+\])+\s*/, '').trim())
+    .map((line) => line.replace(/^\[[^\]]+\]\s*/, '').trim())
     .filter(Boolean);
-}
-
-function isMetadataOnlyLine(line) {
-  return /^(作词|作曲|词曲|编曲|歌词意译|歌词翻译|译词|翻译|录音|混音|制作人|母带|监制|出品|发行|OP|SP|词[:：]|曲[:：]|编[:：]|演唱[:：]|和声[:：]|吉他[:：]|贝斯[:：]|鼓[:：])/.test(String(line || '').trim());
-}
-
-function isNoLyricsPlaceholder(line) {
-  return /^(纯音乐(?:，|,|\s)*(?:请欣赏)?|暂无歌词|没有歌词|此歌曲为没有填词的纯音乐|instrumental)$/i.test(String(line || '').trim());
-}
-
-function sanitizeLyricLines(lines) {
-  return (Array.isArray(lines) ? lines : splitLines(lines))
-    .map((line) => String(line || '').trim())
-    .filter((line) => line && !isMetadataOnlyLine(line) && !isNoLyricsPlaceholder(line));
 }
 
 function scoreCandidate(query, candidateTitle, candidateArtist) {
@@ -190,268 +168,6 @@ function loadLyricsLibrary() {
     console.error('Failed to load lyrics library:', error.message);
     return [];
   }
-}
-
-function loadAudioSources() {
-  try {
-    if (!fs.existsSync(AUDIO_SOURCES_FILE)) return [];
-    const raw = fs.readFileSync(AUDIO_SOURCES_FILE, 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error('Failed to load audio sources:', error.message);
-    return [];
-  }
-}
-
-function isSafeHttpUrl(value) {
-  try {
-    const parsed = new URL(String(value || ''));
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch (error) {
-    return false;
-  }
-}
-
-function isPrivateHost(hostname) {
-  const host = String(hostname || '').toLowerCase();
-  return (
-    host === 'localhost' ||
-    host === '0.0.0.0' ||
-    host === '127.0.0.1' ||
-    host === '::1' ||
-    host.endsWith('.local') ||
-    /^10\./.test(host) ||
-    /^192\.168\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host) ||
-    /^169\.254\./.test(host)
-  );
-}
-
-function isAudioProxyAllowed(targetUrl) {
-  if (!AUDIO_PROXY_ALLOWLIST.length) return false;
-  try {
-    const parsed = new URL(String(targetUrl || ''));
-    const host = parsed.hostname.toLowerCase();
-    if (!isSafeHttpUrl(targetUrl) || isPrivateHost(host)) return false;
-    return AUDIO_PROXY_ALLOWLIST.some((allowedHost) => host === allowedHost || host.endsWith('.' + allowedHost));
-  } catch (error) {
-    return false;
-  }
-}
-
-function findAudioSourcesInLibrary(query) {
-  const title = normalizeText(query.title);
-  const artist = normalizeText(query.artist);
-  const id = String(query.id || '').trim();
-
-  const sources = loadAudioSources();
-  return sources.filter((item) => {
-    if (!item || !item.src) return false;
-    if (id && String(item.id || '').trim() === id) return true;
-    return title && normalizeText(item.title) === title && isArtistCompatible(artist, item.artist || '');
-  });
-}
-
-function buildAudioProxyUrl(req, targetUrl) {
-  const base = `http://${req.headers.host || `localhost:${PORT}`}`;
-  const proxyUrl = new URL('/api/audio/proxy', base);
-  proxyUrl.searchParams.set('url', targetUrl);
-  return proxyUrl.pathname + proxyUrl.search;
-}
-
-function shouldProxyAudio(targetUrl) {
-  if (AUDIO_PROXY_MODE === 'always') return isAudioProxyAllowed(targetUrl);
-  if (AUDIO_PROXY_MODE === 'allowlist') return isAudioProxyAllowed(targetUrl);
-  return false;
-}
-
-function buildAudioCandidate(req, source, fallbackMeta = {}) {
-  const rawUrl = String(source && (source.src || source.url || source.playableUrl || source.audioUrl) || '').trim();
-  if (!isSafeHttpUrl(rawUrl)) {
-    return null;
-  }
-
-  const proxied = shouldProxyAudio(rawUrl);
-  return {
-    source: source.source || source.provider || fallbackMeta.source || 'direct',
-    title: source.title || fallbackMeta.title || '',
-    artist: source.artist || fallbackMeta.artist || '',
-    album: source.album || fallbackMeta.album || '',
-    quality: source.quality || fallbackMeta.quality || '',
-    license: source.license || fallbackMeta.license || '',
-    sourceType: source.sourceType || fallbackMeta.sourceType || '',
-    proxied,
-    playableUrl: proxied ? buildAudioProxyUrl(req, rawUrl) : rawUrl,
-    originalUrl: proxied ? '' : rawUrl
-  };
-}
-
-function buildAudioPayload(req, source, fallbackMeta = {}) {
-  const candidate = buildAudioCandidate(req, source, fallbackMeta);
-  if (!candidate) {
-    return {
-      found: false,
-      source: 'none',
-      playableUrl: '',
-      candidates: [],
-      message: 'No safe audio url'
-    };
-  }
-
-  return Object.assign({
-    found: true,
-    candidates: [candidate]
-  }, candidate);
-}
-
-function normalizeUpstreamAudioCandidates(req, upstream, query) {
-  if (!upstream) return [];
-  const rawCandidates = Array.isArray(upstream.candidates) ? upstream.candidates : [upstream];
-  return rawCandidates
-    .map((candidate) => buildAudioCandidate(req, Object.assign({ sourceType: 'upstream-resolver' }, candidate), query))
-    .filter(Boolean);
-}
-
-function uniqueAudioCandidates(candidates) {
-  const seen = new Set();
-  return candidates.filter((candidate) => {
-    const key = String(candidate.playableUrl || '').trim();
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-async function resolveAudioSource(req, query) {
-  const libraryCandidates = findAudioSourcesInLibrary(query)
-    .map((item) => buildAudioCandidate(req, Object.assign({ sourceType: 'authorized-library' }, item), query))
-    .filter(Boolean);
-  const directSrc = String(query.src || '').trim();
-  const existingCandidate = isSafeHttpUrl(directSrc) ? buildAudioCandidate(req, {
-      src: directSrc,
-      source: 'track-src',
-      sourceType: 'existing-catalog',
-      title: query.title,
-      artist: query.artist,
-      album: query.album
-    }, query) : null;
-
-  let upstreamCandidates = [];
-  if (AUDIO_RESOLVER_URL) {
-    const resolverUrl = new URL(AUDIO_RESOLVER_URL);
-    resolverUrl.searchParams.set('id', query.id || '');
-    resolverUrl.searchParams.set('title', query.title || '');
-    resolverUrl.searchParams.set('artist', query.artist || '');
-    try {
-      const upstream = await requestJson(resolverUrl.toString(), {
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'LjyytAudioResolver/1.0'
-        },
-        timeout: 8000
-      });
-      upstreamCandidates = normalizeUpstreamAudioCandidates(req, upstream, query);
-    } catch (error) {
-      upstreamCandidates = [];
-    }
-  }
-
-  const orderedCandidates = AUDIO_SOURCE_PRIORITY === 'existing-first'
-    ? [existingCandidate].concat(libraryCandidates, upstreamCandidates)
-    : libraryCandidates.concat(upstreamCandidates, existingCandidate);
-  const candidates = uniqueAudioCandidates(orderedCandidates.filter(Boolean))
-    .map((candidate, index) => Object.assign({ rank: index + 1 }, candidate));
-
-  if (candidates.length) {
-    return Object.assign({
-      found: true,
-      candidates,
-      sourcePolicy: AUDIO_SOURCE_PRIORITY
-    }, candidates[0]);
-  }
-
-  return {
-    found: false,
-    source: 'none',
-    playableUrl: '',
-    candidates: [],
-    sourcePolicy: AUDIO_SOURCE_PRIORITY,
-    message: 'No audio source configured'
-  };
-}
-
-function searchAudioSources(query) {
-  const keyword = normalizeText(query.keyword || [query.title, query.artist].filter(Boolean).join(' '));
-  const sources = loadAudioSources();
-  if (!keyword) {
-    return sources.slice(0, 20);
-  }
-  return sources.filter((item) => {
-    if (!item || !item.src) return false;
-    const haystack = normalizeText([
-      item.title,
-      item.artist,
-      item.album,
-      item.source,
-      item.quality
-    ].filter(Boolean).join(' '));
-    if (!haystack) return false;
-    return haystack.includes(keyword) || keyword.includes(haystack);
-  }).slice(0, 20);
-}
-
-function proxyAudio(req, res, targetUrl, redirectsLeft = 4) {
-  if (!isAudioProxyAllowed(targetUrl)) {
-    sendJson(res, 403, {
-      found: false,
-      message: 'Audio proxy host is not allowlisted'
-    });
-    return;
-  }
-
-  const parsed = new URL(targetUrl);
-  const client = parsed.protocol === 'https:' ? https : http;
-  const headers = {
-    'User-Agent': req.headers['user-agent'] || 'LjyytAudioProxy/1.0',
-    'Accept': req.headers.accept || '*/*'
-  };
-  if (req.headers.range) headers.Range = req.headers.range;
-
-  const upstreamReq = client.get(parsed, { headers }, (upstreamRes) => {
-    const location = upstreamRes.headers.location;
-    if (location && upstreamRes.statusCode >= 300 && upstreamRes.statusCode < 400 && redirectsLeft > 0) {
-      upstreamRes.resume();
-      proxyAudio(req, res, new URL(location, parsed).toString(), redirectsLeft - 1);
-      return;
-    }
-
-    const responseHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Accept-Ranges': upstreamRes.headers['accept-ranges'] || 'bytes',
-      'Cache-Control': 'public, max-age=600',
-      'Content-Type': upstreamRes.headers['content-type'] || 'audio/mpeg'
-    };
-    if (upstreamRes.headers['content-length']) responseHeaders['Content-Length'] = upstreamRes.headers['content-length'];
-    if (upstreamRes.headers['content-range']) responseHeaders['Content-Range'] = upstreamRes.headers['content-range'];
-    res.writeHead(upstreamRes.statusCode || 200, responseHeaders);
-    upstreamRes.pipe(res);
-  });
-
-  upstreamReq.setTimeout(15000, () => {
-    upstreamReq.destroy(new Error('Audio proxy timeout'));
-  });
-
-  upstreamReq.on('error', (error) => {
-    if (!res.headersSent) {
-      sendJson(res, 502, {
-        found: false,
-        message: error.message
-      });
-    } else {
-      res.destroy(error);
-    }
-  });
 }
 
 function findLyricsInLibrary(query) {
@@ -573,7 +289,7 @@ function buildSuccess(source, title, artist, lines, extra) {
     source,
     title: title || '',
     artist: artist || '',
-    lines: sanitizeLyricLines(lines)
+    lines: splitLines(lines)
   }, extra || {});
 }
 
@@ -613,7 +329,7 @@ function parseSyncedLyrics(raw) {
       if (karaokeMatch) {
         const time = parseLrcTimestampToSeconds(karaokeMatch[1]);
         const text = String(karaokeMatch[3] || '').trim();
-        if (time !== null && text && !isMetadataOnlyLine(text)) result.push({ time, text });
+        if (time !== null && text) result.push({ time, text });
         return result;
       }
 
@@ -621,7 +337,7 @@ function parseSyncedLyrics(raw) {
       if (match) {
         const time = parseLrcTimestampToSeconds(match[1]);
         const text = String(match[2] || '').trim();
-        if (time !== null && text && !isMetadataOnlyLine(text)) result.push({ time, text });
+        if (time !== null && text) result.push({ time, text });
       }
 
       return result;
@@ -634,11 +350,13 @@ function parseKuwoSyncedLyrics(lrcList) {
       time: Number(item && item.time),
       text: String(item && item.lineLyric || '').trim()
     }))
-    .filter((item) => !Number.isNaN(item.time) && item.text && !isMetadataOnlyLine(item.text));
+    .filter((item) => !Number.isNaN(item.time) && item.text);
 }
 
 function buildPreviewLines(raw, limit) {
-  return sanitizeLyricLines(raw).slice(0, limit || 2);
+  return splitLines(raw)
+    .filter((line) => line && !/^(作词|作曲|编曲|录音|混音|制作人|母带|OP|SP|词：|曲：)/.test(String(line).trim()))
+    .slice(0, limit || 2);
 }
 
 async function fetchKugouPreview(candidateId, accesskey) {
@@ -1662,23 +1380,8 @@ async function searchLyricsCandidates(query, requestedSources) {
   return {
     code: 200,
     msg: '成功',
-    candidates: dedupeLyricCandidates(candidates).slice(0, 20)
+    candidates: candidates.slice(0, 20)
   };
-}
-
-function dedupeLyricCandidates(candidates) {
-  const seen = new Set();
-  return candidates.filter((item) => {
-    if (!item || !(item.title || item.artist)) return false;
-    const key = [
-      item.source || '',
-      canonicalSongTitle(item.title || ''),
-      normalizeText(item.artist || '')
-    ].join('::').toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 function sendJson(res, statusCode, payload) {
@@ -1763,55 +1466,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (requestUrl.pathname === '/api/audio/resolve') {
-    try {
-      const payload = await resolveAudioSource(req, {
-        id: requestUrl.searchParams.get('id') || '',
-        title: requestUrl.searchParams.get('title') || '',
-        artist: requestUrl.searchParams.get('artist') || '',
-        album: requestUrl.searchParams.get('album') || '',
-        src: requestUrl.searchParams.get('src') || ''
-      });
-      sendJson(res, payload.found ? 200 : 404, payload);
-    } catch (error) {
-      sendJson(res, 502, {
-        found: false,
-        source: 'error',
-        playableUrl: '',
-        message: error.message
-      });
-    }
-    return;
-  }
-
-  if (requestUrl.pathname === '/api/audio/search') {
-    try {
-      const candidates = searchAudioSources({
-        keyword: requestUrl.searchParams.get('q') || '',
-        title: requestUrl.searchParams.get('title') || '',
-        artist: requestUrl.searchParams.get('artist') || ''
-      });
-      sendJson(res, 200, {
-        code: 200,
-        msg: '成功',
-        candidates
-      });
-    } catch (error) {
-      sendJson(res, 502, {
-        code: 502,
-        msg: error.message,
-        candidates: []
-      });
-    }
-    return;
-  }
-
-  if (requestUrl.pathname === '/api/audio/proxy') {
-    const targetUrl = requestUrl.searchParams.get('url') || '';
-    proxyAudio(req, res, targetUrl);
-    return;
-  }
-
   if (requestUrl.pathname === '/api/cover') {
     try {
       const payload = await searchLrcApiCover({
@@ -1831,7 +1485,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   let relativePath = decodeURIComponent(requestUrl.pathname);
-  if (relativePath === '/') relativePath = '/index.html';
+  if (relativePath === '/') relativePath = '/player.html';
   const absolutePath = path.join(ROOT, relativePath.replace(/^\/+/, ''));
   sendFile(req, res, absolutePath);
 });
@@ -1839,6 +1493,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`Ljyyt server listening on http://${HOST}:${PORT}`);
   console.log(`Lyrics API ready at http://${HOST}:${PORT}/api/lyrics`);
-  console.log(`Audio API ready at http://${HOST}:${PORT}/api/audio/resolve`);
   console.log(`Default lyric sources: ${DEFAULT_SOURCES.join(' -> ')}`);
 });

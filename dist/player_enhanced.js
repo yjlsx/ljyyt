@@ -500,24 +500,24 @@
 
     function goToPlayerPage() {
       var currentTrack = saveCurrentPlaybackState();
-      var targetUrl = 'music-player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
+      var targetUrl = 'player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
       window.location.href = targetUrl;
     }
 
     bottomPlayer.classList.add('bottom-player-linkable');
-    bottomPlayer.setAttribute('data-player-link', 'music-player.html');
+    bottomPlayer.setAttribute('data-player-link', 'player.html');
 
     if (trackLinkArea) {
       trackLinkArea.style.cursor = 'pointer';
       trackLinkArea.addEventListener('click', function(event) {
-        if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+        if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
         if (event.target.closest('a, button, input, label, textarea, select')) return;
         goToPlayerPage();
       });
     }
 
     bottomPlayer.addEventListener('click', function(event) {
-      if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+      if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
       if (event.target.closest('button, a, input, label, textarea, select')) return;
       if (event.target.closest('#progress-container, .progress-container, .volume-control, #playlist-panel, #cover-overlay')) return;
       goToPlayerPage();
@@ -544,12 +544,12 @@
   }
 
   function initPlayerNavLinks() {
-    document.querySelectorAll('a[href="music-player.html"]').forEach(function(link) {
+    document.querySelectorAll('a[href="music-player.html"], a[href="player.html"]').forEach(function(link) {
       link.addEventListener('click', function() {
-        if (window.location.pathname.indexOf('music-player.html') !== -1) return;
+        if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
         var currentTrack = saveCurrentPlaybackState();
         if (currentTrack) {
-          link.href = 'music-player.html?track=' + encodeURIComponent(currentTrack.id);
+          link.href = 'player.html?track=' + encodeURIComponent(currentTrack.id);
         }
       });
     });
@@ -598,7 +598,7 @@
       var active = (typeof currentTrackIndex !== 'undefined' && typeof musicData !== 'undefined' && musicData[currentTrackIndex] && musicData[currentTrackIndex].id === t.id);
       html +=
         '<div class="panel-item' + (active ? ' active' : '') + '" data-id="' + t.id + '">' +
-          '<img src="' + (t.cover || './images/avatar.jpg') + '" alt="歌曲封面" class="panel-item-cover" loading="lazy" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+          '<img src="' + t.cover + '" class="panel-item-cover" loading="lazy">' +
           '<div class="panel-item-info">' +
             '<div class="panel-item-title">' + t.title + '</div>' +
             '<div class="panel-item-artist">' + t.artist + '</div>' +
@@ -711,10 +711,15 @@
   }
 
   // ========== 浏览器标题 ==========
-  var fixedPageTitle = '丽江音悦台';
-  document.title = fixedPageTitle;
+  var originalTitle = document.title;
   function updatePageTitle(track, playing) {
-    document.title = fixedPageTitle;
+    if (track && playing) {
+      document.title = '♪ ' + track.title + ' - ' + track.artist + ' | 丽江音悦台';
+    } else if (track) {
+      document.title = '⏸ ' + track.title + ' | 丽江音悦台';
+    } else {
+      document.title = originalTitle;
+    }
   }
 
   // 监听播放状态变化更新标题
@@ -868,7 +873,7 @@
       card.dataset.index = actualIndex;
       card.innerHTML =
         '<div class="card-body d-flex align-items-center p-2">' +
-          '<img src="'+(track.cover || './images/avatar.jpg')+'" alt="'+track.title+'" class="album-cover me-2" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'./images/avatar.jpg\'">' +
+          '<img src="'+track.cover+'" alt="'+track.title+'" class="album-cover me-2" loading="lazy" decoding="async">' +
           '<div class="flex-grow-1 overflow-hidden"><h6 class="card-title mb-1 text-truncate" title="'+track.title+'">'+track.title+'</h6>' +
           '<div class="d-flex align-items-center"><p class="card-text text-muted mb-0 small text-truncate me-2">'+
           (typeof renderArtistLinksHtml === 'function' ? renderArtistLinksHtml(track.artist) : track.artist) + '</p>' +
@@ -950,9 +955,9 @@
     overlay.id = 'cover-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:none;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;backdrop-filter:blur(10px)';
     overlay.innerHTML =
-      '<img id="cover-large" src="./images/avatar.jpg" alt="当前歌曲封面大图" style="max-width:80vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);object-fit:contain">' +
+      '<img id="cover-large" src="" style="max-width:80vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);object-fit:contain">' +
       '<div id="cover-large-info" style="color:white;text-align:center;margin-top:20px;font-size:1.1rem"></div>' +
-      '<button type="button" aria-label="关闭封面预览" style="position:absolute;top:20px;right:25px;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer;background:transparent;border:0" id="cover-close"><i class="fas fa-times"></i></button>';
+      '<div style="position:absolute;top:20px;right:25px;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer" id="cover-close"><i class="fas fa-times"></i></div>';
     document.body.appendChild(overlay);
 
     // 点击关闭
@@ -970,7 +975,7 @@
         e.stopPropagation();
         if (typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
           var track = musicData[currentTrackIndex];
-          document.getElementById('cover-large').src = track.cover || './images/avatar.jpg';
+          document.getElementById('cover-large').src = track.cover;
           document.getElementById('cover-large-info').innerHTML = '<strong>' + track.title + '</strong><br><span style="opacity:0.7">' +
             (typeof renderArtistLinksHtml === 'function' ? renderArtistLinksHtml(track.artist) : track.artist) + '</span>';
           overlay.style.display = 'flex';
