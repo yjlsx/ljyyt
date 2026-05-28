@@ -16,9 +16,13 @@
   if (path.includes('artist'))          page = 'artist';
   if (path.includes('video-player'))    page = 'video';
 
+  function svgIcon(name) {
+    return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
+  }
+
   function a(p, label, icon, active) {
     var cls = active ? ' nav-link active' : ' nav-link';
-    var icn = icon ? '<i class="fas ' + icon + ' me-1"></i>' : '';
+    var icn = icon ? '<span class="nav-line-icon me-1" aria-hidden="true">' + svgIcon(icon) + '</span>' : '';
     return '<li class="nav-item"><a class="' + cls + '" href="' + p + '">' + icn + label + '</a></li>';
   }
 
@@ -39,15 +43,15 @@
         '<div class="collapse navbar-collapse" id="navbarNav">' +
           '<ul class="navbar-nav me-auto">' +
             a('index.html',    '首页',    null,              page === 'index') +
-            a('player.html', '播放器', 'fa-compact-disc', page === 'music') +
-            a('ranking.html',  '排行榜',  'fa-trophy',        page === 'ranking') +
+            a('player.html', '播放器', 'album', page === 'music') +
+            a('ranking.html',  '排行榜',  'trophy',        page === 'ranking') +
             a('#about',        '关于我们', null,              false) +
           '</ul>' +
           '<div class="d-flex align-items-center ms-2 navbar-search-wrap">' +
-            '<form action="search.html" method="GET" class="d-flex align-items-center navbar-search-form">' +
-              '<input type="text" name="q" class="form-control form-control-sm bg-white text-dark border-secondary" placeholder="搜索歌曲..." style="width:160px;max-width:40vw;">' +
+            '<form id="nav-search-form" action="search.html" method="GET" class="d-flex align-items-center navbar-search-form" autocomplete="off">' +
+              '<input type="search" name="q" id="nav-search-input" class="form-control form-control-sm bg-white text-dark border-secondary" placeholder="搜索歌曲..." aria-label="搜索歌曲" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" style="width:160px;max-width:40vw;">' +
               '<button type="submit" class="btn btn-light btn-sm ms-2" aria-label="搜索">' +
-                '<i class="fas fa-search text-primary"></i>' +
+                '<span class="text-primary">' + svgIcon('search') + '</span>' +
               '</button>' +
             '</form>' +
           '</div>' +
@@ -69,11 +73,11 @@
             '</div>' +
           '</div>' +
           '<div class="player-controls d-flex align-items-center me-3">' +
-            '<button id="prev-btn" class="btn btn-outline-light btn-sm me-2" aria-label="上一首"><i class="fas fa-step-backward"></i></button>' +
+            '<button id="prev-btn" class="btn btn-outline-light btn-sm me-2" aria-label="上一首">' + svgIcon('previous') + '</button>' +
             '<button id="play-btn" class="btn btn-light rounded-circle" style="width:40px;height:40px;" aria-label="播放或暂停">' +
-              '<i class="fas fa-play text-primary"></i>' +
+              '<span class="text-primary">' + svgIcon('play') + '</span>' +
             '</button>' +
-            '<button id="next-btn" class="btn btn-outline-light btn-sm ms-2" aria-label="下一首"><i class="fas fa-step-forward"></i></button>' +
+            '<button id="next-btn" class="btn btn-outline-light btn-sm ms-2" aria-label="下一首">' + svgIcon('next') + '</button>' +
           '</div>' +
           '<div class="progress-container flex-grow-1 me-3">' +
             '<div class="d-flex align-items-center">' +
@@ -85,7 +89,7 @@
             '</div>' +
           '</div>' +
           '<div class="volume-control d-flex align-items-center">' +
-            '<i class="fas fa-volume-up text-white-50 me-2"></i>' +
+            '<span class="text-white-50 me-2">' + svgIcon('volume') + '</span>' +
             '<input type="range" id="volume-slider" class="form-range" min="0" max="1" step="0.01" value="0.5" style="width:80px;">' +
           '</div>' +
         '</div>' +

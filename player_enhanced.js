@@ -27,6 +27,10 @@
   }
   window.toast = toast;
 
+  function iconHtml(name) {
+    return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
+  }
+
   var playMode = localStorage.getItem(STORAGE.playMode) || 'order';
   var bottomPlayerLayout = localStorage.getItem(STORAGE.bottomPlayerLayout) || 'home';
   var bottomPlayerCollapsed = localStorage.getItem(STORAGE.bottomPlayerCollapsed) === 'true';
@@ -87,7 +91,7 @@
     var btn = document.getElementById('btn-fav');
     if (!btn) return;
     var liked = isFav(id);
-    btn.innerHTML = liked ? '<i class="fas fa-heart" style="color:#ff6b6b"></i>' : '<i class="fas fa-heart" style="color:rgba(255,255,255,0.5)"></i>';
+    btn.innerHTML = '<span style="color:' + (liked ? '#ff6b6b' : 'rgba(255,255,255,0.5)') + '">' + iconHtml(liked ? 'heartFilled' : 'heart') + '</span>';
     btn.title = liked ? '取消收藏' : '收藏';
   }
 
@@ -147,7 +151,7 @@
     if (!toggle) {
       toggle = document.createElement('div');
       toggle.id = 'bottom-player-toggle';
-      toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+      toggle.innerHTML = iconHtml('chevronRight');
       document.body.appendChild(toggle);
     }
 
@@ -185,7 +189,7 @@
     // 更新 toggle
     var toggle = document.getElementById('bottom-player-toggle');
     if (toggle) {
-      toggle.querySelector('i').className = bottomPlayerCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+      toggle.innerHTML = iconHtml(bottomPlayerCollapsed ? 'chevronLeft' : 'chevronRight');
       if (bottomPlayer) {
         setTimeout(function() {
           var rect = bottomPlayer.getBoundingClientRect();
@@ -212,10 +216,10 @@
     var btn = document.getElementById('btn-mode');
     if (!btn) return;
     var icons = {
-      'order': '<i class="fas fa-list-ol"></i>',
-      'repeat-all': '<i class="fas fa-redo"></i>',
-      'repeat-one': '<i class="fas fa-redo"></i><small style="font-size:0.5em;position:relative;top:-2px;left:-3px;font-weight:bold">1</small>',
-      'shuffle': '<i class="fas fa-random"></i>'
+      'order': iconHtml('queue'),
+      'repeat-all': iconHtml('repeat'),
+      'repeat-one': iconHtml('repeatOne'),
+      'shuffle': iconHtml('shuffle')
     };
     btn.innerHTML = icons[playMode] || icons['order'];
   }
@@ -223,19 +227,17 @@
     var btn = document.getElementById('btn-layout');
     if (!btn) return;
     if (bottomPlayerLayout === 'player') {
-      btn.innerHTML = '<i class="fas fa-columns"></i>';
+      btn.innerHTML = iconHtml('album');
       btn.title = '切换到首页播放栏样式';
     } else {
-      btn.innerHTML = '<i class="fas fa-th-large"></i>';
+      btn.innerHTML = iconHtml('grid');
       btn.title = '切换到播放页主题样式';
     }
   }
   function updateCollapseBtn() {
     var toggle = document.getElementById('bottom-player-toggle');
     if (!toggle) return;
-    var icon = toggle.querySelector('i');
-    if (!icon) return;
-    icon.className = bottomPlayerCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+    toggle.innerHTML = iconHtml(bottomPlayerCollapsed ? 'chevronLeft' : 'chevronRight');
   }
   function getNextIdx() {
     if (typeof musicData === 'undefined' || musicData.length === 0) return 0;
@@ -383,7 +385,7 @@
     searchForm.appendChild(btn);
   }
   function updateDarkBtn(btn, dark) {
-    btn.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    btn.innerHTML = iconHtml(dark ? 'sun' : 'moon');
     btn.title = dark ? '切换到浅色模式' : '切换到深色模式';
   }
 
@@ -411,14 +413,14 @@
     // 收藏 — 只在不存在时创建
     if (!document.getElementById('btn-fav')) {
       var favBtn = mkBtn('btn-fav', '收藏', function() { toggleFav(); });
-      favBtn.innerHTML = '<i class="fas fa-heart" style="color:rgba(255,255,255,0.5)"></i>';
+      favBtn.innerHTML = '<span style="color:rgba(255,255,255,0.5)">' + iconHtml('heart') + '</span>';
       controls.appendChild(favBtn);
     }
 
     // 分享 — 只在不存在时创建
     if (!document.getElementById('btn-share')) {
       var shareBtn = mkBtn('btn-share', '分享', shareTrack);
-      shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
+      shareBtn.innerHTML = iconHtml('share');
       controls.appendChild(shareBtn);
     }
 
@@ -428,7 +430,7 @@
       if (existingListBtn) existingListBtn.remove();
     } else if (!document.getElementById('btn-list')) {
       var listBtn = mkBtn('btn-list', '播放列表', togglePlaylistPanel);
-      listBtn.innerHTML = '<i class="fas fa-list-ul"></i>';
+      listBtn.innerHTML = iconHtml('queue');
       if (volumeControl && volumeControl.parentNode) {
         volumeControl.insertAdjacentElement('afterend', listBtn);
       } else {
@@ -454,17 +456,17 @@
   var panelVisible = false;
 
   function injectPlaylistPanel() {
-    var panel = document.createElement('div');
+          var panel = document.createElement('div');
     panel.id = 'playlist-panel';
     panel.className = 'playlist-panel';
     panel.innerHTML =
       '<div class="playlist-panel-header">' +
         '<div class="playlist-panel-tabs">' +
-          '<button class="pltab active" data-tab="playlist"><i class="fas fa-music me-1"></i>播放列表</button>' +
-          '<button class="pltab" data-tab="favorites"><i class="fas fa-heart me-1"></i>收藏</button>' +
-          '<button class="pltab" data-tab="history"><i class="fas fa-history me-1"></i>最近播放</button>' +
+          '<button class="pltab active" data-tab="playlist"><span class="me-1">' + iconHtml('music') + '</span>播放列表</button>' +
+          '<button class="pltab" data-tab="favorites"><span class="me-1">' + iconHtml('heart') + '</span>收藏</button>' +
+          '<button class="pltab" data-tab="history"><span class="me-1">' + iconHtml('history') + '</span>最近播放</button>' +
         '</div>' +
-        '<button class="playlist-panel-close" id="panel-close"><i class="fas fa-times"></i></button>' +
+        '<button class="playlist-panel-close" id="panel-close">' + iconHtml('close') + '</button>' +
       '</div>' +
       '<div class="playlist-panel-body" id="panel-body"></div>';
     document.body.appendChild(panel);
@@ -590,7 +592,7 @@
 
   function renderPanelList(container, tracks) {
     if (!tracks || tracks.length === 0) {
-      container.innerHTML = '<div class="panel-empty"><i class="fas fa-inbox"></i><p>暂无内容</p></div>';
+      container.innerHTML = '<div class="panel-empty">' + iconHtml('inbox') + '<p>暂无内容</p></div>';
       return;
     }
     var html = '';
@@ -603,7 +605,7 @@
             '<div class="panel-item-title">' + t.title + '</div>' +
             '<div class="panel-item-artist">' + t.artist + '</div>' +
           '</div>' +
-          (active ? '<i class="fas fa-volume-up panel-item-playing"></i>' : '') +
+          (active ? '<span class="panel-item-playing">' + iconHtml('volume') + '</span>' : '') +
         '</div>';
     });
     container.innerHTML = html;
@@ -785,9 +787,9 @@
     bar.innerHTML =
       '<span style="font-size:0.8rem;color:#999;margin-right:4px">排序:</span>' +
       '<button class="btn btn-sm sort-btn active" data-sort="default">默认</button>' +
-      '<button class="btn btn-sm sort-btn" data-sort="title">歌名 <i class="fas fa-sort" style="font-size:0.65rem"></i></button>' +
-      '<button class="btn btn-sm sort-btn" data-sort="artist">歌手 <i class="fas fa-sort" style="font-size:0.65rem"></i></button>' +
-      '<button class="btn btn-sm sort-btn" data-sort="duration">时长 <i class="fas fa-sort" style="font-size:0.65rem"></i></button>';
+      '<button class="btn btn-sm sort-btn" data-sort="title">歌名 <span class="sort-icon">' + iconHtml('sort') + '</span></button>' +
+      '<button class="btn btn-sm sort-btn" data-sort="artist">歌手 <span class="sort-icon">' + iconHtml('sort') + '</span></button>' +
+      '<button class="btn btn-sm sort-btn" data-sort="duration">时长 <span class="sort-icon">' + iconHtml('sort') + '</span></button>';
     musicList.parentNode.insertBefore(bar, musicList);
     bar.querySelectorAll('.sort-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -823,12 +825,12 @@
   function updateSortIcons(bar, activeSort) {
     bar.querySelectorAll('.sort-btn').forEach(function(btn) {
       var s = btn.getAttribute('data-sort');
-      var icon = btn.querySelector('i');
+      var icon = btn.querySelector('.sort-icon');
       if (!icon) return;
       if (s === activeSort && s !== 'default') {
-        icon.className = sortAsc ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        icon.style.transform = sortAsc ? 'rotate(0deg)' : 'rotate(180deg)';
       } else if (s !== 'default') {
-        icon.className = 'fas fa-sort';
+        icon.style.transform = '';
       }
     });
   }
@@ -878,7 +880,7 @@
           '<div class="d-flex align-items-center"><p class="card-text text-muted mb-0 small text-truncate me-2">'+
           (typeof renderArtistLinksHtml === 'function' ? renderArtistLinksHtml(track.artist) : track.artist) + '</p>' +
           '<small class="text-muted track-duration">'+formatTime(track.duration)+'</small></div></div>' +
-          '<i class="fas fa-music text-primary ms-2 card-music-icon"></i></div>';
+          '<span class="text-primary ms-2 card-music-icon">' + iconHtml('music') + '</span></div>';
       card.addEventListener('click', function() {
         currentTrackIndex = actualIndex;
         loadTrack(currentTrackIndex);
@@ -898,7 +900,7 @@
     if (!pag) return;
     if (totalPages <= 1) { pag.innerHTML = ''; return; }
 
-    var html = '<button class="btn btn-sm btn-outline-primary page-btn" ' + (sortPage <= 1 ? 'disabled' : '') + ' onclick="changeSortPage(-1)"><i class="fas fa-chevron-left"></i></button>';
+    var html = '<button class="btn btn-sm btn-outline-primary page-btn" ' + (sortPage <= 1 ? 'disabled' : '') + ' onclick="changeSortPage(-1)">' + iconHtml('chevronLeft') + '</button>';
 
     var startP = Math.max(1, sortPage - 2);
     var endP = Math.min(totalPages, sortPage + 2);
@@ -910,7 +912,7 @@
     if (endP < totalPages - 1) html += '<span class="px-1 text-muted">...</span>';
     if (endP < totalPages) html += '<button class="btn btn-sm btn-outline-primary page-btn" onclick="changeSortPageTo(' + totalPages + ')">' + totalPages + '</button>';
 
-    html += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (sortPage >= totalPages ? 'disabled' : '') + ' onclick="changeSortPage(1)"><i class="fas fa-chevron-right"></i></button>';
+    html += '<button class="btn btn-sm btn-outline-primary page-btn" ' + (sortPage >= totalPages ? 'disabled' : '') + ' onclick="changeSortPage(1)">' + iconHtml('chevronRight') + '</button>';
     html += '<span class="text-muted small ms-2">' + sortPage + '/' + totalPages + '</span>';
     pag.innerHTML = html;
   }
@@ -957,7 +959,7 @@
     overlay.innerHTML =
       '<img id="cover-large" src="" style="max-width:80vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);object-fit:contain">' +
       '<div id="cover-large-info" style="color:white;text-align:center;margin-top:20px;font-size:1.1rem"></div>' +
-      '<div style="position:absolute;top:20px;right:25px;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer" id="cover-close"><i class="fas fa-times"></i></div>';
+      '<div style="position:absolute;top:20px;right:25px;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer" id="cover-close">' + iconHtml('close') + '</div>';
     document.body.appendChild(overlay);
 
     // 点击关闭

@@ -23,7 +23,6 @@
   <script src="js/theme.js"></script>
   <script src="js/icons.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="main.css">
   <style>
     /* 搜索页面特定样式 */
@@ -198,8 +197,30 @@
       border-radius: 15px;
       padding: 50px 20px;
     }
-    .no-results-box i {
+    .no-results-box .no-results-icon {
       opacity: 0.5;
+    }
+
+    [data-icon],
+    .search-results-title .line-icon,
+    .filter-tab .line-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: -0.16em;
+    }
+
+    .no-results-icon .line-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto;
+    }
+
+    .video-play-icon .line-icon {
+      width: 48px;
+      height: 48px;
+      stroke-width: 1.55;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
     }
 
     /* 音乐/视频卡片基础 */
@@ -287,9 +308,9 @@
       <p class="lead" id="search-hero-query">传承纳西文化，分享民族音乐之美</p>
       <div class="mt-4">
         <div class="input-group w-50 mx-auto">
-          <input type="text" class="form-control form-control-lg" id="hero-search-input" placeholder="搜索音乐..." aria-label="搜索">
+          <input type="search" class="form-control form-control-lg" id="hero-search-input" placeholder="搜索音乐..." aria-label="搜索" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search">
           <button class="btn btn-light btn-lg" id="search-btn">
-            <i class="fas fa-search text-primary"></i>
+            <span class="text-primary" data-icon="search"></span>
           </button>
         </div>
       </div>
@@ -302,13 +323,13 @@
       <!-- 筛选标签 -->
       <div class="search-filter-tabs d-flex justify-content-center gap-2 mb-4">
         <button class="filter-tab active" data-filter="all" type="button">
-          <i class="fas fa-th-large me-1"></i> 全部
+          <span class="me-1" data-icon="grid"></span> 全部
         </button>
         <button class="filter-tab" data-filter="music" type="button">
-          <i class="fas fa-music me-1"></i> 音乐
+          <span class="me-1" data-icon="music"></span> 音乐
         </button>
         <button class="filter-tab" data-filter="video" type="button">
-          <i class="fas fa-video me-1"></i> 视频
+          <span class="me-1" data-icon="video"></span> 视频
         </button>
       </div>
 
@@ -321,7 +342,7 @@
         <!-- 音乐结果 -->
         <div id="music-section">
           <h3 class="search-results-title music-title">
-            <i class="fas fa-music me-2"></i>音乐
+            <span class="me-2" data-icon="music"></span>音乐
           </h3>
           <div class="row" id="music-results">
             <!-- 音乐结果将通过JavaScript动态生成 -->
@@ -331,7 +352,7 @@
         <!-- 视频结果 -->
         <div id="video-section">
           <h3 class="search-results-title video-title mt-4">
-            <i class="fas fa-video me-2"></i>视频
+            <span class="me-2" data-icon="video"></span>视频
           </h3>
           <div class="row" id="video-results">
             <!-- 视频结果将通过JavaScript动态生成 -->
@@ -340,7 +361,7 @@
         
         <!-- 无结果提示 -->
         <div class="text-center py-5 no-results-box" id="no-results" style="display: none;">
-          <i class="fas fa-search fa-3x mb-3" style="color: #667eea; opacity: 0.4;"></i>
+          <span class="no-results-icon mb-3" data-icon="search" style="color: #667eea; opacity: 0.4;"></span>
           <h5 class="mt-3 mb-2" style="color: #555;">未找到相关结果</h5>
           <p class="text-muted small">换个关键词试试吧</p>
         </div>
@@ -372,6 +393,16 @@
   
   <script>
     console.log('🔍 搜索页面加载');
+
+    function iconHtml(name) {
+      return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
+    }
+
+    function hydrateSearchIcons(root) {
+      (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
+        node.innerHTML = iconHtml(node.getAttribute('data-icon'));
+      });
+    }
 
     // 获取URL参数
     function getUrlParameter(name) {
@@ -480,7 +511,7 @@
             '<p class="card-text text-muted mb-0 small text-truncate me-2" title="' + track.artist + '">' + buildArtistLinksHtml(track.artist) + '</p>' +
             '<small class="text-muted track-duration">' + formatTime(track.duration) + '</small>' +
             '</div></div>' +
-            '<i class="fas fa-music text-primary ms-2 card-music-icon"></i>' +
+            '<span class="text-primary ms-2 card-music-icon">' + iconHtml('music') + '</span>' +
             '</div></div></div>';
         });
         musicContainer.innerHTML = musicHtml;
@@ -507,7 +538,7 @@
             '<div class="position-relative">' +
             '<img src="' + track.cover + '" alt="' + track.title + '" class="card-img-top" loading="lazy" decoding="async">' +
             '<div class="position-absolute top-50 start-50 translate-middle">' +
-            '<i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>' +
+            '<span class="text-white video-play-icon" style="opacity: 0.86;">' + iconHtml('play') + '</span>' +
             '</div>' +
             '<div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">' +
             '<span class="text-white small">' + formatTime(track.duration) + '</span>' +
@@ -647,6 +678,14 @@
     // === 页面初始化（单个 DOMContentLoaded） ===
     document.addEventListener('DOMContentLoaded', function() {
       console.log('✅ 搜索页面 DOM 加载完成');
+      hydrateSearchIcons(document);
+      document.querySelectorAll('input[type="search"], input[name="q"], #hero-search-input, #nav-search-input').forEach(function(input) {
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'none');
+        input.setAttribute('spellcheck', 'false');
+        input.setAttribute('inputmode', 'search');
+      });
 
       // 1. 恢复播放器状态
       if (!window._playerStateRestored && typeof restorePlayerState === 'function' && typeof hasSavedPlayerState === 'function' && hasSavedPlayerState()) {
@@ -775,7 +814,7 @@
 
   <!-- 向上火箭按钮 -->
   <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()">
-    <i class="fas fa-rocket"></i>
+    <span data-icon="rocket"></span>
   </button>
 
   <script>
