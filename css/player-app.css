@@ -718,6 +718,10 @@ a {
     width: min(72vw, 280px);
   }
 
+  body.lyrics-first .cover-wrap {
+    width: min(48vw, 188px);
+  }
+
   .track-identity {
     text-align: center;
   }
@@ -747,6 +751,11 @@ a {
     min-height: 300px;
     max-height: 42dvh;
     padding: 16px 12px;
+  }
+
+  body.lyrics-first .lyrics-card {
+    min-height: min(48dvh, 430px);
+    max-height: none;
   }
 
   .lyrics-lines {

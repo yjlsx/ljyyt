@@ -2844,6 +2844,8 @@
       closeSettingDrawer();
       setQueueDrawerOpen(false);
       document.getElementById('full-player').classList.add('open');
+      document.getElementById('full-main').classList.add('show-lyrics');
+      setTimeout(function() { syncLyrics(); }, 0);
     }
     function closeFullPlayer() {
       setQueueDrawerOpen(false);

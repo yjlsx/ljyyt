@@ -24,6 +24,7 @@
     lyrics: [],
     activeLyricIndex: -1,
     isSeeking: false,
+    isAutoAdvancing: false,
     queueFilter: ''
   };
 
@@ -378,7 +379,7 @@
     if (!getTrack()) return;
     var promise = els.audio.play();
     if (promise && promise.then) {
-      promise.then(function() {
+      return promise.then(function() {
         state.isPlaying = true;
         renderTransportIcons();
       }).catch(function() {
@@ -388,6 +389,7 @@
     } else {
       state.isPlaying = true;
       renderTransportIcons();
+      return Promise.resolve();
     }
   }
 
@@ -407,12 +409,19 @@
     loadIndex(state.index - 1, { play: state.isPlaying });
   }
 
-  function next(manual) {
+  function next(manual, options) {
+    var shouldPlay = options && Object.prototype.hasOwnProperty.call(options, 'play')
+      ? !!options.play
+      : state.isPlaying;
     if (state.playMode === 'shuffle' && !manual) {
-      loadIndex(Math.floor(Math.random() * tracks.length), { play: state.isPlaying });
+      var nextIndex = Math.floor(Math.random() * tracks.length);
+      if (tracks.length > 1 && nextIndex === state.index) {
+        nextIndex = (nextIndex + 1) % tracks.length;
+      }
+      loadIndex(nextIndex, { play: shouldPlay });
       return;
     }
-    loadIndex(state.index + 1, { play: state.isPlaying });
+    loadIndex(state.index + 1, { play: shouldPlay });
   }
 
   function toggleFavorite() {
@@ -520,6 +529,7 @@
       renderTransportIcons();
     });
     els.audio.addEventListener('pause', function() {
+      if (state.isAutoAdvancing) return;
       state.isPlaying = false;
       renderTransportIcons();
       saveState();
@@ -534,11 +544,17 @@
       updateProgress();
     });
     els.audio.addEventListener('ended', function() {
+      state.isAutoAdvancing = true;
       if (state.playMode === 'repeat-one') {
         els.audio.currentTime = 0;
-        play();
+        Promise.resolve(play()).finally(function() {
+          state.isAutoAdvancing = false;
+        });
       } else {
-        next(false);
+        next(false, { play: true });
+        setTimeout(function() {
+          state.isAutoAdvancing = false;
+        }, 600);
       }
     });
     els.audio.addEventListener('error', function() {
