@@ -16,14 +16,20 @@
       } catch (error) {}
     })();
   </script>
-  <link rel="stylesheet" href="css/player-app.css?v=20260528b">
+  <link rel="stylesheet" href="css/player-app.css?v=20260528c">
 </head>
 <body class="player-app-page">
   <div class="app-bg" aria-hidden="true"></div>
 
   <header class="player-topbar">
     <a class="brand-lockup" href="index.html" aria-label="返回丽江音悦台首页">
-      <span class="brand-mark">丽</span>
+      <span class="brand-mark" aria-hidden="true">
+        <svg class="brand-icon" viewBox="0 0 24 24">
+          <path d="M9 18V5l10-2v12"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="16" cy="15" r="3"></circle>
+        </svg>
+      </span>
       <span>
         <strong>丽江音悦台</strong>
         <small>纳西音乐播放器</small>

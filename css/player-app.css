@@ -13,6 +13,7 @@
   --brand-soft: rgba(72, 214, 197, 0.16);
   --danger: #fb7185;
   --nowbar-height: 104px;
+  --mobile-player-height: 112px;
   --topbar-height: 72px;
   --radius-xl: 32px;
   --radius-lg: 24px;
@@ -76,14 +77,14 @@ a {
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 72%);
 }
 
-.line-icon {
+  .line-icon {
   width: 18px;
   height: 18px;
   display: block;
   flex: 0 0 auto;
   stroke: currentColor;
   fill: none;
-  stroke-width: 1.85;
+  stroke-width: 1.65;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -116,9 +117,18 @@ a {
   display: grid;
   place-items: center;
   color: #06211e;
-  font-weight: 900;
   background: linear-gradient(135deg, var(--brand), #f6d365);
   box-shadow: 0 12px 34px rgba(72, 214, 197, 0.2);
+}
+
+.brand-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .brand-lockup strong,
@@ -658,7 +668,8 @@ a {
 @media (max-width: 768px) {
   :root {
     --topbar-height: 64px;
-    --nowbar-height: 88px;
+    --mobile-player-height: 112px;
+    --nowbar-height: var(--mobile-player-height);
   }
 
   input,
@@ -692,7 +703,7 @@ a {
   .player-shell {
     width: min(100%, calc(100% - 20px));
     padding-top: 10px;
-    padding-bottom: calc(var(--nowbar-height) + env(safe-area-inset-bottom, 0px) + 24px);
+    padding-bottom: calc(var(--mobile-player-height) + env(safe-area-inset-bottom, 0px) + 24px);
   }
 
   .player-stage {
@@ -748,8 +759,8 @@ a {
     right: 0;
     bottom: 0;
     z-index: 45;
-    height: min(74dvh, 620px);
-    max-height: calc(100dvh - 36px);
+    height: min(78dvh, calc(100dvh - 24px));
+    max-height: calc(100dvh - 24px);
     border-radius: 26px 26px 0 0;
     padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 16px);
     transform: translateY(calc(100% + 12px));
@@ -758,6 +769,11 @@ a {
 
   body.queue-open .player-queue {
     transform: translateY(0);
+  }
+
+  body.queue-open .nowbar {
+    pointer-events: none;
+    transform: translateY(calc(100% + env(safe-area-inset-bottom, 0px)));
   }
 
   .queue-handle,
@@ -797,13 +813,15 @@ a {
     left: 0;
     right: 0;
     bottom: 0;
-    min-height: var(--nowbar-height);
+    height: var(--mobile-player-height);
+    min-height: 0;
     width: auto;
     max-width: none;
     border-radius: 22px 22px 0 0;
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 4px 10px;
+    gap: 6px 10px;
+    transition: transform 0.24s ease;
   }
 
   .now-track img {
@@ -828,7 +846,7 @@ a {
   }
 
   .progress-hit {
-    height: 22px;
+    height: 36px;
   }
 }
 
@@ -851,10 +869,6 @@ a {
 
   .track-identity h1 {
     font-size: clamp(26px, 10vw, 38px);
-  }
-
-  .stage-actions .icon-btn {
-    display: none;
   }
 
   .now-controls {
