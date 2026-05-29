@@ -1683,7 +1683,23 @@
     const lyricsApiBase = 'https://ljyyt-api.yjlsx0.workers.dev/api/lyrics';
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
     const neteaseApiBase = ljyytApiBase + '/api/netease';
-    const gdMusicApiBase = 'https://music-api.gdstudio.xyz/api.php';
+    const gdMusicApiBase = '/api/gd-music';
+    const gdMusicFallbackBases = [ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
+    async function fetchGdMusicJson(url) {
+      var urls = [url];
+      if (url.indexOf(gdMusicApiBase) === 0) {
+        var suffix = url.slice(gdMusicApiBase.length);
+        gdMusicFallbackBases.forEach(function(base) { urls.push(base + suffix); });
+      }
+      for (var i = 0; i < urls.length; i++) {
+        try {
+          var response = await fetch(urls[i]);
+          if (!response.ok) continue;
+          return await response.json();
+        } catch (error) {}
+      }
+      throw new Error('gd music request failed');
+    }
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
     }
@@ -1889,6 +1905,79 @@
         return title && normalizeTrackText(item.title) === title &&
           (!artist || normalizeTrackText(item.artist) === artist);
       }) || null;
+    }
+    function inferTrackSourceCandidates(track) {
+      var candidates = [];
+      var deferred = [];
+      var add = function(source) {
+        source = String(source || '').trim();
+        if (!source || source === 'local' || source === 'all' || candidates.includes(source)) return;
+        if (source === 'netease') {
+          if (!deferred.includes(source)) deferred.push(source);
+          return;
+        }
+        candidates.push(source);
+      };
+      add(track && track.source);
+      var label = normalizeTrackText(track && track.sourceLabel);
+      [
+        ['joox', 'joox'],
+        ['netease', 'netease'],
+        ['网易', 'netease'],
+        ['酷我', 'kuwo'],
+        ['kuwo', 'kuwo'],
+        ['咪咕', 'migu'],
+        ['migu', 'migu'],
+        ['b站', 'bilibili'],
+        ['bilibili', 'bilibili']
+      ].forEach(function(pair) {
+        if (label.includes(pair[0])) add(pair[1]);
+      });
+      (aggregatedSources || []).forEach(add);
+      ['joox', 'kuwo', 'migu', 'bilibili', 'netease'].forEach(add);
+      return candidates.concat(deferred);
+    }
+    function isTrackMatchCandidate(target, candidate) {
+      var title = normalizeTrackText(target && target.title);
+      var artist = normalizeTrackText(target && target.artist);
+      var candidateTitle = normalizeTrackText(candidate && candidate.title);
+      var candidateArtist = normalizeTrackText(candidate && candidate.artist);
+      var simpleCandidateTitle = normalizeTrackText(candidateTitle.replace(/[（(].*?[）)]/g, ''));
+      var titleMatches = title && candidateTitle && (
+        title === candidateTitle ||
+        title === simpleCandidateTitle ||
+        candidateTitle.indexOf(title + ' ') === 0 ||
+        candidateTitle.indexOf(title + '（') === 0 ||
+        candidateTitle.indexOf(title + '(') === 0
+      );
+      if (!titleMatches) return false;
+      if (!artist) return true;
+      return !candidateArtist || candidateArtist.includes(artist) || artist.includes(candidateArtist);
+    }
+    async function recoverPlayableTrackUrl(track) {
+      if (!track || !track.title) return '';
+      var sources = inferTrackSourceCandidates(track);
+      for (var i = 0; i < sources.length; i++) {
+        var source = sources[i];
+        try {
+          var matches = await fetchExternalSourceTracks(track.title, source, 8);
+          var match = matches.find(function(item) { return isTrackMatchCandidate(track, item); }) || matches[0];
+          if (!match) continue;
+          var url = match.src || await resolveExternalTrackUrl(match);
+          if (!url) continue;
+          Object.assign(track, match, {
+            title: track.title || match.title,
+            artist: track.artist || match.artist,
+            cover: track.cover || match.cover || DEFAULT_COVER,
+            source: match.source || source,
+            sourceLabel: match.sourceLabel || getSourceLabel(match.source || source),
+            urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
+            src: url
+          });
+          return url;
+        } catch (error) {}
+      }
+      return '';
     }
     function setQueue(tracks, index) {
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
@@ -2287,7 +2376,9 @@
     }
     async function ensurePlayableTrackUrl(track) {
       if (!track) return '';
-      if (track.src) return track.src;
+      var hasUnstableNeteaseUrl = track.source === 'netease' && /music\.126\.net/i.test(track.src || '');
+      if (track.src && !hasUnstableNeteaseUrl) return track.src;
+      if (hasUnstableNeteaseUrl) track.src = '';
       if (!track.source || track.source === 'local') {
         var localMatch = findLibraryTrackMatch(track, await ensureLibraryTracks());
         if (localMatch && localMatch.src) {
@@ -2301,8 +2392,12 @@
         }
       }
       if (track.source && track.source !== 'local') {
-        track.src = await resolveExternalTrackUrl(track);
+        track.src = await recoverPlayableTrackUrl(track) || await resolveExternalTrackUrl(track);
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
+      }
+      if (!track.src) {
+        track.src = await recoverPlayableTrackUrl(track);
+        if (currentTrack && isSameTrack(track, currentTrack)) Object.assign(currentTrack, track);
       }
       return track.src || '';
     }
@@ -3080,22 +3175,21 @@
     async function resolveExternalCover(track) {
       if (!track.coverApi) return track;
       try {
-        var response = await fetch(track.coverApi);
-        if (!response.ok) return track;
-        var payload = await response.json();
+        var payload = await fetchGdMusicJson(track.coverApi);
         var url = payload && payload.url ? String(payload.url) : '';
         if (url.startsWith('//')) url = 'https:' + url;
         if (/^https?:\/\//i.test(url)) track.cover = safeCover(url);
       } catch (error) {}
       return track;
     }
-    async function searchExternalSource(query, source) {
+    async function fetchExternalSourceTracks(query, source, count) {
       var url = gdMusicApiBase + '?types=search&source=' + encodeURIComponent(source) +
-        '&name=' + encodeURIComponent(query) + '&count=20&pages=1';
-      var response = await fetch(url);
-      if (!response.ok) throw new Error(source + ' search failed');
-      var payload = await response.json();
-      var tracks = Array.isArray(payload) ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; }) : [];
+        '&name=' + encodeURIComponent(query) + '&count=' + encodeURIComponent(count || 20) + '&pages=1';
+      var payload = await fetchGdMusicJson(url);
+      return Array.isArray(payload) ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; }) : [];
+    }
+    async function searchExternalSource(query, source) {
+      var tracks = await fetchExternalSourceTracks(query, source, 20);
       return Promise.all(tracks.map(resolveExternalCover));
     }
     async function resolveExternalTrackUrl(track) {
@@ -3103,9 +3197,7 @@
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
         '&id=' + encodeURIComponent(track.urlId) + '&br=192';
       try {
-        var response = await fetch(url);
-        if (!response.ok) return '';
-        var payload = await response.json();
+        var payload = await fetchGdMusicJson(url);
         return payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
       } catch (error) {
         return '';

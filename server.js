@@ -333,6 +333,22 @@ async function searchNeteaseSuggest(keyword) {
   return { suggestions };
 }
 
+async function proxyGdMusic(query) {
+  const target = new URL('https://music-api.gdstudio.xyz/api.php');
+  for (const [key, value] of query.entries()) {
+    if (['types', 'source', 'name', 'count', 'pages', 'id', 'br', 'size'].includes(key)) {
+      target.searchParams.set(key, value);
+    }
+  }
+  return requestJson(target.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'ljyyt-local-server/1.0'
+    },
+    timeout: 12000
+  });
+}
+
 function buildSuccess(source, title, artist, lines, extra) {
   return Object.assign({
     found: true,
@@ -1524,6 +1540,19 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 502, {
         suggestions: [],
         message: error.message
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/gd-music') {
+    try {
+      const payload = await proxyGdMusic(requestUrl.searchParams);
+      sendJson(res, 200, payload);
+    } catch (error) {
+      sendJson(res, 502, {
+        code: 502,
+        msg: error.message
       });
     }
     return;

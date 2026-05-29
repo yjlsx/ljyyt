@@ -19,6 +19,10 @@ export default {
         return await withCache(request, ctx, () => handleNeteaseSuggestRequest(url));
       }
 
+      if (url.pathname === '/api/gd-music') {
+        return await withCache(request, ctx, () => handleGdMusicRequest(url));
+      }
+
       if (url.pathname === '/api/cover') {
         return await withCache(request, ctx, () => handleCoverRequest(url));
       }
@@ -244,6 +248,17 @@ async function handleNeteaseSuggestRequest(url) {
   });
 
   return jsonResponse({ suggestions });
+}
+
+async function handleGdMusicRequest(url) {
+  const target = new URL('https://music-api.gdstudio.xyz/api.php');
+  for (const [key, value] of url.searchParams.entries()) {
+    if (['types', 'source', 'name', 'count', 'pages', 'id', 'br', 'size'].includes(key)) {
+      target.searchParams.set(key, value);
+    }
+  }
+  const payload = await fetchJson(target.toString());
+  return jsonResponse(payload);
 }
 
 async function handleCoverRequest(url) {
