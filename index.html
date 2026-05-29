@@ -962,27 +962,34 @@
       height: 61px; width: 61px; border-radius: 50%; background: white; color: #101415;
       display: grid; place-items: center; font-size: 25px;
     }
-    .controls .main-play svg, .controls .main-play .line-icon { width: 24px; height: 24px; color: #101415; }
+    .controls .main-play svg, .controls .main-play .line-icon { width: 28px; height: 28px; color: #101415; }
     .controls .main-play,
     .controls .main-play:hover,
+    .controls .main-play:focus,
     .controls .main-play:active,
     .controls .main-play.is-playing {
-      background: white !important;
+      background: #fff !important;
       color: #101415 !important;
     }
+    .controls .main-play:hover { transform: scale(1.05); }
+    .controls .main-play:active { transform: scale(.95); }
     .controls .main-play svg,
     .controls .main-play .line-icon,
     .controls .main-play:hover svg,
     .controls .main-play:hover .line-icon,
+    .controls .main-play:focus svg,
+    .controls .main-play:focus .line-icon,
     .controls .main-play.is-playing svg,
     .controls .main-play.is-playing .line-icon {
       color: #101415 !important;
-      fill: currentColor;
+      fill: currentColor !important;
+      stroke: currentColor !important;
     }
-    .controls .main-play .icon-play,
-    .controls .main-play .icon-pause {
-      fill: #101415 !important;
-      stroke: none !important;
+    .controls .main-play .icon-play { transform: translateX(2px); }
+    .controls .main-play .icon-play polygon,
+    .controls .main-play .icon-pause rect {
+      fill: currentColor !important;
+      stroke: currentColor !important;
     }
     .progress svg, .progress .line-icon { color: var(--primary); }
     .progress .icon-play, .progress .icon-pause { fill: currentColor !important; stroke: none !important; }
@@ -1302,7 +1309,7 @@
         </section>
       </div>
       <div class="view" data-view="market-playlist">
-        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('search')" aria-label="返回发现"><span data-icon="chevronLeft"></span></button><h2 id="market-playlist-page-title">歌单</h2></div></div>
+        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('search')" aria-label="返回发现"><span data-icon="chevronLeft"></span></button></div></div>
         <div class="playlist-view-hero">
           <img class="playlist-summary-cover" id="market-playlist-cover" src="" alt="歌单封面" referrerpolicy="no-referrer">
           <div class="playlist-summary"><h2 id="market-playlist-title">歌单</h2><p id="market-playlist-count">加载中...</p><button class="round-play" onclick="playFirstMarketPlaylist()" aria-label="播放歌单歌曲"><span data-icon="play"></span></button></div>
@@ -3560,6 +3567,8 @@
     function toggleProvider(event) {
       event.stopPropagation();
       aggregateSourcePanel.classList.remove('open');
+      var wrap = event.currentTarget && event.currentTarget.closest('.provider-wrap');
+      if (wrap && sourceMenu && sourceMenu.parentElement !== wrap) wrap.appendChild(sourceMenu);
       sourceMenu.classList.toggle('open');
     }
     function toggleAggregateSourcePanel(event) {
