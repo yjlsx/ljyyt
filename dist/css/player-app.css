@@ -208,13 +208,13 @@ a {
 }
 
 .player-shell {
-  width: min(1360px, calc(100% - 32px));
+  width: calc(100% - 32px);
   min-height: calc(100dvh - var(--topbar-height) - var(--nowbar-height) - 28px);
   margin: 0 auto;
   padding: 18px 0 calc(var(--nowbar-height) + env(safe-area-inset-bottom, 0px) + 28px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 24px;
 }
 
 .player-stage,
