@@ -401,22 +401,6 @@
       border: 1px solid var(--border);
     }
     .history-chip:hover { border-color: color-mix(in srgb, var(--primary) 40%, var(--border)); color: var(--primary); }
-    .search-tabs {
-      display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 12px;
-      scrollbar-width: none;
-    }
-    .search-tabs::-webkit-scrollbar { display: none; }
-    .search-tab {
-      flex: none; height: 32px; padding: 0 13px; border-radius: 999px;
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--secondary); color: var(--muted-foreground);
-      border: 1px solid transparent; font-size: 12px;
-    }
-    .search-tab.active {
-      background: var(--primary); color: var(--primary-foreground);
-      border-color: color-mix(in srgb, var(--primary) 55%, transparent);
-    }
-    .search-tab .line-icon { width: 15px; height: 15px; }
     .search-section { margin-bottom: 14px; }
     .search-section.hidden { display: none; }
     .search-section-title {
@@ -437,7 +421,13 @@
     .search-playlist-card:hover { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); }
 
     .discovery-view { padding: 0; min-height: 100%; background: color-mix(in srgb, var(--background) 50%, transparent); }
-    .index-discover-header, .index-discover-search, .discover-search-card { display: none; }
+    .index-discover-header, .discover-search-card { display: none; }
+    .index-discover-search { padding: 12px 4px 8px; position: sticky; top: 0; z-index: 24; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(18px); }
+    .discovery-view .search-box { background: var(--card); box-shadow: 0 8px 22px rgba(15, 23, 42, .06); }
+    .discovery-view .search-history { padding: 10px 2px 4px; }
+    .discover-search-results { display: none; padding: 8px 4px 108px; }
+    .discover-results-active .discover-search-results { display: block; }
+    .discover-results-active .search-history:not([hidden]) { display: block; }
     .discover-category-row {
       position: sticky; top: 0; z-index: 21;
       display: flex;
@@ -1263,6 +1253,20 @@
       </section>
       </div>
       <div class="view discovery-view" data-view="search">
+        <div class="index-discover-search">
+          <div class="search-box">
+            <span data-icon="search"></span>
+            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="renderSearchHistory()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
+            <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'search')"><span data-icon="close"></span></button>
+          </div>
+          <div class="search-history" id="search-history" hidden></div>
+        </div>
+        <section class="discover-search-results" id="discover-search-results" aria-label="搜索结果">
+          <div class="search-section" id="search-songs-section">
+            <div class="search-section-title"><strong>搜索结果</strong><span id="search-song-count">0 首</span></div>
+            <div class="track-list" id="search-results"></div>
+          </div>
+        </section>
         <nav class="discover-category-row" aria-label="发现分类"></nav>
         <section class="discover-section index-discover-section" aria-label="发现歌单">
           <div class="discover-playlist-rail" id="index-discover-playlists"></div>
@@ -1696,7 +1700,7 @@
     }
 
     function getSearchInput() {
-      return null;
+      return document.getElementById('search-input');
     }
     function getHomeSearchInput() {
       return document.getElementById('home-search-input');
@@ -1712,13 +1716,17 @@
     function handleHomeSearchKey(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
+        var homeInput = getHomeSearchInput();
+        var searchInput = getSearchInput();
         showView('search');
+        if (searchInput && homeInput) searchInput.value = homeInput.value;
+        performSearch({ remember: true });
       }
     }
     function renderSearchHistory() {
       const box = document.getElementById('search-history');
       if (!box) return;
-      const query = String(document.getElementById('search-input')?.value || '').trim();
+      const query = String(getSearchInput()?.value || '').trim();
       if (query || !searchHistory.length) {
         box.innerHTML = '';
         box.hidden = true;
@@ -1731,7 +1739,13 @@
         ).join('') + '</div>';
       box.querySelectorAll('.history-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
+          var word = chip.dataset.query || chip.textContent || '';
+          var searchInput = getSearchInput();
+          var homeInput = getHomeSearchInput();
           showView('search');
+          if (searchInput) searchInput.value = word;
+          if (homeInput) homeInput.value = word;
+          performSearch({ remember: true });
         });
       });
     }
@@ -2594,15 +2608,87 @@
         return '';
       }
     }
-    async function performSearch(options) {
-      // Search results UI is intentionally disabled while matching dev PlaylistMarket.
-      // Bottom Search tab is now a discovery/playlist market only.
-      showView('search');
-      renderIndexDiscoverPlaylists();
+    function filterLocalSearch(query, tracks) {
+      var needle = String(query || '').trim().toLowerCase();
+      if (!needle) return [];
+      return (tracks || []).filter(function(track) {
+        return [track.title, track.artist, track.album].some(function(value) {
+          return String(value || '').toLowerCase().includes(needle);
+        });
+      }).slice(0, 40).map(function(track) {
+        return Object.assign({ source: 'local', sourceLabel: '丽江曲库' }, track);
+      });
     }
-    function handleDiscoverSearchInput() {}
+    function getActiveSearchSources() {
+      var provider = activeProvider || '聚合搜索';
+      if (provider === '聚合搜索') return aggregatedSources.slice();
+      var mapped = providerSourceMap[provider] || 'local';
+      return [mapped];
+    }
+    function setSearchResultsActive(active) {
+      var view = document.querySelector('[data-view="search"]');
+      if (view) view.classList.toggle('discover-results-active', !!active);
+      if (!active) {
+        var results = document.getElementById('search-results');
+        var count = document.getElementById('search-song-count');
+        if (results) results.innerHTML = '';
+        if (count) count.textContent = '0 首';
+      }
+    }
+    async function performSearch(options) {
+      options = options || {};
+      var searchInput = getSearchInput();
+      var homeInput = getHomeSearchInput();
+      var query = String((searchInput && searchInput.value) || (homeInput && homeInput.value) || '').trim();
+      showView('search');
+      if (searchInput && searchInput.value !== query) searchInput.value = query;
+      if (homeInput && homeInput.value !== query) homeInput.value = query;
+      updateSearchClearButton();
+      if (!query) {
+        setSearchResultsActive(false);
+        renderSearchHistory();
+        renderIndexDiscoverPlaylists();
+        return;
+      }
+      if (options.remember !== false) rememberSearchQuery(query);
+      renderSearchHistory();
+      setSearchResultsActive(true);
+      var container = document.getElementById('search-results');
+      var count = document.getElementById('search-song-count');
+      if (container) container.innerHTML = '<div class="empty-note">正在搜索...</div>';
+      if (count) count.textContent = '搜索中';
+      try {
+        var sources = getActiveSearchSources();
+        var localTracks = [];
+        if (sources.includes('local')) localTracks = filterLocalSearch(query, await ensureLibraryTracks());
+        var externalSources = sources.filter(function(source) { return source && source !== 'local'; });
+        var externalGroups = await Promise.all(externalSources.map(function(source) {
+          return searchExternalSource(query, source).catch(function() { return []; });
+        }));
+        var results = localTracks.concat.apply(localTracks, externalGroups).filter(function(track) { return track && track.title; });
+        currentSearchState.songs = results;
+        renderSearchRows(results, activeProvider);
+      } catch (error) {
+        if (container) container.innerHTML = '<div class="empty-note">搜索失败，请稍后重试。</div>';
+        if (count) count.textContent = '0 首';
+      }
+    }
+    function handleDiscoverSearchInput() {
+      var searchInput = getSearchInput();
+      var homeInput = getHomeSearchInput();
+      if (homeInput && searchInput) homeInput.value = searchInput.value;
+      updateSearchClearButton();
+      if (!String(searchInput && searchInput.value || '').trim()) {
+        setSearchResultsActive(false);
+        renderSearchHistory();
+        renderIndexDiscoverPlaylists();
+      }
+    }
     function handleSearchKey(event) {
-      if (event && event.key === 'Enter') event.preventDefault();
+      if (event && event.key === 'Enter') {
+        event.preventDefault();
+        performSearch({ remember: true });
+      }
     }
     function getFavoriteSearchQuery() {
       var input = document.getElementById('favorite-search-input');
