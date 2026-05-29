@@ -1315,7 +1315,48 @@
         padding-left: clamp(24px, 4vw, 56px);
         padding-right: clamp(24px, 4vw, 56px);
       }
-      .fullscreen,
+      .player { height: 64px; border-radius: 16px; padding: 8px 14px; gap: 14px; }
+      .player img { width: 48px; height: 48px; border-radius: 12px; }
+      .player-copy strong { font-size: 15px; }
+      .player-copy span { font-size: 13px; }
+      .mini-controls { gap: 20px; }
+      .fullscreen {
+        inset: 0;
+        width: 100%;
+        transform: translateY(110%);
+      }
+      .fullscreen.open { transform: translateY(0); }
+      .fullscreen .full-main {
+        flex-direction: row;
+        align-items: center;
+        gap: 48px;
+        padding: 20px 60px;
+      }
+      .fullscreen .full-cover { width: min(36vw, 340px); border-radius: 20px; }
+      .fullscreen .full-main.show-lyrics {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 36px;
+        padding: 16px 48px;
+      }
+      .fullscreen .full-main.show-lyrics .full-cover {
+        width: min(28vw, 260px);
+        align-self: center;
+      }
+      .fullscreen .full-main.show-lyrics .lyrics {
+        flex: 1;
+        height: auto;
+        max-height: none;
+        min-height: 0;
+        text-align: left;
+        mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+      }
+      .full-meta { max-width: 600px; margin-left: auto; margin-right: auto; padding: 4px 48px 12px; }
+      .full-meta h2 { font-size: 22px; }
+      .full-meta p { font-size: 14px; }
+      .seek { max-width: 600px; margin-left: auto; margin-right: auto; }
+      .controls { max-width: 420px; margin-left: auto; margin-right: auto; padding: 14px 0 28px; }
       .queue-drawer,
       .action-drawer,
       .setting-drawer {
@@ -1324,18 +1365,21 @@
         transform: translate(-50%, 110%);
         width: min(100%, 720px);
       }
-      .fullscreen.open { transform: translate(-50%, 0); }
       .queue-drawer.open,
       .action-drawer.open,
       .setting-drawer.open { transform: translate(-50%, 0); }
       .quick-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       .favorite-header { padding: 24px 0 12px; }
+      .section-head h2 { font-size: 18px; }
     }
     @media (min-width: 1080px) {
       .app { max-width: 1280px; }
       .search-playlists,
       .discover-playlist-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 22px 20px; }
       .mv-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+      .fullscreen .full-main { gap: 56px; padding: 24px 80px; }
+      .fullscreen .full-cover { width: min(32vw, 380px); }
+      .fullscreen .full-main.show-lyrics { gap: 48px; padding: 20px 64px; }
     }
   </style>
 </head>
