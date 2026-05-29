@@ -1696,7 +1696,7 @@
           var response = await fetch(urls[i]);
           if (!response.ok) continue;
           return await response.json();
-        } catch (error) {}
+        } catch (error) { console.warn('fetchGdMusicJson: endpoint failed', urls[i], error); }
       }
       throw new Error('gd music request failed');
     }
@@ -1961,21 +1961,22 @@
         var source = sources[i];
         try {
           var matches = await fetchExternalSourceTracks(track.title, source, 8);
-          var match = matches.find(function(item) { return isTrackMatchCandidate(track, item); }) || matches[0];
+          var match = matches.find(function(item) { return isTrackMatchCandidate(track, item); });
           if (!match) continue;
           var url = match.src || await resolveExternalTrackUrl(match);
           if (!url) continue;
+          var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
           Object.assign(track, match, {
-            title: track.title || match.title,
-            artist: track.artist || match.artist,
-            cover: track.cover || match.cover || DEFAULT_COVER,
+            title: origTitle || match.title,
+            artist: origArtist || match.artist,
+            cover: origCover || match.cover || DEFAULT_COVER,
             source: match.source || source,
             sourceLabel: match.sourceLabel || getSourceLabel(match.source || source),
             urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
             src: url
           });
           return url;
-        } catch (error) {}
+        } catch (error) { console.warn('recoverPlayableTrackUrl: source ' + source + ' failed', error); }
       }
       return '';
     }
@@ -2097,7 +2098,7 @@
     }
     function buildSearchSuggestions(query, tracks) {
       var needle = String(query || '').trim().toLowerCase();
-      if (!needle) return [];
+      if (!needle) return { artist: [], song: [], album: [], playlist: [], history: [] };
       var seen = {};
       var groups = { artist: [], song: [], album: [], playlist: [], history: [] };
       function add(type, text, meta, icon, score) {
@@ -2162,7 +2163,7 @@
               };
             }).filter(function(item) { return item.text; });
           }
-        } catch (error) {}
+        } catch (error) { console.warn('fetchNeteaseSuggestions: endpoint failed', error); }
       }
       return [];
     }
@@ -2382,17 +2383,19 @@
       if (!track.source || track.source === 'local') {
         var localMatch = findLibraryTrackMatch(track, await ensureLibraryTracks());
         if (localMatch && localMatch.src) {
+          var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
           Object.assign(track, localMatch, {
-            title: track.title || localMatch.title,
-            artist: track.artist || localMatch.artist,
-            cover: track.cover || localMatch.cover || DEFAULT_COVER
+            title: origTitle || localMatch.title,
+            artist: origArtist || localMatch.artist,
+            cover: origCover || localMatch.cover || DEFAULT_COVER
           });
           if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
           return track.src || '';
         }
       }
       if (track.source && track.source !== 'local') {
-        track.src = await recoverPlayableTrackUrl(track) || await resolveExternalTrackUrl(track);
+        track.src = await resolveExternalTrackUrl(track);
+        if (!track.src) track.src = await recoverPlayableTrackUrl(track);
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
       if (!track.src) {
@@ -2608,7 +2611,7 @@
       }) : favoriteTracks;
     }
     function trackFromRenderedRow(row) {
-      if (!row) return currentTrack;
+      if (!row) return currentTrack || { title: '', artist: '', src: '', cover: DEFAULT_COVER, duration: 0 };
       if (row.__ljyytTrack) return row.__ljyytTrack;
       var index = Number(row.dataset.index) || 0;
       var container = row.parentElement;
@@ -3179,7 +3182,7 @@
         var url = payload && payload.url ? String(payload.url) : '';
         if (url.startsWith('//')) url = 'https:' + url;
         if (/^https?:\/\//i.test(url)) track.cover = safeCover(url);
-      } catch (error) {}
+      } catch (error) { console.warn('resolveExternalCover: failed', error); }
       return track;
     }
     async function fetchExternalSourceTracks(query, source, count) {
@@ -3270,11 +3273,13 @@
         if (count) count.textContent = '0 首';
       }
     }
+    var suggestionDebounceTimer = null;
     function handleDiscoverSearchInput() {
       var searchInput = getSearchInput();
       var homeInput = getHomeSearchInput();
       if (homeInput && searchInput) homeInput.value = searchInput.value;
       updateSearchClearButton();
+      clearTimeout(suggestionDebounceTimer);
       if (!String(searchInput && searchInput.value || '').trim()) {
         setSearchResultsActive(false);
         hideSearchHistory();
@@ -3282,7 +3287,9 @@
         renderIndexDiscoverPlaylists();
       } else {
         hideSearchHistory();
-        renderSearchSuggestions(searchInput.value);
+        suggestionDebounceTimer = setTimeout(function() {
+          renderSearchSuggestions(searchInput.value);
+        }, 220);
       }
     }
     function handleSearchKey(event) {
@@ -4165,6 +4172,11 @@
       if (source && sourceMap[source]) syncProviderSelection(sourceMap[source]);
       if (view === 'search' || query) {
         showView('search');
+        if (query) {
+          var input = document.getElementById('search-input');
+          if (input) input.value = query;
+          performSearch({ remember: false });
+        }
         renderIndexDiscoverPlaylists();
       }
     }
