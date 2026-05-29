@@ -561,6 +561,9 @@
       state.isPlaying = false;
       renderTransportIcons();
       els.stageArtist.textContent = (getTrack().artist || '未知歌手') + ' · 音频加载失败';
+      if (tracks.length > 1) {
+        setTimeout(function() { next(false, { play: true }); }, 1500);
+      }
     });
 
     document.addEventListener('keydown', function(event) {

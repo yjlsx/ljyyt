@@ -1266,9 +1266,9 @@
       }
       .app {
         width: 100%;
-        max-width: 1080px;
+        max-width: none;
         height: 100dvh;
-        margin: 0 auto;
+        margin: 0;
         border: 0;
         box-shadow: none;
         position: relative;
@@ -1287,7 +1287,7 @@
       .brand { font-size: 20px; }
       .brand img { width: 34px; height: 34px; border-radius: 10px; }
       .search-shell { padding: 12px clamp(24px, 4vw, 56px) 14px; }
-      .search-box { max-width: 560px; }
+      .search-box { max-width: none; }
       .content { padding-left: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
       .track { height: 62px; padding: 6px 10px 6px 6px; }
       .track img { width: 50px; height: 50px; border-radius: 10px; }
@@ -1373,7 +1373,7 @@
       .section-head h2 { font-size: 18px; }
     }
     @media (min-width: 1080px) {
-      .app { max-width: 1280px; }
+      .app { max-width: none; }
       .search-playlists,
       .discover-playlist-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 22px 20px; }
       .mv-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
