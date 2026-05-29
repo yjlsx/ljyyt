@@ -748,24 +748,49 @@
     .back:hover { background: var(--muted); color: var(--foreground); }
     .subpage-head h2 { margin: 0; font-size: 18px; font-weight: 630; }
     .playlist-view-hero {
-      display: flex; gap: 14px; align-items: flex-end;
-      margin: 0 -12px; padding: 15px 16px;
+      display: flex; gap: 16px; align-items: flex-start;
+      margin: 0 -12px; padding: 20px 20px 18px;
       border-bottom: 1px solid var(--border);
-      background: color-mix(in srgb, var(--muted) 22%, transparent);
+      background: color-mix(in srgb, var(--background) 92%, transparent);
     }
     .playlist-summary-cover {
-      width: 88px; height: 88px; flex: none; border-radius: 11px;
+      width: 96px; height: 96px; flex: none; border-radius: 12px;
       display: grid; place-items: center; color: var(--primary);
-      background: rgba(54,169,123,.12); border: 1px solid var(--border);
+      object-fit: cover; background: rgba(54,169,123,.12); border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
     }
     .playlist-summary-cover .line-icon,
     .playlist-summary-cover svg {
       width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
     }
-    .playlist-summary h2 { margin: 0 0 7px; font-size: 16px; font-weight: 750; }
-    .playlist-summary p { margin: 0 0 10px; color: var(--muted-foreground); font-size: 12px; }
-    .playlist-summary .round-play { min-width: 38px; height: 31px; }
+    .playlist-summary {
+      flex: 1; min-width: 0; padding-top: 2px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .playlist-summary h2 {
+      margin: 0; font-size: 16px; line-height: 1.35; font-weight: 760;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .playlist-meta-row {
+      display: flex; flex-wrap: wrap; gap: 4px 12px;
+      color: var(--muted-foreground); font-size: 12px; line-height: 1.4;
+    }
+    .playlist-meta-row span {
+      max-width: 142px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .playlist-description {
+      margin: 1px 0 0; color: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
+      font-size: 11px; line-height: 1.55; cursor: pointer;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; white-space: normal;
+    }
+    .playlist-description.expanded {
+      display: block; white-space: pre-line;
+    }
+    .playlist-summary .round-play { width: 38px; height: 31px; margin-top: 2px; }
+    .playlist-summary.has-description .round-play { display: none; }
     .page-list-head {
       display: grid; grid-template-columns: 28px 1fr auto; gap: 14px; align-items: center;
       height: 38px; margin: 0 -12px; padding: 0 16px;
@@ -1534,7 +1559,12 @@
         <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('search')" aria-label="返回发现"><span data-icon="chevronLeft"></span></button></div></div>
         <div class="playlist-view-hero">
           <img class="playlist-summary-cover" id="market-playlist-cover" src="" alt="歌单封面" referrerpolicy="no-referrer">
-          <div class="playlist-summary"><h2 id="market-playlist-title">歌单</h2><p id="market-playlist-count">加载中...</p><button class="round-play" onclick="playFirstMarketPlaylist()" aria-label="播放歌单歌曲"><span data-icon="play"></span></button></div>
+          <div class="playlist-summary" id="market-playlist-summary">
+            <h2 id="market-playlist-title">歌单</h2>
+            <div class="playlist-meta-row"><span id="market-playlist-creator" hidden></span><span id="market-playlist-count">加载中...</span><span id="market-playlist-date" hidden></span></div>
+            <p class="playlist-description" id="market-playlist-description" onclick="toggleMarketPlaylistDescription()" hidden></p>
+            <button class="round-play" onclick="playFirstMarketPlaylist()" aria-label="播放歌单歌曲"><span data-icon="play"></span></button>
+          </div>
         </div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
         <div class="track-list playlist-page-list" id="market-playlist-list"><div class="empty-note">加载中...</div></div>
@@ -1753,6 +1783,7 @@
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
+    const SEARCH_RESULT_LIMIT = 200;
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
@@ -3068,13 +3099,25 @@
       var payload = await fetchOtterNetease('/playlist', { playlistId: String(id || ''), cookie: '' });
       var playlist = payload && payload.playlist ? payload.playlist : payload;
       var tracks = Array.isArray(playlist && playlist.tracks) ? playlist.tracks.map(normalizeNeteasePlaylistTrack).filter(function(track) { return track.id && track.title; }) : [];
+      var creator = playlist && playlist.creator ? playlist.creator : {};
       return {
         id: String(playlist && playlist.id || id || ''),
         name: String(playlist && playlist.name || '歌单'),
         cover: safeCover(playlist && playlist.coverImgUrl || DEFAULT_COVER),
+        description: String(playlist && playlist.description || ''),
+        creator: String(creator.nickname || ''),
+        publishTime: Number(playlist && (playlist.createTime || playlist.updateTime) || 0),
         trackCount: Number(playlist && playlist.trackCount || tracks.length || 0),
         tracks: tracks
       };
+    }
+    function formatDetailDate(value) {
+      var date = new Date(Number(value) || 0);
+      if (Number.isNaN(date.getTime()) || date.getTime() <= 0) return '';
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    }
+    function toggleMarketPlaylistDescription() {
+      document.getElementById('market-playlist-description')?.classList.toggle('expanded');
     }
     function renderMarketPlaylistDetail(meta, tracks, loadingText) {
       currentMarketPlaylistMeta = meta || currentMarketPlaylistMeta || { name: '歌单', cover: DEFAULT_COVER, trackCount: 0 };
@@ -3086,10 +3129,31 @@
       var titleNode = document.getElementById('market-playlist-title');
       var countNode = document.getElementById('market-playlist-count');
       var coverNode = document.getElementById('market-playlist-cover');
+      var creatorNode = document.getElementById('market-playlist-creator');
+      var dateNode = document.getElementById('market-playlist-date');
+      var descNode = document.getElementById('market-playlist-description');
+      var summaryNode = document.getElementById('market-playlist-summary');
+      var description = String(currentMarketPlaylistMeta.description || '').trim();
+      var creator = String(currentMarketPlaylistMeta.creator || '').trim();
+      var date = formatDetailDate(currentMarketPlaylistMeta.publishTime);
       if (pageTitle) pageTitle.textContent = title;
       if (titleNode) titleNode.textContent = title;
-      if (countNode) countNode.textContent = loadingText || (count + ' 首歌曲');
+      if (countNode) countNode.textContent = loadingText || (count + ' 首');
       if (coverNode) coverNode.src = cover;
+      if (creatorNode) {
+        creatorNode.textContent = creator;
+        creatorNode.hidden = !creator;
+      }
+      if (dateNode) {
+        dateNode.textContent = date;
+        dateNode.hidden = !date;
+      }
+      if (descNode) {
+        descNode.textContent = description;
+        descNode.hidden = !description;
+        descNode.classList.remove('expanded');
+      }
+      if (summaryNode) summaryNode.classList.toggle('has-description', !!description);
       renderPageTrackRows(document.getElementById('market-playlist-list'), currentMarketPlaylistTracks, loadingText || '这个歌单暂无可播放歌曲。', function(track, index) {
         setQueue(currentMarketPlaylistTracks, index);
         queueIndex = index;
@@ -3272,13 +3336,30 @@
       return track;
     }
     async function fetchExternalSourceTracks(query, source, count, signal) {
-      var url = gdMusicApiBase + '?types=search&source=' + encodeURIComponent(source) +
-        '&name=' + encodeURIComponent(query) + '&count=' + encodeURIComponent(count || 20) + '&pages=1';
-      var payload = await fetchGdMusicJson(url, signal);
-      return Array.isArray(payload) ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; }) : [];
+      var total = Math.max(1, Number(count) || 20);
+      var pageSize = Math.min(50, total);
+      var pageCount = Math.max(1, Math.ceil(total / pageSize));
+      var requests = [];
+      for (var page = 1; page <= pageCount; page++) {
+        var url = gdMusicApiBase + '?types=search&source=' + encodeURIComponent(source) +
+          '&name=' + encodeURIComponent(query) + '&count=' + encodeURIComponent(pageSize) + '&pages=' + page;
+        requests.push(fetchGdMusicJson(url, signal).catch(function() { return []; }));
+      }
+      var payloads = await Promise.all(requests);
+      var tracks = [];
+      var seen = new Set();
+      payloads.forEach(function(payload) {
+        (Array.isArray(payload) ? payload : []).map(normalizeExternalTrack).filter(function(track) { return track.title; }).forEach(function(track) {
+          var key = [track.source, track.urlId || track.id || track.title, track.artist].join(':');
+          if (seen.has(key)) return;
+          seen.add(key);
+          tracks.push(track);
+        });
+      });
+      return tracks.slice(0, total);
     }
     async function searchExternalSource(query, source, signal) {
-      var tracks = await fetchExternalSourceTracks(query, source, 20, signal);
+      var tracks = await fetchExternalSourceTracks(query, source, SEARCH_RESULT_LIMIT, signal);
       return Promise.all(tracks.map(resolveExternalCover));
     }
     async function resolveExternalTrackUrl(track) {
@@ -3299,7 +3380,7 @@
         return [track.title, track.artist, track.album].some(function(value) {
           return String(value || '').toLowerCase().includes(needle);
         });
-      }).slice(0, 40).map(function(track) {
+      }).map(function(track) {
         return Object.assign({ source: 'local', sourceLabel: '丽江曲库' }, track);
       });
     }
@@ -4318,6 +4399,16 @@
         _netease: 'Netease'
       };
       if (source && sourceMap[source]) syncProviderSelection(sourceMap[source]);
+      var playlistId = params.get('playlist') || '';
+      if (view === 'market-playlist' && playlistId) {
+        showView('market-playlist');
+        var seed = { id: String(playlistId), name: '歌单', cover: DEFAULT_COVER, trackCount: 0 };
+        renderMarketPlaylistDetail(seed, [], '加载中...');
+        fetchMarketPlaylistDetail(playlistId)
+          .then(function(detail) { renderMarketPlaylistDetail(detail, detail.tracks); })
+          .catch(function() { renderMarketPlaylistDetail(seed, [], '歌单加载失败，请稍后重试。'); });
+        return;
+      }
       if (view === 'search' || query) {
         showView('search');
         if (query) {
