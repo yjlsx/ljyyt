@@ -2404,11 +2404,13 @@
         title: track.title || '未知歌曲',
         artist: track.artist || '未知歌手',
         cover: track.cover || DEFAULT_COVER,
+        coverApi: track.coverApi || '',
         src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
         duration: track.duration || currentTrack.duration,
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || '丽江曲库',
         urlId: track.urlId || track.url_id || track.id || '',
+        lyric_id: track.lyric_id || track.id || '',
         id: track.id || track.urlId || track.url_id || track.src || track.title
       };
       if (!playQueue.length) setQueue([currentTrack], 0);
@@ -2416,6 +2418,9 @@
       updateLikeButton();
       renderQueue();
       loadLyricsForTrack(currentTrack);
+      if (currentTrack.coverApi && (!currentTrack.cover || currentTrack.cover === DEFAULT_COVER)) {
+        resolveExternalCover(currentTrack).then(function() { updateTrackUi(currentTrack); });
+      }
       savePlaybackState();
       if (audioPlayer.src !== currentTrack.src) {
         audioPlayer.src = currentTrack.src;
@@ -3803,11 +3808,40 @@
         synced: []
       };
     }
+    function parseLrcText(lrc) {
+      if (!lrc || typeof lrc !== 'string') return [];
+      var lines = lrc.split('\n');
+      var result = [];
+      for (var i = 0; i < lines.length; i++) {
+        var match = lines[i].match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)/);
+        if (match) {
+          var time = parseInt(match[1]) * 60 + parseFloat(match[2]);
+          var text = match[3].trim();
+          if (text) result.push({ time: time, text: text });
+        }
+      }
+      return result.sort(function(a, b) { return a.time - b.time; });
+    }
     async function loadLyricsForTrack(track) {
       var requestId = ++lyricsRequestId;
       currentLyrics = { lines: [], synced: [], source: 'loading', activeIndex: -1 };
       renderLyricsMessage('正在搜索歌词...');
       try {
+        if (track.source && track.source !== 'local' && track.lyric_id) {
+          try {
+            var gdUrl = gdMusicApiBase + '?types=lyric&source=' + encodeURIComponent(track.source) + '&id=' + encodeURIComponent(track.lyric_id);
+            var gdPayload = await fetchGdMusicJson(gdUrl);
+            if (requestId !== lyricsRequestId) return;
+            if (gdPayload && gdPayload.lyric) {
+              var synced = parseLrcText(gdPayload.lyric);
+              if (synced.length) {
+                currentLyrics = { lines: synced.map(function(e) { return e.text; }), synced: synced, source: track.sourceLabel || track.source, activeIndex: -1 };
+                renderLyricsLines(currentLyrics.lines, 0, currentLyrics.source);
+                return;
+              }
+            }
+          } catch (e) { console.warn('GD lyrics fallback failed', e); }
+        }
         var url = lyricsApiBase + '?title=' + encodeURIComponent(track.title || '') + '&artist=' + encodeURIComponent(track.artist || '');
         var response = await fetch(url);
         if (!response.ok) throw new Error('lyrics not found');
