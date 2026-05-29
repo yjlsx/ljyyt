@@ -1811,6 +1811,25 @@
     function isSameTrack(a, b) {
       return getTrackKey(a) === getTrackKey(b);
     }
+    function normalizeTrackText(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+    function findLibraryTrackMatch(track, tracks) {
+      if (!track || !Array.isArray(tracks)) return null;
+      var id = normalizeTrackText(track.urlId || track.url_id || track.id);
+      var src = normalizeTrackText(track.src);
+      var title = normalizeTrackText(track.title);
+      var artist = normalizeTrackText(track.artist);
+      return tracks.find(function(item) {
+        if (!item) return false;
+        var itemId = normalizeTrackText(item.urlId || item.url_id || item.id);
+        var itemSrc = normalizeTrackText(item.src);
+        if (id && itemId && id === itemId) return true;
+        if (src && itemSrc && src === itemSrc) return true;
+        return title && normalizeTrackText(item.title) === title &&
+          (!artist || normalizeTrackText(item.artist) === artist);
+      }) || null;
+    }
     function setQueue(tracks, index) {
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
       queueIndex = Math.max(0, Math.min(Number(index) || 0, playQueue.length - 1));
@@ -2017,7 +2036,7 @@
         title: track.title || '未知歌曲',
         artist: track.artist || '未知歌手',
         cover: track.cover || DEFAULT_COVER,
-        src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || currentTrack.src),
+        src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
         duration: track.duration || currentTrack.duration,
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || '丽江曲库',
@@ -2055,6 +2074,18 @@
     async function ensurePlayableTrackUrl(track) {
       if (!track) return '';
       if (track.src) return track.src;
+      if (!track.source || track.source === 'local') {
+        var localMatch = findLibraryTrackMatch(track, await ensureLibraryTracks());
+        if (localMatch && localMatch.src) {
+          Object.assign(track, localMatch, {
+            title: track.title || localMatch.title,
+            artist: track.artist || localMatch.artist,
+            cover: track.cover || localMatch.cover || DEFAULT_COVER
+          });
+          if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
+          return track.src || '';
+        }
+      }
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
@@ -2255,6 +2286,37 @@
         src: ''
       };
     }
+    function getFavoriteSearchQuery() {
+      var input = document.getElementById('favorite-search-input');
+      return String(input && input.value || '').trim().toLowerCase();
+    }
+    function getVisibleFavoriteTracks() {
+      var query = getFavoriteSearchQuery();
+      return query ? favoriteTracks.filter(function(track) {
+        return [track.title, track.artist, track.album].some(function(value) {
+          return String(value || '').toLowerCase().includes(query);
+        });
+      }) : favoriteTracks;
+    }
+    function trackFromRenderedRow(row) {
+      if (!row) return currentTrack;
+      if (row.__ljyytTrack) return row.__ljyytTrack;
+      var index = Number(row.dataset.index) || 0;
+      var container = row.parentElement;
+      var id = container && container.id;
+      if (id === 'search-results') return currentSearchState.songs[index] || currentTrack;
+      if (id === 'favorite-list') return getVisibleFavoriteTracks()[index] || currentTrack;
+      if (id === 'market-playlist-list') return currentMarketPlaylistTracks[index] || currentTrack;
+      if (id === 'history-list') return historyTracks[index] || currentTrack;
+      if (id === 'queue-list') return (playQueue.length ? playQueue : [currentTrack])[index] || currentTrack;
+      if (id === 'queue-drawer-list') {
+        var drawerTracks = queueDrawerTab === 'history'
+          ? historyTracks
+          : (playQueue.length ? playQueue : [currentTrack]);
+        return drawerTracks[index] || currentTrack;
+      }
+      return trackFromRow(row);
+    }
     function openTrackActionDrawer(track) {
       if (!track) return;
       const drawer = document.getElementById('action-drawer');
@@ -2420,6 +2482,7 @@
         '</div>'
       )).join('');
       container.querySelectorAll('.track').forEach((row, index) => {
+        row.__ljyytTrack = tracks[index];
         row.addEventListener('click', (event) => {
           if (event.target.closest('.dots')) {
             event.stopPropagation();
@@ -2454,6 +2517,7 @@
         '</div>';
       }).join('');
       container.querySelectorAll('.track').forEach(function(row, index) {
+        row.__ljyytTrack = tracks[index];
         row.addEventListener('click', function(event) {
           if (event.target.closest('.dots')) {
             event.stopPropagation();
@@ -2915,10 +2979,6 @@
         performSearch({ remember: true });
       }
     }
-    function getFavoriteSearchQuery() {
-      var input = document.getElementById('favorite-search-input');
-      return String(input && input.value || '').trim().toLowerCase();
-    }
     function clearFavoriteSearch(event) {
       if (event) event.preventDefault();
       var input = document.getElementById('favorite-search-input');
@@ -2931,11 +2991,7 @@
       var query = getFavoriteSearchQuery();
       var clearButton = document.getElementById('favorite-search-clear');
       if (clearButton) clearButton.classList.toggle('visible', !!query);
-      var visibleTracks = query ? favoriteTracks.filter(function(track) {
-        return [track.title, track.artist, track.album].some(function(value) {
-          return String(value || '').toLowerCase().includes(query);
-        });
-      }) : favoriteTracks;
+      var visibleTracks = getVisibleFavoriteTracks();
       if (countLabel) {
         countLabel.textContent = query
           ? visibleTracks.length + ' / ' + favoriteTracks.length + ' 首歌曲'
@@ -2977,6 +3033,7 @@
         '</div>';
       }).join('');
       container.querySelectorAll('.track').forEach(function(row) {
+        row.__ljyytTrack = tracks[Number(row.dataset.index) || 0];
         row.addEventListener('click', function(event) {
           var index = Number(row.dataset.index) || 0;
           var track = tracks[index];
@@ -3759,13 +3816,11 @@
       event.preventDefault();
       event.stopPropagation();
       const row = event.target.closest('.track');
-      const index = row ? Number(row.dataset.index) || 0 : 0;
       const container = row && row.parentElement;
-      const queue = playQueue.length ? playQueue : [currentTrack];
       if (container && (container.id === 'queue-drawer-list' || container.id === 'queue-list')) {
-        openTrackActionDrawer(queue[index] || currentTrack);
+        openTrackActionDrawer(trackFromRenderedRow(row));
       } else {
-        openTrackActionDrawer(trackFromRow(row));
+        openTrackActionDrawer(trackFromRenderedRow(row));
       }
     }, true);
     document.addEventListener('click', (event) => {
