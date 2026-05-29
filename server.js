@@ -283,6 +283,56 @@ async function requestJson(targetUrl, options = {}) {
   }
 }
 
+async function searchNeteaseSuggest(keyword) {
+  const word = String(keyword || '').trim();
+  if (!word) return { suggestions: [] };
+
+  const suggestUrl = new URL('https://music.163.com/api/search/suggest/web');
+  suggestUrl.searchParams.set('s', word);
+  const payload = await requestJson(suggestUrl.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'Referer': 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0'
+    }
+  });
+  const result = payload && payload.result ? payload.result : {};
+  const seen = new Set();
+  const suggestions = [];
+
+  function pushUnique(text, type, id, meta) {
+    text = String(text || '').trim();
+    if (!text) return;
+    const key = `${type}:${text}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    suggestions.push({
+      text,
+      type,
+      id: id === undefined || id === null ? '' : String(id),
+      source: 'netease',
+      meta: String(meta || '')
+    });
+  }
+
+  (Array.isArray(result.artists) ? result.artists : []).slice(0, 3).forEach((artist) => {
+    pushUnique(artist.name, 'artist', artist.id, '歌手');
+  });
+  (Array.isArray(result.songs) ? result.songs : []).slice(0, 3).forEach((song) => {
+    const artists = Array.isArray(song.artists) ? song.artists.map((item) => item.name).filter(Boolean).join('/') : '';
+    pushUnique([song.name, artists].filter(Boolean).join(' - '), 'song', song.id, artists || '单曲');
+  });
+  (Array.isArray(result.albums) ? result.albums : []).slice(0, 3).forEach((album) => {
+    const artist = album.artist && album.artist.name ? album.artist.name : '';
+    pushUnique([album.name, artist].filter(Boolean).join(' - '), 'album', album.id, artist || '专辑');
+  });
+  (Array.isArray(result.playlists) ? result.playlists : []).slice(0, 3).forEach((playlist) => {
+    pushUnique(playlist.name, 'playlist', playlist.id, '歌单');
+  });
+
+  return { suggestions };
+}
+
 function buildSuccess(source, title, artist, lines, extra) {
   return Object.assign({
     found: true,
@@ -1461,6 +1511,19 @@ const server = http.createServer(async (req, res) => {
         code: 502,
         msg: error.message,
         candidates: []
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/netease/suggest') {
+    try {
+      const payload = await searchNeteaseSuggest(requestUrl.searchParams.get('keyword') || requestUrl.searchParams.get('q') || '');
+      sendJson(res, 200, payload);
+    } catch (error) {
+      sendJson(res, 502, {
+        suggestions: [],
+        message: error.message
       });
     }
     return;

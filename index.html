@@ -127,6 +127,14 @@
       flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
       color: var(--foreground); font: inherit; font-size: 14px;
     }
+    .search-input::-webkit-search-cancel-button,
+    .search-input::-webkit-search-decoration,
+    .search-input::-webkit-search-results-button,
+    .search-input::-webkit-search-results-decoration {
+      -webkit-appearance: none;
+      appearance: none;
+      display: none;
+    }
     .search-input::placeholder { color: var(--muted-foreground); opacity: .78; }
     .search-clear {
       width: 24px; height: 24px; border-radius: 50%;
@@ -418,6 +426,56 @@
       border: 1px solid var(--border);
     }
     .history-chip:hover { border-color: color-mix(in srgb, var(--primary) 40%, var(--border)); color: var(--primary); }
+    .index-discover-search {
+      position: sticky;
+    }
+    .search-suggestions {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      top: 62px;
+      z-index: 40;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
+    }
+    .suggestion-group-title {
+      padding: 9px 12px 5px;
+      color: var(--muted-foreground);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .suggestion-item {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      text-align: left;
+      border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+    }
+    .suggestion-item:first-of-type { border-top: 0; }
+    .suggestion-item:hover { background: var(--secondary); }
+    .suggestion-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+    .suggestion-icon .line-icon { width: 15px; height: 15px; }
+    .suggestion-copy { min-width: 0; }
+    .suggestion-copy strong {
+      display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 13px; color: var(--foreground);
+    }
+    .suggestion-copy span {
+      display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-top: 2px; font-size: 11px; color: var(--muted-foreground);
+    }
     .search-section { margin-bottom: 14px; }
     .search-section.hidden { display: none; }
     .search-section-title {
@@ -1384,13 +1442,14 @@
         <div class="index-discover-search">
           <div class="search-box">
             <span data-icon="search"></span>
-            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="renderSearchHistory(true)" onblur="hideSearchHistorySoon()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
+            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onclick="showSearchHistoryFromClick()" onblur="hideSearchHistorySoon()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
             <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'search')"><span data-icon="close"></span></button>
             <div class="provider-wrap discover-provider-wrap">
               <button class="provider" type="button" id="discover-provider-button" onclick="toggleProvider(event)"><span>聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
             </div>
           </div>
           <div class="search-history" id="search-history" hidden></div>
+          <div class="search-suggestions" id="search-suggestions" hidden></div>
         </div>
         <section class="discover-search-results" id="discover-search-results" aria-label="搜索结果">
           <div class="search-section" id="search-songs-section">
@@ -1704,6 +1763,7 @@
     let pendingPlaylistTrack = null;
     let restoredPlaybackTime = 0;
     let neteaseLoginTimer = null;
+    let searchSuggestionRequestId = 0;
     const audioPlayer = document.getElementById('audio-player');
     const DEFAULT_COVER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="20" y1="12" x2="102" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#f4f7f6"/><stop offset="1" stop-color="#dbe6e3"/></linearGradient></defs><rect width="120" height="120" rx="24" fill="url(#g)"/><circle cx="60" cy="60" r="33" fill="#f9fbfa" stroke="#c8d5d1" stroke-width="2"/><circle cx="60" cy="60" r="10" fill="#d7e1de"/><path d="M71 38v28.5a9.5 9.5 0 1 1-5.8-8.7V43.6l-16 3.2v24.7a9.5 9.5 0 1 1-5.8-8.7V42.2L71 38z" fill="#8fa19b"/></svg>');
     function readStoredList(key) {
@@ -1873,6 +1933,7 @@
         searchInput.value = homeInput.value;
       }
       updateSearchClearButton();
+      hideSearchHistory();
     }
     function handleHomeSearchKey(event) {
       if (event.key === 'Enter') {
@@ -1881,6 +1942,8 @@
         var searchInput = getSearchInput();
         showView('search');
         if (searchInput && homeInput) searchInput.value = homeInput.value;
+        hideSearchHistory();
+        hideSearchSuggestions();
         performSearch({ remember: true });
       }
     }
@@ -1894,15 +1957,27 @@
         box.hidden = true;
       }
     }
+    function hideSearchSuggestions() {
+      searchSuggestionRequestId++;
+      const box = document.getElementById('search-suggestions');
+      if (box) {
+        box.innerHTML = '';
+        box.hidden = true;
+      }
+    }
     function hideSearchHistorySoon() {
       setTimeout(function() {
-        if (!isSearchInputFocused()) hideSearchHistory();
+        if (!isSearchInputFocused()) {
+          hideSearchHistory();
+          hideSearchSuggestions();
+        }
       }, 120);
     }
     function renderSearchHistory(force) {
+      const input = getSearchInput();
       const box = document.getElementById('search-history');
       if (!box) return;
-      const query = String(getSearchInput()?.value || '').trim();
+      const query = String(input?.value || '').trim();
       if (!force || !isSearchInputFocused() || query || !searchHistory.length) {
         box.innerHTML = '';
         box.hidden = true;
@@ -1925,6 +2000,141 @@
         });
       });
     }
+    function showSearchHistoryFromClick() {
+      var input = getSearchInput();
+      if (String(input && input.value || '').trim()) return;
+      hideSearchSuggestions();
+      renderSearchHistory(true);
+    }
+    function buildSearchSuggestions(query, tracks) {
+      var needle = String(query || '').trim().toLowerCase();
+      if (!needle) return [];
+      var seen = {};
+      var groups = { artist: [], song: [], album: [], playlist: [], history: [] };
+      function add(type, text, meta, icon, score) {
+        text = String(text || '').trim();
+        if (!text) return;
+        var key = type + ':' + text.toLowerCase();
+        if (seen[key]) return;
+        seen[key] = true;
+        if (!groups[type]) groups[type] = [];
+        groups[type].push({ type: type, text: text, meta: meta || '', icon: icon, score: score || 0 });
+      }
+      (tracks || []).forEach(function(track) {
+        var title = String(track.title || '');
+        var artist = String(track.artist || '');
+        var album = String(track.album || '');
+        var titleHit = title.toLowerCase().includes(needle);
+        var artistHit = artist.toLowerCase().includes(needle);
+        var albumHit = album.toLowerCase().includes(needle);
+        if (titleHit) add('song', title, artist || '单曲', 'music', title.toLowerCase().startsWith(needle) ? 30 : 20);
+        if (artistHit) add('artist', artist, '歌手', 'user', artist.toLowerCase().startsWith(needle) ? 24 : 14);
+        if (albumHit) add('album', album, '专辑', 'album', album.toLowerCase().startsWith(needle) ? 22 : 12);
+      });
+      (marketItems || []).forEach(function(item) {
+        var name = String(item && (item.name || item.title) || '');
+        if (name.toLowerCase().includes(needle)) {
+          add('playlist', name, '歌单', 'listVideo', name.toLowerCase().startsWith(needle) ? 20 : 10);
+        }
+      });
+      searchHistory.forEach(function(word) {
+        if (String(word || '').toLowerCase().includes(needle)) add('history', word, '最近搜索', 'history', 18);
+      });
+      Object.keys(groups).forEach(function(type) {
+        groups[type] = groups[type]
+          .sort(function(a, b) { return b.score - a.score || a.text.localeCompare(b.text); })
+          .slice(0, 3);
+      });
+      return groups;
+    }
+    async function fetchNeteaseSuggestions(query) {
+      query = String(query || '').trim();
+      if (!query) return [];
+      var endpoints = [
+        '/api/netease/suggest?keyword=' + encodeURIComponent(query),
+        neteaseApiBase + '/suggest?keyword=' + encodeURIComponent(query)
+      ];
+      for (var i = 0; i < endpoints.length; i++) {
+        try {
+          var response = await fetch(endpoints[i]);
+          if (!response.ok) continue;
+          var payload = await response.json();
+          var suggestions = Array.isArray(payload && payload.suggestions) ? payload.suggestions : [];
+          if (suggestions.length) {
+            return suggestions.map(function(item) {
+              var type = ['artist', 'song', 'album', 'playlist'].includes(item.type) ? item.type : 'song';
+              return {
+                type: type,
+                text: String(item.text || '').trim(),
+                meta: String(item.meta || (type === 'artist' ? '歌手' : type === 'album' ? '专辑' : type === 'playlist' ? '歌单' : '单曲')),
+                icon: type === 'artist' ? 'user' : type === 'album' ? 'album' : type === 'playlist' ? 'listVideo' : 'music',
+                score: 100,
+                source: item.source || 'netease'
+              };
+            }).filter(function(item) { return item.text; });
+          }
+        } catch (error) {}
+      }
+      return [];
+    }
+    function groupSuggestionItems(items) {
+      var groups = { artist: [], song: [], album: [], playlist: [], history: [] };
+      (items || []).forEach(function(item) {
+        var type = groups[item.type] ? item.type : 'song';
+        if (groups[type].length < 3) groups[type].push(item);
+      });
+      return groups;
+    }
+    function renderSuggestionGroup(title, items) {
+      if (!items.length) return '';
+      return '<div class="suggestion-group-title">' + escapeMarkup(title) + '</div>' +
+        items.map(function(item) {
+          return '<button class="suggestion-item" type="button" data-query="' + escapeMarkup(item.text) + '">' +
+            '<span class="suggestion-icon">' + iconHtml(item.icon || 'search') + '</span>' +
+            '<span class="suggestion-copy"><strong>' + escapeMarkup(item.text) + '</strong><span>' + escapeMarkup(item.meta || '') + '</span></span>' +
+          '</button>';
+        }).join('');
+    }
+    async function renderSearchSuggestions(query) {
+      query = String(query || '').trim();
+      const box = document.getElementById('search-suggestions');
+      if (!box) return;
+      if (!query) {
+        hideSearchSuggestions();
+        return;
+      }
+      const requestId = ++searchSuggestionRequestId;
+      var neteaseSuggestions = await fetchNeteaseSuggestions(query);
+      if (requestId !== searchSuggestionRequestId) return;
+      var suggestions = neteaseSuggestions.length
+        ? groupSuggestionItems(neteaseSuggestions)
+        : buildSearchSuggestions(query, await ensureLibraryTracks().catch(function() { return []; }));
+      var hasSuggestions = Object.keys(suggestions).some(function(type) { return suggestions[type] && suggestions[type].length; });
+      if (!hasSuggestions) {
+        box.innerHTML = '';
+        box.hidden = true;
+        return;
+      }
+      box.innerHTML =
+        renderSuggestionGroup('歌手', suggestions.artist || []) +
+        renderSuggestionGroup('单曲', suggestions.song || []) +
+        renderSuggestionGroup('专辑', suggestions.album || []) +
+        renderSuggestionGroup('歌单', suggestions.playlist || []) +
+        renderSuggestionGroup('最近搜索', suggestions.history || []);
+      box.hidden = false;
+      box.querySelectorAll('.suggestion-item').forEach(function(button) {
+        button.addEventListener('mousedown', function(event) { event.preventDefault(); });
+        button.addEventListener('click', function() {
+          var word = button.dataset.query || button.textContent || '';
+          var searchInput = getSearchInput();
+          var homeInput = getHomeSearchInput();
+          if (searchInput) searchInput.value = word;
+          if (homeInput) homeInput.value = word;
+          hideSearchSuggestions();
+          performSearch({ remember: true });
+        });
+      });
+    }
     function rememberSearchQuery(query) {
       const word = String(query || '').trim();
       if (!word) return;
@@ -1938,7 +2148,7 @@
         box.innerHTML = '';
         box.hidden = true;
       }
-      renderSearchHistory(isSearchInputFocused());
+      hideSearchHistory();
     }
     function updateSearchClearButton() {
       const searchInput = getSearchInput();
@@ -1960,6 +2170,8 @@
         }
         if (searchInput) searchInput.value = '';
         updateSearchClearButton();
+        hideSearchHistory();
+        hideSearchSuggestions();
         return;
       }
       if (searchInput) {
@@ -1969,6 +2181,8 @@
       if (homeInput) homeInput.value = '';
       if (typeof performSearch === 'function' && getSearchInput()) performSearch({ remember: false });
       updateSearchClearButton();
+      hideSearchHistory();
+      hideSearchSuggestions();
     }
     const icons = {
       play: iconHtml('play'),
@@ -2935,17 +3149,19 @@
       updateSearchClearButton();
       if (!query) {
         setSearchResultsActive(false);
-        renderSearchHistory(isSearchInputFocused());
+        hideSearchHistory();
+        hideSearchSuggestions();
         renderIndexDiscoverPlaylists();
         return;
       }
       if (options.remember !== false) rememberSearchQuery(query);
       hideSearchHistory();
+      hideSearchSuggestions();
       setSearchResultsActive(true);
       var container = document.getElementById('search-results');
       var count = document.getElementById('search-song-count');
-      if (container) container.innerHTML = '<div class="empty-note">正在搜索...</div>';
-      if (count) count.textContent = '搜索中';
+      if (container) container.innerHTML = '';
+      if (count) count.textContent = '';
       try {
         var sources = getActiveSearchSources();
         var localTracks = [];
@@ -2969,8 +3185,12 @@
       updateSearchClearButton();
       if (!String(searchInput && searchInput.value || '').trim()) {
         setSearchResultsActive(false);
-        renderSearchHistory(isSearchInputFocused());
+        hideSearchHistory();
+        hideSearchSuggestions();
         renderIndexDiscoverPlaylists();
+      } else {
+        hideSearchHistory();
+        renderSearchSuggestions(searchInput.value);
       }
     }
     function handleSearchKey(event) {
@@ -3955,7 +4175,7 @@
     renderHistory();
     renderQueue();
     renderPlaylists();
-    renderSearchHistory();
+    hideSearchHistory();
     updateNeteaseLoginSetting();
     applyInitialRoute();
   </script>

@@ -15,6 +15,10 @@ export default {
         return await withCache(request, ctx, () => handleLyricsSearchRequest(url));
       }
 
+      if (url.pathname === '/api/netease/suggest') {
+        return await withCache(request, ctx, () => handleNeteaseSuggestRequest(url));
+      }
+
       if (url.pathname === '/api/cover') {
         return await withCache(request, ctx, () => handleCoverRequest(url));
       }
@@ -194,6 +198,52 @@ async function handleLyricsSearchRequest(url) {
   return jsonResponse({
     candidates: dedupeCandidates([...lrclibCandidates, ...rangotecCandidates, ...neteaseCandidates]).slice(0, 12)
   });
+}
+
+async function handleNeteaseSuggestRequest(url) {
+  const keyword = String(url.searchParams.get('keyword') || url.searchParams.get('q') || '').trim();
+  if (!keyword) {
+    return jsonResponse({ suggestions: [] });
+  }
+
+  const suggestUrl = new URL('https://music.163.com/api/search/suggest/web');
+  suggestUrl.searchParams.set('s', keyword);
+  const payload = await fetchJson(suggestUrl.toString());
+  const result = payload && payload.result ? payload.result : {};
+  const seen = new Set();
+  const suggestions = [];
+
+  function pushUnique(text, type, id, meta) {
+    text = String(text || '').trim();
+    if (!text) return;
+    const key = `${type}:${text}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    suggestions.push({
+      text,
+      type,
+      id: id === undefined || id === null ? '' : String(id),
+      source: 'netease',
+      meta: String(meta || '')
+    });
+  }
+
+  (Array.isArray(result.artists) ? result.artists : []).slice(0, 3).forEach((artist) => {
+    pushUnique(artist.name, 'artist', artist.id, '歌手');
+  });
+  (Array.isArray(result.songs) ? result.songs : []).slice(0, 3).forEach((song) => {
+    const artists = Array.isArray(song.artists) ? song.artists.map((item) => item.name).filter(Boolean).join('/') : '';
+    pushUnique([song.name, artists].filter(Boolean).join(' - '), 'song', song.id, artists || '单曲');
+  });
+  (Array.isArray(result.albums) ? result.albums : []).slice(0, 3).forEach((album) => {
+    const artist = album.artist && album.artist.name ? album.artist.name : '';
+    pushUnique([album.name, artist].filter(Boolean).join(' - '), 'album', album.id, artist || '专辑');
+  });
+  (Array.isArray(result.playlists) ? result.playlists : []).slice(0, 3).forEach((playlist) => {
+    pushUnique(playlist.name, 'playlist', playlist.id, '歌单');
+  });
+
+  return jsonResponse({ suggestions });
 }
 
 async function handleCoverRequest(url) {
