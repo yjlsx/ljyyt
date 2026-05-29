@@ -1284,6 +1284,9 @@
             <span data-icon="search"></span>
             <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="renderSearchHistory()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
             <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'search')"><span data-icon="close"></span></button>
+            <div class="provider-wrap discover-provider-wrap">
+              <button class="provider" type="button" id="discover-provider-button" onclick="toggleProvider(event)"><span>聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+            </div>
           </div>
           <div class="search-history" id="search-history" hidden></div>
         </div>
@@ -1297,6 +1300,15 @@
         <section class="discover-section index-discover-section" aria-label="发现歌单">
           <div class="discover-playlist-rail" id="index-discover-playlists"></div>
         </section>
+      </div>
+      <div class="view" data-view="market-playlist">
+        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('search')" aria-label="返回发现"><span data-icon="chevronLeft"></span></button><h2 id="market-playlist-page-title">歌单</h2></div></div>
+        <div class="playlist-view-hero">
+          <img class="playlist-summary-cover" id="market-playlist-cover" src="" alt="歌单封面" referrerpolicy="no-referrer">
+          <div class="playlist-summary"><h2 id="market-playlist-title">歌单</h2><p id="market-playlist-count">加载中...</p><button class="round-play" onclick="playFirstMarketPlaylist()" aria-label="播放歌单歌曲"><span data-icon="play"></span></button></div>
+        </div>
+        <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
+        <div class="track-list playlist-page-list" id="market-playlist-list"><div class="empty-note">加载中...</div></div>
       </div>
       <div class="view" data-view="favorites">
         <div class="favorite-header">
@@ -1547,6 +1559,8 @@
     let activeProvider = '聚合搜索';
     let activeSearchFilter = 'songs';
     let currentSearchState = { songs: [], playlists: [], videos: [] };
+    let currentMarketPlaylistTracks = [];
+    let currentMarketPlaylistMeta = null;
     let searchVideoCache = [];
     let aggregatedSources = readStoredList('ljyyt_otter_aggregated_sources');
     if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
@@ -2453,10 +2467,77 @@
       }).join('');
     }
 
-    function openDiscoverCard(card) {
+    function normalizeNeteasePlaylistTrack(track) {
+      var artists = Array.isArray(track.ar) ? track.ar.map(function(item) { return item && item.name; }).filter(Boolean).join(' / ') : '';
+      var album = track.al || {};
+      return {
+        id: String(track.id || ''),
+        title: String(track.name || track.title || '未知歌曲'),
+        artist: artists || String(track.artist || '未知歌手'),
+        album: String(album.name || track.album || ''),
+        cover: safeCover(album.picUrl || album.picUrlStr || track.cover || DEFAULT_COVER),
+        duration: track.dt ? formatDuration(track.dt / 1000) : (track.duration || ''),
+        src: '',
+        source: 'netease',
+        sourceLabel: '网易云音乐',
+        urlId: String(track.id || track.urlId || track.url_id || ''),
+        lyric_id: String(track.id || '')
+      };
+    }
+    async function fetchMarketPlaylistDetail(id) {
+      var payload = await fetchOtterNetease('/playlist', { playlistId: String(id || ''), cookie: '' });
+      var playlist = payload && payload.playlist ? payload.playlist : payload;
+      var tracks = Array.isArray(playlist && playlist.tracks) ? playlist.tracks.map(normalizeNeteasePlaylistTrack).filter(function(track) { return track.id && track.title; }) : [];
+      return {
+        id: String(playlist && playlist.id || id || ''),
+        name: String(playlist && playlist.name || '歌单'),
+        cover: safeCover(playlist && playlist.coverImgUrl || DEFAULT_COVER),
+        trackCount: Number(playlist && playlist.trackCount || tracks.length || 0),
+        tracks: tracks
+      };
+    }
+    function renderMarketPlaylistDetail(meta, tracks, loadingText) {
+      currentMarketPlaylistMeta = meta || currentMarketPlaylistMeta || { name: '歌单', cover: DEFAULT_COVER, trackCount: 0 };
+      currentMarketPlaylistTracks = Array.isArray(tracks) ? tracks : currentMarketPlaylistTracks;
+      var title = currentMarketPlaylistMeta.name || '歌单';
+      var cover = safeCover(currentMarketPlaylistMeta.cover || DEFAULT_COVER);
+      var count = currentMarketPlaylistTracks.length || currentMarketPlaylistMeta.trackCount || 0;
+      var pageTitle = document.getElementById('market-playlist-page-title');
+      var titleNode = document.getElementById('market-playlist-title');
+      var countNode = document.getElementById('market-playlist-count');
+      var coverNode = document.getElementById('market-playlist-cover');
+      if (pageTitle) pageTitle.textContent = title;
+      if (titleNode) titleNode.textContent = title;
+      if (countNode) countNode.textContent = loadingText || (count + ' 首歌曲');
+      if (coverNode) coverNode.src = cover;
+      renderPageTrackRows(document.getElementById('market-playlist-list'), currentMarketPlaylistTracks, loadingText || '这个歌单暂无可播放歌曲。', function(track, index) {
+        setQueue(currentMarketPlaylistTracks, index);
+        queueIndex = index;
+        setCurrentTrack(track);
+        openFullPlayer();
+        playCurrentTrack();
+      });
+    }
+    async function openDiscoverCard(card) {
       if (!card || !card.id) return;
-      // Dev 跳转 /netease-playlist/:id；当前静态站先保留同等语义，不触发搜索。
-      window.history.replaceState(null, '', 'index.html?view=search&playlist=' + encodeURIComponent(card.id));
+      showView('market-playlist');
+      var seed = { id: String(card.id), name: card.name || card.title || '歌单', cover: card.coverUrl || card.cover || DEFAULT_COVER, trackCount: card.trackCount || 0 };
+      renderMarketPlaylistDetail(seed, [], '加载中...');
+      window.history.replaceState(null, '', 'index.html?view=market-playlist&playlist=' + encodeURIComponent(card.id));
+      try {
+        var detail = await fetchMarketPlaylistDetail(card.id);
+        renderMarketPlaylistDetail(detail, detail.tracks);
+      } catch (error) {
+        renderMarketPlaylistDetail(seed, [], '歌单加载失败，请稍后重试。');
+      }
+    }
+    function playFirstMarketPlaylist() {
+      if (!currentMarketPlaylistTracks.length) return;
+      setQueue(currentMarketPlaylistTracks, 0);
+      queueIndex = 0;
+      setCurrentTrack(currentMarketPlaylistTracks[0]);
+      openFullPlayer();
+      playCurrentTrack();
     }
 
     async function renderIndexDiscoverPlaylists(options) {
