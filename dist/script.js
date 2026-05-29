@@ -9,7 +9,7 @@ const musicData = [
     "artist": "和月圆",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4NTQ=",
-    "cover": "http://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg",
     "duration": 223
   },
   {
@@ -18,7 +18,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MTc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 225
   },
   {
@@ -27,7 +27,7 @@ const musicData = [
     "artist": "赵郑芝",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4MDU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NrCAYkYXuqd1OjLa4qTZNmGWIuQiapFCLO1tPsE7z23p6wm9sPlvaCCRcS4B2k3bZPdnbVU9UrWh4EXORhQdo31QxAYm2cdc2M/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NrCAYkYXuqd1OjLa4qTZNmGWIuQiapFCLO1tPsE7z23p6wm9sPlvaCCRcS4B2k3bZPdnbVU9UrWh4EXORhQdo31QxAYm2cdc2M/0?wx_fmt=jpeg",
     "duration": 252
   },
   {
@@ -45,7 +45,7 @@ const musicData = [
     "artist": "和圣福 和丽龙 和丽霞 和雪芹",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NzQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NsBgRKarJntvQM8IrSr32QZQTu1ef9xyxNUDLAiaTAreTv6Ozw4u4icEib7Z7aRHEPiciaJEeKZnSAscGrVKwYNIby39piaoEkLANHU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7NsBgRKarJntvQM8IrSr32QZQTu1ef9xyxNUDLAiaTAreTv6Ozw4u4icEib7Z7aRHEPiciaJEeKZnSAscGrVKwYNIby39piaoEkLANHU/0?wx_fmt=jpeg",
     "duration": 220
   },
   {
@@ -54,7 +54,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk3NDk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 224
   },
   {
@@ -180,7 +180,7 @@ const musicData = [
     "artist": "和雪兰",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk1ODI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic8Y7J4gj1eLOpBTqic5g3IRBBPP4Uy0bNtJXA8r7GT6qpqJLrCKPFtP5rWfWfYdPLmUlRicoFrXolg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic8Y7J4gj1eLOpBTqic5g3IRBBPP4Uy0bNtJXA8r7GT6qpqJLrCKPFtP5rWfWfYdPLmUlRicoFrXolg/0?wx_fmt=jpeg",
     "duration": 245
   },
   {
@@ -189,7 +189,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk1NzE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic7ROjf0KKfEcQL888Yss6XsGbubU4hSoB4jKEXibPDSqn317NmQL7QSZJaiblPUCEjwx5HwHzQiarDg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic7ROjf0KKfEcQL888Yss6XsGbubU4hSoB4jKEXibPDSqn317NmQL7QSZJaiblPUCEjwx5HwHzQiarDg/0?wx_fmt=jpeg",
     "duration": 246
   },
   {
@@ -198,7 +198,7 @@ const musicData = [
     "artist": "习东梅",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk1NzA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic7ROjf0KKfEcQL888Yss6XsGbubU4hSoB4jKEXibPDSqn317NmQL7QSZJaiblPUCEjwx5HwHzQiarDg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVic7ROjf0KKfEcQL888Yss6XsGbubU4hSoB4jKEXibPDSqn317NmQL7QSZJaiblPUCEjwx5HwHzQiarDg/0?wx_fmt=jpeg",
     "duration": 246
   },
   {
@@ -207,7 +207,7 @@ const musicData = [
     "artist": "和顺东",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk1NDg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib5wQ6puTht2pPhmAJXKeYG6YCq08SwLGkic0icPHiaib5SWd75LWftBzg90q1AzT0D0xM4Y0ibBMVuJWw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib5wQ6puTht2pPhmAJXKeYG6YCq08SwLGkic0icPHiaib5SWd75LWftBzg90q1AzT0D0xM4Y0ibBMVuJWw/0?wx_fmt=jpeg",
     "duration": 216
   },
   {
@@ -216,7 +216,7 @@ const musicData = [
     "artist": "和丽霞",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk1MTA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib9xXQ0tp4hgAnCwFX2Mocl5S7Pdz8KG82uLwpm5iaFxgsABrVtbL5V782yFXHQWpUy8rSKWgTssrw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib9xXQ0tp4hgAnCwFX2Mocl5S7Pdz8KG82uLwpm5iaFxgsABrVtbL5V782yFXHQWpUy8rSKWgTssrw/0?wx_fmt=jpeg",
     "duration": 245
   },
   {
@@ -225,7 +225,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0OTM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8blmXDtvjo9PicNibWxuKUU4UGyxJ5jzrlolibpQ0UCTXfBPZibaXic822BdCAOibmaylZjM5eALsvUuEg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8blmXDtvjo9PicNibWxuKUU4UGyxJ5jzrlolibpQ0UCTXfBPZibaXic822BdCAOibmaylZjM5eALsvUuEg/0?wx_fmt=jpeg",
     "duration": 4001
   },
   {
@@ -234,7 +234,7 @@ const musicData = [
     "artist": "阿花蜜、纳西蕾蕾",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0NzY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8blmXDtvjo9PicNibWxuKUU4rAPWvIeHKPNOvia58vdUNtCr8TEUqCkAN8r50E6w91jNU863cX7AMVA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8blmXDtvjo9PicNibWxuKUU4rAPWvIeHKPNOvia58vdUNtCr8TEUqCkAN8r50E6w91jNU863cX7AMVA/0?wx_fmt=jpeg",
     "duration": 215
   },
   {
@@ -243,7 +243,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0NjA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmY9ib2AUeWweH1HeyJO3g8zcnTJXaPUllNyGQpYm8niaFx9Svav7SZbug/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmY9ib2AUeWweH1HeyJO3g8zcnTJXaPUllNyGQpYm8niaFx9Svav7SZbug/0?wx_fmt=jpeg",
     "duration": 267
   },
   {
@@ -252,7 +252,7 @@ const musicData = [
     "artist": "和春艳",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0NTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmAC3sXLb9JCyKzqv5Lp8opC0iaKbB8UV95et393MIHlWm0yjvPvgApOg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9JKP2nuDdxTWlNR3cAD7DmAC3sXLb9JCyKzqv5Lp8opC0iaKbB8UV95et393MIHlWm0yjvPvgApOg/0?wx_fmt=jpeg",
     "duration": 240
   },
   {
@@ -261,7 +261,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0NDU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 231
   },
   {
@@ -270,7 +270,7 @@ const musicData = [
     "artist": "陈四才",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0MzM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib5lkH01GMQb8PblOXrWJaomBjjYNDeL21uVwa3BegAoTV1NwyxYETbKg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib5lkH01GMQb8PblOXrWJaomBjjYNDeL21uVwa3BegAoTV1NwyxYETbKg/0?wx_fmt=jpeg",
     "duration": 212
   },
   {
@@ -279,7 +279,7 @@ const musicData = [
     "artist": "彩菊",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0MjQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib5oLOibjibib5svLxibNQgGKvs8Mh7go76NTj5LqXOzKhp9jZBDhjWDypUMw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib5oLOibjibib5svLxibNQgGKvs8Mh7go76NTj5LqXOzKhp9jZBDhjWDypUMw/0?wx_fmt=jpeg",
     "duration": 298
   },
   {
@@ -288,7 +288,7 @@ const musicData = [
     "artist": "天龙",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0MTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibx6Z7eJJADYAPsJNe76NaBtU2rIbt8A3bhtLR0MRMjI7OUHF78SQnfRq9fibwJIpS167BVM1nGCYg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibx6Z7eJJADYAPsJNe76NaBtU2rIbt8A3bhtLR0MRMjI7OUHF78SQnfRq9fibwJIpS167BVM1nGCYg/0?wx_fmt=jpeg",
     "duration": 246
   },
   {
@@ -297,7 +297,7 @@ const musicData = [
     "artist": "和集虎",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk0MDA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHjxIhu6g56y5PkMEAvcib0smy0hYDCT4mnLaUFmCPWZOG724nJLl5axlO4icf4fnm8LLyLrudqXww/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHjxIhu6g56y5PkMEAvcib0smy0hYDCT4mnLaUFmCPWZOG724nJLl5axlO4icf4fnm8LLyLrudqXww/0?wx_fmt=jpeg",
     "duration": 232
   },
   {
@@ -306,7 +306,7 @@ const musicData = [
     "artist": "天龙",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzOTM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHjxIhu6g56y5PkMEAvcib0HSDg3VthxIpmNAqNYAelkiabuD0gwoEZxFSYmtyIxkZ3xViawNqtq2gQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHjxIhu6g56y5PkMEAvcib0HSDg3VthxIpmNAqNYAelkiabuD0gwoEZxFSYmtyIxkZ3xViawNqtq2gQ/0?wx_fmt=jpeg",
     "duration": 223
   },
   {
@@ -315,7 +315,7 @@ const musicData = [
     "artist": "和艳",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzNzk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibeFzk8VVBC2DlnYicjt64IL7I538jKiauv5y1Adz8wkjtYfQpufsEmOoM0ic0VCr3qGgh09b8670vicg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibeFzk8VVBC2DlnYicjt64IL7I538jKiauv5y1Adz8wkjtYfQpufsEmOoM0ic0VCr3qGgh09b8670vicg/0?wx_fmt=jpeg",
     "duration": 253
   },
   {
@@ -324,7 +324,7 @@ const musicData = [
     "artist": "丽江福铃组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzNjM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5gZnDkXMPyicr0kKqlOLmAer7KNicHic0teWhicAsJsuYEibF0gbZfHt4vDw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5gZnDkXMPyicr0kKqlOLmAer7KNicHic0teWhicAsJsuYEibF0gbZfHt4vDw/0?wx_fmt=jpeg",
     "duration": 229
   },
   {
@@ -333,7 +333,7 @@ const musicData = [
     "artist": "啊秋",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzNTA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5NrYtvAIXF5kJGE3zbRvmTdCQUbQZxFz7nWCJyfjEZTibuKBBNrbXQPQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicHRE7coWtYeiaM1qeiaXkmE5NrYtvAIXF5kJGE3zbRvmTdCQUbQZxFz7nWCJyfjEZTibuKBBNrbXQPQ/0?wx_fmt=jpeg",
     "duration": 244
   },
   {
@@ -342,7 +342,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzMjk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 321
   },
   {
@@ -351,7 +351,7 @@ const musicData = [
     "artist": "陈四才",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzMjc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFuEdtEjX2Z8l8c93Ajq6qO8nqHdPUg4k0zfrJoE3BDDhQWjequhgppA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFuEdtEjX2Z8l8c93Ajq6qO8nqHdPUg4k0zfrJoE3BDDhQWjequhgppA/0?wx_fmt=jpeg",
     "duration": 265
   },
   {
@@ -360,7 +360,7 @@ const musicData = [
     "artist": "天龙",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkzMjI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFrKUWhTfGFMxNNsz3oCQJ5JiaV3Q4yhOwdYKzZerdeIJgrvV2Iz7Bahg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFrKUWhTfGFMxNNsz3oCQJ5JiaV3Q4yhOwdYKzZerdeIJgrvV2Iz7Bahg/0?wx_fmt=jpeg",
     "duration": 301
   },
   {
@@ -378,7 +378,7 @@ const musicData = [
     "artist": "和雪芹",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyODc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibbicbntchMGnLyuf89OtYLdbEeyxzHKFhcheIbvQfy3yTsQR8GID9xJCSU6G2VZKicsnyRTp1T0U4A/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibbicbntchMGnLyuf89OtYLdbEeyxzHKFhcheIbvQfy3yTsQR8GID9xJCSU6G2VZKicsnyRTp1T0U4A/0?wx_fmt=jpeg",
     "duration": 283
   },
   {
@@ -387,7 +387,7 @@ const musicData = [
     "artist": "阿夏丽",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyNzI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibibYibvlic8PD6IUbib87iaVJt9TAT1591libYBYwGiblJZVFsDTGFtXqX0pdP0fmvx7S5jrd51EHP2GIDQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibibYibvlic8PD6IUbib87iaVJt9TAT1591libYBYwGiblJZVFsDTGFtXqX0pdP0fmvx7S5jrd51EHP2GIDQ/0?wx_fmt=jpeg",
     "duration": 232
   },
   {
@@ -396,7 +396,7 @@ const musicData = [
     "artist": "和生辉",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyNDA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZBZ2v17qhuaicT5jTtHLglu4ucxhcrndVg2j0Ric7vr1Bptz8zFAicIiclfv9urOBK8ZoibISfx2hgDQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZBZ2v17qhuaicT5jTtHLglu4ucxhcrndVg2j0Ric7vr1Bptz8zFAicIiclfv9urOBK8ZoibISfx2hgDQ/0?wx_fmt=jpeg",
     "duration": 264
   },
   {
@@ -405,7 +405,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyMjY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 228
   },
   {
@@ -414,7 +414,7 @@ const musicData = [
     "artist": "庭松",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkyMTM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJzooL7Za1iaicW3GyFkN7b1YUqjpJLt50aV1Q4zpwzpbpGzyicNAwibia1tA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJzooL7Za1iaicW3GyFkN7b1YUqjpJLt50aV1Q4zpwzpbpGzyicNAwibia1tA/0?wx_fmt=jpeg",
     "duration": 290
   },
   {
@@ -432,7 +432,7 @@ const musicData = [
     "artist": "金锁丽泉",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxOTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJib5VIeyWqSia1KULW22Zq6AyDXvQhiambwyyg9ic6ic0AvliakWicIrnD5Dwg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibZID3sUSehDTDGNV74hZdJib5VIeyWqSia1KULW22Zq6AyDXvQhiambwyyg9ic6ic0AvliakWicIrnD5Dwg/0?wx_fmt=jpeg",
     "duration": 248
   },
   {
@@ -441,7 +441,7 @@ const musicData = [
     "artist": "和瑞智",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxODI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyJuianJ6zhgCwhr8iakCceqHdC3icV29ubH2nks3zPG3HbSNxPERiaDibnSA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyJuianJ6zhgCwhr8iakCceqHdC3icV29ubH2nks3zPG3HbSNxPERiaDibnSA/0?wx_fmt=jpeg",
     "duration": 428
   },
   {
@@ -450,7 +450,7 @@ const musicData = [
     "artist": "树润花",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxNzI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyPj2vQn42pXSwfC9iaz1mxSNLib8QWKYu1AK7eNLVB12f8VGDNpTfc2Gg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibxVULERGyrN6EQ90hiasHQyPj2vQn42pXSwfC9iaz1mxSNLib8QWKYu1AK7eNLVB12f8VGDNpTfc2Gg/0?wx_fmt=jpeg",
     "duration": 216
   },
   {
@@ -459,7 +459,7 @@ const musicData = [
     "artist": "纳西蕾蕾",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxNTQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8Jp1Cofiaxwufp4Ijibsp58XBbTWlsHHjJbq3NMlnqkRxmN8sRD5Rq9icQ/0?wx_fmt=jpeg",
     "duration": 257
   },
   {
@@ -468,7 +468,7 @@ const musicData = [
     "artist": "和慧琼、和燕、李九铭、马涛",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxNTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8SNnIwBQaKta1q2nAuD0XAXye1Oib7MjtuzQXqic7Toxp1DQR0Bq1qaow/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVich7dW7dqv73P5wzJRRU3c8SNnIwBQaKta1q2nAuD0XAXye1Oib7MjtuzQXqic7Toxp1DQR0Bq1qaow/0?wx_fmt=jpeg",
     "duration": 192
   },
   {
@@ -477,7 +477,7 @@ const musicData = [
     "artist": "李佳",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkxMTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yynm9ZJcNwYVb4dw93xLt8zeXejU7JOiaBkTy7AMprJ5mJMwZ5IT0vBqA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yynm9ZJcNwYVb4dw93xLt8zeXejU7JOiaBkTy7AMprJ5mJMwZ5IT0vBqA/0?wx_fmt=jpeg",
     "duration": 315
   },
   {
@@ -495,7 +495,7 @@ const musicData = [
     "artist": "阿花蜜",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkwOTY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yyv1b6ibJ9Vn2FpRu6GxtVzEdCVMCC6kOeKjGsMNRPVmAC0Jen8Vak0WA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVibMM14g2P2dmOuUtVCNQ2Yyv1b6ibJ9Vn2FpRu6GxtVzEdCVMCC6kOeKjGsMNRPVmAC0Jen8Vak0WA/0?wx_fmt=jpeg",
     "duration": 239
   },
   {
@@ -504,7 +504,7 @@ const musicData = [
     "artist": "木贵花",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkwNzA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGiaWvUBZeOSnY15XwxZxBFhicFf8oB94P1S3GqUSr07YFnPFhaQgP0Plw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9S1icwGutOXntH2hIme4hicGiaWvUBZeOSnY15XwxZxBFhicFf8oB94P1S3GqUSr07YFnPFhaQgP0Plw/0?wx_fmt=jpeg",
     "duration": 307
   },
   {
@@ -513,7 +513,7 @@ const musicData = [
     "artist": "纳浫阿福",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkwMzk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibyls3YsETR1uMwM0hL9MUZU7ww54HYmanHibL6yOgUBjZY1S4zfh1AsA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibyls3YsETR1uMwM0hL9MUZU7ww54HYmanHibL6yOgUBjZY1S4zfh1AsA/0?wx_fmt=jpeg",
     "duration": 241
   },
   {
@@ -522,7 +522,7 @@ const musicData = [
     "artist": "和善武",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkwMzY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibhw32CVXUaBhibGnfmbqcF5tW0kTb0NTYaKycFseg4GUz2SD7IJhqqog/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibhw32CVXUaBhibGnfmbqcF5tW0kTb0NTYaKycFseg4GUz2SD7IJhqqog/0?wx_fmt=jpeg",
     "duration": 251
   },
   {
@@ -531,7 +531,7 @@ const musicData = [
     "artist": "丽江阿黑哥",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTkwMjc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibOhbcl452eG4o1oiaJ6U9jCJJPvYmSXyqKvias9oiakqAdBMJGOn1twmFQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV97ht8vllhIdlyWx26j1VMibOhbcl452eG4o1oiaJ6U9jCJJPvYmSXyqKvias9oiakqAdBMJGOn1twmFQ/0?wx_fmt=jpeg",
     "duration": 239
   },
   {
@@ -540,7 +540,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5OTg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9o4HTgRx4AV3LduianWdhYWQoHSsXpAo1a7icz4ExkgyFiboHf1KSyoMyo2aQAicwb0rtyjjdGibkO2SQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9o4HTgRx4AV3LduianWdhYWQoHSsXpAo1a7icz4ExkgyFiboHf1KSyoMyo2aQAicwb0rtyjjdGibkO2SQ/0?wx_fmt=jpeg",
     "duration": 189
   },
   {
@@ -549,7 +549,7 @@ const musicData = [
     "artist": "阿泉",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5ODc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9o4HTgRx4AV3LduianWdhYWSCHWWZaIlw5T5vjANjnicuRUmCS1zaGBvJC0P5z0LyKKHQQqMqJynkA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9o4HTgRx4AV3LduianWdhYWSCHWWZaIlw5T5vjANjnicuRUmCS1zaGBvJC0P5z0LyKKHQQqMqJynkA/0?wx_fmt=jpeg",
     "duration": 243
   },
   {
@@ -558,7 +558,7 @@ const musicData = [
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5NzE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
     "duration": 213
   },
   {
@@ -567,7 +567,7 @@ const musicData = [
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5Mzk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasBOxsZdP0KC0p6o0xY5WDqbWkxtWOTYejlBHiboPRPg6xfhrRPCrUCEg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasBOxsZdP0KC0p6o0xY5WDqbWkxtWOTYejlBHiboPRPg6xfhrRPCrUCEg/0?wx_fmt=jpeg",
     "duration": 293
   },
   {
@@ -576,7 +576,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MjE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 264
   },
   {
@@ -585,7 +585,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MTk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 260
   },
   {
@@ -594,7 +594,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MTc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 197
   },
   {
@@ -603,7 +603,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 192
   },
   {
@@ -612,7 +612,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 241
   },
   {
@@ -621,7 +621,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg5MDk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 228
   },
   {
@@ -630,7 +630,7 @@ const musicData = [
     "artist": "郑旭先",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4OTY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeO60VGZTzZxUFicUa24giangIEfricdYUOibr9RgKTiaPZicgAHSWrUCDvJWw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeO60VGZTzZxUFicUa24giangIEfricdYUOibr9RgKTiaPZicgAHSWrUCDvJWw/0?wx_fmt=jpeg",
     "duration": 185
   },
   {
@@ -639,7 +639,7 @@ const musicData = [
     "artist": "郑旭先",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4ODA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeJyNibQGibsibIzgQXfTRjdIcfq5ibwGc5kqdjcSgbOnKib8bgr7SoSQcqWw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeJyNibQGibsibIzgQXfTRjdIcfq5ibwGc5kqdjcSgbOnKib8bgr7SoSQcqWw/0?wx_fmt=jpeg",
     "duration": 228
   },
   {
@@ -648,7 +648,7 @@ const musicData = [
     "artist": "杨耀兰",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4Nzg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xegPLtiaS4icmPj04FTLrLkUgSTqmaKicfty0vlzibXJIibAGGf39XQAD98bQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xegPLtiaS4icmPj04FTLrLkUgSTqmaKicfty0vlzibXJIibAGGf39XQAD98bQ/0?wx_fmt=jpeg",
     "duration": 263
   },
   {
@@ -657,7 +657,7 @@ const musicData = [
     "artist": "李丽芳",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4NzY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeIFmWo5Btnib93XKpA0PnyX4eqdiaYap4WlQIWIEX4gm1swDVWbK9R9icA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeIFmWo5Btnib93XKpA0PnyX4eqdiaYap4WlQIWIEX4gm1swDVWbK9R9icA/0?wx_fmt=jpeg",
     "duration": 268
   },
   {
@@ -666,7 +666,7 @@ const musicData = [
     "artist": "王瑞香",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4NzQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xecOULzOI69StzBgQ6mOOLg59I32q7ZeNJyJ1rRdDwrCYNcRiamMAVHRg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xecOULzOI69StzBgQ6mOOLg59I32q7ZeNJyJ1rRdDwrCYNcRiamMAVHRg/0?wx_fmt=jpeg",
     "duration": 287
   },
   {
@@ -675,7 +675,7 @@ const musicData = [
     "artist": "李丽芳",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4NzI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeicFPYCIsUnpGhVggsu0sRWh2pNoyHGUhGWcvCfpaibbAZK8Wvdo1w0kA/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV8SBxZ3gIMvFhWUUvlPT0xeicFPYCIsUnpGhVggsu0sRWh2pNoyHGUhGWcvCfpaibbAZK8Wvdo1w0kA/0?wx_fmt=jpeg",
     "duration": 307
   },
   {
@@ -684,7 +684,7 @@ const musicData = [
     "artist": "",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4Mjk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9MvSuno0y0pHic0lg7KhJhTjOibuYonDbibN4dhuz0pdS1jmt77jaF9WkXQzhFx4vR1MT9ky6t0jUBQ/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9MvSuno0y0pHic0lg7KhJhTjOibuYonDbibN4dhuz0pdS1jmt77jaF9WkXQzhFx4vR1MT9ky6t0jUBQ/0?wx_fmt=jpeg",
     "duration": 222
   },
   {
@@ -693,7 +693,7 @@ const musicData = [
     "artist": "阿福",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg4MTY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicuNH092cxUKSRmibSAEzj2cUhnsRqHO6dXAhCPChjxnM0g5oXECiavGwp8lmocAZqppouGnaytI7uw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicuNH092cxUKSRmibSAEzj2cUhnsRqHO6dXAhCPChjxnM0g5oXECiavGwp8lmocAZqppouGnaytI7uw/0?wx_fmt=jpeg",
     "duration": 200
   },
   {
@@ -747,7 +747,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg2Njg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 281
   },
   {
@@ -756,7 +756,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg2NTM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 283
   },
   {
@@ -810,7 +810,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTg1Mzg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 206
   },
   {
@@ -855,7 +855,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTgzNDY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 192
   },
   {
@@ -972,7 +972,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTc3NjU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 222
   },
   {
@@ -1062,7 +1062,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTczMTQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 232
   },
   {
@@ -1197,7 +1197,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTY2ODE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 195
   },
   {
@@ -1206,7 +1206,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTY2Mzk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 231
   },
   {
@@ -1314,7 +1314,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTU2Njg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 206
   },
   {
@@ -1449,7 +1449,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTQ4NzY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 232
   },
   {
@@ -1458,7 +1458,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTQ4Njk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 326
   },
   {
@@ -1467,7 +1467,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTQ4MjY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 255
   },
   {
@@ -1602,7 +1602,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTMzMTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 250
   },
   {
@@ -1629,7 +1629,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTMwMDQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 252
   },
   {
@@ -1782,7 +1782,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTIyMzQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 290
   },
   {
@@ -1791,7 +1791,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTIyMDM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 236
   },
   {
@@ -1971,7 +1971,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE5OTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 227
   },
   {
@@ -1980,7 +1980,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE5OTI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 262
   },
   {
@@ -2151,7 +2151,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE5MDc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 301
   },
   {
@@ -2268,7 +2268,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4NTI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 216
   },
   {
@@ -2376,7 +2376,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE4MTQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 251
   },
   {
@@ -2430,7 +2430,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE3NzI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 72
   },
   {
@@ -2601,7 +2601,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2NzE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 243
   },
   {
@@ -2628,7 +2628,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2NTY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 281
   },
   {
@@ -2637,7 +2637,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2NTA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 387
   },
   {
@@ -2682,7 +2682,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2MzQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 197
   },
   {
@@ -2754,7 +2754,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE2MDc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 305
   },
   {
@@ -2808,7 +2808,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE1Njc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 249
   },
   {
@@ -2988,7 +2988,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTE0Nzc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 210
   },
   {
@@ -3195,7 +3195,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEzNTU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 241
   },
   {
@@ -3321,7 +3321,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEyODY=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 276
   },
   {
@@ -3465,7 +3465,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTEyMTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 277
   },
   {
@@ -3510,7 +3510,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTExODQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 240
   },
   {
@@ -3834,7 +3834,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTA5Nzg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 289
   },
   {
@@ -3951,7 +3951,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTA1ODM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 186
   },
   {
@@ -5355,7 +5355,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDc5MjA=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 289
   },
   {
@@ -5463,7 +5463,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDc3NjU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 187
   },
   {
@@ -5481,7 +5481,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDc3NTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 170
   },
   {
@@ -6597,7 +6597,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDYxNjg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 288
   },
   {
@@ -6813,7 +6813,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDU5NjQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 277
   },
   {
@@ -7272,7 +7272,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDUyNDU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 259
   },
   {
@@ -7317,7 +7317,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDUxOTE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 149
   },
   {
@@ -7848,7 +7848,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDQ2MTM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 251
   },
   {
@@ -8172,7 +8172,7 @@ const musicData = [
     "artist": "和慧琼",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDQyODk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVicll1DMWXxyxx8KPVFo8vicFX6AH6DV8CkA6bQwrPloX1rCWq5XmWr070R4lhu2nibuTVchhAH6VWVg/0?wx_fmt=jpeg",
     "duration": 215
   },
   {
@@ -8262,7 +8262,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDQxNzQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 277
   },
   {
@@ -8343,7 +8343,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDQwNzM=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 280
   },
   {
@@ -8523,7 +8523,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDM4ODE=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 222
   },
   {
@@ -9036,7 +9036,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDMzMjU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 286
   },
   {
@@ -10269,7 +10269,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDIyMjQ=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 187
   },
   {
@@ -11529,7 +11529,7 @@ const musicData = [
     "artist": "纳若",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDEwMjU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 243
   },
   {
@@ -11700,7 +11700,7 @@ const musicData = [
     "artist": "纳若咪",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDA4NTk=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 324
   },
   {
@@ -11763,7 +11763,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDA3NzI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 197
   },
   {
@@ -11862,7 +11862,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDA2OTc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 286
   },
   {
@@ -11871,7 +11871,7 @@ const musicData = [
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDA2ODI=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCV9gcgQc5HISRsYok8A5yOib570SjZ1vI5NMcjy8GcglDl146iaG6r690jpA81NKibiaok955CCOVDvScw/0?wx_fmt=jpeg",
     "duration": 203
   },
   {
@@ -11970,7 +11970,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDA1ODg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 303
   },
   {
@@ -12312,7 +12312,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDAyNjg=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 265
   },
   {
@@ -12375,7 +12375,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDAyMDc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 239
   },
   {
@@ -12393,7 +12393,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDAyMDU=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 227
   },
   {
@@ -12465,7 +12465,7 @@ const musicData = [
     "artist": "肖煜光",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMDAxNTc=",
-    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7OdhcqrCxibRjbx6JXfr3dZN9kJeURnrAa2ybIvfTViakkURmc7vGYzqicFNYIHo9OiaPCW9x7YYD38qicTlpXvNdG9WGGC1j5TXUYU/0?wx_fmt=jpeg",
     "duration": 227
   },
   {
@@ -13446,7 +13446,7 @@ function renderVideoList() {
     card.innerHTML = 
       '<div class="card-body p-0">' +
         '<div class="position-relative">' +
-          '<img src="' + normalizeMediaUrl(track.cover) + '" alt="' + track.title + '" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">' +
+          '<img src="' + normalizeMediaUrl(track.cover) + '" alt="' + escapeHtml(track.title) + '" class="card-img-top" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">' +
           '<div class="position-absolute top-50 start-50 translate-middle">' +
             '<span class="video-play-icon text-white" style="opacity: 0.8;">' + ((window.LJYYTIcons && window.LJYYTIcons.play) || 'Play') + '</span>' +
           '</div>' +
@@ -13455,7 +13455,7 @@ function renderVideoList() {
           '</div>' +
         '</div>' +
         '<div class="p-3">' +
-          '<h6 class="card-title mb-1">' + track.title + '</h6>' +
+          '<h6 class="card-title mb-1">' + escapeHtml(track.title) + '</h6>' +
           '<p class="card-text text-muted mb-0 small">' + renderArtistLinksHtml(track.artist) + '</p>' +
         '</div>' +
       '</div>';

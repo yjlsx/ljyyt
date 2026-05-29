@@ -10,6 +10,30 @@ const PORT = Number(process.env.PORT || 3000);
 const LYRICS_FILE = path.join(ROOT, 'data', 'lyrics.json');
 const THIRD_PARTY_LYRICS_URL = process.env.LYRICS_SEARCH_URL || '';
 const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq', 'local'];
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+const BLOCKED_FILE_PATTERNS = [/^debug[_\-]/, /^rocket_test\.html$/];
+
+const API_RATE_LIMIT_WINDOW = 60000;
+const API_RATE_LIMIT_MAX = 120;
+const rateLimitMap = new Map();
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  let entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > API_RATE_LIMIT_WINDOW) {
+    entry = { windowStart: now, count: 0 };
+    rateLimitMap.set(ip, entry);
+  }
+  entry.count++;
+  return entry.count <= API_RATE_LIMIT_MAX;
+}
+
+setInterval(() => {
+  const cutoff = Date.now() - API_RATE_LIMIT_WINDOW;
+  for (const [ip, entry] of rateLimitMap) {
+    if (entry.windowStart < cutoff) rateLimitMap.delete(ip);
+  }
+}, API_RATE_LIMIT_WINDOW);
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -1450,11 +1474,25 @@ async function searchLyricsCandidates(query, requestedSources) {
   };
 }
 
-function sendJson(res, statusCode, payload) {
+function getCorsOrigin(req) {
+  const origin = String(req.headers.origin || '').trim();
+  if (!ALLOWED_ORIGINS.length) return '*';
+  if (ALLOWED_ORIGINS.includes(origin)) return origin;
+  return ALLOWED_ORIGINS[0];
+}
+
+function safeErrorMessage(error) {
+  const msg = error instanceof Error ? error.message : String(error || '');
+  if (/timeout|ECONNREFUSED|ENOTFOUND|HTTP \d{3}/.test(msg)) return msg;
+  return 'Internal error';
+}
+
+function sendJson(res, statusCode, payload, req) {
   res.writeHead(statusCode, {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': req ? getCorsOrigin(req) : '*',
     'Cache-Control': 'no-store',
-    'Content-Type': 'application/json; charset=utf-8'
+    'Content-Type': 'application/json; charset=utf-8',
+    'X-Content-Type-Options': 'nosniff'
   });
   res.end(JSON.stringify(payload));
 }
@@ -1464,6 +1502,13 @@ function sendFile(req, res, targetPath) {
   if (!parsedPath.startsWith(ROOT)) {
     res.writeHead(403);
     res.end('Forbidden');
+    return;
+  }
+
+  const basename = path.basename(parsedPath);
+  if (BLOCKED_FILE_PATTERNS.some((pattern) => pattern.test(basename))) {
+    res.writeHead(404);
+    res.end('Not found');
     return;
   }
 
@@ -1477,7 +1522,9 @@ function sendFile(req, res, targetPath) {
     const ext = path.extname(parsedPath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300'
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'SAMEORIGIN'
     });
     fs.createReadStream(parsedPath).pipe(res);
   });
@@ -1491,6 +1538,15 @@ const server = http.createServer(async (req, res) => {
   }
 
   const requestUrl = new URL(req.url, `http://${req.headers.host || `localhost:${PORT}`}`);
+  const isApi = requestUrl.pathname.startsWith('/api/');
+
+  if (isApi) {
+    const clientIp = req.socket.remoteAddress || '';
+    if (!checkRateLimit(clientIp)) {
+      sendJson(res, 429, { error: 'Too many requests' }, req);
+      return;
+    }
+  }
 
   if (requestUrl.pathname === '/api/lyrics') {
     try {
@@ -1503,14 +1559,14 @@ const server = http.createServer(async (req, res) => {
         accesskey: requestUrl.searchParams.get('accesskey') || '',
         providerId: requestUrl.searchParams.get('providerId') || ''
       }, requestUrl.searchParams.get('sources') || '');
-      sendJson(res, 200, payload);
+      sendJson(res, 200, payload, req);
     } catch (error) {
       sendJson(res, 502, {
         found: false,
         source: 'error',
         lines: [],
-        message: error.message
-      });
+        message: safeErrorMessage(error)
+      }, req);
     }
     return;
   }
@@ -1521,13 +1577,13 @@ const server = http.createServer(async (req, res) => {
         title: requestUrl.searchParams.get('title') || '',
         artist: requestUrl.searchParams.get('artist') || ''
       }, requestUrl.searchParams.get('sources') || 'kugou,kuwo,netease,qq,rangotec,lrcapi,local');
-      sendJson(res, 200, payload);
+      sendJson(res, 200, payload, req);
     } catch (error) {
       sendJson(res, 502, {
         code: 502,
-        msg: error.message,
+        msg: safeErrorMessage(error),
         candidates: []
-      });
+      }, req);
     }
     return;
   }
@@ -1535,12 +1591,12 @@ const server = http.createServer(async (req, res) => {
   if (requestUrl.pathname === '/api/netease/suggest') {
     try {
       const payload = await searchNeteaseSuggest(requestUrl.searchParams.get('keyword') || requestUrl.searchParams.get('q') || '');
-      sendJson(res, 200, payload);
+      sendJson(res, 200, payload, req);
     } catch (error) {
       sendJson(res, 502, {
         suggestions: [],
-        message: error.message
-      });
+        message: safeErrorMessage(error)
+      }, req);
     }
     return;
   }
@@ -1548,12 +1604,12 @@ const server = http.createServer(async (req, res) => {
   if (requestUrl.pathname === '/api/gd-music') {
     try {
       const payload = await proxyGdMusic(requestUrl.searchParams);
-      sendJson(res, 200, payload);
+      sendJson(res, 200, payload, req);
     } catch (error) {
       sendJson(res, 502, {
         code: 502,
-        msg: error.message
-      });
+        msg: safeErrorMessage(error)
+      }, req);
     }
     return;
   }
@@ -1564,14 +1620,14 @@ const server = http.createServer(async (req, res) => {
         title: requestUrl.searchParams.get('title') || '',
         artist: requestUrl.searchParams.get('artist') || ''
       });
-      sendJson(res, 200, payload);
+      sendJson(res, 200, payload, req);
     } catch (error) {
       sendJson(res, 502, {
         found: false,
         source: 'error',
         imageUrl: '',
-        message: error.message
-      });
+        message: safeErrorMessage(error)
+      }, req);
     }
     return;
   }

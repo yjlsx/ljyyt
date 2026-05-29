@@ -29,10 +29,12 @@ export default {
 
       return jsonResponse({ ok: true, service: 'ljyyt-worker' });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : '';
+      const safeMsg = /timeout|HTTP \d{3}/.test(msg) ? msg : 'Internal error';
       return jsonResponse(
         {
           found: false,
-          error: error instanceof Error ? error.message : 'Unknown worker error'
+          error: safeMsg
         },
         500
       );
@@ -666,7 +668,8 @@ function corsHeaders() {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Accept',
-    'Cache-Control': 'public, max-age=1800'
+    'Cache-Control': 'public, max-age=1800',
+    'X-Content-Type-Options': 'nosniff'
   };
 }
 
