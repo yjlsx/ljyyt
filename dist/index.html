@@ -98,6 +98,7 @@
       padding: 9px 12px 12px;
     }
     .search-shell.hidden { display: none; }
+    body.view-search .search-shell { display: none; }
     .search-box {
       height: 44px;
       border-radius: 999px;
@@ -435,32 +436,9 @@
     .search-playlist-card:hover { border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); }
 
     .discovery-view { padding: 0; min-height: 100%; background: color-mix(in srgb, var(--background) 50%, transparent); }
-    .index-discover-header { display: none; }
-    .index-discover-search {
-      position: sticky; top: -12px; z-index: 22;
-      margin: -12px -12px 0; padding: 12px 12px 9px;
-      background: color-mix(in srgb, var(--background) 90%, transparent);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
-    }
-    .discover-search-card { margin: 0; }
-    .discover-search-box {
-      height: 44px;
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--muted) 42%, transparent);
-      border: 0;
-      box-shadow: none;
-      padding: 0 9px 0 12px;
-      transition: background .18s ease, box-shadow .18s ease;
-    }
-    .discover-search-box:focus-within {
-      background: var(--background);
-      box-shadow: 0 0 0 1px var(--ring), 0 2px 10px rgba(16,30,28,.05);
-    }
-    .discover-search-box .line-icon { width: 16px; height: 16px; }
-    .discover-search-box .provider { height: 28px; min-width: 72px; padding-left: 9px; font-size: 12px; }
+    .index-discover-header, .index-discover-search, .discover-search-card { display: none; }
     .discover-category-row {
-      position: sticky; top: 41px; z-index: 21;
+      position: sticky; top: 0; z-index: 21;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -1251,55 +1229,22 @@
       </section>
       </div>
       <div class="view discovery-view" data-view="search">
-        <header class="discover-app-header index-discover-header" aria-hidden="true">
-          <div>
-            <h1>发现</h1>
-            <p>搜索歌曲、歌手、专辑和歌单</p>
-          </div>
-        </header>
-        <section class="discover-search-card index-discover-search" aria-label="搜索">
-          <div class="search-box discover-search-box" role="search">
-            <span data-icon="search"></span>
-            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
-            <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event)"><span data-icon="close"></span></button>
-            <div class="provider-wrap">
-              <button class="provider" type="button" id="discover-provider-button" onclick="toggleProvider(event)"><span>聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
-            </div>
-          </div>
-          <div class="search-history" id="search-history"></div>
-        </section>
         <nav class="discover-category-row" aria-label="发现分类">
           <button class="discover-category-chip active" type="button" data-discover-category="全部">全部</button>
-          <button class="discover-category-chip" type="button" data-discover-category="推荐">推荐</button>
-          <button class="discover-category-chip" type="button" data-discover-category="精选">精选</button>
+          <button class="discover-category-chip" type="button" data-discover-category="mine">我的</button>
+          <button class="discover-category-chip" type="button" data-discover-category="featured">精选</button>
           <button class="discover-category-chip" type="button" data-discover-category="华语">华语</button>
           <button class="discover-category-chip" type="button" data-discover-category="欧美">欧美</button>
           <button class="discover-category-chip" type="button" data-discover-category="流行">流行</button>
-          <button class="discover-category-chip" type="button" data-discover-category="播客">播客</button>
-          <button class="discover-category-chip" type="button" data-discover-category="我的">我的</button>
+          <button class="discover-category-chip" type="button" data-discover-category="说唱">说唱</button>
+          <button class="discover-category-chip" type="button" data-discover-category="摇滚">摇滚</button>
+          <button class="discover-category-chip" type="button" data-discover-category="电子">电子</button>
+          <button class="discover-category-chip" type="button" data-discover-category="民谣">民谣</button>
+          <button class="discover-category-chip" type="button" data-discover-category="轻音乐">轻音乐</button>
           <button class="discover-grid-toggle" type="button" aria-label="更多分类"><span data-icon="grid"></span></button>
         </nav>
         <section class="discover-section index-discover-section" aria-label="发现歌单">
           <div class="discover-playlist-rail" id="index-discover-playlists"></div>
-        </section>
-        <nav class="result-tabs search-tabs" id="search-tabs" hidden aria-label="搜索结果分类">
-          <button class="result-tab search-tab active" type="button" data-search-filter="songs"><span data-icon="music"></span>歌曲</button>
-          <button class="result-tab search-tab" type="button" data-search-filter="playlists"><span data-icon="album"></span>歌单</button>
-          <button class="result-tab search-tab" type="button" data-search-filter="videos"><span data-icon="video"></span>MV</button>
-        </nav>
-        <div class="section-head" id="search-head" hidden><h2>搜索结果</h2><span class="more" id="search-count-label">按相关度</span></div>
-        <p class="result-note search-status" id="search-note" hidden></p>
-        <section class="search-section" id="search-songs-section">
-          <div class="search-section-title"><strong>歌曲</strong><span id="search-song-count">0 首</span></div>
-          <div class="track-list" id="search-results"></div>
-        </section>
-        <section class="search-section" id="search-playlists-section">
-          <div class="search-section-title"><strong>歌单</strong><button class="more" type="button" onclick="showView('mine')">管理歌单</button></div>
-          <div class="search-playlists playlist-grid-app" id="search-playlists"></div>
-        </section>
-        <section class="search-section" id="search-videos-section">
-          <div class="search-section-title"><strong>MV</strong><span id="search-video-count">0 个</span></div>
-          <div class="track-list" id="search-videos"></div>
         </section>
       </div>
       <div class="view" data-view="favorites">
@@ -1730,7 +1675,7 @@
     }
 
     function getSearchInput() {
-      return document.querySelector('[data-view="search"] #search-input') || document.getElementById('search-input');
+      return null;
     }
     function getHomeSearchInput() {
       return document.getElementById('home-search-input');
@@ -1746,11 +1691,7 @@
     function handleHomeSearchKey(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
-        var homeInput = getHomeSearchInput();
-        var searchInput = getSearchInput();
-        if (homeInput && searchInput) searchInput.value = homeInput.value;
         showView('search');
-        performSearch({ remember: true });
       }
     }
     function renderSearchHistory() {
@@ -1769,9 +1710,7 @@
         ).join('') + '</div>';
       box.querySelectorAll('.history-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
-          const input = getSearchInput();
-          input.value = chip.dataset.query || '';
-          performSearch({ remember: false });
+          showView('search');
         });
       });
     }
@@ -1817,7 +1756,7 @@
         searchInput.focus({ preventScroll: true });
       }
       if (homeInput) homeInput.value = '';
-      performSearch({ remember: false });
+      if (typeof performSearch === 'function' && getSearchInput()) performSearch({ remember: false });
       updateSearchClearButton();
     }
     const icons = {
@@ -2167,13 +2106,9 @@
         downloadTrack(track);
         return;
       } else if (action === 'artist') {
-        getSearchInput().value = track.artist || '';
         showView('search');
-        performSearch({ remember: false });
       } else if (action === 'album' && track.album) {
-        getSearchInput().value = track.album;
         showView('search');
-        performSearch({ remember: false });
       }
       closeTrackActionDrawer();
     }
@@ -2363,11 +2298,9 @@
     }
 
     function openDiscoverCard(card) {
-      if (!card) return;
-      var input = getSearchInput();
-      if (input) input.value = card.query || card.title || '';
-      resetSearchFilter();
-      performSearch({ remember: true });
+      // Dev PlaylistMarket opens a playlist detail route; until that page is copied,
+      // keep cards inert instead of turning them into search queries.
+      return card || null;
     }
 
     function renderIndexDiscoverPlaylists() {
@@ -2517,109 +2450,14 @@
       }
     }
     async function performSearch(options) {
-      options = options || {};
-      var input = getSearchInput();
-      var note = document.getElementById('search-note');
-      var head = document.getElementById('search-head');
-      var resultsBox = document.getElementById('search-results');
-      var query = String(input && input.value || '').trim().toLowerCase();
-      var tabs = document.getElementById('search-tabs');
+      // Search results UI is intentionally disabled while matching dev PlaylistMarket.
+      // Bottom Search tab is now a discovery/playlist market only.
       showView('search');
-      updateSearchClearButton();
-      document.querySelector('[data-view="search"]')?.classList.toggle('discover-results-active', !!query);
-      if (!query) {
-        head.hidden = true;
-        note.hidden = true;
-        note.textContent = '';
-        if (tabs) tabs.hidden = true;
-        resultsBox.innerHTML = '';
-        document.getElementById('search-songs-section').classList.add('hidden');
-        document.getElementById('search-playlists-section').classList.add('hidden');
-        document.getElementById('search-videos-section').classList.add('hidden');
-        var defaultPlaylists = getSearchPlaylistCards('');
-        currentSearchState = { songs: [], playlists: defaultPlaylists, videos: [] };
-        renderIndexDiscoverPlaylists();
-        renderSearchHistory();
-        return;
-      }
-      if (options.remember) rememberSearchQuery(query);
-      renderSearchHistory();
-      head.hidden = false;
-      if (tabs) tabs.hidden = true;
-      note.hidden = false;
-      note.textContent = '正在搜索 "' + query + '" · 来源：' + activeProvider;
-      try {
-        var providerSource = providerSourceMap[activeProvider] || 'all';
-        var tracks = await ensureLibraryTracks();
-        var localResults = tracks.filter(function(track) {
-          return [track.title, track.artist, track.album].some(function(value) {
-            return String(value || '').toLowerCase().includes(query);
-          });
-        }).map(function(track) {
-          return Object.assign({}, track, {
-            source: 'local',
-            sourceLabel: '丽江曲库',
-            urlId: track.id || ''
-          });
-        });
-
-        var selectedAggregateSources = aggregatedSources.length ? aggregatedSources : ['local'];
-        var aggregateExternalSources = selectedAggregateSources.filter(function(source) { return source !== 'local'; });
-        var shouldSearchLocal = providerSource === 'local' || (providerSource === 'all' && selectedAggregateSources.includes('local'));
-        var externalResults = [];
-        if (providerSource === 'all') {
-          var externalSets = await Promise.all(aggregateExternalSources.map(function(source) {
-            return searchExternalSource(query, source).catch(function() { return []; });
-          }));
-          externalResults = externalSets.flat();
-        } else if (providerSource !== 'local') {
-          externalResults = await searchExternalSource(query, providerSource).catch(function() { return []; });
-        }
-
-        var results = providerSource === 'local'
-          ? localResults
-          : (providerSource === 'all' ? (shouldSearchLocal ? localResults : []).concat(externalResults) : externalResults);
-
-        var videos = [];
-        if (providerSource === 'local' || providerSource === 'all') {
-          var allVideos = await ensureSearchVideos().catch(function() { return []; });
-          videos = allVideos.filter(function(video) {
-            return [video.title, video.artist, video.description].some(function(value) {
-              return String(value || '').toLowerCase().includes(query);
-            });
-          }).slice(0, 30);
-        }
-        var playlists = getSearchPlaylistCards(query);
-        currentSearchState = { songs: results, playlists: playlists, videos: videos };
-        document.getElementById('search-count-label').textContent = (results.length + playlists.length + videos.length) + ' 个结果';
-        renderSearchRows(results, activeProvider);
-        renderSearchPlaylists(playlists);
-        renderSearchVideos(videos);
-        note.textContent = '来源：' + activeProvider + ' · 歌曲 ' + results.length + ' · 歌单 ' + playlists.length + ' · MV ' + videos.length;
-        applySearchFilter('songs');
-        if (!results.length && activeProvider === 'Migu') {
-          resultsBox.innerHTML = '<div class="empty-note">Migu 是 Otter 官方接口来源，不走 GD 搜索 API；下一步需要把 Otter 的 Migu 官方搜索模块移到 Worker。</div>';
-        }
-      } catch (error) {
-        resultsBox.innerHTML = '<div class="empty-note">搜索暂时不可用，请刷新后重试。</div>';
-        renderSearchPlaylists(getSearchPlaylistCards(query));
-        renderSearchVideos([]);
-        applySearchFilter('songs');
-      }
+      renderIndexDiscoverPlaylists();
     }
-    function handleDiscoverSearchInput() {
-      updateSearchClearButton();
-      var input = getSearchInput();
-      var hasQuery = !!String(input && input.value || '').trim();
-      document.querySelector('[data-view="search"]')?.classList.toggle('discover-results-active', hasQuery);
-      if (hasQuery) performSearch({ remember: false });
-      else performSearch({ remember: false });
-    }
+    function handleDiscoverSearchInput() {}
     function handleSearchKey(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        performSearch({ remember: true });
-      }
+      if (event && event.key === 'Enter') event.preventDefault();
     }
     function getFavoriteSearchQuery() {
       var input = document.getElementById('favorite-search-input');
@@ -3357,7 +3195,8 @@
       views.forEach((view) => view.classList.remove('active'));
       const next = document.querySelector('[data-view="' + target + '"]');
       if (next) next.classList.add('active');
-      document.getElementById('search-shell')?.classList.toggle('hidden', !['home', 'search'].includes(target));
+      document.getElementById('search-shell')?.classList.toggle('hidden', target !== 'home');
+      document.body.classList.toggle('view-search', target === 'search');
       document.querySelector('.content').scrollTop = 0;
       tabs.forEach((item) => item.classList.toggle('active', item.dataset.target === target));
       if (!['home', 'search', 'favorites', 'mine'].includes(target)) {
@@ -3373,7 +3212,7 @@
       if (target === 'history') renderHistory();
       if (target === 'queue') renderQueue();
       if (target === 'mine') renderPlaylists();
-      if (target === 'search') { renderSearchHistory(); renderIndexDiscoverPlaylists(); }
+      if (target === 'search') { renderIndexDiscoverPlaylists(); }
     }
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
@@ -3425,10 +3264,10 @@
       }
       writeStoredList('ljyyt_otter_aggregated_sources', aggregatedSources);
       updateAggregateSourceUI();
-      if (activeProvider === '聚合搜索') performSearch({ remember: false });
+      if (activeProvider === '聚合搜索') renderIndexDiscoverPlaylists();
     }
     document.querySelectorAll('.search-tab').forEach((tab) => {
-      tab.addEventListener('click', () => applySearchFilter(tab.dataset.searchFilter || 'songs'));
+      tab.addEventListener('click', () => {});
     });
     document.querySelectorAll('.discover-category-chip').forEach((chip) => {
       chip.addEventListener('click', () => {
@@ -3442,8 +3281,7 @@
         event.stopPropagation();
         syncProviderSelection(option.dataset.provider);
         showView('search');
-        resetSearchFilter();
-        performSearch({ remember: false });
+        renderIndexDiscoverPlaylists();
       });
     });
     document.addEventListener('click', () => {
@@ -3508,13 +3346,7 @@
       if (source && sourceMap[source]) syncProviderSelection(sourceMap[source]);
       if (view === 'search' || query) {
         showView('search');
-        if (query) {
-          getSearchInput().value = query;
-          resetSearchFilter();
-          performSearch({ remember: false });
-        } else {
-          renderSearchHistory();
-        }
+        renderIndexDiscoverPlaylists();
       }
     }
     async function chooseTrack(name, artist, cover, src, duration) {
