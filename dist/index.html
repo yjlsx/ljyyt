@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="referrer" content="no-referrer">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#36a97b">
   <meta name="description" content="丽江音悦台 - 汇集纳西音乐、MV 视频与多音源搜索的在线音乐播放器。">
   <meta name="keywords" content="丽江音悦台, 纳西音乐, 丽江音乐, 民族音乐, MV视频, 在线音乐">
@@ -51,15 +51,22 @@
       --shadow: 0 8px 20px rgba(0,0,0,.26);
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    img { color: transparent; font-size: 0; }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      touch-action: pan-x pan-y;
+    }
+    img { color: transparent; font-size: 0; max-width: 100%; }
     body {
       margin: 0;
       color: var(--foreground);
       background: var(--background);
       font-family: "Geist", "PingFang SC", "Microsoft YaHei", sans-serif;
     }
-    button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+    button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     .app {
       height: 100dvh;
       position: relative;
@@ -144,23 +151,29 @@
     }
     .provider:hover { color: var(--foreground); }
     @media (max-width: 768px) {
-      input,
-      textarea,
-      select,
-      .search-input,
-      #search-input {
-        font-size: 16px !important;
-        line-height: 1.35;
-      }
-      .search-input,
-      #search-input {
-        min-height: 44px;
-      }
       html,
       body,
       .app {
         max-width: 100%;
         overflow-x: hidden;
+        overscroll-behavior-x: none;
+      }
+      input,
+      textarea,
+      select,
+      .search-input,
+      .drawer-input,
+      #search-input,
+      #home-search-input {
+        font-size: 16px !important;
+        line-height: 1.35;
+        transform: translateZ(0);
+      }
+      .search-input,
+      .drawer-input,
+      #search-input,
+      #home-search-input {
+        min-height: 44px;
       }
     }
     .provider-wrap { position: relative; }
@@ -833,6 +846,26 @@
       box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 45%, transparent);
     }
     .progress svg, .progress .line-icon { width: 14px; height: 14px; position: relative; z-index: 1; }
+    .progress .mini-play-glyph {
+      position: relative; z-index: 1; display: block;
+      width: 16px; height: 16px; color: var(--primary);
+      pointer-events: none;
+    }
+    .progress .mini-play-glyph.is-play::before {
+      content: ""; position: absolute; left: 5px; top: 2px;
+      width: 0; height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 9px solid currentColor;
+    }
+    .progress .mini-play-glyph.is-pause {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .progress .mini-play-glyph.is-pause::before,
+    .progress .mini-play-glyph.is-pause::after {
+      content: ""; width: 4px; height: 14px;
+      border-radius: 1px; background: currentColor;
+    }
     .queue { width: 27px; height: 34px; color: var(--muted-foreground); display: grid; place-items: center; border-radius: 12px; }
     .queue:hover { background: var(--muted); color: var(--foreground); }
     .queue svg, .queue .line-icon { width: 19px; height: 19px; }
@@ -956,12 +989,13 @@
     .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .progress svg, .progress .line-icon, .queue svg, .queue .line-icon {
       width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     }
-    .controls .main-play .icon-play, .progress .icon-play { fill: currentColor; stroke: none; }
-    .controls .main-play .icon-pause, .progress .icon-pause { fill: currentColor; stroke: none; }
+    .controls .main-play .icon-play { fill: currentColor; stroke: none; }
+    .controls .main-play .icon-pause { fill: currentColor; stroke: none; }
     .player .progress svg { width: 14px; height: 14px; }
     .controls .main-play {
-      height: 61px; width: 61px; border-radius: 50%; background: white; color: #101415;
-      display: grid; place-items: center; font-size: 25px;
+      height: 64px; width: 64px; border-radius: 50%; background: white; color: #101415;
+      display: grid; place-items: center; font-size: 25px; box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .controls .main-play svg, .controls .main-play .line-icon { width: 28px; height: 28px; color: #101415; }
     .controls .main-play,
@@ -983,17 +1017,29 @@
     .controls .main-play.is-playing svg,
     .controls .main-play.is-playing .line-icon {
       color: #101415 !important;
-      fill: currentColor !important;
-      stroke: currentColor !important;
     }
-    .controls .main-play .icon-play { transform: translateX(2px); }
-    .controls .main-play .icon-play polygon,
+    .controls .main-play .icon-play {
+      transform: translateX(4px);
+      fill: currentColor !important;
+      stroke: none !important;
+    }
+    .controls .main-play .icon-play polygon {
+      fill: currentColor !important;
+      stroke: none !important;
+    }
+    .controls .main-play .icon-pause {
+      fill: currentColor !important;
+      stroke: none !important;
+    }
     .controls .main-play .icon-pause rect {
       fill: currentColor !important;
-      stroke: currentColor !important;
+      stroke: none !important;
     }
     .progress svg, .progress .line-icon { color: var(--primary); }
-    .progress .icon-play, .progress .icon-pause { fill: currentColor !important; stroke: none !important; }
+    .progress .icon-play { fill: currentColor !important; stroke: none !important; transform: translateX(1px); }
+    .progress .icon-play polygon { fill: currentColor !important; stroke: none !important; }
+    .progress .icon-pause { fill: none !important; stroke: currentColor !important; }
+    .progress .icon-pause rect { fill: none !important; stroke: currentColor !important; }
     .queue-drawer {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 130;
       height: min(75vh, 620px); transform: translateY(110%);
@@ -1138,7 +1184,7 @@
       }
       .controls { height: 92px; padding: 12px 22px 24px; }
       .controls button { width: 45px; height: 45px; border-radius: 15px; }
-      .controls .main-play { width: 58px; height: 58px; }
+      .controls .main-play { width: 64px; height: 64px; }
       .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .queue svg, .queue .line-icon { width: 21px; height: 21px; }
       .controls .main-play svg, .controls .main-play .line-icon { width: 23px; height: 23px; }
       .full-meta { padding-left: 22px; padding-right: 22px; }
@@ -1155,19 +1201,67 @@
       }
     }
     @media (min-width: 720px) {
+      html, body { min-height: 100%; overflow: hidden; }
       body {
-        background: var(--secondary);
-        display: grid;
-        place-items: center;
+        background: var(--background);
+        display: block;
       }
       .app {
-        width: min(100%, 460px);
-        height: min(100dvh, 850px);
-        border-left: 1px solid var(--border);
-        border-right: 1px solid var(--border);
-        box-shadow: 0 10px 32px rgba(22,35,33,.08);
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        border: 0;
+        box-shadow: none;
         position: relative;
       }
+      .phone-header,
+      .search-shell,
+      .view,
+      .tabs,
+      .player-stack {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .phone-header { height: 60px; padding: 12px clamp(24px, 4vw, 56px) 0; }
+      .brand { font-size: 20px; }
+      .brand img { width: 34px; height: 34px; border-radius: 10px; }
+      .search-shell { padding: 12px clamp(24px, 4vw, 56px) 14px; }
+      .content { padding-left: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
+      .mv-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+      .search-playlists,
+      .discover-playlist-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px 18px; }
+      .index-discover-search { padding-left: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
+      .discover-search-results { padding-left: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
+      .tabs {
+        left: 0;
+        right: 0;
+        transform: none;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+      }
+      .player-stack {
+        left: 0;
+        right: 0;
+        transform: none;
+        padding-left: clamp(24px, 4vw, 56px);
+        padding-right: clamp(24px, 4vw, 56px);
+      }
+      .fullscreen,
+      .queue-drawer,
+      .action-drawer,
+      .setting-drawer {
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, 110%);
+        width: min(100%, 720px);
+      }
+      .fullscreen.open { transform: translate(-50%, 0); }
+      .queue-drawer.open,
+      .action-drawer.open,
+      .setting-drawer.open { transform: translate(-50%, 0); }
     }
   </style>
 </head>
@@ -1290,7 +1384,7 @@
         <div class="index-discover-search">
           <div class="search-box">
             <span data-icon="search"></span>
-            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="renderSearchHistory()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
+            <input class="search-input" id="search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onfocus="renderSearchHistory(true)" onblur="hideSearchHistorySoon()" oninput="handleDiscoverSearchInput()" onkeydown="handleSearchKey(event)">
             <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'search')"><span data-icon="close"></span></button>
             <div class="provider-wrap discover-provider-wrap">
               <button class="provider" type="button" id="discover-provider-button" onclick="toggleProvider(event)"><span>聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
@@ -1771,11 +1865,26 @@
         performSearch({ remember: true });
       }
     }
-    function renderSearchHistory() {
+    function isSearchInputFocused() {
+      return document.activeElement === getSearchInput();
+    }
+    function hideSearchHistory() {
+      const box = document.getElementById('search-history');
+      if (box) {
+        box.innerHTML = '';
+        box.hidden = true;
+      }
+    }
+    function hideSearchHistorySoon() {
+      setTimeout(function() {
+        if (!isSearchInputFocused()) hideSearchHistory();
+      }, 120);
+    }
+    function renderSearchHistory(force) {
       const box = document.getElementById('search-history');
       if (!box) return;
       const query = String(getSearchInput()?.value || '').trim();
-      if (query || !searchHistory.length) {
+      if (!force || !isSearchInputFocused() || query || !searchHistory.length) {
         box.innerHTML = '';
         box.hidden = true;
         return;
@@ -1810,7 +1919,7 @@
         box.innerHTML = '';
         box.hidden = true;
       }
-      renderSearchHistory();
+      renderSearchHistory(isSearchInputFocused());
     }
     function updateSearchClearButton() {
       const searchInput = getSearchInput();
@@ -1870,7 +1979,8 @@
       var fullPlay = document.getElementById('full-play');
       var html = iconHtml(playing ? 'pause' : 'play') || (playing ? 'Ⅱ' : '▶');
       if (miniPlay) {
-        miniPlay.innerHTML = html;
+        miniPlay.innerHTML = '<span class="mini-play-glyph ' + (playing ? 'is-pause' : 'is-play') + '" aria-hidden="true"></span>';
+        miniPlay.title = playing ? '暂停' : '播放';
         miniPlay.setAttribute('aria-label', playing ? '暂停' : '播放');
         miniPlay.classList.toggle('is-playing', !!playing);
       }
@@ -2761,12 +2871,12 @@
       updateSearchClearButton();
       if (!query) {
         setSearchResultsActive(false);
-        renderSearchHistory();
+        renderSearchHistory(isSearchInputFocused());
         renderIndexDiscoverPlaylists();
         return;
       }
       if (options.remember !== false) rememberSearchQuery(query);
-      renderSearchHistory();
+      hideSearchHistory();
       setSearchResultsActive(true);
       var container = document.getElementById('search-results');
       var count = document.getElementById('search-song-count');
@@ -2795,7 +2905,7 @@
       updateSearchClearButton();
       if (!String(searchInput && searchInput.value || '').trim()) {
         setSearchResultsActive(false);
-        renderSearchHistory();
+        renderSearchHistory(isSearchInputFocused());
         renderIndexDiscoverPlaylists();
       }
     }
@@ -3728,8 +3838,8 @@
       closeSettingDrawer();
       setQueueDrawerOpen(false);
       document.getElementById('full-player').classList.add('open');
-      document.getElementById('full-main').classList.remove('show-lyrics');
       document.body.classList.add('full-player-open');
+      showLyricsPanel();
       setPlayIcons(!audioPlayer.paused);
     }
     function closeFullPlayer() {
@@ -3783,7 +3893,7 @@
     hydrateIcons(document);
     initSeekDragging();
     updateControlIcons();
-    setPlayIcons(false);
+    setPlayIcons(!audioPlayer.paused);
     initSettings();
     updateAggregateSourceUI();
     renderFavorites();
