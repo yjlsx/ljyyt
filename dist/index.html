@@ -438,14 +438,15 @@
       align-items: center;
       gap: 6px;
       overflow-x: auto;
+      overflow-y: hidden;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
       padding: 7px 12px 8px;
       margin: 0 -12px 0;
       background: color-mix(in srgb, var(--background) 90%, transparent);
       backdrop-filter: blur(18px);
       border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
-      -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
-      mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+      scroll-padding: 12px;
     }
     .discover-category-row::-webkit-scrollbar { display: none; }
     .discover-category-chip {
@@ -2446,7 +2447,7 @@
       if (!row) return;
       row.innerHTML = RECOMMEND_CATS.map(function(cat) {
         return '<button class="discover-category-chip' + (activeDiscoverCategory === cat.id ? ' active' : '') + '" type="button" data-discover-category="' + escapeMarkup(cat.id) + '">' + escapeMarkup(cat.name) + '</button>';
-      }).join('') + '<button class="discover-grid-toggle" type="button" aria-label="更多分类"><span data-icon="grid"></span></button>';
+      }).join('');
       hydrateIcons(row);
       row.querySelectorAll('.discover-category-chip').forEach(function(chip) {
         chip.addEventListener('click', function() {
