@@ -1332,8 +1332,10 @@
         align-items: center;
         gap: 48px;
         padding: 20px 60px;
+        min-height: 0;
+        overflow: hidden;
       }
-      .fullscreen .full-cover { width: min(36vw, 340px); border-radius: 20px; }
+      .fullscreen .full-cover { width: min(36vw, 340px); border-radius: 20px; flex-shrink: 0; }
       .fullscreen .full-main.show-lyrics {
         flex-direction: row;
         align-items: stretch;
@@ -1341,7 +1343,7 @@
         padding: 16px 48px;
       }
       .fullscreen .full-main.show-lyrics .full-cover {
-        width: min(28vw, 260px);
+        width: min(28vw, 280px);
         align-self: center;
       }
       .fullscreen .full-main.show-lyrics .lyrics {
@@ -1353,11 +1355,14 @@
         mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
         -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
       }
-      .full-meta { max-width: 600px; margin-left: auto; margin-right: auto; padding: 4px 48px 12px; }
+      .full-meta { flex-shrink: 0; padding: 4px 48px 10px; }
       .full-meta h2 { font-size: 22px; }
       .full-meta p { font-size: 14px; }
-      .seek { max-width: 600px; margin-left: auto; margin-right: auto; }
-      .controls { max-width: 420px; margin-left: auto; margin-right: auto; padding: 14px 0 28px; }
+      .seek { flex-shrink: 0; margin: 0 48px; }
+      .controls { flex-shrink: 0; height: auto; margin: 0 48px; padding: 12px 0 24px; gap: 24px; }
+      .controls button { width: 56px; height: 56px; }
+      .controls .main-play { width: 72px; height: 72px; }
+      .controls .main-play svg, .controls .main-play .line-icon { width: 32px; height: 32px; }
       .queue-drawer,
       .action-drawer,
       .setting-drawer {
