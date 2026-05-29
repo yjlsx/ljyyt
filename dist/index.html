@@ -99,7 +99,11 @@
     }
     .search-shell.hidden { display: none; }
     body.view-search .search-shell { display: none; }
-    body.full-player-open .search-shell { display: none !important; }
+    body.full-player-open .search-shell,
+    body.full-player-open .index-discover-search,
+    body.full-player-open .discover-category-row,
+    body.full-player-open .tabs,
+    body.full-player-open .player-stack { display: none !important; }
     .search-box {
       height: 44px;
       border-radius: 999px;
@@ -848,7 +852,7 @@
     .tab.active { color: var(--primary); }
     .tab.active svg, .tab.active .line-icon { stroke-width: 2.5; }
     .fullscreen {
-      display: none; position: absolute; z-index: 20; inset: 0;
+      display: none; position: absolute; z-index: 120; inset: 0;
       color: white; overflow: hidden; flex-direction: column;
       background: #0e1717;
     }
@@ -959,9 +963,31 @@
       display: grid; place-items: center; font-size: 25px;
     }
     .controls .main-play svg, .controls .main-play .line-icon { width: 24px; height: 24px; color: #101415; }
+    .controls .main-play,
+    .controls .main-play:hover,
+    .controls .main-play:active,
+    .controls .main-play.is-playing {
+      background: white !important;
+      color: #101415 !important;
+    }
+    .controls .main-play svg,
+    .controls .main-play .line-icon,
+    .controls .main-play:hover svg,
+    .controls .main-play:hover .line-icon,
+    .controls .main-play.is-playing svg,
+    .controls .main-play.is-playing .line-icon {
+      color: #101415 !important;
+      fill: currentColor;
+    }
+    .controls .main-play .icon-play,
+    .controls .main-play .icon-pause {
+      fill: #101415 !important;
+      stroke: none !important;
+    }
     .progress svg, .progress .line-icon { color: var(--primary); }
+    .progress .icon-play, .progress .icon-pause { fill: currentColor !important; stroke: none !important; }
     .queue-drawer {
-      position: absolute; left: 0; right: 0; bottom: 0; z-index: 70;
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 130;
       height: min(75vh, 620px); transform: translateY(110%);
       transition: transform .32s cubic-bezier(.2,.8,.2,1);
       background: var(--card); color: var(--foreground);
@@ -970,7 +996,7 @@
       display: flex; flex-direction: column;
     }
     .drawer-scrim {
-      position: absolute; inset: 0; z-index: 69;
+      position: absolute; inset: 0; z-index: 129;
       background: rgba(0,0,0,.16);
       opacity: 0; pointer-events: none;
       transition: opacity .25s ease;
