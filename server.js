@@ -1577,7 +1577,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   let relativePath = decodeURIComponent(requestUrl.pathname);
-  if (relativePath === '/') relativePath = '/player.html';
+  if (relativePath === '/') relativePath = '/index.html';
   const absolutePath = path.join(ROOT, relativePath.replace(/^\/+/, ''));
   sendFile(req, res, absolutePath);
 });

@@ -42,6 +42,7 @@ const pickFunction = (name) => {
 };
 
 const sandbox = {
+  console: { warn: function() {}, log: function() {}, error: function() {} },
   DEFAULT_COVER: 'cover.jpg',
   gdMusicApiBase: '/api/gd-music',
   gdMusicFallbackBases: ['https://music-api.example.test/api.php'],

@@ -4,7 +4,25 @@
   var SEARCH_HISTORY_KEY = 'ljyyt_search_history';
   var LEGACY_SEARCH_HISTORY_KEYS = ['searchHistory', 'search-history', 'recentSearches', 'recent_searches', 'ljyytSearchHistory'];
   var DEFAULT_COVER = 'https://images.unsplash.com/photo-1677922068836-149f83761ddb?fm=jpg&q=60&w=640&auto=format&fit=crop';
-  var GD_MUSIC_API = 'https://music-api.gdstudio.xyz/api.php';
+  var GD_MUSIC_API_BASES = [
+    'https://otter-music.pages.dev/music-api',
+    '/api/gd-music',
+    'https://music-api.gdstudio.xyz/api.php'
+  ];
+
+  async function fetchGdMusicJson(queryString, signal) {
+    for (var i = 0; i < GD_MUSIC_API_BASES.length; i++) {
+      try {
+        var response = await fetch(GD_MUSIC_API_BASES[i] + queryString, signal ? { signal: signal } : undefined);
+        if (!response.ok) continue;
+        return await response.json();
+      } catch (error) {
+        if (error && error.name === 'AbortError') throw error;
+        console.warn('fetchGdMusicJson: endpoint failed', GD_MUSIC_API_BASES[i], error);
+      }
+    }
+    throw new Error('gd music request failed');
+  }
   var activeFilter = 'all';
   var activeSource = 'aggregate';
   var currentResults = { music: [], video: [], playlists: [] };
@@ -263,9 +281,9 @@
     var artist = Array.isArray(track.artist) ? track.artist.join(' / ') : String(track.artist || '');
     var picId = String(track.pic_id || '');
     var cover = /^https?:\/\//i.test(picId) || picId.indexOf('//') === 0 ? picId : DEFAULT_COVER;
-    var coverApi = '';
+    var coverApiQuery = '';
     if (picId && cover === DEFAULT_COVER) {
-      coverApi = GD_MUSIC_API + '?types=pic&source=' + encodeURIComponent(source) + '&id=' + encodeURIComponent(picId) + '&size=300';
+      coverApiQuery = '?types=pic&source=' + encodeURIComponent(source) + '&id=' + encodeURIComponent(picId) + '&size=300';
     }
     if (cover.indexOf('//') === 0) cover = 'https:' + cover;
     return {
@@ -274,7 +292,7 @@
       artist: artist || '未知歌手',
       album: String(track.album || ''),
       cover: safeCover(cover),
-      coverApi: coverApi,
+      coverApiQuery: coverApiQuery,
       duration: Number(track.interval || track.duration || 0),
       src: '',
       source: source,
@@ -285,11 +303,9 @@
   }
 
   async function resolveExternalCover(track) {
-    if (!track.coverApi) return track;
+    if (!track.coverApiQuery) return track;
     try {
-      var response = await fetch(track.coverApi);
-      if (!response.ok) return track;
-      var payload = await response.json();
+      var payload = await fetchGdMusicJson(track.coverApiQuery);
       var url = payload && payload.url ? String(payload.url) : '';
       if (url.indexOf('//') === 0) url = 'https:' + url;
       if (/^https?:\/\//i.test(url)) track.cover = safeCover(url);
@@ -297,12 +313,10 @@
     return track;
   }
 
-  async function searchExternalSource(query, source) {
-    var url = GD_MUSIC_API + '?types=search&source=' + encodeURIComponent(source) +
+  async function searchExternalSource(query, source, signal) {
+    var queryString = '?types=search&source=' + encodeURIComponent(source) +
       '&name=' + encodeURIComponent(query) + '&count=50&pages=1';
-    var response = await fetch(url);
-    if (!response.ok) throw new Error(source + ' search failed');
-    var payload = await response.json();
+    var payload = await fetchGdMusicJson(queryString, signal);
     var tracks = Array.isArray(payload)
       ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; })
       : [];
@@ -311,12 +325,10 @@
 
   async function resolveExternalTrackUrl(track) {
     if (!track || !track.source || !track.urlId) return '';
-    var url = GD_MUSIC_API + '?types=url&source=' + encodeURIComponent(track.source) +
+    var queryString = '?types=url&source=' + encodeURIComponent(track.source) +
       '&id=' + encodeURIComponent(track.urlId) + '&br=192';
     try {
-      var response = await fetch(url);
-      if (!response.ok) return '';
-      var payload = await response.json();
+      var payload = await fetchGdMusicJson(queryString);
       return payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
     } catch (error) {
       return '';
@@ -501,7 +513,7 @@
     var list = getDiscoverPlaylist(id);
     if (!list || !list.tracks || !list.tracks.length) {
       if (id === 'favorites' || id === 'history') location.href = 'index.html?view=mine';
-      else location.href = 'player.html';
+      else location.href = 'index.html';
       return;
     }
     currentResults.music = list.tracks;
@@ -532,7 +544,7 @@
       row.addEventListener('click', function() {
         var index = Number(row.getAttribute('data-index'));
         var video = currentResults.video[index];
-        if (video) location.href = 'video-player.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
+        if (video) location.href = 'video-index.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
       });
     });
   }
@@ -657,15 +669,15 @@
 
   function openCurrentInPlayer() {
     if (!searchCurrentTrack) {
-      location.href = 'player.html';
+      location.href = 'index.html';
       return;
     }
     if (searchCurrentTrack.source === 'local') {
-      location.href = 'player.html?track=' + encodeURIComponent(searchCurrentTrack.id);
+      location.href = 'index.html?track=' + encodeURIComponent(searchCurrentTrack.id);
       return;
     }
     saveSearchPlayerState(searchCurrentTrack, searchCurrentTrack.src || '');
-    location.href = 'player.html';
+    location.href = 'index.html';
   }
 
   async function playTrack(track, explicitIndex) {
@@ -753,7 +765,7 @@
     } else if (action === 'player' && track) {
       closeActionSheet();
       if (track.source === 'local') {
-        location.href = 'player.html?track=' + encodeURIComponent(track.id);
+        location.href = 'index.html?track=' + encodeURIComponent(track.id);
       } else {
         playTrack(track);
       }

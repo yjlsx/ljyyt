@@ -85,7 +85,7 @@
       }
     }));
   }
-  // 暴露到全局，供 music-player.html 内联 onclick 使用
+  // 暴露到全局，供 music-index.html 内联 onclick 使用
   window.toggleFav = toggleFav;
   function updateFavBtn(id) {
     var btn = document.getElementById('btn-fav');
@@ -502,24 +502,24 @@
 
     function goToPlayerPage() {
       var currentTrack = saveCurrentPlaybackState();
-      var targetUrl = 'player.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
+      var targetUrl = 'index.html' + (currentTrack ? ('?track=' + encodeURIComponent(currentTrack.id)) : '');
       window.location.href = targetUrl;
     }
 
     bottomPlayer.classList.add('bottom-player-linkable');
-    bottomPlayer.setAttribute('data-player-link', 'player.html');
+    bottomPlayer.setAttribute('data-player-link', 'index.html');
 
     if (trackLinkArea) {
       trackLinkArea.style.cursor = 'pointer';
       trackLinkArea.addEventListener('click', function(event) {
-        if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
+        if (window.location.pathname.indexOf('music-index.html') !== -1 || window.location.pathname.indexOf('index.html') !== -1) return;
         if (event.target.closest('a, button, input, label, textarea, select')) return;
         goToPlayerPage();
       });
     }
 
     bottomPlayer.addEventListener('click', function(event) {
-      if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
+      if (window.location.pathname.indexOf('music-index.html') !== -1 || window.location.pathname.indexOf('index.html') !== -1) return;
       if (event.target.closest('button, a, input, label, textarea, select')) return;
       if (event.target.closest('#progress-container, .progress-container, .volume-control, #playlist-panel, #cover-overlay')) return;
       goToPlayerPage();
@@ -546,12 +546,12 @@
   }
 
   function initPlayerNavLinks() {
-    document.querySelectorAll('a[href="music-player.html"], a[href="player.html"]').forEach(function(link) {
+    document.querySelectorAll('a[href="music-index.html"], a[href="index.html"]').forEach(function(link) {
       link.addEventListener('click', function() {
-        if (window.location.pathname.indexOf('music-player.html') !== -1 || window.location.pathname.indexOf('player.html') !== -1) return;
+        if (window.location.pathname.indexOf('music-index.html') !== -1 || window.location.pathname.indexOf('index.html') !== -1) return;
         var currentTrack = saveCurrentPlaybackState();
         if (currentTrack) {
-          link.href = 'player.html?track=' + encodeURIComponent(currentTrack.id);
+          link.href = 'index.html?track=' + encodeURIComponent(currentTrack.id);
         }
       });
     });
