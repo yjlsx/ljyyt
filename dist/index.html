@@ -1685,7 +1685,7 @@
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = [ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
-    async function fetchGdMusicJson(url) {
+    async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
         var suffix = url.slice(gdMusicApiBase.length);
@@ -1693,10 +1693,13 @@
       }
       for (var i = 0; i < urls.length; i++) {
         try {
-          var response = await fetch(urls[i]);
+          var response = await fetch(urls[i], signal ? { signal: signal } : undefined);
           if (!response.ok) continue;
           return await response.json();
-        } catch (error) { console.warn('fetchGdMusicJson: endpoint failed', urls[i], error); }
+        } catch (error) {
+          if (error && error.name === 'AbortError') throw error;
+          console.warn('fetchGdMusicJson: endpoint failed', urls[i], error);
+        }
       }
       throw new Error('gd music request failed');
     }
@@ -1780,6 +1783,7 @@
     let restoredPlaybackTime = 0;
     let neteaseLoginTimer = null;
     let searchSuggestionRequestId = 0;
+    var searchAbortController = null;
     const audioPlayer = document.getElementById('audio-player');
     const DEFAULT_COVER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="20" y1="12" x2="102" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#f4f7f6"/><stop offset="1" stop-color="#dbe6e3"/></linearGradient></defs><rect width="120" height="120" rx="24" fill="url(#g)"/><circle cx="60" cy="60" r="33" fill="#f9fbfa" stroke="#c8d5d1" stroke-width="2"/><circle cx="60" cy="60" r="10" fill="#d7e1de"/><path d="M71 38v28.5a9.5 9.5 0 1 1-5.8-8.7V43.6l-16 3.2v24.7a9.5 9.5 0 1 1-5.8-8.7V42.2L71 38z" fill="#8fa19b"/></svg>');
     function readStoredList(key) {
@@ -3185,14 +3189,14 @@
       } catch (error) { console.warn('resolveExternalCover: failed', error); }
       return track;
     }
-    async function fetchExternalSourceTracks(query, source, count) {
+    async function fetchExternalSourceTracks(query, source, count, signal) {
       var url = gdMusicApiBase + '?types=search&source=' + encodeURIComponent(source) +
         '&name=' + encodeURIComponent(query) + '&count=' + encodeURIComponent(count || 20) + '&pages=1';
-      var payload = await fetchGdMusicJson(url);
+      var payload = await fetchGdMusicJson(url, signal);
       return Array.isArray(payload) ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; }) : [];
     }
-    async function searchExternalSource(query, source) {
-      var tracks = await fetchExternalSourceTracks(query, source, 20);
+    async function searchExternalSource(query, source, signal) {
+      var tracks = await fetchExternalSourceTracks(query, source, 20, signal);
       return Promise.all(tracks.map(resolveExternalCover));
     }
     async function resolveExternalTrackUrl(track) {
@@ -3233,6 +3237,21 @@
         if (count) count.textContent = '0 首';
       }
     }
+    function deduplicateSearchResults(tracks) {
+      var seen = {};
+      var result = [];
+      for (var i = 0; i < tracks.length; i++) {
+        var track = tracks[i];
+        if (!track || !track.title) continue;
+        var normTitle = normalizeTrackText(track.title).replace(/\s*[（(].*?[）)]\s*/g, '');
+        var normArtist = normalizeTrackText(track.artist).replace(/[\s/、，,]+/g, '/');
+        var key = normTitle + '|' + normArtist;
+        if (seen[key]) continue;
+        seen[key] = true;
+        result.push(track);
+      }
+      return result;
+    }
     async function performSearch(options) {
       options = options || {};
       var searchInput = getSearchInput();
@@ -3253,6 +3272,10 @@
       hideSearchHistory();
       hideSearchSuggestions();
       setSearchResultsActive(true);
+      if (searchAbortController) searchAbortController.abort();
+      var controller = new AbortController();
+      searchAbortController = controller;
+      var signal = controller.signal;
       var container = document.getElementById('search-results');
       var count = document.getElementById('search-song-count');
       if (container) container.innerHTML = '';
@@ -3261,14 +3284,21 @@
         var sources = getActiveSearchSources();
         var localTracks = [];
         if (sources.includes('local')) localTracks = filterLocalSearch(query, await ensureLibraryTracks());
+        if (signal.aborted) return;
         var externalSources = sources.filter(function(source) { return source && source !== 'local'; });
         var externalGroups = await Promise.all(externalSources.map(function(source) {
-          return searchExternalSource(query, source).catch(function() { return []; });
+          return searchExternalSource(query, source, signal).catch(function(err) {
+            if (err && err.name === 'AbortError') throw err;
+            return [];
+          });
         }));
-        var results = localTracks.concat.apply(localTracks, externalGroups).filter(function(track) { return track && track.title; });
+        if (signal.aborted) return;
+        var merged = localTracks.concat.apply(localTracks, externalGroups).filter(function(track) { return track && track.title; });
+        var results = sources.length > 1 ? deduplicateSearchResults(merged) : merged;
         currentSearchState.songs = results;
         renderSearchRows(results, activeProvider);
       } catch (error) {
+        if (error && error.name === 'AbortError') return;
         if (container) container.innerHTML = '<div class="empty-note">搜索失败，请稍后重试。</div>';
         if (count) count.textContent = '0 首';
       }
