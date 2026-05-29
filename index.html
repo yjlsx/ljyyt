@@ -1315,7 +1315,7 @@
       <div class="view" data-view="mine">
         <div class="quick-grid">
           <button class="quick-card" type="button" onclick="showView('history')"><span class="quick-icon" data-icon="history"></span><span>历史</span></button>
-          <button class="quick-card" type="button" onclick="showView('queue')"><span class="quick-icon" data-icon="list"></span><span>列表</span></button>
+          <button class="quick-card" type="button" onclick="showView('queue')"><span class="quick-icon" data-icon="listVideo"></span><span>列表</span></button>
           <button class="quick-card" type="button" onclick="showView('local')"><span class="quick-icon" data-icon="download"></span><span>本地</span></button>
           <button class="quick-card" type="button" onclick="showView('settings')"><span class="quick-icon" data-icon="settings"></span><span>设置</span></button>
         </div>
@@ -1354,7 +1354,7 @@
       <div class="view" data-view="queue">
         <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>播放列表</h2></div><button class="page-action" id="queue-clear" onclick="clearQueue()" aria-label="清空播放列表" hidden><span data-icon="trash"></span></button></div>
         <div class="playlist-view-hero">
-          <div class="playlist-summary-cover" data-icon="list"></div>
+          <div class="playlist-summary-cover" data-icon="listVideo"></div>
           <div class="playlist-summary"><h2>播放列表</h2><p id="queue-summary-count">0 首歌曲</p><button class="round-play" onclick="playQueueFromPage()" aria-label="播放列表歌曲"><span data-icon="play"></span></button></div>
         </div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
@@ -1431,7 +1431,7 @@
           </button>
           <button class="mini-control" aria-label="下一首" onclick="nextTrack(event)"><span data-icon="next"></span></button>
           <button class="queue" aria-label="播放列表" onclick="openQueueFromMini(event)">
-            <span data-icon="list"></span>
+            <span data-icon="listVideo"></span>
           </button>
         </div>
       </div>
@@ -1475,9 +1475,9 @@
           <button class="queue-tab" id="queue-tab-history" type="button" onclick="switchQueueTab(event, 'history')">最近播放 <span id="history-count">0</span></button>
         </div>
         <div class="queue-actions">
-          <button type="button" id="queue-reshuffle" onclick="reshuffleQueue(event)" aria-label="再次打乱"><svg viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></button>
-          <button type="button" onclick="showQueuePageFromDrawer(event)" aria-label="展开播放列表"><svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M9 21H3v-6"/><path d="M14 10 3 21"/></svg></button>
-          <button type="button" onclick="clearCurrentQueue(event)" aria-label="清空播放列表"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></svg></button>
+          <button type="button" id="queue-reshuffle" onclick="reshuffleQueue(event)" aria-label="再次打乱"><span data-icon="shuffle"></span></button>
+          <button type="button" onclick="showQueuePageFromDrawer(event)" aria-label="展开播放列表"><span data-icon="externalLink"></span></button>
+          <button type="button" onclick="clearCurrentQueue(event)" aria-label="清空播放列表"><span data-icon="trash"></span></button>
         </div>
       </div>
       <div class="track-list" id="queue-drawer-list"></div>
@@ -1828,7 +1828,7 @@
       repeat: iconHtml('repeat'),
       repeat1: iconHtml('repeatOne'),
       shuffle: iconHtml('shuffle'),
-      listVideo: iconHtml('list')
+      listVideo: iconHtml('listVideo')
     };
     function updateControlIcons() {
       const mode = playModes[playModeIndex].value;
