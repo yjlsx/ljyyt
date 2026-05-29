@@ -1338,22 +1338,22 @@
       .fullscreen .full-cover { width: min(36vw, 340px); border-radius: 20px; flex-shrink: 0; }
       .fullscreen .full-main.show-lyrics {
         flex-direction: row;
-        align-items: stretch;
-        gap: 36px;
+        align-items: center;
+        gap: 48px;
         padding: 16px 48px;
       }
       .fullscreen .full-main.show-lyrics .full-cover {
-        width: min(28vw, 280px);
-        align-self: center;
+        width: min(30vw, 300px);
       }
       .fullscreen .full-main.show-lyrics .lyrics {
         flex: 1;
-        height: auto;
-        max-height: none;
+        height: 85%;
+        max-height: 85%;
         min-height: 0;
+        overflow-y: auto;
         text-align: left;
-        mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
       }
       .full-meta { flex-shrink: 0; padding: 4px 48px 10px; }
       .full-meta h2 { font-size: 22px; }
@@ -1386,7 +1386,8 @@
       .mv-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
       .fullscreen .full-main { gap: 56px; padding: 24px 80px; }
       .fullscreen .full-cover { width: min(32vw, 380px); }
-      .fullscreen .full-main.show-lyrics { gap: 48px; padding: 20px 64px; }
+      .fullscreen .full-main.show-lyrics { gap: 56px; padding: 20px 64px; }
+      .fullscreen .full-main.show-lyrics .full-cover { width: min(30vw, 340px); }
     }
   </style>
 </head>
