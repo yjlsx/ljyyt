@@ -1261,13 +1261,14 @@
     @media (min-width: 720px) {
       html, body { min-height: 100%; overflow: hidden; }
       body {
-        background: var(--background);
+        background: var(--muted);
         display: block;
       }
       .app {
         width: 100%;
-        max-width: none;
+        max-width: 1080px;
         height: 100dvh;
+        margin: 0 auto;
         border: 0;
         box-shadow: none;
         position: relative;
@@ -1286,7 +1287,11 @@
       .brand { font-size: 20px; }
       .brand img { width: 34px; height: 34px; border-radius: 10px; }
       .search-shell { padding: 12px clamp(24px, 4vw, 56px) 14px; }
+      .search-box { max-width: 560px; }
       .content { padding-left: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
+      .track { height: 62px; padding: 6px 10px 6px 6px; }
+      .track img { width: 50px; height: 50px; border-radius: 10px; }
+      .track-meta .track-name { font-size: 15px; }
       .mv-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
       .search-playlists,
       .discover-playlist-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px 18px; }
@@ -1299,7 +1304,10 @@
         border-left: 0;
         border-right: 0;
         border-radius: 0;
+        height: 52px;
       }
+      .tab { flex-direction: row; gap: 6px; }
+      .tab span { font-size: 12px; }
       .player-stack {
         left: 0;
         right: 0;
@@ -1320,6 +1328,14 @@
       .queue-drawer.open,
       .action-drawer.open,
       .setting-drawer.open { transform: translate(-50%, 0); }
+      .quick-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      .favorite-header { padding: 24px 0 12px; }
+    }
+    @media (min-width: 1080px) {
+      .app { max-width: 1280px; }
+      .search-playlists,
+      .discover-playlist-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 22px 20px; }
+      .mv-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
     }
   </style>
 </head>
@@ -1684,7 +1700,7 @@
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
-    const gdMusicFallbackBases = [ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
+    const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
@@ -2408,6 +2424,7 @@
       }
       return track.src || '';
     }
+    var _playRetryCount = 0;
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
@@ -2428,10 +2445,18 @@
           restoredPlaybackTime = 0;
         }
         await audioPlayer.play();
+        _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState();
       } catch (error) {
+        if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
+          _playRetryCount++;
+          currentTrack.src = '';
+          audioPlayer.src = '';
+          return playCurrentTrack();
+        }
+        _playRetryCount = 0;
         setPlayIcons(false);
       }
     }
@@ -3826,9 +3851,16 @@
       document.documentElement.classList.toggle('dark', dark);
       var label = document.getElementById('theme-setting-label');
       if (label) label.textContent = dark ? '深色' : '浅色';
+      if (window.LJYYTTheme && typeof window.LJYYTTheme.set === 'function') {
+        window.LJYYTTheme.set(appSettings.theme);
+      }
     }
     function initSettings() {
       appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
+      if (window.LJYYTTheme && typeof window.LJYYTTheme.get === 'function') {
+        var saved = window.LJYYTTheme.get();
+        if (saved === 'dark' || saved === 'light') appSettings.theme = saved;
+      }
       document.querySelectorAll('.toggle[data-setting]').forEach(function(button) {
         var key = button.dataset.setting;
         var enabled = appSettings[key] !== false;
