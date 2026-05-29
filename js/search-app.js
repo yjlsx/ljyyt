@@ -513,7 +513,7 @@
     var list = getDiscoverPlaylist(id);
     if (!list || !list.tracks || !list.tracks.length) {
       if (id === 'favorites' || id === 'history') location.href = 'index.html?view=mine';
-      else location.href = 'player.html';
+      else location.href = 'index.html';
       return;
     }
     currentResults.music = list.tracks;
@@ -544,7 +544,7 @@
       row.addEventListener('click', function() {
         var index = Number(row.getAttribute('data-index'));
         var video = currentResults.video[index];
-        if (video) location.href = 'video-player.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
+        if (video) location.href = 'video-index.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
       });
     });
   }
@@ -669,15 +669,15 @@
 
   function openCurrentInPlayer() {
     if (!searchCurrentTrack) {
-      location.href = 'player.html';
+      location.href = 'index.html';
       return;
     }
     if (searchCurrentTrack.source === 'local') {
-      location.href = 'player.html?track=' + encodeURIComponent(searchCurrentTrack.id);
+      location.href = 'index.html?track=' + encodeURIComponent(searchCurrentTrack.id);
       return;
     }
     saveSearchPlayerState(searchCurrentTrack, searchCurrentTrack.src || '');
-    location.href = 'player.html';
+    location.href = 'index.html';
   }
 
   async function playTrack(track, explicitIndex) {
@@ -765,7 +765,7 @@
     } else if (action === 'player' && track) {
       closeActionSheet();
       if (track.source === 'local') {
-        location.href = 'player.html?track=' + encodeURIComponent(track.id);
+        location.href = 'index.html?track=' + encodeURIComponent(track.id);
       } else {
         playTrack(track);
       }
