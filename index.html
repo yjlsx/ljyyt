@@ -99,6 +99,7 @@
     }
     .search-shell.hidden { display: none; }
     body.view-search .search-shell { display: none; }
+    body.full-player-open .search-shell { display: none !important; }
     .search-box {
       height: 44px;
       border-radius: 999px;
@@ -478,10 +479,13 @@
     .discover-grid-toggle .line-icon { width: 16px; height: 16px; }
     .index-discover-section { padding: 16px 4px 96px; }
     .discover-playlist-rail {
+      display: block;
+      padding: 0;
+    }
+    .discover-playlist-grid-inner {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px 12px;
-      padding: 0;
     }
     .discover-playlist-card {
       min-width: 0;
@@ -508,6 +512,34 @@
     .discover-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
     .discover-playlist-card:hover .discover-cover img { transform: scale(1.1); }
     .discover-cover::after, .discover-play-count { display: none; }
+
+    .discover-market-loading,
+    .discover-market-error {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--muted-foreground);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .discover-market-loading .line-icon { width: 24px; height: 24px; animation: spin 1s linear infinite; color: var(--primary); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .discover-market-error { text-transform: none; letter-spacing: 0; padding: 24px; text-align: center; }
+    .discover-featured-tabs {
+      display: flex; align-items: center; gap: 24px;
+      padding: 0 4px 14px;
+      margin-top: -2px;
+    }
+    .discover-featured-tab {
+      font-size: 15px; font-weight: 500; color: var(--muted-foreground);
+      background: transparent; padding: 0; border-radius: 0;
+    }
+    .discover-featured-tab.active { color: var(--foreground); font-weight: 800; letter-spacing: .02em; }
+    .discover-playlist-card[data-market-id] { text-align: left; }
     .discover-playlist-card strong {
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -930,12 +962,14 @@
       width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     }
     .controls .main-play .icon-play, .progress .icon-play { fill: currentColor; stroke: none; }
+    .controls .main-play .icon-pause, .progress .icon-pause { fill: currentColor; stroke: none; }
     .player .progress svg { width: 14px; height: 14px; }
     .controls .main-play {
       height: 61px; width: 61px; border-radius: 50%; background: white; color: #101415;
       display: grid; place-items: center; font-size: 25px;
     }
-    .controls .main-play svg, .controls .main-play .line-icon { width: 24px; height: 24px; }
+    .controls .main-play svg, .controls .main-play .line-icon { width: 24px; height: 24px; color: #101415; }
+    .progress svg, .progress .line-icon { color: var(--primary); }
     .queue-drawer {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 70;
       height: min(75vh, 620px); transform: translateY(110%);
@@ -1229,20 +1263,7 @@
       </section>
       </div>
       <div class="view discovery-view" data-view="search">
-        <nav class="discover-category-row" aria-label="发现分类">
-          <button class="discover-category-chip active" type="button" data-discover-category="全部">全部</button>
-          <button class="discover-category-chip" type="button" data-discover-category="mine">我的</button>
-          <button class="discover-category-chip" type="button" data-discover-category="featured">精选</button>
-          <button class="discover-category-chip" type="button" data-discover-category="华语">华语</button>
-          <button class="discover-category-chip" type="button" data-discover-category="欧美">欧美</button>
-          <button class="discover-category-chip" type="button" data-discover-category="流行">流行</button>
-          <button class="discover-category-chip" type="button" data-discover-category="说唱">说唱</button>
-          <button class="discover-category-chip" type="button" data-discover-category="摇滚">摇滚</button>
-          <button class="discover-category-chip" type="button" data-discover-category="电子">电子</button>
-          <button class="discover-category-chip" type="button" data-discover-category="民谣">民谣</button>
-          <button class="discover-category-chip" type="button" data-discover-category="轻音乐">轻音乐</button>
-          <button class="discover-grid-toggle" type="button" aria-label="更多分类"><span data-icon="grid"></span></button>
-        </nav>
+        <nav class="discover-category-row" aria-label="发现分类"></nav>
         <section class="discover-section index-discover-section" aria-label="发现歌单">
           <div class="discover-playlist-rail" id="index-discover-playlists"></div>
         </section>
@@ -1783,10 +1804,19 @@
       });
     }
     function setPlayIcons(playing) {
-      document.getElementById('mini-play').innerHTML = playing ? icons.pause : icons.play;
-      document.getElementById('full-play').innerHTML = playing ? icons.pause : icons.play;
-      document.getElementById('mini-play').setAttribute('aria-label', playing ? '暂停' : '播放');
-      document.getElementById('full-play').setAttribute('aria-label', playing ? '暂停' : '播放');
+      var miniPlay = document.getElementById('mini-play');
+      var fullPlay = document.getElementById('full-play');
+      var html = iconHtml(playing ? 'pause' : 'play') || (playing ? 'Ⅱ' : '▶');
+      if (miniPlay) {
+        miniPlay.innerHTML = html;
+        miniPlay.setAttribute('aria-label', playing ? '暂停' : '播放');
+        miniPlay.classList.toggle('is-playing', !!playing);
+      }
+      if (fullPlay) {
+        fullPlay.innerHTML = html;
+        fullPlay.setAttribute('aria-label', playing ? '暂停' : '播放');
+        fullPlay.classList.toggle('is-playing', !!playing);
+      }
       updateControlIcons();
       renderQueue();
     }
@@ -2272,52 +2302,167 @@
       searchVideoCache = await readSourceArray('/videos/video_data.js', 'const videoData');
       return searchVideoCache;
     }
-    const discoverCards = [
-      { id: 'd1', title: '梁博 黑胶精选', tag: '精选', query: '梁博', plays: '12.8万', cover: 'https://p1.music.126.net/4k27oBfmdPViozETgRvhjQ==/109951169664420958.jpg?param=300y300' },
-      { id: 'd2', title: '陈粒：小梦大半', tag: '华语', query: '陈粒', plays: '9.6万', cover: 'https://p1.music.126.net/fbE4n1_4-um_h6iI_DG3rQ==/109951169901732764.jpg?param=300y300' },
-      { id: 'd3', title: '许巍 旅行路上的风', tag: '华语', query: '许巍', plays: '18.2万', cover: 'https://p1.music.126.net/tNf2nZEVLlp19Y3E7WaP0A==/109951169391416580.jpg?param=300y300' },
-      { id: 'd4', title: '欧美独立流行精选', tag: '欧美', query: '欧美 流行', plays: '21.4万', cover: 'https://p1.music.126.net/JIjZP7SMx3Hc0hpj6uPfjQ==/109951169497627821.jpg?param=300y300' },
-      { id: 'd5', title: '流行热歌 | 今日循环', tag: '流行', query: '流行', plays: '32.1万', cover: 'https://p1.music.126.net/RzqBi4L7wJ92zsRRfNLnXA==/109951169705138928.jpg?param=300y300' },
-      { id: 'd6', title: '夜晚开车听的歌', tag: '精选', query: '夜晚 开车', plays: '16.5万', cover: 'https://p1.music.126.net/43oYtdb7V2Q1i3KqzswZAw==/109951169512233821.jpg?param=300y300' },
-      { id: 'd7', title: '纳西民歌与丽江声音', tag: '推荐', query: '纳西', plays: '本站', cover: 'https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg' },
-      { id: 'd8', title: '民谣里的山川湖海', tag: '华语', query: '民谣', plays: '27.9万', cover: 'https://p1.music.126.net/o0yk4gq8aX2MKIHidquj3A==/109951169693053888.jpg?param=300y300' },
-      { id: 'd9', title: '轻松工作背景音乐', tag: '精选', query: '轻音乐', plays: '42.0万', cover: 'https://p1.music.126.net/HBI6aMfi8uvbD1GLSgs6yA==/109951169499195389.jpg?param=300y300' }
+    const OTTER_API_BASE = 'https://otter-music.pages.dev';
+    const RECOMMEND_CATS = [
+      { id: '全部', name: '全部' },
+      { id: 'mine', name: '我的' },
+      { id: 'featured', name: '精选' },
+      { id: '华语', name: '华语' },
+      { id: '欧美', name: '欧美' },
+      { id: '流行', name: '流行' },
+      { id: '说唱', name: '说唱' },
+      { id: '摇滚', name: '摇滚' },
+      { id: '电子', name: '电子' },
+      { id: '民谣', name: '民谣' },
+      { id: '轻音乐', name: '轻音乐' }
     ];
+    const SPECIAL_CATS = [
+      { id: '官方', name: '官方' },
+      { id: '榜单', name: '榜单' },
+      { id: 'toplist', name: '排行榜' }
+    ];
+    const MARKET_PAGE_SIZE = 30;
     let activeDiscoverCategory = '全部';
+    let activeFeaturedTab = '官方';
+    let marketOffset = 0;
+    let marketHasMore = true;
+    let marketLoading = false;
+    let marketItems = [];
+    const marketCache = Object.create(null);
 
-    function getSearchPlaylistCards(query) {
-      var normalizedQuery = String(query || '').trim().toLowerCase();
-      var cards = discoverCards.filter(function(card) {
-        var matchCategory = activeDiscoverCategory === '全部' || card.tag === activeDiscoverCategory;
-        var matchQuery = !normalizedQuery || [card.title, card.tag, card.query].some(function(value) {
-          return String(value || '').toLowerCase().includes(normalizedQuery);
-        });
-        return matchCategory && matchQuery;
+    function normalizeMarketPlaylist(item) {
+      item = item || {};
+      return {
+        id: String(item.id || item.playlistId || ''),
+        name: String(item.name || item.title || '未命名歌单'),
+        coverUrl: safeCover(item.coverUrl || item.coverImgUrl || item.picUrl || item.cover || DEFAULT_COVER),
+        playCount: Number(item.playCount || item.playcount || 0),
+        trackCount: Number(item.trackCount || item.songCount || 0),
+        tags: Array.isArray(item.tags) ? item.tags : []
+      };
+    }
+
+    async function fetchOtterNetease(path, payload) {
+      var response = await fetch(OTTER_API_BASE + '/music-api/netease' + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload || {})
       });
-      return cards.length ? cards : discoverCards.filter(function(card) { return activeDiscoverCategory === '全部' || card.tag === activeDiscoverCategory; });
+      if (!response.ok) throw new Error('otter netease api ' + response.status);
+      return response.json();
+    }
+
+    function unwrapMarketList(payload, type) {
+      var data = payload && payload.data ? payload.data : payload;
+      var raw = [];
+      if (Array.isArray(data)) raw = data;
+      else if (type === 'toplist') raw = data && data.list || [];
+      else raw = data && (data.playlists || data.result || (data.data && data.data.playlists)) || [];
+      return raw.map(normalizeMarketPlaylist).filter(function(item) { return item.id && item.coverUrl; });
+    }
+
+    async function fetchMarketPlaylists(category, offset) {
+      var requestCategory = category === 'featured' ? activeFeaturedTab : category;
+      var isToplist = requestCategory === 'toplist';
+      var cacheKey = 'market:' + requestCategory + ':' + (isToplist ? 0 : offset);
+      if (marketCache[cacheKey]) return marketCache[cacheKey];
+      var payload = isToplist
+        ? await fetchOtterNetease('/toplist', { cookie: '' })
+        : await fetchOtterNetease('/playlists', {
+            cat: requestCategory || '全部',
+            order: 'hot',
+            limit: MARKET_PAGE_SIZE,
+            offset: offset || 0,
+            cookie: ''
+          });
+      var list = unwrapMarketList(payload, isToplist ? 'toplist' : 'playlist');
+      marketCache[cacheKey] = list;
+      return list;
+    }
+
+    function renderMarketCategories() {
+      var row = document.querySelector('[data-view="search"] .discover-category-row');
+      if (!row) return;
+      row.innerHTML = RECOMMEND_CATS.map(function(cat) {
+        return '<button class="discover-category-chip' + (activeDiscoverCategory === cat.id ? ' active' : '') + '" type="button" data-discover-category="' + escapeMarkup(cat.id) + '">' + escapeMarkup(cat.name) + '</button>';
+      }).join('') + '<button class="discover-grid-toggle" type="button" aria-label="更多分类"><span data-icon="grid"></span></button>';
+      hydrateIcons(row);
+      row.querySelectorAll('.discover-category-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          activeDiscoverCategory = chip.dataset.discoverCategory || '全部';
+          marketOffset = 0;
+          marketHasMore = true;
+          renderIndexDiscoverPlaylists({ reset: true });
+        });
+      });
+    }
+
+    function renderFeaturedTabs() {
+      if (activeDiscoverCategory !== 'featured') return '';
+      return '<div class="discover-featured-tabs">' + SPECIAL_CATS.map(function(tab) {
+        return '<button class="discover-featured-tab' + (activeFeaturedTab === tab.id ? ' active' : '') + '" type="button" data-featured-tab="' + escapeMarkup(tab.id) + '">' + escapeMarkup(tab.name) + '</button>';
+      }).join('') + '</div>';
+    }
+
+    function renderMarketCards() {
+      return marketItems.map(function(card) {
+        return '<button class="discover-playlist-card" type="button" data-market-id="' + escapeMarkup(card.id) + '">' +
+          '<span class="discover-cover"><img loading="lazy" src="' + escapeMarkup(card.coverUrl || DEFAULT_COVER) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '></span>' +
+          '<strong>' + escapeMarkup(card.name) + '</strong>' +
+        '</button>';
+      }).join('');
     }
 
     function openDiscoverCard(card) {
-      // Dev PlaylistMarket opens a playlist detail route; until that page is copied,
-      // keep cards inert instead of turning them into search queries.
-      return card || null;
+      if (!card || !card.id) return;
+      // Dev 跳转 /netease-playlist/:id；当前静态站先保留同等语义，不触发搜索。
+      window.history.replaceState(null, '', 'index.html?view=search&playlist=' + encodeURIComponent(card.id));
     }
 
-    function renderIndexDiscoverPlaylists() {
+    async function renderIndexDiscoverPlaylists(options) {
+      options = options || {};
       var rail = document.getElementById('index-discover-playlists');
       if (!rail) return;
-      var cards = getSearchPlaylistCards('');
-      rail.innerHTML = cards.map(function(card, index) {
-        return '<button class="discover-playlist-card" type="button" data-discover-card="' + index + '">' +
-          '<span class="discover-cover"><img loading="lazy" src="' + escapeMarkup(card.cover || DEFAULT_COVER) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '></span>' +
-          '<strong>' + escapeMarkup(card.title) + '</strong>' +
-        '</button>';
-      }).join('');
-      rail.querySelectorAll('[data-discover-card]').forEach(function(cardNode) {
-        cardNode.addEventListener('click', function() {
-          openDiscoverCard(cards[Number(cardNode.dataset.discoverCard) || 0]);
+      renderMarketCategories();
+      if (activeDiscoverCategory === 'mine') {
+        rail.innerHTML = '<div class="discover-market-error">“我的”页在 dev 里展示网易云登录后的歌单；本站未接入登录态，先保持入口结构一致。</div>';
+        return;
+      }
+      if (options.reset) {
+        marketItems = [];
+        marketOffset = 0;
+        marketHasMore = true;
+      }
+      if (marketLoading) return;
+      marketLoading = true;
+      if (!marketItems.length) rail.innerHTML = '<div class="discover-market-loading"><span data-icon="spinner"></span><span>加载中...</span></div>';
+      hydrateIcons(rail);
+      try {
+        var list = await fetchMarketPlaylists(activeDiscoverCategory, marketOffset);
+        marketItems = marketOffset === 0 ? list : marketItems.concat(list);
+        marketHasMore = list.length >= MARKET_PAGE_SIZE && activeFeaturedTab !== 'toplist';
+        marketOffset += list.length;
+        rail.innerHTML = renderFeaturedTabs() + '<div class="discover-playlist-grid-inner">' + renderMarketCards() + '</div>' + (marketHasMore ? '<div class="discover-market-loading" id="market-load-more"><span data-icon="spinner"></span><span>加载中...</span></div>' : '');
+        hydrateIcons(rail);
+        rail.querySelectorAll('[data-featured-tab]').forEach(function(tab) {
+          tab.addEventListener('click', function() {
+            activeFeaturedTab = tab.dataset.featuredTab || '官方';
+            marketOffset = 0;
+            marketHasMore = true;
+            renderIndexDiscoverPlaylists({ reset: true });
+          });
         });
-      });
+        rail.querySelectorAll('[data-market-id]').forEach(function(node) {
+          node.addEventListener('click', function() {
+            var id = node.dataset.marketId || '';
+            openDiscoverCard(marketItems.find(function(item) { return item.id === id; }));
+          });
+        });
+      } catch (error) {
+        rail.innerHTML = '<div class="discover-market-error">发现页数据加载失败，请稍后刷新重试。</div>';
+      } finally {
+        marketLoading = false;
+      }
     }
 
     function renderSearchPlaylists(cards) {
@@ -3269,13 +3414,7 @@
     document.querySelectorAll('.search-tab').forEach((tab) => {
       tab.addEventListener('click', () => {});
     });
-    document.querySelectorAll('.discover-category-chip').forEach((chip) => {
-      chip.addEventListener('click', () => {
-        activeDiscoverCategory = chip.dataset.discoverCategory || '全部';
-        document.querySelectorAll('.discover-category-chip').forEach((item) => item.classList.toggle('active', item === chip));
-        renderIndexDiscoverPlaylists();
-      });
-    });
+    // Discover category events are bound by renderMarketCategories(), matching dev PlaylistMarket dynamic filter row.
     document.querySelectorAll('.source-option').forEach((option) => {
       option.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -3386,14 +3525,16 @@
       closeSettingDrawer();
       setQueueDrawerOpen(false);
       document.getElementById('full-player').classList.add('open');
-      document.getElementById('full-main').classList.add('show-lyrics');
-      setTimeout(function() { syncLyrics(); }, 0);
+      document.getElementById('full-main').classList.remove('show-lyrics');
+      document.body.classList.add('full-player-open');
+      setPlayIcons(!audioPlayer.paused);
     }
     function closeFullPlayer() {
       setQueueDrawerOpen(false);
       closeTrackActionDrawer();
       document.getElementById('full-player').classList.remove('open');
       document.getElementById('full-main').classList.remove('show-lyrics');
+      document.body.classList.remove('full-player-open');
     }
     window.addEventListener('pagehide', stopPreviewVideo);
     document.addEventListener('visibilitychange', () => {
