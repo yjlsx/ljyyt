@@ -2592,19 +2592,26 @@
       updateMiniProgress(0);
     }
     function setCurrentTrack(track) {
+      var prevSrc = currentTrack && currentTrack.src;
       currentTrack = {
         title: track.title || '未知歌曲',
         artist: track.artist || '未知歌手',
         cover: track.cover || DEFAULT_COVER,
         coverApi: track.coverApi || '',
         src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
-        duration: track.duration || currentTrack.duration,
+        duration: track.duration || (currentTrack && currentTrack.duration),
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || '丽江曲库',
         urlId: track.urlId || track.url_id || track.id || '',
         lyric_id: track.lyric_id || track.id || '',
         id: track.id || track.urlId || track.url_id || track.src || track.title
       };
+      if (!currentTrack.src && prevSrc) {
+        _isResolvingUrl = true;
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        _isResolvingUrl = false;
+      }
       if (!playQueue.length) setQueue([currentTrack], 0);
       updateTrackUi(currentTrack);
       updateLikeButton();
@@ -2667,13 +2674,17 @@
     }
     var _playRetryCount = 0;
     var _isResolvingUrl = false;
+    var _playRequestId = 0;
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
+      var requestId = ++_playRequestId;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
       _isResolvingUrl = true;
-      var playableUrl = await ensurePlayableTrackUrl(currentTrack);
+      var trackToPlay = currentTrack;
+      var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
       _isResolvingUrl = false;
+      if (requestId !== _playRequestId) return;
       if (playableUrl && audioPlayer.src !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
@@ -2689,11 +2700,13 @@
           restoredPlaybackTime = 0;
         }
         await audioPlayer.play();
+        if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState(true);
       } catch (error) {
+        if (requestId !== _playRequestId) return;
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
