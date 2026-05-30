@@ -2067,7 +2067,7 @@
         if (label.includes(pair[0])) add(pair[1]);
       });
       (aggregatedSources || []).forEach(add);
-      ['joox', 'kuwo', 'migu', 'bilibili', 'netease'].forEach(add);
+      ['joox', 'kuwo', 'migu', 'bilibili'].forEach(add);
       return candidates.concat(deferred);
     }
     function isTrackMatchCandidate(target, candidate) {
@@ -2495,7 +2495,7 @@
         resolveExternalCover(currentTrack).then(function() { updateTrackUi(currentTrack); });
       }
       savePlaybackState(true);
-      if (audioPlayer.src !== currentTrack.src) {
+      if (currentTrack.src && audioPlayer.src !== currentTrack.src) {
         audioPlayer.src = currentTrack.src;
         audioPlayer.load();
       }
@@ -2547,11 +2547,14 @@
       return track.src || '';
     }
     var _playRetryCount = 0;
+    var _isResolvingUrl = false;
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
+      _isResolvingUrl = true;
       var playableUrl = await ensurePlayableTrackUrl(currentTrack);
+      _isResolvingUrl = false;
       if (playableUrl && audioPlayer.src !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
@@ -4552,7 +4555,7 @@
     audioPlayer.addEventListener('play', () => setPlayIcons(true));
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
-      if (!currentTrack || !audioPlayer.src) return;
+      if (!currentTrack || !audioPlayer.src || _isResolvingUrl) return;
       console.warn('Audio error: auto-skipping to next track');
       setTimeout(function() { nextTrack(); }, 1500);
     });
