@@ -368,6 +368,18 @@
     .source-badge.kuwo { color: #d97706; border-color: rgba(217,119,6,.24); background: rgba(217,119,6,.07); }
     .source-badge.bilibili, .source-badge.migu { color: #ec4899; border-color: rgba(236,72,153,.24); background: rgba(236,72,153,.07); }
     .source-badge.local { color: var(--muted-foreground); border-color: var(--border); background: var(--muted); }
+    .source-tag {
+      font-size: 10px; color: var(--primary); padding: 1px 5px;
+      border-radius: 4px; background: rgba(54,169,123,.1);
+      margin-left: 5px; display: inline-block; line-height: 1.3;
+    }
+    .track-remove {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; border-radius: 50%; transition: background .2s, color .2s; flex: none;
+    }
+    .track-remove:hover { background: rgba(239,68,68,.1); color: #ef4444; }
+    .track-remove .line-icon { width: 16px; height: 16px; }
     .dots {
       width: 30px; height: 34px; display: grid; place-items: center;
       color: var(--muted-foreground);
@@ -596,6 +608,54 @@
     .discover-market-loading .line-icon { width: 24px; height: 24px; animation: spin 1s linear infinite; color: var(--primary); }
     @keyframes spin { to { transform: rotate(360deg); } }
     .discover-market-error { text-transform: none; letter-spacing: 0; padding: 24px; text-align: center; }
+    .discover-my-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 4px 16px;
+    }
+    .discover-my-header h3 { font-size: 18px; font-weight: 600; margin: 0; }
+    .discover-my-actions { display: flex; gap: 10px; }
+    .discover-my-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; color: var(--primary); background: rgba(54,169,123,.08);
+      border: none; border-radius: 18px; padding: 6px 14px; cursor: pointer;
+      font-weight: 500; transition: background .2s;
+    }
+    .discover-my-btn:hover { background: rgba(54,169,123,.16); }
+    .discover-my-btn .line-icon { width: 14px; height: 14px; }
+    .discover-my-empty {
+      min-height: 200px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px;
+      color: var(--muted-foreground); text-align: center;
+    }
+    .discover-my-empty p { margin: 0; font-size: 14px; }
+    .discover-my-empty .sub { font-size: 12px; opacity: .7; }
+    .discover-my-list { display: flex; flex-direction: column; gap: 2px; }
+    .discover-my-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 10px; border-radius: 12px; cursor: pointer;
+      transition: background .15s;
+    }
+    .discover-my-item:hover { background: var(--muted); }
+    .discover-my-cover {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: rgba(54,169,123,.1); display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .discover-my-cover .line-icon { width: 22px; height: 22px; color: var(--primary); }
+    .discover-my-info { flex: 1; min-width: 0; }
+    .discover-my-name {
+      margin: 0; font-size: 15px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .discover-my-meta { font-size: 12px; color: var(--muted-foreground); }
+    .discover-my-more {
+      width: 32px; height: 32px; display: grid; place-items: center;
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; border-radius: 50%; transition: background .2s;
+      flex-shrink: 0;
+    }
+    .discover-my-more:hover { background: var(--muted); }
+    .discover-my-more .line-icon { width: 18px; height: 18px; }
     .discover-featured-tabs {
       display: flex; align-items: center; gap: 24px;
       padding: 0 4px 14px;
@@ -1201,6 +1261,7 @@
     }
     .action-list .line-icon { width: 17px; height: 17px; }
     .action-list button:hover { background: var(--muted); }
+    .action-list button.danger { color: #ef4444; }
     .action-list small { margin-left: auto; color: var(--muted-foreground); font-size: 12px; }
     .queue-drawer .track {
       height: auto; padding: 10px 14px; border-radius: 16px; gap: 14px;
@@ -1679,6 +1740,15 @@
       <div class="view" data-view="trash">
         <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>回收站</h2></div>
         <div class="empty-note">暂无删除的歌曲或歌单。后续删除内容会先放到这里，方便恢复。</div>
+      </div>
+      <div class="view" data-view="user-playlist">
+        <div class="subpage-head page-header"><div class="page-title-wrap"><button class="back" onclick="goBackFromPlaylistDetail()" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2 id="user-playlist-title">歌单</h2></div><button class="page-action" id="user-playlist-more" onclick="openUserPlaylistMenu()" aria-label="歌单更多操作"><span data-icon="more"></span></button></div>
+        <div class="playlist-view-hero">
+          <div class="playlist-summary-cover" data-icon="music"></div>
+          <div class="playlist-summary"><h2 id="user-playlist-hero-title">歌单</h2><p id="user-playlist-count">0 首歌曲</p><button class="round-play" onclick="playUserPlaylistAll()" aria-label="播放全部"><span data-icon="play"></span></button></div>
+        </div>
+        <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
+        <div class="track-list playlist-page-list" id="user-playlist-list"><div class="empty-note">歌单暂无歌曲</div></div>
       </div>
       <div class="view" data-view="settings">
         <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>系统设置</h2></div>
@@ -3257,7 +3327,7 @@
       if (!rail) return;
       renderMarketCategories();
       if (activeDiscoverCategory === 'mine') {
-        rail.innerHTML = '<div class="discover-market-error">“我的”页在 dev 里展示网易云登录后的歌单；本站未接入登录态，先保持入口结构一致。</div>';
+        renderDiscoverMyPlaylists(rail);
         return;
       }
       if (options.reset) {
@@ -3295,6 +3365,32 @@
       } finally {
         marketLoading = false;
       }
+    }
+
+    function renderDiscoverMyPlaylists(rail) {
+      var header = '<div class="discover-my-header"><h3>我的歌单</h3><div class="discover-my-actions">' +
+        '<button class="discover-my-btn" onclick="openPlaylistImportDrawer(event)">' + iconHtml('link') + ' 导入</button>' +
+        '<button class="discover-my-btn" onclick="openCreatePlaylistDrawer(event)">' + iconHtml('plus') + ' 新建</button></div></div>';
+      if (!userPlaylists.length) {
+        rail.innerHTML = header + '<div class="discover-my-empty"><p>还没有创建歌单</p><p class="sub">点击"新建"创建歌单，或通过"导入"添加外部歌单</p></div>';
+        hydrateIcons(rail);
+        return;
+      }
+      rail.innerHTML = header + '<div class="discover-my-list">' + userPlaylists.map(function(playlist, index) {
+        var count = Array.isArray(playlist.tracks) ? playlist.tracks.length : (playlist.count || 0);
+        return '<div class="discover-my-item" data-pl-index="' + index + '">' +
+          '<div class="discover-my-cover">' + iconHtml('music') + '</div>' +
+          '<div class="discover-my-info"><p class="discover-my-name">' + escapeMarkup(playlist.name || '未命名歌单') + '</p>' +
+          '<span class="discover-my-meta">' + count + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</span></div>' +
+          '<button class="discover-my-more" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="更多操作">' + iconHtml('more') + '</button></div>';
+      }).join('') + '</div>';
+      hydrateIcons(rail);
+      rail.querySelectorAll('[data-pl-index]').forEach(function(node) {
+        node.addEventListener('click', function() {
+          var idx = parseInt(node.dataset.plIndex, 10);
+          if (!isNaN(idx)) showUserPlaylistDetail(idx);
+        });
+      });
     }
 
     function renderSearchPlaylists(cards) {
@@ -3741,7 +3837,7 @@
         return;
       }
       list.innerHTML = userPlaylists.map((playlist, index) => (
-        '<div class="playlist" data-index="' + index + '" onclick="openPlaylistManageDrawer(' + index + ')"><div class="playlist-cover">' + iconHtml('music') + '</div><div><p>' +
+        '<div class="playlist" data-index="' + index + '" onclick="showUserPlaylistDetail(' + index + ')"><div class="playlist-cover">' + iconHtml('music') + '</div><div><p>' +
         escapeMarkup(playlist.name || '未命名歌单') + '</p><small>' + getPlaylistCount(playlist) + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</small></div><button class="playlist-row-action" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="歌单更多操作">' + iconHtml('more') + '</button></div>'
       )).join('');
     }
@@ -3758,6 +3854,10 @@
     function savePlaylists() {
       writeStoredList('ljyyt_otter_playlists', userPlaylists);
       renderPlaylists();
+      if (activeDiscoverCategory === 'mine') {
+        var rail = document.getElementById('index-discover-playlists');
+        if (rail) renderDiscoverMyPlaylists(rail);
+      }
     }
     function openPlaylistDrawer(title, desc, body) {
       document.getElementById('playlist-drawer-title').textContent = title;
@@ -3912,6 +4012,118 @@
       userPlaylists.splice(index, 1);
       savePlaylists();
       closePlaylistDrawer();
+      if (currentUserPlaylistIndex === index) showView('mine');
+    }
+    var currentUserPlaylistIndex = -1;
+    var playlistDetailSource = 'mine';
+    function showUserPlaylistDetail(index, source) {
+      currentUserPlaylistIndex = index;
+      playlistDetailSource = source || (activeDiscoverCategory === 'mine' ? 'search' : 'mine');
+      showView('user-playlist');
+    }
+    function goBackFromPlaylistDetail() {
+      if (playlistDetailSource === 'search') {
+        showView('search');
+      } else {
+        showView('mine');
+      }
+    }
+    function renderUserPlaylistDetail() {
+      var playlist = userPlaylists[currentUserPlaylistIndex];
+      if (!playlist) { showView('mine'); return; }
+      document.getElementById('user-playlist-title').textContent = playlist.name || '未命名歌单';
+      document.getElementById('user-playlist-hero-title').textContent = playlist.name || '未命名歌单';
+      var tracks = Array.isArray(playlist.tracks) ? playlist.tracks : [];
+      document.getElementById('user-playlist-count').textContent = tracks.length + ' 首歌曲';
+      var list = document.getElementById('user-playlist-list');
+      if (!tracks.length) {
+        list.innerHTML = '<div class="empty-note">歌单暂无歌曲，去搜索页添加喜欢的音乐吧。</div>';
+        return;
+      }
+      list.innerHTML = tracks.map(function(track, i) {
+        var cover = track.cover || track.pic || DEFAULT_COVER;
+        var title = escapeMarkup(track.title || track.name || '未知歌曲');
+        var artist = escapeMarkup(track.artist || track.artists || '未知歌手');
+        var sourceLabel = track.sourceLabel || track.source || '';
+        return '<div class="track" onclick="playUserPlaylistTrack(' + i + ')">' +
+          '<img src="' + cover + '" referrerpolicy="no-referrer" alt="" onerror="this.src=\'' + DEFAULT_COVER + '\'">' +
+          '<div class="track-meta"><div class="track-name">' + title + '</div><div class="artist">' + artist + (sourceLabel ? '<span class="source-tag">' + escapeMarkup(sourceLabel) + '</span>' : '') + '</div></div>' +
+          '<button class="track-remove" onclick="event.stopPropagation(); removeFromUserPlaylist(' + i + ')" aria-label="移除">' + iconHtml('close') + '</button>' +
+          '</div>';
+      }).join('');
+    }
+    function playUserPlaylistAll() {
+      var playlist = userPlaylists[currentUserPlaylistIndex];
+      if (!playlist || !playlist.tracks || !playlist.tracks.length) return;
+      playQueue = playlist.tracks.slice();
+      queueIndex = 0;
+      setCurrentTrack(playQueue[0]);
+      playCurrentTrack();
+    }
+    function playUserPlaylistTrack(trackIndex) {
+      var playlist = userPlaylists[currentUserPlaylistIndex];
+      if (!playlist || !playlist.tracks) return;
+      playQueue = playlist.tracks.slice();
+      queueIndex = trackIndex;
+      setCurrentTrack(playQueue[trackIndex]);
+      playCurrentTrack();
+    }
+    function removeFromUserPlaylist(trackIndex) {
+      var playlist = userPlaylists[currentUserPlaylistIndex];
+      if (!playlist || !Array.isArray(playlist.tracks)) return;
+      playlist.tracks.splice(trackIndex, 1);
+      playlist.count = playlist.tracks.length;
+      savePlaylists();
+      renderUserPlaylistDetail();
+      showToast('已从歌单中移除');
+    }
+    function openUserPlaylistMenu() {
+      var index = currentUserPlaylistIndex;
+      var playlist = userPlaylists[index];
+      if (!playlist) return;
+      var body = '<div class="action-list">' +
+        '<button onclick="playPlaylist(' + index + ')">' + iconHtml('play') + ' 播放全部</button>' +
+        '<button onclick="renamePlaylistFromDetail(' + index + ')">' + iconHtml('settings') + ' 重命名</button>' +
+        '<button onclick="exportUserPlaylist(' + index + ')">' + iconHtml('download') + ' 导出歌单</button>' +
+        '<button class="danger" onclick="deletePlaylistFromDetail(' + index + ')">' + iconHtml('trash') + ' 删除歌单</button>' +
+        '<button onclick="closePlaylistDrawer()">关闭</button></div>';
+      openPlaylistDrawer(playlist.name || '歌单', '', body);
+    }
+    function renamePlaylistFromDetail(index) {
+      var oldName = userPlaylists[index]?.name || '';
+      openPlaylistDrawer('重命名歌单', '', '<input class="drawer-input" id="rename-playlist-name" value="' + escapeMarkup(oldName) + '" maxlength="32"><div class="drawer-actions"><button onclick="closePlaylistDrawer()">取消</button><button class="primary" onclick="confirmRenamePlaylistFromDetail(' + index + ')">保存</button></div>');
+      setTimeout(function() { document.getElementById('rename-playlist-name')?.focus(); }, 30);
+    }
+    function confirmRenamePlaylistFromDetail(index) {
+      var name = (document.getElementById('rename-playlist-name')?.value || '').trim();
+      if (!name || !userPlaylists[index]) return;
+      userPlaylists[index] = { ...userPlaylists[index], name: name };
+      savePlaylists();
+      closePlaylistDrawer();
+      renderUserPlaylistDetail();
+    }
+    function deletePlaylistFromDetail(index) {
+      userPlaylists.splice(index, 1);
+      savePlaylists();
+      closePlaylistDrawer();
+      goBackFromPlaylistDetail();
+      showToast('歌单已删除');
+    }
+    function exportUserPlaylist(index) {
+      var playlist = userPlaylists[index];
+      if (!playlist) return;
+      var data = { name: playlist.name, tracks: playlist.tracks || [] };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = (playlist.name || '歌单') + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      closePlaylistDrawer();
+      showToast('歌单已导出');
     }
     function renderLyricsMessage(message) {
       var retry = message === '暂无歌词'
@@ -4346,6 +4558,7 @@
       if (target === 'history') renderHistory();
       if (target === 'queue') renderQueue();
       if (target === 'mine') renderPlaylists();
+      if (target === 'user-playlist') renderUserPlaylistDetail();
       if (target === 'search') { renderIndexDiscoverPlaylists(); }
     }
     tabs.forEach((tab) => {
