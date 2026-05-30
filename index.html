@@ -1994,7 +1994,7 @@
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
-    const SEARCH_RESULT_LIMIT = 30;
+    const SEARCH_RESULT_LIMIT = 100;
     var _isLocalDev = /^(localhost|127\.)/.test(location.hostname);
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
