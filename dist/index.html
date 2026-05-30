@@ -1398,7 +1398,6 @@
       .controls button { width: 56px; height: 56px; }
       .controls .main-play { width: 72px; height: 72px; }
       .controls .main-play svg, .controls .main-play .line-icon { width: 32px; height: 32px; }
-      .queue-drawer,
       .action-drawer,
       .setting-drawer {
         left: 50%;
@@ -1406,9 +1405,20 @@
         transform: translate(-50%, 110%);
         width: min(100%, 720px);
       }
-      .queue-drawer.open,
       .action-drawer.open,
       .setting-drawer.open { transform: translate(-50%, 0); }
+      .queue-drawer {
+        left: auto;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        transform: translateX(110%);
+        width: min(100%, 420px);
+        border-radius: 0;
+        box-shadow: -8px 0 30px rgba(0,0,0,.15);
+      }
+      .queue-drawer.open { transform: translateX(0); }
       .quick-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       .favorite-header { padding: 24px 0 12px; }
       .section-head h2 { font-size: 18px; }
