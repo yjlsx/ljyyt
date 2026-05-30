@@ -1541,7 +1541,7 @@
     <div class="search-shell" id="search-shell">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input class="search-input" id="home-search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" oninput="syncHomeSearchInput()" onkeydown="handleHomeSearchKey(event)">
+        <input class="search-input" id="home-search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onclick="handleHomeSearchClick()" oninput="syncHomeSearchInput()" onkeydown="handleHomeSearchKey(event)">
         <button class="search-clear" id="home-search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'home')"><span data-icon="close"></span></button>
         <div class="provider-wrap">
           <button class="provider" type="button" id="provider-button" onclick="toggleProvider(event)"><span id="provider-label">聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
@@ -2261,6 +2261,16 @@
     }
     function getHomeSearchInput() {
       return document.getElementById('home-search-input');
+    }
+    function handleHomeSearchClick() {
+      var homeInput = getHomeSearchInput();
+      var searchInput = getSearchInput();
+      showView('search');
+      if (searchInput && homeInput) searchInput.value = homeInput.value || '';
+      if (searchInput) searchInput.focus();
+      if (!String(searchInput && searchInput.value || '').trim()) {
+        renderSearchHistory(true);
+      }
     }
     function syncHomeSearchInput() {
       var homeInput = getHomeSearchInput();
