@@ -3111,6 +3111,7 @@
         });
       });
     }
+    var _coverResolveId = 0;
     function renderSearchRows(tracks, sourceLabel) {
       var container = document.getElementById('search-results');
       if (!container) return;
@@ -3145,6 +3146,33 @@
           playCurrentTrack();
         });
       });
+      resolveSearchCovers(tracks, container);
+    }
+    function resolveSearchCovers(tracks, container) {
+      var batchId = ++_coverResolveId;
+      var pending = tracks.filter(function(t) { return t.coverApi && (!t.cover || t.cover === DEFAULT_COVER); });
+      if (!pending.length) return;
+      var BATCH = 5;
+      var idx = 0;
+      function nextBatch() {
+        if (batchId !== _coverResolveId) return;
+        var slice = pending.slice(idx, idx + BATCH);
+        if (!slice.length) return;
+        idx += BATCH;
+        Promise.all(slice.map(function(track) {
+          return resolveExternalCover(track).then(function() {
+            if (batchId !== _coverResolveId) return;
+            var trackIdx = tracks.indexOf(track);
+            if (trackIdx < 0) return;
+            var row = container.querySelector('.track[data-index="' + trackIdx + '"]');
+            if (row && track.cover && track.cover !== DEFAULT_COVER) {
+              var img = row.querySelector('img');
+              if (img) img.src = track.cover;
+            }
+          });
+        })).then(nextBatch);
+      }
+      nextBatch();
     }
     async function ensureSearchVideos() {
       if (searchVideoCache.length) return searchVideoCache;
