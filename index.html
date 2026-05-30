@@ -961,10 +961,20 @@
       background: color-mix(in srgb, var(--card) 60%, transparent);
     }
     .video-view video {
-      width: 100%; display: block; border-radius: 14px; margin: 8px 0 14px; background: #111;
+      width: 100%; max-height: 70vh; display: block; border-radius: 14px; margin: 8px 0 14px; background: #111; object-fit: contain;
     }
     .video-view h2 { font-size: 17px; margin: 0 0 5px; }
     .video-view p { margin: 0; color: var(--muted-foreground); font-size: 13px; }
+    .video-view .video-ended-overlay {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      margin: -60px auto 14px; width: 100%; height: 48px;
+    }
+    .video-view .video-ended-overlay button {
+      padding: 10px 24px; border-radius: 24px; font-size: 14px; font-weight: 500;
+      background: var(--primary, #36a97b); color: #fff; cursor: pointer;
+      transition: opacity .15s;
+    }
+    .video-view .video-ended-overlay button:hover { opacity: .85; }
     .player-stack { position: absolute; left: 0; right: 0; bottom: 57px; z-index: 4; padding: 0 12px 8px; }
     .player {
       height: 58px;
@@ -5114,8 +5124,23 @@
       if (poster) video.poster = safeCover(poster);
       video.src = src;
       video.load();
+      var endedOverlay = document.querySelector('.video-ended-overlay');
+      if (endedOverlay) endedOverlay.remove();
       showView('video');
+      video.play().catch(function() {});
     }
+    (function() {
+      var vid = document.getElementById('preview-video');
+      if (!vid) return;
+      vid.addEventListener('ended', function() {
+        var existing = document.querySelector('.video-ended-overlay');
+        if (existing) existing.remove();
+        var overlay = document.createElement('div');
+        overlay.className = 'video-ended-overlay';
+        overlay.innerHTML = '<button onclick="document.getElementById(\'preview-video\').currentTime=0;document.getElementById(\'preview-video\').play();this.parentNode.remove();">重新播放</button>';
+        vid.parentNode.insertBefore(overlay, vid.nextSibling);
+      });
+    })();
     function toggleSetting(event, element) {
       event.stopPropagation();
       var key = element && element.dataset && element.dataset.setting;
