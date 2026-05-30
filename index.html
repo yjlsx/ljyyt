@@ -1528,6 +1528,22 @@
       pointer-events: none; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
     }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .ljyyt-confirm-overlay {
+      position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.4); opacity: 0; transition: opacity .2s;
+    }
+    .ljyyt-confirm-overlay.show { opacity: 1; }
+    .ljyyt-confirm-box {
+      background: var(--card, #fff); border-radius: 16px; padding: 24px; min-width: 260px; max-width: 340px;
+      box-shadow: 0 16px 48px rgba(0,0,0,.2); text-align: center;
+    }
+    .ljyyt-confirm-box p { margin: 0 0 20px; font-size: 15px; color: var(--foreground, #333); line-height: 1.5; }
+    .ljyyt-confirm-btns { display: flex; gap: 12px; }
+    .ljyyt-confirm-btns button {
+      flex: 1; height: 40px; border-radius: 10px; border: none; font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .ljyyt-confirm-cancel { background: var(--secondary, #eee); color: var(--foreground, #333); }
+    .ljyyt-confirm-ok { background: var(--primary, #36a97b); color: #fff; }
   </style>
 </head>
 <body>
@@ -1951,6 +1967,27 @@
         setTimeout(function() { el.remove(); }, 300);
       }, duration || 3000);
     }
+    function showConfirm(message, onConfirm) {
+      var overlay = document.createElement('div');
+      overlay.className = 'ljyyt-confirm-overlay';
+      overlay.innerHTML =
+        '<div class="ljyyt-confirm-box">' +
+          '<p>' + escapeMarkup(message) + '</p>' +
+          '<div class="ljyyt-confirm-btns">' +
+            '<button class="ljyyt-confirm-cancel">取消</button>' +
+            '<button class="ljyyt-confirm-ok">确定</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function() { overlay.classList.add('show'); });
+      function close() {
+        overlay.classList.remove('show');
+        setTimeout(function() { overlay.remove(); }, 200);
+      }
+      overlay.querySelector('.ljyyt-confirm-cancel').onclick = close;
+      overlay.querySelector('.ljyyt-confirm-ok').onclick = function() { close(); onConfirm(); };
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+    }
     function hydrateIcons(root) {
       (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
         var name = node.getAttribute('data-icon');
@@ -2101,8 +2138,9 @@
       })[char]);
     }
     function safeCover(value) {
-      const source = String(value || DEFAULT_COVER);
-      return source.replace(/^http:\/\/mmbiz\.qpic\.cn/i, 'https://mmbiz.qpic.cn');
+      var source = String(value || DEFAULT_COVER);
+      if (/^http:\/\//i.test(source)) source = source.replace(/^http:/i, 'https:');
+      return source;
     }
     function imageFallbackAttr() {
       return " onerror=\"this.onerror=null;this.src='" + DEFAULT_COVER + "';\" alt=\"\"";
@@ -2493,14 +2531,16 @@
       searchHistory = setSearchHistory([word, ...getSearchHistory().filter((item) => item !== word)]);
     }
     function clearSearchHistory() {
-      searchHistory = [];
-      clearStoredSearchHistory();
-      const box = document.getElementById('search-history');
-      if (box) {
-        box.innerHTML = '';
-        box.hidden = true;
-      }
-      hideSearchHistory();
+      showConfirm('确定清空搜索历史吗？', function() {
+        searchHistory = [];
+        clearStoredSearchHistory();
+        const box = document.getElementById('search-history');
+        if (box) {
+          box.innerHTML = '';
+          box.hidden = true;
+        }
+        hideSearchHistory();
+      });
     }
     function updateSearchClearButton() {
       const searchInput = getSearchInput();
@@ -2863,15 +2903,18 @@
     }
     function clearCurrentQueue(event) {
       if (event) event.stopPropagation();
-      if (queueDrawerTab === 'history') {
-        historyTracks = [];
-        writeStoredList('ljyyt_otter_history', historyTracks);
-      } else {
-        playQueue = currentTrack ? [currentTrack] : [];
-        queueIndex = 0;
-      }
-      renderQueue();
-      renderHistory();
+      var msg = queueDrawerTab === 'history' ? '确定清空播放历史吗？' : '确定清空播放列表吗？';
+      showConfirm(msg, function() {
+        if (queueDrawerTab === 'history') {
+          historyTracks = [];
+          writeStoredList('ljyyt_otter_history', historyTracks);
+        } else {
+          playQueue = currentTrack ? [currentTrack] : [];
+          queueIndex = 0;
+        }
+        renderQueue();
+        renderHistory();
+      });
     }
     function reshuffleQueue(event) {
       if (event) event.stopPropagation();
@@ -3012,11 +3055,13 @@
         writeStoredList('ljyyt_otter_favorites', favoriteTracks);
         updateLikeButton();
         renderFavorites();
+        showToast(liked ? '已取消喜欢' : '已添加到喜欢', 1500);
       } else if (action === 'next') {
         const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);
         playQueue = playQueue.filter((item) => !isSameTrack(item, track));
         playQueue.splice(insertAt, 0, track);
         renderQueue();
+        showToast('已添加到下一首播放', 1500);
       } else if (action === 'playlist') {
         closeTrackActionDrawer();
         openAddToPlaylistDrawer(track);
@@ -3025,9 +3070,27 @@
         downloadTrack(track);
         return;
       } else if (action === 'artist') {
-        showView('search');
+        var artistQuery = String(track.artist || '').trim();
+        if (artistQuery) {
+          var si = getSearchInput();
+          if (si) si.value = artistQuery;
+          var hi = getHomeSearchInput();
+          if (hi) hi.value = artistQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       } else if (action === 'album' && track.album) {
-        showView('search');
+        var albumQuery = String(track.album).trim();
+        if (albumQuery) {
+          var si2 = getSearchInput();
+          if (si2) si2.value = albumQuery;
+          var hi2 = getHomeSearchInput();
+          if (hi2) hi2.value = albumQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       }
       closeTrackActionDrawer();
     }
@@ -3508,6 +3571,16 @@
             openDiscoverCard(marketItems.find(function(item) { return item.id === id; }));
           });
         });
+        var loadMoreEl = document.getElementById('market-load-more');
+        if (loadMoreEl && 'IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting && marketHasMore && !marketLoading) {
+              observer.disconnect();
+              renderIndexDiscoverPlaylists();
+            }
+          }, { root: document.querySelector('.content'), threshold: 0.1 });
+          observer.observe(loadMoreEl);
+        }
       } catch (error) {
         rail.innerHTML = '<div class="discover-market-error">发现页数据加载失败，请稍后刷新重试。</div>';
       } finally {
