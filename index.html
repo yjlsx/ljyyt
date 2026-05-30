@@ -1220,7 +1220,7 @@
       opacity: 0; pointer-events: none;
       transition: opacity .25s ease;
     }
-    .drawer-scrim.open { opacity: 1; pointer-events: auto; }
+    .drawer-scrim.open { opacity: 1; pointer-events: auto; touch-action: none; -webkit-overflow-scrolling: auto; }
     .drawer-scrim.light { background: rgba(0,0,0,.04); }
     .action-scrim {
       position: absolute; inset: 0; z-index: 79;
@@ -2870,13 +2870,13 @@
       scrollCurrentQueueItemIntoView();
     }
     function setQueueDrawerOpen(open) {
-      var scrollbarW = window.innerWidth - document.documentElement.clientWidth;
-      if (open && scrollbarW > 0) {
+      var contentEl = document.querySelector('.content');
+      if (open) {
         document.body.style.overflow = 'hidden';
-        document.body.style.paddingRight = scrollbarW + 'px';
+        if (contentEl) contentEl.style.overflowY = 'hidden';
       } else {
         document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        if (contentEl) contentEl.style.overflowY = '';
       }
       document.getElementById('queue-drawer')?.classList.toggle('open', !!open);
       const scrim = document.getElementById('queue-scrim');
