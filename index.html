@@ -1414,11 +1414,17 @@
         bottom: 0;
         height: 100%;
         transform: translateX(110%);
-        width: min(100%, 420px);
-        border-radius: 0;
-        box-shadow: -8px 0 30px rgba(0,0,0,.15);
+        width: min(100%, 400px);
+        border-radius: 20px 0 0 20px;
+        box-shadow: -8px 0 40px rgba(0,0,0,.18);
+        background: rgba(255,255,255,.82);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
       }
       .queue-drawer.open { transform: translateX(0); }
+      body.dark-mode .queue-drawer {
+        background: rgba(30,30,30,.85);
+      }
       .quick-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       .favorite-header { padding: 24px 0 12px; }
       .section-head h2 { font-size: 18px; }
