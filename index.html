@@ -2833,6 +2833,14 @@
       scrollCurrentQueueItemIntoView();
     }
     function setQueueDrawerOpen(open) {
+      var scrollbarW = window.innerWidth - document.documentElement.clientWidth;
+      if (open && scrollbarW > 0) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = scrollbarW + 'px';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }
       document.getElementById('queue-drawer')?.classList.toggle('open', !!open);
       const scrim = document.getElementById('queue-scrim');
       scrim?.classList.toggle('open', !!open);
