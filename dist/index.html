@@ -353,8 +353,9 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .source {
-      font-size: 10px; color: var(--primary); padding: 3px 6px;
-      border-radius: 7px; background: rgba(54,169,123,.12);
+      font-size: 10px; color: var(--primary); padding: 2px 6px;
+      border-radius: 6px; background: rgba(54,169,123,.1);
+      margin-left: 6px; vertical-align: 1px; display: inline-block; line-height: 1.3;
     }
     .source-badge {
       display: inline-flex; align-items: center; height: 15px; padding: 0 5px;
@@ -1175,7 +1176,7 @@
     }
     .queue-actions button:hover { background: var(--muted); color: var(--foreground); }
     .queue-actions svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .queue-drawer .track-list { overflow: auto; padding: 0 10px calc(2rem + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 4px; }
+    .queue-drawer .track-list { overflow: auto; padding: 0 12px calc(2rem + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 2px; }
     .action-drawer {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 80;
       transform: translateY(110%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
@@ -1198,17 +1199,23 @@
     .action-list .line-icon { width: 17px; height: 17px; }
     .action-list button:hover { background: var(--muted); }
     .action-list small { margin-left: auto; color: var(--muted-foreground); font-size: 12px; }
-    .queue-drawer .track { height: 72px; padding: 8px 12px 8px 14px; border-radius: 18px; gap: 14px; }
-    .queue-drawer .track:hover { background: var(--muted); }
-    .queue-drawer .track img { width: 48px; height: 48px; border-radius: 12px; }
+    .queue-drawer .track {
+      height: auto; padding: 10px 14px; border-radius: 16px; gap: 14px;
+      display: grid; grid-template-columns: 48px 1fr auto; align-items: center;
+    }
+    .queue-drawer .track:hover { background: color-mix(in srgb, var(--muted) 60%, transparent); }
+    .queue-drawer .track img { width: 48px; height: 48px; border-radius: 10px; }
+    .queue-drawer .track .track-name { font-size: 15px; font-weight: 500; line-height: 1.35; }
+    .queue-drawer .track .artist { font-size: 13px; margin-top: 2px; opacity: .7; }
     .track.current-track { background: color-mix(in srgb, var(--muted) 58%, transparent); border-radius: 16px; }
     .track.current-track .track-name { color: var(--primary); font-weight: 700; }
     .queue-remove {
-      width: 40px; height: 40px; flex: none; display: grid; place-items: center;
-      border-radius: 12px; color: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
+      width: 36px; height: 36px; flex: none; display: grid; place-items: center;
+      border-radius: 10px; color: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
+      transition: color .15s, background .15s;
     }
-    .queue-remove:hover { background: color-mix(in srgb, var(--muted) 85%, transparent); color: var(--foreground); }
-    .queue-remove svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .queue-remove:hover { background: rgba(239,68,68,.08); color: #ef4444; }
+    .queue-remove svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .playing-bars {
       position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 3px;
       background: rgba(0,0,0,.28); border-radius: 10px;
@@ -3632,9 +3639,10 @@
         const actionButton = isDrawer
           ? '<button class="queue-remove" aria-label="删除" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
           : '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>';
+        var sourceTag = track.sourceLabel && track.source !== 'local' ? '<span class="source">' + escapeMarkup(track.sourceLabel) + '</span>' : '';
         return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
           '<div style="position:relative;flex:none"><img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '><span class="playing-bars"><i></i><i></i><i></i></span></div>' +
-          '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + '</div></div>' +
+          '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + sourceTag + '</div></div>' +
           actionButton +
         '</div>';
       }).join('') : '<div class="empty-note">' + (queueDrawerTab === 'history' && isDrawer ? '最近播放为空。播放歌曲后会自动记录。' : '播放列表为空。先选择一首歌播放。') + '</div>';
