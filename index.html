@@ -1786,7 +1786,7 @@
             <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" data-setting="volume" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
             <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
             <div class="setting-item" onclick="toggleCachePanel(event)"><span class="setting-icon" data-icon="database"></span><div class="setting-copy"><p>边听边缓存</p><small>播放时自动缓存，离线也能听</small></div><div class="setting-action"><button class="toggle" data-setting="cacheWhilePlaying" onclick="toggleSetting(event, this)" aria-label="边听边缓存开启"></button><span class="setting-chevron" id="cache-chevron"><span data-icon="chevronRight"></span></span></div></div>
-            <div class="setting-expanded-panel" id="cache-panel"><div class="cache-stat">暂无缓存数据</div><button class="danger-outline" onclick="event.stopPropagation()"><span data-icon="trash"></span> 清空缓存</button></div>
+            <div class="setting-expanded-panel" id="cache-panel"><div class="cache-stat">暂无缓存数据</div><button class="danger-outline" onclick="event.stopPropagation(); clearAllCache()"><span data-icon="trash"></span> 清空缓存</button></div>
           </div>
           <div class="setting-group"><h3>界面设置</h3>
             <div class="setting-item" onclick="toggleThemeSetting(event)"><span class="setting-icon" data-icon="palette"></span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select" id="theme-setting-label">浅色 / 深色</span></div></div>
@@ -2666,8 +2666,7 @@
       }
       if (!playableUrl) {
         setPlayIcons(false);
-        showToast('当前音源暂时无法播放，正在尝试下一首...');
-        setTimeout(function() { nextTrack(); }, 2000);
+        showToast('当前音源暂时无法播放');
         return;
       }
       try {
@@ -2684,11 +2683,14 @@
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
+          _isResolvingUrl = true;
           audioPlayer.src = '';
+          _isResolvingUrl = false;
           return playCurrentTrack();
         }
         _playRetryCount = 0;
         setPlayIcons(false);
+        showToast('播放失败，请重试或切换歌曲');
       }
     }
     function pauseCurrentTrack() {
@@ -4527,6 +4529,21 @@
       panel.classList.toggle('open', open);
       document.getElementById('cache-chevron').classList.toggle('open', open);
     }
+    function clearAllCache() {
+      Object.keys(marketCache).forEach(function(k) { delete marketCache[k]; });
+      mineDataCache = { recommend: null, created: null, subscribed: null, albums: null };
+      localStorage.removeItem('ljyyt_otter_playback_state');
+      localStorage.removeItem('ljyyt_search_history');
+      var keys = Object.keys(localStorage);
+      keys.forEach(function(k) {
+        if (k.startsWith('ljyyt_') && k !== 'ljyyt_otter_netease_login' && k !== 'ljyyt_play_mode_index' && k !== 'ljyyt_settings' && k !== 'ljyyt_favorites') {
+          localStorage.removeItem(k);
+        }
+      });
+      showToast('缓存已清空');
+      var stat = document.querySelector('#cache-panel .cache-stat');
+      if (stat) stat.textContent = '已清空';
+    }
     function openSettingDrawer(type) {
       var titleMap = {
         netease: ['网易云账号', '打开网易云音乐 APP 扫一扫登录。'],
@@ -4985,8 +5002,9 @@
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
       if (!currentTrack || !audioPlayer.src || _isResolvingUrl) return;
-      console.warn('Audio error: auto-skipping to next track');
-      setTimeout(function() { nextTrack(); }, 1500);
+      console.warn('Audio playback error');
+      setPlayIcons(false);
+      showToast('播放出错，请重试或切换歌曲');
     });
     document.querySelectorAll('img').forEach((image) => {
       image.alt = '';
