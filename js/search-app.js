@@ -154,10 +154,7 @@
   function safeCover(value) {
     var source = String(value || DEFAULT_COVER);
     if (!source || source === 'undefined' || source === 'null') return DEFAULT_COVER;
-    if (source.indexOf('http://mmbiz.qpic.cn') === 0) {
-      source = source.replace(/^http:\/\//i, 'https://');
-    }
-    return source;
+    return source.replace(/^http:\/\//i, 'https://');
   }
 
   function getSourceLabel(source) {
@@ -412,7 +409,7 @@
     }
     box.innerHTML = tracks.map(function(track, index) {
       var cover = track.cover && track.cover !== DEFAULT_COVER
-        ? '<img src="' + escapeHtml(track.cover) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">'
+        ? '<img src="' + escapeHtml(track.cover) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">'
         : iconHtml('music');
       return '<button class="track-row" type="button" data-kind="track" data-index="' + index + '">' +
         '<span class="row-cover">' + cover + '</span>' +
@@ -434,7 +431,7 @@
     }
     box.innerHTML = videos.map(function(video, index) {
       var cover = video.cover
-        ? '<img src="' + escapeHtml(video.cover) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">'
+        ? '<img src="' + escapeHtml(video.cover) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">'
         : iconHtml('video');
       return '<button class="video-row" type="button" data-kind="video" data-index="' + index + '">' +
         '<span class="row-cover">' + cover + '</span>' +
@@ -450,7 +447,7 @@
   function playlistCoverHtml(item) {
     var cover = item.cover || item.tracks && item.tracks[0] && item.tracks[0].cover;
     return cover && cover !== DEFAULT_COVER
-      ? '<img src="' + escapeHtml(safeCover(cover)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">'
+      ? '<img src="' + escapeHtml(safeCover(cover)) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">'
       : iconHtml(item.icon || 'album');
   }
 
@@ -632,7 +629,7 @@
     if (artist) artist.textContent = track && track.artist ? track.artist + ' · ' + (track.sourceLabel || getSourceLabel(track.source)) : '搜索后点击歌曲即可播放';
     if (cover) {
       var coverUrl = track && track.cover && track.cover !== DEFAULT_COVER ? safeCover(track.cover) : '';
-      cover.innerHTML = coverUrl ? '<img src="' + escapeHtml(coverUrl) + '" alt="" loading="lazy" decoding="async" onerror="this.parentNode.innerHTML=\'' + iconHtml('music').replace(/'/g, '&#39;') + '\'">' : iconHtml('music');
+      cover.innerHTML = coverUrl ? '<img src="' + escapeHtml(coverUrl) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.innerHTML=\'' + iconHtml('music').replace(/'/g, '&#39;') + '\'">' : iconHtml('music');
     }
     updateMiniPlayButton();
   }
@@ -734,7 +731,7 @@
     var sheet = document.getElementById('search-action-sheet');
     if (!sheet || !scrim) return;
     var cover = track.cover && track.cover !== DEFAULT_COVER
-      ? '<img src="' + escapeHtml(track.cover) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">'
+      ? '<img src="' + escapeHtml(track.cover) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">'
       : iconHtml('music');
     sheet.innerHTML = '<div class="action-track"><span class="row-cover">' + cover + '</span><span><strong>' +
       escapeHtml(track.title || '未知歌曲') + '</strong><span>' + escapeHtml(track.artist || '未知歌手') + ' · ' +

@@ -1528,6 +1528,22 @@
       pointer-events: none; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
     }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .ljyyt-confirm-overlay {
+      position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.4); opacity: 0; transition: opacity .2s;
+    }
+    .ljyyt-confirm-overlay.show { opacity: 1; }
+    .ljyyt-confirm-box {
+      background: var(--card, #fff); border-radius: 16px; padding: 24px; min-width: 260px; max-width: 340px;
+      box-shadow: 0 16px 48px rgba(0,0,0,.2); text-align: center;
+    }
+    .ljyyt-confirm-box p { margin: 0 0 20px; font-size: 15px; color: var(--foreground, #333); line-height: 1.5; }
+    .ljyyt-confirm-btns { display: flex; gap: 12px; }
+    .ljyyt-confirm-btns button {
+      flex: 1; height: 40px; border-radius: 10px; border: none; font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .ljyyt-confirm-cancel { background: var(--secondary, #eee); color: var(--foreground, #333); }
+    .ljyyt-confirm-ok { background: var(--primary, #36a97b); color: #fff; }
   </style>
 </head>
 <body>
@@ -1938,6 +1954,27 @@
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
     }
+    function showConfirm(message, onConfirm) {
+      var overlay = document.createElement('div');
+      overlay.className = 'ljyyt-confirm-overlay';
+      overlay.innerHTML =
+        '<div class="ljyyt-confirm-box">' +
+          '<p>' + escapeMarkup(message) + '</p>' +
+          '<div class="ljyyt-confirm-btns">' +
+            '<button class="ljyyt-confirm-cancel">取消</button>' +
+            '<button class="ljyyt-confirm-ok">确定</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function() { overlay.classList.add('show'); });
+      function close() {
+        overlay.classList.remove('show');
+        setTimeout(function() { overlay.remove(); }, 200);
+      }
+      overlay.querySelector('.ljyyt-confirm-cancel').onclick = close;
+      overlay.querySelector('.ljyyt-confirm-ok').onclick = function() { close(); onConfirm(); };
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+    }
     function showToast(message, duration) {
       var existing = document.querySelector('.ljyyt-toast');
       if (existing) existing.remove();
@@ -2102,7 +2139,7 @@
     }
     function safeCover(value) {
       const source = String(value || DEFAULT_COVER);
-      return source.replace(/^http:\/\/mmbiz\.qpic\.cn/i, 'https://mmbiz.qpic.cn');
+      return source.replace(/^http:\/\//i, 'https://');
     }
     function imageFallbackAttr() {
       return " onerror=\"this.onerror=null;this.src='" + DEFAULT_COVER + "';\" alt=\"\"";
@@ -3618,7 +3655,7 @@
         if (!Array.isArray(albums)) albums = [];
         mineHasMoreAlbums = albums.length >= 50;
         return albums.map(function(item) {
-          return { id: item.id, name: item.name, picUrl: item.picUrl, artist: item.artists && item.artists[0] ? item.artists[0].name : (item.artist && item.artist.name || '') };
+          return { id: item.id, name: item.name, picUrl: safeCover(item.picUrl), artist: item.artists && item.artists[0] ? item.artists[0].name : (item.artist && item.artist.name || '') };
         });
       }
       var userPayload = await fetchOtterNetease('/user-playlists', { userId: String(userId), cookie: cookie });
@@ -3703,7 +3740,7 @@
             if (!Array.isArray(newAlbums)) newAlbums = [];
             mineHasMoreAlbums = newAlbums.length >= 50;
             var mapped = newAlbums.map(function(item) {
-              return { id: item.id, name: item.name, picUrl: item.picUrl, artist: item.artists && item.artists[0] ? item.artists[0].name : (item.artist && item.artist.name || '') };
+              return { id: item.id, name: item.name, picUrl: safeCover(item.picUrl), artist: item.artists && item.artists[0] ? item.artists[0].name : (item.artist && item.artist.name || '') };
             });
             mineDataCache.albums = list.concat(mapped);
             var currentRail = document.getElementById('index-discover-playlists');
@@ -4101,10 +4138,12 @@
       playCurrentTrack();
     }
     function clearHistory() {
-      if (historyTracks.length && !confirm('确定清空播放历史吗？')) return;
-      historyTracks = [];
-      writeStoredList('ljyyt_otter_history', historyTracks);
-      renderHistory();
+      if (!historyTracks.length) return;
+      showConfirm('确定清空播放历史吗？', function() {
+        historyTracks = [];
+        writeStoredList('ljyyt_otter_history', historyTracks);
+        renderHistory();
+      });
     }
     function renderQueue() {
       const list = document.getElementById('queue-list');
@@ -4172,10 +4211,12 @@
     }
     function clearQueue() {
       const queue = playQueue.length ? playQueue : (currentTrack ? [currentTrack] : []);
-      if (queue.length && !confirm('确定清空播放列表吗？')) return;
-      playQueue = [];
-      queueIndex = 0;
-      renderQueue();
+      if (!queue.length) return;
+      showConfirm('确定清空播放列表吗？', function() {
+        playQueue = [];
+        queueIndex = 0;
+        renderQueue();
+      });
     }
     function renderPlaylists() {
       const list = document.getElementById('playlist-list');
