@@ -27,6 +27,10 @@ export default {
         return await withCache(request, ctx, () => handleCoverRequest(url));
       }
 
+      if (url.pathname === '/api/kuwo-url') {
+        return await withCache(request, ctx, () => handleKuwoUrlRequest(url));
+      }
+
       return jsonResponse({ ok: true, service: 'ljyyt-worker' });
     } catch (error) {
       return jsonResponse(
@@ -659,6 +663,29 @@ function emptyLyricsResult() {
     album: '',
     providerId: ''
   };
+}
+
+async function handleKuwoUrlRequest(url) {
+  const rid = String(url.searchParams.get('rid') || '').trim();
+  if (!rid) {
+    return jsonResponse({ url: '', error: 'Missing rid' }, 400);
+  }
+  const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${rid}`;
+  try {
+    const response = await fetch(target, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+    });
+    if (!response.ok) {
+      return jsonResponse({ url: '' });
+    }
+    const text = (await response.text()).trim();
+    if (text && /^https?:\/\//i.test(text)) {
+      return jsonResponse({ url: text });
+    }
+    return jsonResponse({ url: '' });
+  } catch (error) {
+    return jsonResponse({ url: '', error: error instanceof Error ? error.message : 'fetch failed' });
+  }
 }
 
 function corsHeaders() {

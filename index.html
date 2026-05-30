@@ -1624,7 +1624,7 @@
             <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
-            <button class="source-option" data-provider="酷我音乐" disabled style="opacity:0.5"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>播放接口异常，暂不可用</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>华语资源丰富</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="B站"><span class="source-option-icon" data-icon="video"></span><span><strong>B站</strong><small>用户上传音乐内容</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Netease"><span class="source-option-icon" data-icon="refresh"></span><span><strong>Netease</strong><small>网易云备用接口</small></span><span class="source-option-check" data-icon="check"></span></button>
@@ -1869,7 +1869,7 @@
               <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span></label>
               <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span><p>网易云音乐</p><small>音源稳定，小众资源多</small></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span><p>Migu</p><small>咪咕音乐官方</small></span></label>
-              <label class="aggregate-source-option" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>播放接口异常，暂时不可用</small></span></label>
+              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span></label>
               <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span><p>Netease</p><small>网易云官方，稳定高速</small></span></label>
             </div>
@@ -1994,7 +1994,7 @@
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
-    const SEARCH_RESULT_LIMIT = 30;
+    const SEARCH_RESULT_LIMIT = 100;
     var _isLocalDev = /^(localhost|127\.)/.test(location.hostname);
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
@@ -2061,6 +2061,27 @@
         setTimeout(function() { el.remove(); }, 300);
       }, duration || 3000);
     }
+    function showConfirm(message, onConfirm) {
+      var overlay = document.createElement('div');
+      overlay.className = 'ljyyt-confirm-overlay';
+      overlay.innerHTML =
+        '<div class="ljyyt-confirm-box">' +
+          '<p>' + escapeMarkup(message) + '</p>' +
+          '<div class="ljyyt-confirm-btns">' +
+            '<button class="ljyyt-confirm-cancel">取消</button>' +
+            '<button class="ljyyt-confirm-ok">确定</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function() { overlay.classList.add('show'); });
+      function close() {
+        overlay.classList.remove('show');
+        setTimeout(function() { overlay.remove(); }, 200);
+      }
+      overlay.querySelector('.ljyyt-confirm-cancel').onclick = close;
+      overlay.querySelector('.ljyyt-confirm-ok').onclick = function() { close(); onConfirm(); };
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+    }
     function hydrateIcons(root) {
       (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
         var name = node.getAttribute('data-icon');
@@ -2098,7 +2119,7 @@
     let currentMarketPlaylistMeta = null;
     let searchVideoCache = [];
     let aggregatedSources = readStoredList('ljyyt_otter_aggregated_sources');
-    if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'bilibili'];
+    if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
     let lyricsRequestId = 0;
     let currentLyrics = { lines: [], synced: [], source: 'empty', activeIndex: -1 };
     let playQueue = [];
@@ -2292,7 +2313,7 @@
         if (label.includes(pair[0])) add(pair[1]);
       });
       (aggregatedSources || []).forEach(add);
-      ['joox', 'bilibili', 'migu'].forEach(add);
+      ['joox', 'kuwo', 'bilibili', 'migu'].forEach(add);
       return candidates.concat(deferred);
     }
     function isTrackMatchCandidate(target, candidate) {
@@ -2603,14 +2624,16 @@
       searchHistory = setSearchHistory([word, ...getSearchHistory().filter((item) => item !== word)]);
     }
     function clearSearchHistory() {
-      searchHistory = [];
-      clearStoredSearchHistory();
-      const box = document.getElementById('search-history');
-      if (box) {
-        box.innerHTML = '';
-        box.hidden = true;
-      }
-      hideSearchHistory();
+      showConfirm('确定清空搜索历史吗？', function() {
+        searchHistory = [];
+        clearStoredSearchHistory();
+        const box = document.getElementById('search-history');
+        if (box) {
+          box.innerHTML = '';
+          box.hidden = true;
+        }
+        hideSearchHistory();
+      });
     }
     function updateSearchClearButton() {
       const searchInput = getSearchInput();
@@ -3125,11 +3148,13 @@
         writeStoredList('ljyyt_otter_favorites', favoriteTracks);
         updateLikeButton();
         renderFavorites();
+        showToast(liked ? '已取消喜欢' : '已添加到喜欢', 1500);
       } else if (action === 'next') {
         const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);
         playQueue = playQueue.filter((item) => !isSameTrack(item, track));
         playQueue.splice(insertAt, 0, track);
         renderQueue();
+        showToast('已添加到下一首播放', 1500);
       } else if (action === 'playlist') {
         closeTrackActionDrawer();
         openAddToPlaylistDrawer(track);
@@ -3138,9 +3163,27 @@
         downloadTrack(track);
         return;
       } else if (action === 'artist') {
-        showView('search');
+        var artistQuery = String(track.artist || '').trim();
+        if (artistQuery) {
+          var si = getSearchInput();
+          if (si) si.value = artistQuery;
+          var hi = getHomeSearchInput();
+          if (hi) hi.value = artistQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       } else if (action === 'album' && track.album) {
-        showView('search');
+        var albumQuery = String(track.album).trim();
+        if (albumQuery) {
+          var si2 = getSearchInput();
+          if (si2) si2.value = albumQuery;
+          var hi2 = getHomeSearchInput();
+          if (hi2) hi2.value = albumQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       }
       closeTrackActionDrawer();
     }
@@ -3621,6 +3664,16 @@
             openDiscoverCard(marketItems.find(function(item) { return item.id === id; }));
           });
         });
+        var loadMoreEl = document.getElementById('market-load-more');
+        if (loadMoreEl && 'IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting && marketHasMore && !marketLoading) {
+              observer.disconnect();
+              renderIndexDiscoverPlaylists();
+            }
+          }, { root: document.querySelector('.content'), threshold: 0.1 });
+          observer.observe(loadMoreEl);
+        }
       } catch (error) {
         rail.innerHTML = '<div class="discover-market-error">发现页数据加载失败，请稍后刷新重试。</div>';
       } finally {
@@ -3967,10 +4020,20 @@
         '&id=' + encodeURIComponent(track.urlId) + '&br=192';
       try {
         var payload = await fetchGdMusicJson(url);
-        return payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
-      } catch (error) {
-        return '';
+        var resolved = payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
+        if (resolved) return resolved;
+      } catch (error) { /* fallthrough */ }
+      if (track.source === 'kuwo' && track.urlId) {
+        try {
+          var kuwoUrl = ljyytApiBase + '/api/kuwo-url?rid=' + encodeURIComponent(track.urlId);
+          var resp = await fetch(kuwoUrl);
+          if (resp.ok) {
+            var data = await resp.json();
+            if (data && data.url) return String(data.url).replace(/^http:\/\//i, 'https://');
+          }
+        } catch (e) { /* ignore */ }
       }
+      return '';
     }
     function filterLocalSearch(query, tracks) {
       var needle = String(query || '').trim().toLowerCase();
