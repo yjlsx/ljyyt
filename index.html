@@ -1541,7 +1541,7 @@
     <div class="search-shell" id="search-shell">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3m1.3-5.2a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input class="search-input" id="home-search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" oninput="syncHomeSearchInput()" onkeydown="handleHomeSearchKey(event)">
+        <input class="search-input" id="home-search-input" type="search" placeholder="搜索音乐、歌手或专辑..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="search" onclick="handleHomeSearchClick()" oninput="syncHomeSearchInput()" onkeydown="handleHomeSearchKey(event)">
         <button class="search-clear" id="home-search-clear" type="button" aria-label="清空搜索" onclick="clearHomeSearch(event, 'home')"><span data-icon="close"></span></button>
         <div class="provider-wrap">
           <button class="provider" type="button" id="provider-button" onclick="toggleProvider(event)"><span id="provider-label">聚合搜索</span><svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
@@ -2262,6 +2262,16 @@
     function getHomeSearchInput() {
       return document.getElementById('home-search-input');
     }
+    function handleHomeSearchClick() {
+      var homeInput = getHomeSearchInput();
+      var searchInput = getSearchInput();
+      showView('search');
+      if (searchInput && homeInput) searchInput.value = homeInput.value || '';
+      if (searchInput) searchInput.focus();
+      if (!String(searchInput && searchInput.value || '').trim()) {
+        renderSearchHistory(true);
+      }
+    }
     function syncHomeSearchInput() {
       var homeInput = getHomeSearchInput();
       var searchInput = getSearchInput();
@@ -2582,19 +2592,26 @@
       updateMiniProgress(0);
     }
     function setCurrentTrack(track) {
+      var prevSrc = currentTrack && currentTrack.src;
       currentTrack = {
         title: track.title || '未知歌曲',
         artist: track.artist || '未知歌手',
         cover: track.cover || DEFAULT_COVER,
         coverApi: track.coverApi || '',
         src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
-        duration: track.duration || currentTrack.duration,
+        duration: track.duration || (currentTrack && currentTrack.duration),
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || '丽江曲库',
         urlId: track.urlId || track.url_id || track.id || '',
         lyric_id: track.lyric_id || track.id || '',
         id: track.id || track.urlId || track.url_id || track.src || track.title
       };
+      if (!currentTrack.src && prevSrc) {
+        _isResolvingUrl = true;
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        _isResolvingUrl = false;
+      }
       if (!playQueue.length) setQueue([currentTrack], 0);
       updateTrackUi(currentTrack);
       updateLikeButton();
@@ -2657,13 +2674,17 @@
     }
     var _playRetryCount = 0;
     var _isResolvingUrl = false;
+    var _playRequestId = 0;
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
+      var requestId = ++_playRequestId;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
       _isResolvingUrl = true;
-      var playableUrl = await ensurePlayableTrackUrl(currentTrack);
+      var trackToPlay = currentTrack;
+      var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
       _isResolvingUrl = false;
+      if (requestId !== _playRequestId) return;
       if (playableUrl && audioPlayer.src !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
@@ -2679,11 +2700,13 @@
           restoredPlaybackTime = 0;
         }
         await audioPlayer.play();
+        if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState(true);
       } catch (error) {
+        if (requestId !== _playRequestId) return;
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
@@ -3088,6 +3111,7 @@
         });
       });
     }
+    var _coverResolveId = 0;
     function renderSearchRows(tracks, sourceLabel) {
       var container = document.getElementById('search-results');
       if (!container) return;
@@ -3122,6 +3146,33 @@
           playCurrentTrack();
         });
       });
+      resolveSearchCovers(tracks, container);
+    }
+    function resolveSearchCovers(tracks, container) {
+      var batchId = ++_coverResolveId;
+      var pending = tracks.filter(function(t) { return t.coverApi && (!t.cover || t.cover === DEFAULT_COVER); });
+      if (!pending.length) return;
+      var BATCH = 5;
+      var idx = 0;
+      function nextBatch() {
+        if (batchId !== _coverResolveId) return;
+        var slice = pending.slice(idx, idx + BATCH);
+        if (!slice.length) return;
+        idx += BATCH;
+        Promise.all(slice.map(function(track) {
+          return resolveExternalCover(track).then(function() {
+            if (batchId !== _coverResolveId) return;
+            var trackIdx = tracks.indexOf(track);
+            if (trackIdx < 0) return;
+            var row = container.querySelector('.track[data-index="' + trackIdx + '"]');
+            if (row && track.cover && track.cover !== DEFAULT_COVER) {
+              var img = row.querySelector('img');
+              if (img) img.src = track.cover;
+            }
+          });
+        })).then(nextBatch);
+      }
+      nextBatch();
     }
     async function ensureSearchVideos() {
       if (searchVideoCache.length) return searchVideoCache;
@@ -3908,6 +3959,8 @@
         showView('search');
         return;
       }
+      setQueue(favoriteTracks, 0);
+      queueIndex = 0;
       setCurrentTrack(favoriteTracks[0]);
       openFullPlayer();
       playCurrentTrack();
@@ -4843,9 +4896,16 @@
     document.querySelectorAll('.source-option').forEach((option) => {
       option.addEventListener('click', (event) => {
         event.stopPropagation();
+        if (option.disabled) return;
         syncProviderSelection(option.dataset.provider);
         showView('search');
-        renderIndexDiscoverPlaylists();
+        var searchInput = getSearchInput();
+        var query = String(searchInput && searchInput.value || '').trim();
+        if (query) {
+          performSearch({ remember: false });
+        } else {
+          renderIndexDiscoverPlaylists();
+        }
       });
     });
     document.addEventListener('click', () => {
