@@ -3931,6 +3931,8 @@
         showView('search');
         return;
       }
+      setQueue(favoriteTracks, 0);
+      queueIndex = 0;
       setCurrentTrack(favoriteTracks[0]);
       openFullPlayer();
       playCurrentTrack();
@@ -4866,9 +4868,16 @@
     document.querySelectorAll('.source-option').forEach((option) => {
       option.addEventListener('click', (event) => {
         event.stopPropagation();
+        if (option.disabled) return;
         syncProviderSelection(option.dataset.provider);
         showView('search');
-        renderIndexDiscoverPlaylists();
+        var searchInput = getSearchInput();
+        var query = String(searchInput && searchInput.value || '').trim();
+        if (query) {
+          performSearch({ remember: false });
+        } else {
+          renderIndexDiscoverPlaylists();
+        }
       });
     });
     document.addEventListener('click', () => {
