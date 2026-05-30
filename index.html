@@ -985,6 +985,7 @@
     .vp-progress {
       width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25);
       cursor: pointer; position: relative; transition: height .12s;
+      padding: 8px 0; margin: -8px 0; background-clip: content-box;
     }
     .vp-progress:hover { height: 6px; }
     .vp-progress-bar {
@@ -2972,15 +2973,18 @@
     }
     function clearCurrentQueue(event) {
       if (event) event.stopPropagation();
-      if (queueDrawerTab === 'history') {
-        historyTracks = [];
-        writeStoredList('ljyyt_otter_history', historyTracks);
-      } else {
-        playQueue = currentTrack ? [currentTrack] : [];
-        queueIndex = 0;
-      }
-      renderQueue();
-      renderHistory();
+      var msg = queueDrawerTab === 'history' ? '确定清空播放历史吗？' : '确定清空播放列表吗？';
+      showConfirm(msg, function() {
+        if (queueDrawerTab === 'history') {
+          historyTracks = [];
+          writeStoredList('ljyyt_otter_history', historyTracks);
+        } else {
+          playQueue = currentTrack ? [currentTrack] : [];
+          queueIndex = 0;
+        }
+        renderQueue();
+        renderHistory();
+      });
     }
     function reshuffleQueue(event) {
       if (event) event.stopPropagation();
@@ -5209,11 +5213,11 @@
       wrap.addEventListener('mousemove', scheduleHide);
       wrap.addEventListener('touchstart', function() { if (wrap.classList.contains('hide-controls')) { scheduleHide(); } }, { passive: true });
       wrap.addEventListener('click', function(e) {
-        if (e.target.closest('button, input, .vp-progress')) return;
+        if (e.target.closest('button, input, .vp-progress, .vp-controls')) return;
         if (vid.paused) { vid.play(); } else { vid.pause(); }
       });
       wrap.addEventListener('dblclick', function(e) {
-        if (e.target.closest('button, input, .vp-progress')) return;
+        if (e.target.closest('button, input, .vp-progress, .vp-controls')) return;
         if (document.fullscreenElement) document.exitFullscreen(); else wrap.requestFullscreen().catch(function() {});
       });
       vid.addEventListener('play', function() {
