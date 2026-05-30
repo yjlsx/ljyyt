@@ -1550,7 +1550,7 @@
             <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
-            <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>曲库覆盖较广</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="酷我音乐" disabled style="opacity:0.5"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>播放接口异常，暂不可用</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="B站"><span class="source-option-icon" data-icon="video"></span><span><strong>B站</strong><small>用户上传音乐内容</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Netease"><span class="source-option-icon" data-icon="refresh"></span><span><strong>Netease</strong><small>网易云备用接口</small></span><span class="source-option-check" data-icon="check"></span></button>
@@ -1773,13 +1773,13 @@
         <div class="settings-scroll">
           <div class="setting-group"><h3>常用设置</h3>
             <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" data-setting="smartSource" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
-            <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、酷我音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
+            <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="aggregate-source-panel" id="aggregate-source-panel">
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
               <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span></label>
               <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span><p>网易云音乐</p><small>音源稳定，小众资源多</small></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span><p>Migu</p><small>咪咕音乐官方</small></span></label>
-              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>版权丰富，但稳定性一般</small></span></label>
+              <label class="aggregate-source-option" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>播放接口异常，暂时不可用</small></span></label>
               <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span><p>Netease</p><small>网易云官方，稳定高速</small></span></label>
             </div>
@@ -1976,7 +1976,7 @@
     let currentMarketPlaylistMeta = null;
     let searchVideoCache = [];
     let aggregatedSources = readStoredList('ljyyt_otter_aggregated_sources');
-    if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
+    if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'bilibili'];
     let lyricsRequestId = 0;
     let currentLyrics = { lines: [], synced: [], source: 'empty', activeIndex: -1 };
     let playQueue = [];
@@ -2170,7 +2170,7 @@
         if (label.includes(pair[0])) add(pair[1]);
       });
       (aggregatedSources || []).forEach(add);
-      ['joox', 'kuwo', 'migu', 'bilibili'].forEach(add);
+      ['joox', 'bilibili', 'migu'].forEach(add);
       return candidates.concat(deferred);
     }
     function isTrackMatchCandidate(target, candidate) {
