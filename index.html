@@ -1489,11 +1489,12 @@
       .queue-drawer {
         left: auto;
         right: 12px;
-        top: 150px;
+        top: 60px;
         bottom: 140px;
         height: auto;
         max-height: none;
         transform: translateX(110%);
+        transition: transform .28s cubic-bezier(.4, 0, .2, 1);
         width: min(calc(100% - 24px), 380px);
         border-radius: 20px;
         box-shadow: 0 8px 40px rgba(0,0,0,.18);
@@ -1905,29 +1906,34 @@
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
     const SEARCH_RESULT_LIMIT = 30;
+    var _isLocalDev = /^(localhost|127\.)/.test(location.hostname);
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
         var suffix = url.slice(gdMusicApiBase.length);
         gdMusicFallbackBases.forEach(function(base) { urls.push(base + suffix); });
       }
-      for (var i = 0; i < urls.length; i++) {
-        try {
-          var fetchSignal = signal;
-          if (!fetchSignal) {
-            var tc = new AbortController();
-            setTimeout(function() { tc.abort(); }, 8000);
-            fetchSignal = tc.signal;
-          }
-          var response = await fetch(urls[i], { signal: fetchSignal });
-          if (!response.ok) continue;
-          return await response.json();
-        } catch (error) {
-          if (error && error.name === 'AbortError') { if (signal && signal.aborted) throw error; continue; }
-          console.warn('fetchGdMusicJson: endpoint failed', urls[i], error);
-        }
+      if (!_isLocalDev && urls[0].indexOf(gdMusicApiBase) === 0) urls.shift();
+      if (!urls.length) throw new Error('gd music request failed');
+      if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      var ac = new AbortController();
+      var merged = ac.signal;
+      if (signal) signal.addEventListener('abort', function() { ac.abort(); });
+      var timer = setTimeout(function() { ac.abort(); }, 10000);
+      try {
+        var result = await Promise.any(urls.map(function(u) {
+          return fetch(u, { signal: merged }).then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+          });
+        }));
+        clearTimeout(timer);
+        return result;
+      } catch (aggErr) {
+        clearTimeout(timer);
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        throw new Error('gd music request failed');
       }
-      throw new Error('gd music request failed');
     }
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
@@ -2675,12 +2681,45 @@
     var _playRetryCount = 0;
     var _isResolvingUrl = false;
     var _playRequestId = 0;
+    var _audioUnlocked = false;
+    function unlockAudioContext() {
+      if (_audioUnlocked) return;
+      try {
+        audioPlayer.volume = audioPlayer.volume;
+        audioPlayer.play().then(function() { audioPlayer.pause(); }).catch(function() {});
+        _audioUnlocked = true;
+      } catch (e) {}
+    }
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
       var requestId = ++_playRequestId;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
+      unlockAudioContext();
+      if (currentTrack.src) {
+        if (audioPlayer.src !== currentTrack.src) {
+          audioPlayer.src = currentTrack.src;
+          audioPlayer.load();
+        }
+        try {
+          if (restoredPlaybackTime && audioPlayer.readyState > 0) {
+            audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
+            restoredPlaybackTime = 0;
+          }
+          await audioPlayer.play();
+          if (requestId !== _playRequestId) return;
+          _playRetryCount = 0;
+          addHistory(currentTrack);
+          setPlayIcons(true);
+          savePlaybackState(true);
+          return;
+        } catch (e) {
+          if (requestId !== _playRequestId) return;
+        }
+      }
       _isResolvingUrl = true;
+      setPlayIcons(true);
+      showToast('正在解析播放地址...', 2000);
       var trackToPlay = currentTrack;
       var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
       _isResolvingUrl = false;
@@ -2794,6 +2833,14 @@
       scrollCurrentQueueItemIntoView();
     }
     function setQueueDrawerOpen(open) {
+      var scrollbarW = window.innerWidth - document.documentElement.clientWidth;
+      if (open && scrollbarW > 0) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = scrollbarW + 'px';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }
       document.getElementById('queue-drawer')?.classList.toggle('open', !!open);
       const scrim = document.getElementById('queue-scrim');
       scrim?.classList.toggle('open', !!open);
@@ -3147,6 +3194,28 @@
         });
       });
       resolveSearchCovers(tracks, container);
+      preResolveSearchUrls(tracks);
+    }
+    var _urlResolveId = 0;
+    function preResolveSearchUrls(tracks) {
+      var batchId = ++_urlResolveId;
+      var pending = tracks.filter(function(t) { return !t.src && t.source && t.source !== 'local' && t.urlId; });
+      if (!pending.length) return;
+      var PRE_BATCH = 3;
+      var idx = 0;
+      function nextBatch() {
+        if (batchId !== _urlResolveId) return;
+        var slice = pending.slice(idx, idx + PRE_BATCH);
+        if (!slice.length) return;
+        idx += PRE_BATCH;
+        Promise.all(slice.map(function(track) {
+          return resolveExternalTrackUrl(track).then(function(url) {
+            if (batchId !== _urlResolveId) return;
+            if (url) track.src = url;
+          }).catch(function() {});
+        })).then(nextBatch);
+      }
+      nextBatch();
     }
     function resolveSearchCovers(tracks, container) {
       var batchId = ++_coverResolveId;
