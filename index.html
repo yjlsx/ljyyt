@@ -2718,6 +2718,7 @@
       }
       _isResolvingUrl = true;
       setPlayIcons(true);
+      showToast('正在解析播放地址...', 2000);
       var trackToPlay = currentTrack;
       var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
       _isResolvingUrl = false;
@@ -3184,6 +3185,28 @@
         });
       });
       resolveSearchCovers(tracks, container);
+      preResolveSearchUrls(tracks);
+    }
+    var _urlResolveId = 0;
+    function preResolveSearchUrls(tracks) {
+      var batchId = ++_urlResolveId;
+      var pending = tracks.filter(function(t) { return !t.src && t.source && t.source !== 'local' && t.urlId; });
+      if (!pending.length) return;
+      var PRE_BATCH = 3;
+      var idx = 0;
+      function nextBatch() {
+        if (batchId !== _urlResolveId) return;
+        var slice = pending.slice(idx, idx + PRE_BATCH);
+        if (!slice.length) return;
+        idx += PRE_BATCH;
+        Promise.all(slice.map(function(track) {
+          return resolveExternalTrackUrl(track).then(function(url) {
+            if (batchId !== _urlResolveId) return;
+            if (url) track.src = url;
+          }).catch(function() {});
+        })).then(nextBatch);
+      }
+      nextBatch();
     }
     function resolveSearchCovers(tracks, container) {
       var batchId = ++_coverResolveId;
