@@ -1414,6 +1414,13 @@
       .fullscreen .full-main.show-lyrics { gap: 56px; padding: 20px 64px; }
       .fullscreen .full-main.show-lyrics .full-cover { width: min(30vw, 340px); }
     }
+    .ljyyt-toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,.82); color: #fff; padding: 10px 20px; border-radius: 999px;
+      font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
+      pointer-events: none; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -1805,6 +1812,19 @@
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
     }
+    function showToast(message, duration) {
+      var existing = document.querySelector('.ljyyt-toast');
+      if (existing) existing.remove();
+      var el = document.createElement('div');
+      el.className = 'ljyyt-toast';
+      el.textContent = message;
+      document.body.appendChild(el);
+      requestAnimationFrame(function() { el.classList.add('show'); });
+      setTimeout(function() {
+        el.classList.remove('show');
+        setTimeout(function() { el.remove(); }, 300);
+      }, duration || 3000);
+    }
     function hydrateIcons(root) {
       (root || document).querySelectorAll('[data-icon]').forEach(function(node) {
         var name = node.getAttribute('data-icon');
@@ -1850,7 +1870,7 @@
     let queueDrawerTab = 'queue';
     let volumeStep = 3;
     let blurredBackground = true;
-    let playModeIndex = 0;
+    let playModeIndex = Number(localStorage.getItem('ljyyt_play_mode_index') || 0) % 3;
     let lastLikeTapAt = 0;
     const playModes = [
       { label: '列表循环', value: 'list' },
@@ -2087,15 +2107,19 @@
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
       queueIndex = Math.max(0, Math.min(Number(index) || 0, playQueue.length - 1));
     }
-    function savePlaybackState() {
+    var _lastSaveTime = 0;
+    function savePlaybackState(force) {
       if (!currentTrack) return;
+      var now = Date.now();
+      if (!force && now - _lastSaveTime < 5000) return;
+      _lastSaveTime = now;
       writeStoredObject('ljyyt_otter_playback_state', {
         track: currentTrack,
         queue: playQueue,
         queueIndex: queueIndex,
         currentTrackIndex: currentTrackIndex,
         currentTime: audioPlayer.currentTime || 0,
-        timestamp: Date.now()
+        timestamp: now
       });
     }
     function restorePlaybackState() {
@@ -2460,7 +2484,7 @@
       if (currentTrack.coverApi && (!currentTrack.cover || currentTrack.cover === DEFAULT_COVER)) {
         resolveExternalCover(currentTrack).then(function() { updateTrackUi(currentTrack); });
       }
-      savePlaybackState();
+      savePlaybackState(true);
       if (audioPlayer.src !== currentTrack.src) {
         audioPlayer.src = currentTrack.src;
         audioPlayer.load();
@@ -2524,7 +2548,8 @@
       }
       if (!playableUrl) {
         setPlayIcons(false);
-        alert('当前音源暂时无法播放，请换一个音源或稍后重试。');
+        showToast('当前音源暂时无法播放，正在尝试下一首...');
+        setTimeout(function() { nextTrack(); }, 2000);
         return;
       }
       try {
@@ -2536,7 +2561,7 @@
         _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);
-        savePlaybackState();
+        savePlaybackState(true);
       } catch (error) {
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
@@ -2582,7 +2607,7 @@
         return;
       }
       if (mode === 'shuffle') {
-        const tracks = await ensureLibraryTracks();
+        const tracks = playQueue.length > 1 ? playQueue : await ensureLibraryTracks();
         if (!tracks.length) return;
         const nextIndex = tracks.length > 1
           ? (queueIndex + 1 + Math.floor(Math.random() * (tracks.length - 1))) % tracks.length
@@ -2599,6 +2624,7 @@
     function cyclePlayMode(event) {
       if (event) event.stopPropagation();
       playModeIndex = (playModeIndex + 1) % playModes.length;
+      localStorage.setItem('ljyyt_play_mode_index', playModeIndex);
       document.getElementById('play-mode-label').textContent = playModes[playModeIndex].label;
       updateControlIcons();
     }
@@ -3561,7 +3587,11 @@
       });
     }
     function addHistory(track) {
-      historyTracks = [track, ...historyTracks.filter((item) => item.src !== track.src)].slice(0, 20);
+      if (!track || !track.title) return;
+      historyTracks = [track, ...historyTracks.filter(function(item) {
+        if (track.src && item.src && item.src === track.src) return false;
+        return !isSameTrack(item, track);
+      })].slice(0, 50);
       writeStoredList('ljyyt_otter_history', historyTracks);
       renderHistory();
     }
@@ -4494,10 +4524,15 @@
       }
       savePlaybackState();
     });
-    window.addEventListener('beforeunload', savePlaybackState);
+    window.addEventListener('beforeunload', function() { savePlaybackState(true); });
     audioPlayer.addEventListener('pause', () => setPlayIcons(false));
     audioPlayer.addEventListener('play', () => setPlayIcons(true));
     audioPlayer.addEventListener('ended', handleTrackEnded);
+    audioPlayer.addEventListener('error', function() {
+      if (!currentTrack || !audioPlayer.src) return;
+      console.warn('Audio error: auto-skipping to next track');
+      setTimeout(function() { nextTrack(); }, 1500);
+    });
     document.querySelectorAll('img').forEach((image) => {
       image.alt = '';
       image.onerror = function() {
@@ -4511,6 +4546,7 @@
     hydrateIcons(document);
     initSeekDragging();
     updateControlIcons();
+    document.getElementById('play-mode-label').textContent = playModes[playModeIndex].label;
     setPlayIcons(!audioPlayer.paused);
     initSettings();
     updateAggregateSourceUI();
@@ -4521,6 +4557,62 @@
     hideSearchHistory();
     updateNeteaseLoginSetting();
     applyInitialRoute();
+
+    // MediaSession API - system media controls
+    function updateMediaSession() {
+      if (!('mediaSession' in navigator) || !currentTrack) return;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentTrack.title || '未知歌曲',
+        artist: currentTrack.artist || '未知歌手',
+        artwork: currentTrack.cover && currentTrack.cover !== DEFAULT_COVER
+          ? [{ src: currentTrack.cover, sizes: '512x512', type: 'image/jpeg' }]
+          : []
+      });
+    }
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', function() { playCurrentTrack(); });
+      navigator.mediaSession.setActionHandler('pause', function() { pauseCurrentTrack(); });
+      navigator.mediaSession.setActionHandler('previoustrack', function() { previousTrack(); });
+      navigator.mediaSession.setActionHandler('nexttrack', function() { nextTrack(); });
+      navigator.mediaSession.setActionHandler('seekto', function(details) {
+        if (details.seekTime != null) audioPlayer.currentTime = details.seekTime;
+      });
+    }
+    var _origSetCurrentTrack = setCurrentTrack;
+    setCurrentTrack = function(track) {
+      _origSetCurrentTrack(track);
+      updateMediaSession();
+    };
+    updateMediaSession();
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+      var tag = (event.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || event.target.isContentEditable) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      switch (event.code) {
+        case 'Space':
+          event.preventDefault();
+          toggleAudio();
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
+          previousTrack();
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          nextTrack();
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          audioPlayer.volume = Math.min(1, audioPlayer.volume + 0.05);
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          audioPlayer.volume = Math.max(0, audioPlayer.volume - 0.05);
+          break;
+      }
+    });
   </script>
 </body>
 </html>
