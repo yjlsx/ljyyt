@@ -656,6 +656,21 @@
     }
     .discover-my-more:hover { background: var(--muted); }
     .discover-my-more .line-icon { width: 18px; height: 18px; }
+    .discover-mine-tabs {
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 4px 14px; border-bottom: 1px solid var(--border); margin-bottom: 14px;
+    }
+    .discover-mine-tab {
+      font-size: 15px; font-weight: 500; color: var(--muted-foreground);
+      background: none; border: none; padding: 6px 0; cursor: pointer;
+      position: relative; transition: color .2s;
+    }
+    .discover-mine-tab.active { color: var(--foreground); font-weight: 700; }
+    .discover-mine-tab.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%;
+      height: 3px; border-radius: 2px; background: var(--primary);
+    }
+    .discover-mine-tab:hover { color: var(--foreground); }
     .discover-featured-tabs {
       display: flex; align-items: center; gap: 24px;
       padding: 0 4px 14px;
@@ -3131,6 +3146,9 @@
     let marketLoading = false;
     let marketItems = [];
     const marketCache = Object.create(null);
+    let activeMineTab = 'recommend';
+    let mineDataCache = { recommend: null, created: null, subscribed: null };
+    let mineDataLoading = false;
 
     function normalizeMarketPlaylist(item) {
       item = item || {};
@@ -3368,27 +3386,147 @@
     }
 
     function renderDiscoverMyPlaylists(rail) {
-      var header = '<div class="discover-my-header"><h3>我的歌单</h3><div class="discover-my-actions">' +
-        '<button class="discover-my-btn" onclick="openPlaylistImportDrawer(event)">' + iconHtml('link') + ' 导入</button>' +
-        '<button class="discover-my-btn" onclick="openCreatePlaylistDrawer(event)">' + iconHtml('plus') + ' 新建</button></div></div>';
-      if (!userPlaylists.length) {
-        rail.innerHTML = header + '<div class="discover-my-empty"><p>还没有创建歌单</p><p class="sub">点击"新建"创建歌单，或通过"导入"添加外部歌单</p></div>';
+      var login = getStoredNeteaseLogin();
+      var isLoggedIn = !!(login && login.cookie && login.profile);
+      var MINE_TABS = [
+        { id: 'recommend', name: '推荐' },
+        { id: 'created', name: '创建' },
+        { id: 'subscribed', name: '收藏' },
+        { id: 'local', name: '本地' }
+      ];
+      var tabsHtml = '<div class="discover-mine-tabs">' + MINE_TABS.map(function(tab) {
+        return '<button class="discover-mine-tab' + (activeMineTab === tab.id ? ' active' : '') + '" data-mine-tab="' + tab.id + '">' + tab.name + '</button>';
+      }).join('') + '</div>';
+
+      if (activeMineTab === 'local') {
+        var header = '<div class="discover-my-header"><h3>本地歌单</h3><div class="discover-my-actions">' +
+          '<button class="discover-my-btn" onclick="openPlaylistImportDrawer(event)">' + iconHtml('link') + ' 导入</button>' +
+          '<button class="discover-my-btn" onclick="openCreatePlaylistDrawer(event)">' + iconHtml('plus') + ' 新建</button></div></div>';
+        if (!userPlaylists.length) {
+          rail.innerHTML = tabsHtml + header + '<div class="discover-my-empty"><p>还没有创建歌单</p><p class="sub">点击"新建"创建歌单，或通过"导入"添加外部歌单</p></div>';
+        } else {
+          rail.innerHTML = tabsHtml + header + '<div class="discover-my-list">' + userPlaylists.map(function(playlist, index) {
+            var count = Array.isArray(playlist.tracks) ? playlist.tracks.length : (playlist.count || 0);
+            return '<div class="discover-my-item" data-pl-index="' + index + '">' +
+              '<div class="discover-my-cover">' + iconHtml('music') + '</div>' +
+              '<div class="discover-my-info"><p class="discover-my-name">' + escapeMarkup(playlist.name || '未命名歌单') + '</p>' +
+              '<span class="discover-my-meta">' + count + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</span></div>' +
+              '<button class="discover-my-more" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="更多操作">' + iconHtml('more') + '</button></div>';
+          }).join('') + '</div>';
+        }
         hydrateIcons(rail);
+        bindMineTabEvents(rail);
+        rail.querySelectorAll('[data-pl-index]').forEach(function(node) {
+          node.addEventListener('click', function() {
+            var idx = parseInt(node.dataset.plIndex, 10);
+            if (!isNaN(idx)) showUserPlaylistDetail(idx);
+          });
+        });
         return;
       }
-      rail.innerHTML = header + '<div class="discover-my-list">' + userPlaylists.map(function(playlist, index) {
-        var count = Array.isArray(playlist.tracks) ? playlist.tracks.length : (playlist.count || 0);
-        return '<div class="discover-my-item" data-pl-index="' + index + '">' +
-          '<div class="discover-my-cover">' + iconHtml('music') + '</div>' +
-          '<div class="discover-my-info"><p class="discover-my-name">' + escapeMarkup(playlist.name || '未命名歌单') + '</p>' +
-          '<span class="discover-my-meta">' + count + ' 首 · ' + formatPlaylistDate(playlist.createdAt) + '</span></div>' +
-          '<button class="discover-my-more" onclick="event.stopPropagation(); openPlaylistManageDrawer(' + index + ')" aria-label="更多操作">' + iconHtml('more') + '</button></div>';
+
+      if (!isLoggedIn) {
+        rail.innerHTML = tabsHtml + '<div class="discover-my-empty"><p>请先登录网易云账号</p><p class="sub">登录后可查看推荐歌单、创建的歌单和收藏</p>' +
+          '<button class="discover-my-btn" style="margin-top:12px" onclick="openSettingDrawer(\'netease\')">' + iconHtml('user') + ' 去登录</button></div>';
+        hydrateIcons(rail);
+        bindMineTabEvents(rail);
+        return;
+      }
+
+      var cached = mineDataCache[activeMineTab];
+      if (cached) {
+        renderMinePlaylistGrid(rail, tabsHtml, cached);
+        return;
+      }
+
+      rail.innerHTML = tabsHtml + '<div class="discover-market-loading"><span data-icon="spinner"></span><span>加载中...</span></div>';
+      hydrateIcons(rail);
+      bindMineTabEvents(rail);
+
+      if (mineDataLoading) return;
+      mineDataLoading = true;
+      fetchMineTabData(login).then(function(list) {
+        mineDataCache[activeMineTab] = list;
+        if (activeDiscoverCategory === 'mine') {
+          var currentRail = document.getElementById('index-discover-playlists');
+          if (currentRail) renderMinePlaylistGrid(currentRail, tabsHtml, list);
+        }
+      }).catch(function() {
+        var currentRail = document.getElementById('index-discover-playlists');
+        if (currentRail && activeDiscoverCategory === 'mine') {
+          currentRail.innerHTML = tabsHtml + '<div class="discover-my-empty"><p>加载失败</p><p class="sub">请检查网络后重试</p>' +
+            '<button class="discover-my-btn" style="margin-top:12px" onclick="mineDataCache[\'' + activeMineTab + '\']=null; renderIndexDiscoverPlaylists()">重试</button></div>';
+          hydrateIcons(currentRail);
+          bindMineTabEvents(currentRail);
+        }
+      }).finally(function() { mineDataLoading = false; });
+    }
+
+    function bindMineTabEvents(rail) {
+      rail.querySelectorAll('[data-mine-tab]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          activeMineTab = btn.dataset.mineTab;
+          renderIndexDiscoverPlaylists({ reset: false });
+        });
+      });
+    }
+
+    async function fetchMineTabData(login) {
+      var cookie = login.cookie;
+      var userId = login.profile.userId || login.profile.id || '';
+      if (activeMineTab === 'recommend') {
+        var payload = await fetchOtterNetease('/recommend', { cookie: cookie });
+        var result = payload.result || (payload.data && payload.data.result) || payload.recommend || [];
+        return (Array.isArray(result) ? result : []).map(function(item) {
+          return normalizeMarketPlaylist({
+            id: item.id || item.playlistId,
+            name: item.name || item.title,
+            coverUrl: item.picUrl || item.coverImgUrl || item.cover,
+            playCount: item.playcount || item.playCount || 0,
+            trackCount: item.trackCount || item.songCount || 0
+          });
+        }).filter(function(p) { return p.id; });
+      }
+      var userPayload = await fetchOtterNetease('/user-playlists', { userId: String(userId), cookie: cookie });
+      var playlists = userPayload.playlist || (userPayload.data && userPayload.data.playlist) || [];
+      var all = playlists.map(function(item) {
+        return {
+          normalized: normalizeMarketPlaylist({
+            id: item.id,
+            name: item.name,
+            coverUrl: item.coverImgUrl || item.picUrl,
+            playCount: item.playCount || item.playcount || 0,
+            trackCount: item.trackCount || 0
+          }),
+          isOwner: String(item.userId || item.creator && item.creator.userId || '') === String(userId)
+        };
+      });
+      var created = all.filter(function(p) { return p.isOwner; }).map(function(p) { return p.normalized; });
+      var subscribed = all.filter(function(p) { return !p.isOwner; }).map(function(p) { return p.normalized; });
+      mineDataCache.created = created;
+      mineDataCache.subscribed = subscribed;
+      return activeMineTab === 'created' ? created : subscribed;
+    }
+
+    function renderMinePlaylistGrid(rail, tabsHtml, list) {
+      if (!list || !list.length) {
+        rail.innerHTML = tabsHtml + '<div class="discover-my-empty"><p>暂无歌单</p></div>';
+        hydrateIcons(rail);
+        bindMineTabEvents(rail);
+        return;
+      }
+      rail.innerHTML = tabsHtml + '<div class="discover-playlist-grid-inner">' + list.map(function(card) {
+        return '<button class="discover-playlist-card" type="button" data-market-id="' + escapeMarkup(card.id) + '">' +
+          '<span class="discover-cover"><img loading="lazy" src="' + escapeMarkup(card.coverUrl || DEFAULT_COVER) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '></span>' +
+          '<strong>' + escapeMarkup(card.name) + '</strong>' +
+        '</button>';
       }).join('') + '</div>';
       hydrateIcons(rail);
-      rail.querySelectorAll('[data-pl-index]').forEach(function(node) {
+      bindMineTabEvents(rail);
+      rail.querySelectorAll('[data-market-id]').forEach(function(node) {
         node.addEventListener('click', function() {
-          var idx = parseInt(node.dataset.plIndex, 10);
-          if (!isNaN(idx)) showUserPlaylistDetail(idx);
+          var id = node.dataset.marketId || '';
+          openDiscoverCard(list.find(function(item) { return item.id === id; }));
         });
       });
     }
@@ -4367,10 +4505,12 @@
     }
     function setNeteaseLoginState(profile, cookie) {
       writeStoredObject('ljyyt_otter_netease_login', { profile, cookie, timestamp: Date.now() });
+      mineDataCache = { recommend: null, created: null, subscribed: null };
       updateNeteaseLoginSetting();
     }
     function clearNeteaseLogin() {
       localStorage.removeItem('ljyyt_otter_netease_login');
+      mineDataCache = { recommend: null, created: null, subscribed: null };
       updateNeteaseLoginSetting();
       renderNeteaseLoginDrawer();
     }
