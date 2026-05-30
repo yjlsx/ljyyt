@@ -2661,6 +2661,12 @@
       const scrim = document.getElementById('queue-scrim');
       scrim?.classList.toggle('open', !!open);
       scrim?.classList.toggle('light', !document.getElementById('full-player')?.classList.contains('open'));
+      if (open) {
+        requestAnimationFrame(function() {
+          var current = document.querySelector('#queue-drawer-list .current-track');
+          if (current) current.scrollIntoView({ block: 'center', behavior: 'instant' });
+        });
+      }
     }
     function closeQueueDrawer(event) {
       if (event) event.stopPropagation();
@@ -2848,7 +2854,7 @@
       var url = await ensurePlayableTrackUrl(track);
       if (!url) {
         if (button) button.textContent = '下载失败，请换音源';
-        alert('当前歌曲地址解析失败，暂时无法下载。');
+        showToast('当前歌曲地址解析失败，暂时无法下载');
         return;
       }
       var link = document.createElement('a');
@@ -2860,6 +2866,7 @@
       link.click();
       link.remove();
       if (button) button.textContent = '已开始下载';
+      showToast('开始下载：' + (track.title || '歌曲'), 2000);
       setTimeout(closeTrackActionDrawer, 500);
     }
     let isSeekingAudio = false;
@@ -2916,6 +2923,7 @@
       writeStoredList('ljyyt_otter_favorites', favoriteTracks);
       updateLikeButton();
       renderFavorites();
+      showToast(exists ? '已取消喜欢' : '已添加到喜欢', 1500);
     }
     async function shareCurrentTrack() {
       const text = currentTrack.title + ' - ' + currentTrack.artist;
@@ -2924,8 +2932,11 @@
           await navigator.share({ title: '丽江音悦台', text });
         } else if (navigator.clipboard) {
           await navigator.clipboard.writeText(text);
+          showToast('已复制歌曲信息到剪贴板');
         }
-      } catch (error) {}
+      } catch (error) {
+        if (error && error.name !== 'AbortError') console.warn('share failed', error);
+      }
     }
     function updateLikeButton() {
       const button = document.querySelector('.like');
@@ -3811,7 +3822,7 @@
           savePlaylists();
           closePlaylistDrawer();
         } catch (error) {
-          alert('导入失败：文件不是可识别的歌单 JSON');
+          showToast('导入失败：文件不是可识别的歌单 JSON');
         }
       };
       reader.readAsText(file);
@@ -4617,11 +4628,24 @@
           break;
         case 'ArrowUp':
           event.preventDefault();
-          audioPlayer.volume = Math.min(1, audioPlayer.volume + 0.05);
+          setSettingsVolume(Math.min(100, (appSettings.volume || 0) + 5));
+          showToast('音量 ' + appSettings.volume + '%', 1200);
           break;
         case 'ArrowDown':
           event.preventDefault();
-          audioPlayer.volume = Math.max(0, audioPlayer.volume - 0.05);
+          setSettingsVolume(Math.max(0, (appSettings.volume || 0) - 5));
+          showToast('音量 ' + appSettings.volume + '%', 1200);
+          break;
+        case 'KeyM':
+          event.preventDefault();
+          if (audioPlayer.volume > 0) {
+            audioPlayer._savedVolume = appSettings.volume;
+            setSettingsVolume(0);
+            showToast('已静音', 1200);
+          } else {
+            setSettingsVolume(audioPlayer._savedVolume || 100);
+            showToast('音量 ' + appSettings.volume + '%', 1200);
+          }
           break;
       }
     });
