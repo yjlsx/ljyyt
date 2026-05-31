@@ -368,6 +368,52 @@
     .source-badge.kuwo { color: #d97706; border-color: rgba(217,119,6,.24); background: rgba(217,119,6,.07); }
     .source-badge.bilibili, .source-badge.migu { color: #ec4899; border-color: rgba(236,72,153,.24); background: rgba(236,72,153,.07); }
     .source-badge.local { color: var(--muted-foreground); border-color: var(--border); background: var(--muted); }
+    .variant-badge {
+      display: inline-flex; align-items: center; gap: 2px; height: 15px; padding: 0 5px;
+      margin-left: 3px; vertical-align: 1px; border-radius: 5px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--muted);
+      font-size: 9px; font-weight: 500; line-height: 1; color: var(--muted-foreground);
+      transition: background .15s, color .15s;
+    }
+    .variant-badge:hover { background: var(--secondary); color: var(--foreground); }
+    .variant-badge .line-icon { width: 10px; height: 10px; }
+    .variant-popover {
+      position: absolute; z-index: 80; min-width: 260px; max-width: 320px;
+      border-radius: 12px; background: var(--card); border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(0,0,0,.12); overflow: hidden;
+    }
+    .variant-popover-header {
+      padding: 8px 12px; font-size: 11px; font-weight: 600;
+      color: var(--muted-foreground); background: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .variant-popover-list { max-height: 240px; overflow-y: auto; padding: 4px; }
+    .variant-popover-item {
+      display: flex; align-items: center; gap: 8px; padding: 8px;
+      border-radius: 8px; cursor: pointer; width: 100%; text-align: left;
+      transition: background .12s;
+    }
+    .variant-popover-item:hover { background: var(--secondary); }
+    .variant-popover-item .source-badge { margin-left: 0; flex-shrink: 0; }
+    .variant-popover-item-info { flex: 1; min-width: 0; }
+    .variant-popover-item-title {
+      font-size: 13px; font-weight: 500; color: var(--foreground);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .variant-popover-item-meta {
+      font-size: 11px; color: var(--muted-foreground); margin-top: 1px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .variant-popover-play {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      display: grid; place-items: center; color: var(--muted-foreground);
+      transition: color .12s, background .12s;
+    }
+    .variant-popover-play:hover { color: var(--primary); background: var(--muted); }
+    .variant-popover-play .line-icon { width: 14px; height: 14px; }
+    .variant-popover-scrim {
+      position: fixed; inset: 0; z-index: 79; background: transparent;
+    }
     .source-tag {
       font-size: 10px; color: var(--primary); padding: 1px 5px;
       border-radius: 4px; background: rgba(54,169,123,.1);
@@ -3327,9 +3373,13 @@
       container.innerHTML = tracks.map(function(track, index) {
         var sourceClass = String(track.source || 'local').replace(/[^a-z0-9_-]/gi, '');
         var badge = '<span class="source-badge ' + escapeMarkup(sourceClass) + '">' + escapeMarkup(track.sourceLabel || getSourceLabel(track.source) || sourceLabel) + '</span>';
+        var variantBadge = '';
+        if (track.variants && track.variants.length) {
+          variantBadge = '<span class="variant-badge" data-variant-index="' + index + '">' + iconHtml('layers') + '+' + track.variants.length + '</span>';
+        }
         return '<div class="track" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
-          '<div class="track-meta"><div class="track-name"><span>' + escapeMarkup(track.title) + '</span>' + badge + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
+          '<div class="track-meta"><div class="track-name"><span>' + escapeMarkup(track.title) + '</span>' + badge + variantBadge + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
           '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
         '</div>';
       }).join('');
@@ -3339,6 +3389,11 @@
           if (event.target.closest('.dots')) {
             event.stopPropagation();
             openTrackActionDrawer(tracks[index]);
+            return;
+          }
+          if (event.target.closest('.variant-badge')) {
+            event.stopPropagation();
+            showVariantPopover(tracks[index], event.target.closest('.variant-badge'));
             return;
           }
           var track = tracks[index];
@@ -4016,13 +4071,6 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
-      var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
-        '&id=' + encodeURIComponent(track.urlId) + '&br=192';
-      try {
-        var payload = await fetchGdMusicJson(url);
-        var resolved = payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
-        if (resolved) return resolved;
-      } catch (error) { /* fallthrough */ }
       if (track.source === 'kuwo' && track.urlId) {
         try {
           var kuwoUrl = ljyytApiBase + '/api/kuwo-url?rid=' + encodeURIComponent(track.urlId);
@@ -4033,6 +4081,13 @@
           }
         } catch (e) { /* ignore */ }
       }
+      var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
+        '&id=' + encodeURIComponent(track.urlId) + '&br=192';
+      try {
+        var payload = await fetchGdMusicJson(url);
+        var resolved = payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
+        if (resolved) return resolved;
+      } catch (error) { /* fallthrough */ }
       return '';
     }
     function filterLocalSearch(query, tracks) {
@@ -4071,11 +4126,72 @@
         var normTitle = normalizeTrackText(track.title).replace(/\s*[（(].*?[）)]\s*/g, '');
         var normArtist = normalizeTrackText(track.artist).replace(/[\s/、，,]+/g, '/');
         var key = normTitle + '|' + normArtist;
-        if (seen[key]) continue;
-        seen[key] = true;
+        if (seen[key]) {
+          var main = seen[key];
+          if (!main.variants) main.variants = [];
+          if (track.source !== main.source) main.variants.push(track);
+          continue;
+        }
+        seen[key] = track;
         result.push(track);
       }
       return result;
+    }
+    function showVariantPopover(track, badgeEl) {
+      closeVariantPopover();
+      if (!track || !track.variants || !track.variants.length) return;
+      var allVersions = [track].concat(track.variants);
+      var rect = badgeEl.getBoundingClientRect();
+      var scrim = document.createElement('div');
+      scrim.className = 'variant-popover-scrim';
+      scrim.addEventListener('click', closeVariantPopover);
+      var popover = document.createElement('div');
+      popover.className = 'variant-popover';
+      popover.innerHTML =
+        '<div class="variant-popover-header">更多版本 (' + allVersions.length + ')</div>' +
+        '<div class="variant-popover-list">' +
+        allVersions.map(function(v, i) {
+          var srcClass = String(v.source || 'local').replace(/[^a-z0-9_-]/gi, '');
+          var srcLabel = escapeMarkup(v.sourceLabel || getSourceLabel(v.source) || '未知');
+          return '<button class="variant-popover-item" data-vi="' + i + '">' +
+            '<span class="source-badge ' + srcClass + '">' + srcLabel + '</span>' +
+            '<div class="variant-popover-item-info">' +
+              '<div class="variant-popover-item-title">' + escapeMarkup(v.title || '未知歌曲') + '</div>' +
+              '<div class="variant-popover-item-meta">' + escapeMarkup(v.artist || '未知歌手') + '</div>' +
+            '</div>' +
+            '<span class="variant-popover-play">' + iconHtml('play') + '</span>' +
+          '</button>';
+        }).join('') +
+        '</div>';
+      popover.querySelectorAll('.variant-popover-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var vi = parseInt(item.dataset.vi, 10);
+          var chosen = allVersions[vi];
+          if (!chosen) return;
+          closeVariantPopover();
+          setCurrentTrack(chosen);
+          openFullPlayer();
+          playCurrentTrack();
+        });
+      });
+      document.body.appendChild(scrim);
+      document.body.appendChild(popover);
+      var popW = popover.offsetWidth;
+      var popH = popover.offsetHeight;
+      var left = rect.left + rect.width / 2 - popW / 2;
+      var top = rect.bottom + 6;
+      if (left + popW > window.innerWidth - 8) left = window.innerWidth - 8 - popW;
+      if (left < 8) left = 8;
+      if (top + popH > window.innerHeight - 8) top = rect.top - popH - 6;
+      popover.style.left = left + 'px';
+      popover.style.top = top + 'px';
+      window._variantPopover = popover;
+      window._variantScrim = scrim;
+    }
+    function closeVariantPopover() {
+      if (window._variantPopover) { window._variantPopover.remove(); window._variantPopover = null; }
+      if (window._variantScrim) { window._variantScrim.remove(); window._variantScrim = null; }
     }
     async function performSearch(options) {
       options = options || {};
