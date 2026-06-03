@@ -46,6 +46,11 @@ const sandbox = {
   DEFAULT_COVER: 'cover.jpg',
   gdMusicApiBase: '/api/gd-music',
   gdMusicFallbackBases: ['https://music-api.example.test/api.php'],
+  _isLocalDev: true,
+  AbortController,
+  DOMException,
+  setTimeout,
+  clearTimeout,
   aggregatedSources: ['local', 'joox', 'netease', 'kuwo'],
   safeCover(value) {
     return value || 'cover.jpg';

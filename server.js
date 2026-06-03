@@ -349,6 +349,25 @@ async function proxyGdMusic(query) {
   });
 }
 
+async function resolveKuwoUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return { url: '', error: 'Missing rid' };
+  const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${encodeURIComponent(rid)}`;
+  try {
+    const text = (await requestText(target, {
+      headers: {
+        'Accept': 'text/plain,*/*',
+        'Referer': 'https://www.kuwo.cn/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      timeout: 12000
+    })).trim();
+    return /^https?:\/\//i.test(text) ? { url: text } : { url: '' };
+  } catch (error) {
+    return { url: '', error: error.message };
+  }
+}
+
 function buildSuccess(source, title, artist, lines, extra) {
   return Object.assign({
     found: true,
@@ -1555,6 +1574,12 @@ const server = http.createServer(async (req, res) => {
         msg: error.message
       });
     }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/kuwo-url') {
+    const payload = await resolveKuwoUrl(requestUrl.searchParams.get('rid') || '');
+    sendJson(res, payload.error === 'Missing rid' ? 400 : 200, payload);
     return;
   }
 

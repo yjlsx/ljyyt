@@ -32,6 +32,11 @@ const sandbox = {
   SEARCH_RESULT_LIMIT: 200,
   gdMusicApiBase: '/api/gd-music',
   gdMusicFallbackBases: [],
+  _isLocalDev: true,
+  AbortController,
+  DOMException,
+  setTimeout,
+  clearTimeout,
   requestedCounts: [],
   safeCover(value) {
     return value || 'cover.jpg';

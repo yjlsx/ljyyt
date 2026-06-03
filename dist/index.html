@@ -3527,14 +3527,24 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
+      if (track.source === 'kuwo' && track.urlId) {
+        try {
+          var kuwoUrl = (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-url?rid=' + encodeURIComponent(track.urlId);
+          var resp = await fetch(kuwoUrl);
+          if (resp.ok) {
+            var data = await resp.json();
+            if (data && data.url) return String(data.url).replace(/^http:\/\//i, 'https://');
+          }
+        } catch (e) { /* ignore */ }
+      }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
         '&id=' + encodeURIComponent(track.urlId) + '&br=192';
       try {
         var payload = await fetchGdMusicJson(url);
-        return payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
-      } catch (error) {
-        return '';
-      }
+        var resolved = payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
+        if (resolved) return resolved;
+      } catch (error) { /* fallthrough */ }
+      return '';
     }
     function filterLocalSearch(query, tracks) {
       var needle = String(query || '').trim().toLowerCase();

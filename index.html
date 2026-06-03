@@ -4073,7 +4073,7 @@
       if (!track || !track.source || !track.urlId) return '';
       if (track.source === 'kuwo' && track.urlId) {
         try {
-          var kuwoUrl = ljyytApiBase + '/api/kuwo-url?rid=' + encodeURIComponent(track.urlId);
+          var kuwoUrl = (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-url?rid=' + encodeURIComponent(track.urlId);
           var resp = await fetch(kuwoUrl);
           if (resp.ok) {
             var data = await resp.json();
