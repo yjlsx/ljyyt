@@ -31,6 +31,10 @@ export default {
         return await withCache(request, ctx, () => handleKuwoUrlRequest(url));
       }
 
+      if (url.pathname === '/api/kuwo-audio') {
+        return await handleKuwoAudioRequest(request, url);
+      }
+
       return jsonResponse({ ok: true, service: 'ljyyt-worker' });
     } catch (error) {
       return jsonResponse(
@@ -670,22 +674,62 @@ async function handleKuwoUrlRequest(url) {
   if (!rid) {
     return jsonResponse({ url: '', error: 'Missing rid' }, 400);
   }
-  const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${rid}`;
+  const text = await resolveKuwoRawUrl(rid);
+  if (text) {
+    return jsonResponse({ url: text });
+  }
+  return jsonResponse({ url: '' });
+}
+
+async function resolveKuwoRawUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return '';
+  const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${encodeURIComponent(rid)}`;
   try {
     const response = await fetch(target, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+      headers: {
+        'Accept': 'text/plain,*/*',
+        'Referer': 'https://www.kuwo.cn/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
     });
     if (!response.ok) {
-      return jsonResponse({ url: '' });
+      return '';
     }
     const text = (await response.text()).trim();
     if (text && /^https?:\/\//i.test(text)) {
-      return jsonResponse({ url: text });
+      return text;
     }
-    return jsonResponse({ url: '' });
+    return '';
   } catch (error) {
-    return jsonResponse({ url: '', error: error instanceof Error ? error.message : 'fetch failed' });
+    return '';
   }
+}
+
+async function handleKuwoAudioRequest(request, url) {
+  const rid = String(url.searchParams.get('rid') || '').trim();
+  const audioUrl = await resolveKuwoRawUrl(rid);
+  if (!audioUrl) {
+    return jsonResponse({ url: '', error: rid ? 'resolve failed' : 'Missing rid' }, rid ? 502 : 400);
+  }
+  const headers = {
+    'Accept': '*/*',
+    'Referer': 'https://www.kuwo.cn/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+  };
+  const range = request.headers.get('Range');
+  if (range) headers.Range = range;
+  const response = await fetch(audioUrl, { headers });
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Cache-Control', 'public, max-age=1800');
+  if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
+  if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: responseHeaders
+  });
 }
 
 function corsHeaders() {

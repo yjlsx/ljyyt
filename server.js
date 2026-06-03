@@ -368,6 +368,48 @@ async function resolveKuwoUrl(rid) {
   }
 }
 
+async function streamKuwoAudio(req, res, rid) {
+  const payload = await resolveKuwoUrl(rid);
+  if (!payload.url) {
+    sendJson(res, payload.error === 'Missing rid' ? 400 : 502, payload);
+    return;
+  }
+
+  const targetUrl = payload.url;
+  const client = targetUrl.startsWith('https://') ? https : http;
+  const headers = {
+    'Accept': '*/*',
+    'Referer': 'https://www.kuwo.cn/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+  };
+  if (req.headers.range) headers.Range = req.headers.range;
+
+  const proxyReq = client.request(targetUrl, { method: 'GET', headers }, (proxyRes) => {
+    const statusCode = Number(proxyRes.statusCode || 200);
+    res.writeHead(statusCode, {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': proxyRes.headers['content-type'] || 'audio/mpeg',
+      'Content-Length': proxyRes.headers['content-length'] || undefined,
+      'Content-Range': proxyRes.headers['content-range'] || undefined,
+      'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes',
+      'Cache-Control': 'public, max-age=1800'
+    });
+    proxyRes.pipe(res);
+  });
+
+  proxyReq.on('error', (error) => {
+    if (!res.headersSent) {
+      sendJson(res, 502, { url: '', error: error.message });
+    } else {
+      res.destroy(error);
+    }
+  });
+  proxyReq.setTimeout(15000, () => {
+    proxyReq.destroy(new Error('request timeout'));
+  });
+  proxyReq.end();
+}
+
 function buildSuccess(source, title, artist, lines, extra) {
   return Object.assign({
     found: true,
@@ -1580,6 +1622,11 @@ const server = http.createServer(async (req, res) => {
   if (requestUrl.pathname === '/api/kuwo-url') {
     const payload = await resolveKuwoUrl(requestUrl.searchParams.get('rid') || '');
     sendJson(res, payload.error === 'Missing rid' ? 400 : 200, payload);
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/kuwo-audio') {
+    streamKuwoAudio(req, res, requestUrl.searchParams.get('rid') || '');
     return;
   }
 
