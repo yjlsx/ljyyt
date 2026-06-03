@@ -2638,6 +2638,7 @@
     }
     var _playRetryCount = 0;
     var _isResolvingUrl = false;
+    var _playRequestId = 0;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -2691,6 +2692,7 @@
             restoredPlaybackTime = 0;
           }
           await audioPlayer.play();
+          if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
           addHistory(currentTrack);
@@ -2706,9 +2708,15 @@
       }
       return false;
     }
+    async function confirmPlaybackStarted(requestId) {
+      await new Promise(function(resolve) { setTimeout(resolve, 900); });
+      if (requestId && requestId !== _playRequestId) return true;
+      return !audioPlayer.paused && !audioPlayer.error;
+    }
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
+      var requestId = ++_playRequestId;
       if (!audioPlayer.src) setCurrentTrack(currentTrack);
       _isResolvingUrl = true;
       var playableUrl = await ensurePlayableTrackUrl(currentTrack);
@@ -2729,6 +2737,7 @@
           restoredPlaybackTime = 0;
         }
         await audioPlayer.play();
+        if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);

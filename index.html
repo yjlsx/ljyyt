@@ -2917,6 +2917,7 @@
             restoredPlaybackTime = 0;
           }
           await audioPlayer.play();
+          if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
           addHistory(currentTrack);
@@ -2940,6 +2941,11 @@
         _audioUnlocked = true;
       } catch (e) {}
     }
+    async function confirmPlaybackStarted(requestId) {
+      await new Promise(function(resolve) { setTimeout(resolve, 900); });
+      if (requestId && requestId !== _playRequestId) return true;
+      return !audioPlayer.paused && !audioPlayer.error;
+    }
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
@@ -2957,6 +2963,7 @@
             restoredPlaybackTime = 0;
           }
           await audioPlayer.play();
+          if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
           addHistory(currentTrack);
@@ -2990,6 +2997,7 @@
           restoredPlaybackTime = 0;
         }
         await audioPlayer.play();
+        if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
         addHistory(currentTrack);
