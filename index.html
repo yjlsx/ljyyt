@@ -2379,9 +2379,12 @@
       if (!artist) return true;
       return !candidateArtist || candidateArtist.includes(artist) || artist.includes(candidateArtist);
     }
-    async function recoverPlayableTrackUrl(track) {
+    async function recoverPlayableTrackUrl(track, options) {
       if (!track || !track.title) return '';
-      var sources = inferTrackSourceCandidates(track);
+      options = options || {};
+      var skipSources = (options.skipSources || []).map(function(source) { return String(source || '').trim(); }).filter(Boolean);
+      var skipUrls = (options.skipUrls || []).map(function(url) { return String(url || '').trim(); }).filter(Boolean);
+      var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
       for (var i = 0; i < sources.length; i++) {
         var source = sources[i];
         try {
@@ -2389,7 +2392,7 @@
           var match = matches.find(function(item) { return isTrackMatchCandidate(track, item); });
           if (!match) continue;
           var url = match.src || await resolveExternalTrackUrl(match);
-          if (!url) continue;
+          if (!url || skipUrls.indexOf(String(url).trim()) >= 0) continue;
           var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
           Object.assign(track, match, {
             title: origTitle || match.title,
@@ -2861,6 +2864,74 @@
     var _isResolvingUrl = false;
     var _playRequestId = 0;
     var _audioUnlocked = false;
+    var _fallbackAttemptState = { key: '', sources: [], urls: [] };
+    function getTrackFallbackKey(track) {
+      if (!track) return '';
+      return [
+        normalizeTrackText(track.title),
+        normalizeTrackText(track.artist),
+        normalizeTrackText(track.id || track.urlId || track.url_id)
+      ].join('|');
+    }
+    function ensureFallbackState(track) {
+      var key = getTrackFallbackKey(track);
+      if (_fallbackAttemptState.key !== key) {
+        _fallbackAttemptState = { key: key, sources: [], urls: [] };
+      }
+      return _fallbackAttemptState;
+    }
+    function resetFallbackState(track) {
+      _fallbackAttemptState = { key: getTrackFallbackKey(track), sources: [], urls: [] };
+    }
+    function rememberPlaybackFailure(track, url, source) {
+      var state = ensureFallbackState(track);
+      source = String(source || (track && track.source) || '').trim();
+      url = String(url || '').trim();
+      if (source && source !== 'local' && state.sources.indexOf(source) < 0) state.sources.push(source);
+      if (url && state.urls.indexOf(url) < 0) state.urls.push(url);
+    }
+    async function switchToFallbackSource(reason) {
+      if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
+      rememberPlaybackFailure(currentTrack, currentTrack.src || audioPlayer.src, currentTrack.source);
+      var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
+      for (var attempt = 0; attempt < attemptLimit; attempt++) {
+        var state = ensureFallbackState(currentTrack);
+        try {
+          _isResolvingUrl = true;
+          setPlayIcons(true);
+          showToast(reason === 'audio-error' ? '当前线路出错，正在切换音源...' : '当前线路不可用，正在切换音源...', 2000);
+          currentTrack.src = '';
+          audioPlayer.src = '';
+          var fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
+            skipSources: state.sources.slice(),
+            skipUrls: state.urls.slice()
+          });
+          _isResolvingUrl = false;
+          if (!fallbackUrl) return false;
+          if (audioPlayer.src !== fallbackUrl) {
+            audioPlayer.src = fallbackUrl;
+            audioPlayer.load();
+          }
+          if (restoredPlaybackTime && audioPlayer.readyState > 0) {
+            audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
+            restoredPlaybackTime = 0;
+          }
+          await audioPlayer.play();
+          _playRetryCount = 0;
+          resetFallbackState(currentTrack);
+          addHistory(currentTrack);
+          setPlayIcons(true);
+          savePlaybackState(true);
+          showToast('已切换备用音源', 1800);
+          return true;
+        } catch (error) {
+          _isResolvingUrl = false;
+          rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.src, currentTrack && currentTrack.source);
+          console.warn('switchToFallbackSource failed', error);
+        }
+      }
+      return false;
+    }
     function unlockAudioContext() {
       if (_audioUnlocked) return;
       try {
@@ -2894,6 +2965,7 @@
           return;
         } catch (e) {
           if (requestId !== _playRequestId) return;
+          if (await switchToFallbackSource('play-failed')) return;
         }
       }
       _isResolvingUrl = true;
@@ -2925,6 +2997,7 @@
         savePlaybackState(true);
       } catch (error) {
         if (requestId !== _playRequestId) return;
+        if (await switchToFallbackSource('play-failed')) return;
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
@@ -5511,9 +5584,12 @@
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
       if (!currentTrack || !audioPlayer.src || _isResolvingUrl) return;
-      console.warn('Audio playback error');
-      setPlayIcons(false);
-      showToast('播放出错，请重试或切换歌曲');
+      console.warn('Audio playback error, attempting source fallback');
+      switchToFallbackSource('audio-error').then(function(switched) {
+        if (switched) return;
+        setPlayIcons(false);
+        showToast('播放出错，请重试或切换歌曲');
+      });
     });
     document.querySelectorAll('img').forEach((image) => {
       image.alt = '';

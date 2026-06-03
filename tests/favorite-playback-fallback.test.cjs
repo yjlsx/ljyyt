@@ -66,6 +66,16 @@ const sandbox = {
     return {
       ok: true,
       async json() {
+        if (source === 'kuwo') {
+          return [{
+            id: 'bad-kuwo',
+            name: 'My Soul',
+            artist: ['July'],
+            album: 'Beyond The Memory',
+            source: 'kuwo',
+            url_id: 'bad-kuwo'
+          }];
+        }
         if (source !== 'joox') return [];
         return [{
           id: '123',
@@ -79,6 +89,7 @@ const sandbox = {
     };
   },
   async resolveExternalTrackUrl(track) {
+    if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
     return track && track.urlId === '123' ? 'https://cdn.example.com/my-soul.mp3' : '';
   },
   calls: []
@@ -112,6 +123,28 @@ vm.runInContext([
   }
   if (!sandbox.calls.length || sandbox.calls[0].source !== 'joox') {
     throw new Error('Expected sourceLabel to prioritize Joox recovery');
+  }
+
+  sandbox.calls = [];
+  const badSourceTrack = {
+    title: 'My Soul',
+    artist: 'July',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const fallbackUrl = await sandbox.recoverPlayableTrackUrl(badSourceTrack, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (fallbackUrl !== 'https://cdn.example.com/my-soul.mp3') {
+    throw new Error('Expected recovery to skip failed Kuwo URL and use Joox, got ' + fallbackUrl);
+  }
+  if (badSourceTrack.source !== 'joox') {
+    throw new Error('Expected recovered track source to switch to Joox');
+  }
+  if (sandbox.calls.some((call) => call.source === 'kuwo')) {
+    throw new Error('Expected recovery options to skip failed source Kuwo');
   }
 })().catch((error) => {
   console.error(error);
