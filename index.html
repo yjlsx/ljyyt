@@ -4077,7 +4077,7 @@
           var resp = await fetch(kuwoUrl);
           if (resp.ok) {
             var data = await resp.json();
-            if (data && data.url) return String(data.url).replace(/^http:\/\//i, 'https://');
+            if (data && data.url) return String(data.url);
           }
         } catch (e) { /* ignore */ }
       }

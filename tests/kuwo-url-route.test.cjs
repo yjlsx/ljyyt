@@ -12,6 +12,12 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes('/api/kuwo-url?rid=')) {
     throw new Error(name + ' does not request /api/kuwo-url');
   }
+  const branchStart = html.indexOf("track.source === 'kuwo'");
+  const branchEnd = html.indexOf("var url = gdMusicApiBase", branchStart);
+  const branch = html.slice(branchStart, branchEnd);
+  if (branch.includes("replace(/^http")) {
+    throw new Error(name + ' forces Kuwo HTTP URLs to HTTPS');
+  }
 }
 
 if (!server.includes("requestUrl.pathname === '/api/kuwo-url'")) {
