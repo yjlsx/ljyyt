@@ -2769,7 +2769,6 @@
       var proxyUrl = getAudioProxyUrl(rawUrl);
       try {
         _isResolvingUrl = true;
-        showToast('已切换备用线路', 1800);
         currentTrack.src = proxyUrl;
         audioPlayer.src = proxyUrl;
         audioPlayer.load();
