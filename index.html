@@ -2312,8 +2312,25 @@
     function isSameTrack(a, b) {
       return getTrackKey(a) === getTrackKey(b);
     }
+    const TRADITIONAL_CHINESE_MAP = {
+      '會': '会', '愛': '爱', '樂': '乐', '夢': '梦', '風': '风', '雲': '云', '聽': '听', '說': '说',
+      '話': '话', '妳': '你', '祢': '你', '牠': '它', '祂': '他', '來': '来', '過': '过', '還': '还',
+      '這': '这', '那': '那', '裡': '里', '裏': '里', '麼': '么', '為': '为', '與': '与', '給': '给',
+      '讓': '让', '誰': '谁', '對': '对', '錯': '错', '無': '无', '別': '别', '離': '离', '開': '开',
+      '關': '关', '長': '长', '門': '门', '間': '间', '時': '时', '後': '后', '前': '前', '點': '点',
+      '聲': '声', '歲': '岁', '萬': '万', '個': '个', '們': '们', '從': '从', '當': '当', '應': '应',
+      '樣': '样', '體': '体', '國': '国', '華': '华', '倫': '伦', '潔': '洁', '麗': '丽', '龍': '龙',
+      '鳳': '凤', '葉': '叶', '麥': '麦', '黃': '黄', '張': '张', '劉': '刘', '陳': '陈', '楊': '杨',
+      '趙': '赵', '鄭': '郑', '孫': '孙', '羅': '罗', '蕭': '萧', '許': '许', '謝': '谢', '鄧': '邓',
+      '劍': '剑', '緣': '缘', '戀': '恋', '單': '单', '雙': '双', '盡': '尽', '滿': '满', '淚': '泪',
+      '藍': '蓝', '貝': '贝', '貓': '猫', '魚': '鱼', '鳥': '鸟', '馬': '马', '島': '岛', '東': '东',
+      '西': '西', '南': '南', '北': '北', '廣': '广', '廈': '厦', '灣': '湾', '臺': '台', '台': '台',
+      '舊': '旧', '寫': '写', '讀': '读', '尋': '寻', '終': '终', '輕': '轻', '難': '难', '癡': '痴'
+    };
     function normalizeTrackText(value) {
-      return String(value || '').trim().toLowerCase();
+      return String(value || '').trim().toLowerCase().normalize('NFKC')
+        .replace(/[\u3400-\u9fff]/g, function(char) { return TRADITIONAL_CHINESE_MAP[char] || char; })
+        .replace(/[^\w\u4e00-\u9fff]+/g, '');
     }
     function findLibraryTrackMatch(track, tracks) {
       if (!track || !Array.isArray(tracks)) return null;
@@ -2367,10 +2384,11 @@
       var artist = normalizeTrackText(target && target.artist);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
       var candidateArtist = normalizeTrackText(candidate && candidate.artist);
-      var simpleCandidateTitle = normalizeTrackText(candidateTitle.replace(/[（(].*?[）)]/g, ''));
+      var simpleCandidateTitle = normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
       var titleMatches = title && candidateTitle && (
         title === candidateTitle ||
         title === simpleCandidateTitle ||
+        candidateTitle.indexOf(title) === 0 ||
         candidateTitle.indexOf(title + ' ') === 0 ||
         candidateTitle.indexOf(title + '（') === 0 ||
         candidateTitle.indexOf(title + '(') === 0
@@ -4191,16 +4209,17 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
-      if (track.source === 'kuwo' && track.urlId) {
-        return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(track.urlId);
-      }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
         '&id=' + encodeURIComponent(track.urlId) + '&br=192';
       try {
         var payload = await fetchGdMusicJson(url);
-        var resolved = payload && payload.url ? String(payload.url).replace(/^http:\/\//i, 'https://') : '';
+        var resolved = payload && payload.url ? String(payload.url) : '';
+        if (resolved && track.source !== 'kuwo') resolved = resolved.replace(/^http:\/\//i, 'https://');
         if (resolved) return resolved;
       } catch (error) { /* fallthrough */ }
+      if (track.source === 'kuwo' && track.urlId) {
+        return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(track.urlId);
+      }
       return '';
     }
     function filterLocalSearch(query, tracks) {

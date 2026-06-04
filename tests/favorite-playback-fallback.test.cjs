@@ -41,6 +41,14 @@ const pickFunction = (name) => {
   return script.slice(start, end);
 };
 
+const pickConstObject = (name) => {
+  const start = script.indexOf('const ' + name + ' = {');
+  if (start < 0) throw new Error('Missing const ' + name);
+  const end = script.indexOf('\n    };', start);
+  if (end < 0) throw new Error('Could not read const ' + name);
+  return script.slice(start, end + '\n    };'.length);
+};
+
 const sandbox = {
   console: { warn: function() {}, log: function() {}, error: function() {} },
   DEFAULT_COVER: 'cover.jpg',
@@ -76,6 +84,16 @@ const sandbox = {
             url_id: 'bad-kuwo'
           }];
         }
+        if (source === 'joox' && /我会等/.test(query)) {
+          return [{
+            id: 'joox-traditional',
+            name: '我會等',
+            artist: ['周杰倫'],
+            album: '我會等',
+            source: 'joox',
+            url_id: 'joox-traditional'
+          }];
+        }
         if (source !== 'joox') return [];
         return [{
           id: '123',
@@ -90,6 +108,7 @@ const sandbox = {
   },
   async resolveExternalTrackUrl(track) {
     if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
+    if (track && track.urlId === 'joox-traditional') return 'https://cdn.example.com/wo-hui-deng.mp3';
     return track && track.urlId === '123' ? 'https://cdn.example.com/my-soul.mp3' : '';
   },
   calls: []
@@ -97,6 +116,7 @@ const sandbox = {
 
 vm.createContext(sandbox);
 vm.runInContext([
+  pickConstObject('TRADITIONAL_CHINESE_MAP'),
   pickFunction('normalizeTrackText'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('isTrackMatchCandidate'),
@@ -112,6 +132,12 @@ vm.runInContext([
     { title: 'My Soul (Instrumental|Bonus Track)', artist: 'July' }
   )) {
     throw new Error('Expected title variants with the same artist to match');
+  }
+  if (!sandbox.isTrackMatchCandidate(
+    { title: '我会等', artist: '周杰伦' },
+    { title: '我會等', artist: '周杰倫' }
+  )) {
+    throw new Error('Expected traditional Chinese candidates to match simplified targets');
   }
   const favorite = { title: 'My Soul', artist: 'July', sourceLabel: 'Joox', src: '' };
   const url = await sandbox.recoverPlayableTrackUrl(favorite);
@@ -145,6 +171,25 @@ vm.runInContext([
   }
   if (sandbox.calls.some((call) => call.source === 'kuwo')) {
     throw new Error('Expected recovery options to skip failed source Kuwo');
+  }
+
+  sandbox.calls = [];
+  const chineseFallback = {
+    title: '我会等',
+    artist: '周杰伦',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const chineseFallbackUrl = await sandbox.recoverPlayableTrackUrl(chineseFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (chineseFallbackUrl !== 'https://cdn.example.com/wo-hui-deng.mp3') {
+    throw new Error('Expected failed Kuwo track to recover from traditional Joox candidate');
+  }
+  if (chineseFallback.source !== 'joox') {
+    throw new Error('Expected failed Kuwo track to switch source to Joox');
   }
 })().catch((error) => {
   console.error(error);
