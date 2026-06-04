@@ -145,6 +145,12 @@ vm.runInContext([
   )) {
     throw new Error('Expected traditional Jacky Cheung artist name to match simplified target');
   }
+  if (!sandbox.isTrackMatchCandidate(
+    { title: '偏偏喜欢你', artist: '陈百强' },
+    { title: '偏偏喜歡你', artist: '陳百強' }
+  )) {
+    throw new Error('Expected traditional Danny Chan title and artist to match simplified target');
+  }
   const favorite = { title: 'My Soul', artist: 'July', sourceLabel: 'Joox', src: '' };
   const url = await sandbox.recoverPlayableTrackUrl(favorite);
   if (url !== 'https://cdn.example.com/my-soul.mp3') {

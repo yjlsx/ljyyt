@@ -2151,7 +2151,8 @@
       '藍': '蓝', '貝': '贝', '貓': '猫', '魚': '鱼', '鳥': '鸟', '馬': '马', '島': '岛', '東': '东',
       '西': '西', '南': '南', '北': '北', '廣': '广', '廈': '厦', '灣': '湾', '臺': '台', '台': '台',
       '舊': '旧', '寫': '写', '讀': '读', '尋': '寻', '終': '终', '輕': '轻', '難': '难', '癡': '痴',
-      '學': '学', '愛': '爱', '樂': '乐', '風': '风', '選': '选', '經': '经', '傷': '伤'
+      '學': '学', '愛': '爱', '樂': '乐', '風': '风', '選': '选', '經': '经', '傷': '伤',
+      '歡': '欢', '強': '强'
     };
     function normalizeTrackText(value) {
       return String(value || '').trim().toLowerCase().normalize('NFKC')
@@ -2679,7 +2680,11 @@
       }
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
-        if (!track.src) track.src = await recoverPlayableTrackUrl(track);
+        if (!track.src) {
+          track.src = await recoverPlayableTrackUrl(track, {
+            skipSources: track.source ? [track.source] : []
+          });
+        }
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
       if (!track.src) {
