@@ -3283,7 +3283,6 @@
           }
           const track = tracks[index];
           setQueue(tracks, index);
-          queueIndex = index;
           setCurrentTrack(track);
           openFullPlayer();
           playCurrentTrack();
@@ -3327,7 +3326,6 @@
           }
           var track = tracks[index];
           setQueue(tracks, index);
-          queueIndex = index;
           setCurrentTrack(track);
           openFullPlayer();
           playCurrentTrack();
@@ -3528,7 +3526,6 @@
       if (summaryNode) summaryNode.classList.toggle('has-description', !!description);
       renderPageTrackRows(document.getElementById('market-playlist-list'), currentMarketPlaylistTracks, loadingText || '这个歌单暂无可播放歌曲。', function(track, index) {
         setQueue(currentMarketPlaylistTracks, index);
-        queueIndex = index;
         setCurrentTrack(track);
         openFullPlayer();
         playCurrentTrack();
@@ -3550,7 +3547,6 @@
     function playFirstMarketPlaylist() {
       if (!currentMarketPlaylistTracks.length) return;
       setQueue(currentMarketPlaylistTracks, 0);
-      queueIndex = 0;
       setCurrentTrack(currentMarketPlaylistTracks[0]);
       openFullPlayer();
       playCurrentTrack();
@@ -4041,7 +4037,6 @@
       document.getElementById('history-clear').hidden = !historyTracks.length;
       renderPageTrackRows(list, historyTracks, '暂无歌曲', function(track, index) {
         setQueue(historyTracks, index);
-        queueIndex = index;
         setCurrentTrack(track);
         openFullPlayer();
         playCurrentTrack();
@@ -4082,7 +4077,7 @@
         document.getElementById('queue-summary-count').textContent = queue.length + ' 首歌曲';
         document.getElementById('queue-clear').hidden = !queue.length;
         renderPageTrackRows(list, queue, '暂无歌曲', function(track, index) {
-          queueIndex = index;
+          setQueue(queue, index);
           setCurrentTrack(track);
           openFullPlayer();
           playCurrentTrack();
@@ -4107,7 +4102,7 @@
             if (queueDrawerTab === 'history' && container === drawerList) {
               setQueue([track, ...queue.filter((item) => !isSameTrack(item, track))], 0);
             } else {
-              queueIndex = index;
+              setQueue(tracks, index);
             }
             setCurrentTrack(track);
             playCurrentTrack();
@@ -4119,7 +4114,7 @@
     function playQueueFromPage() {
       const queue = playQueue.length ? playQueue : [];
       if (!queue.length) return;
-      queueIndex = 0;
+      setQueue(queue, 0);
       setCurrentTrack(queue[0]);
       openFullPlayer();
       playCurrentTrack();
@@ -4291,9 +4286,9 @@
     function playPlaylist(index) {
       var tracks = userPlaylists[index]?.tracks || [];
       if (!tracks.length) return;
-      playQueue = tracks.slice();
-      queueIndex = 0;
+      setQueue(tracks, 0);
       setCurrentTrack(playQueue[0]);
+      openFullPlayer();
       playCurrentTrack();
       closePlaylistDrawer();
     }
@@ -4356,17 +4351,17 @@
     function playUserPlaylistAll() {
       var playlist = userPlaylists[currentUserPlaylistIndex];
       if (!playlist || !playlist.tracks || !playlist.tracks.length) return;
-      playQueue = playlist.tracks.slice();
-      queueIndex = 0;
+      setQueue(playlist.tracks, 0);
       setCurrentTrack(playQueue[0]);
+      openFullPlayer();
       playCurrentTrack();
     }
     function playUserPlaylistTrack(trackIndex) {
       var playlist = userPlaylists[currentUserPlaylistIndex];
       if (!playlist || !playlist.tracks) return;
-      playQueue = playlist.tracks.slice();
-      queueIndex = trackIndex;
+      setQueue(playlist.tracks, trackIndex);
       setCurrentTrack(playQueue[trackIndex]);
+      openFullPlayer();
       playCurrentTrack();
     }
     function removeFromUserPlaylist(trackIndex) {

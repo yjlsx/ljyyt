@@ -29,3 +29,39 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' nextTrack does not navigate from the active queue index');
   }
 }
+
+const entryFunctions = [
+  'function playPlaylist',
+  'function playUserPlaylistAll',
+  'function playUserPlaylistTrack',
+  'function playFirstHistory',
+  'function playFirstMarketPlaylist',
+  'function playFirstFavorite',
+  'function playQueueFromPage'
+];
+
+for (const file of ['index.html', 'dist/index.html']) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  for (const signature of entryFunctions) {
+    const start = script.indexOf(signature);
+    if (start < 0) {
+      throw new Error(file + ' is missing ' + signature);
+    }
+    const after = script.slice(start);
+    const closingIndex = after.indexOf('\n    }\n');
+    if (closingIndex < 0) {
+      throw new Error(file + ' could not parse end of ' + signature);
+    }
+    const body = after.slice(0, closingIndex);
+    if (!body.includes('setQueue(')) {
+      throw new Error(file + ' ' + signature + ' does not call setQueue');
+    }
+    if (/\bplayQueue\s*=\s*/.test(body)) {
+      throw new Error(file + ' ' + signature + ' assigns playQueue directly instead of using setQueue');
+    }
+    if (/\bqueueIndex\s*=\s*(?:index|trackIndex|0)/.test(body)) {
+      throw new Error(file + ' ' + signature + ' still assigns queueIndex outside setQueue');
+    }
+  }
+}
