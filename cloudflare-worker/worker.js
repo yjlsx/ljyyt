@@ -35,6 +35,10 @@ export default {
         return await handleKuwoAudioRequest(request, url);
       }
 
+      if (url.pathname === '/api/audio-proxy') {
+        return await handleAudioProxyRequest(request, url);
+      }
+
       return jsonResponse({ ok: true, service: 'ljyyt-worker' });
     } catch (error) {
       return jsonResponse(
@@ -720,6 +724,36 @@ async function handleKuwoAudioRequest(request, url) {
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
   const response = await fetch(audioUrl, { headers });
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Cache-Control', 'public, max-age=1800');
+  if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
+  if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: responseHeaders
+  });
+}
+
+async function handleAudioProxyRequest(request, url) {
+  const rawUrl = String(url.searchParams.get('url') || '').trim();
+  let audioUrl;
+  try {
+    audioUrl = new URL(rawUrl);
+  } catch (error) {
+    return jsonResponse({ url: '', error: 'Invalid url' }, 400);
+  }
+  if (!['http:', 'https:'].includes(audioUrl.protocol)) {
+    return jsonResponse({ url: '', error: 'Unsupported url' }, 400);
+  }
+  const headers = {
+    'Accept': '*/*',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+  };
+  const range = request.headers.get('Range');
+  if (range) headers.Range = range;
+  const response = await fetch(audioUrl.toString(), { headers });
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
   responseHeaders.set('Cache-Control', 'public, max-age=1800');

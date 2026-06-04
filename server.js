@@ -368,32 +368,42 @@ async function resolveKuwoUrl(rid) {
   }
 }
 
-async function streamKuwoAudio(req, res, rid) {
-  const payload = await resolveKuwoUrl(rid);
-  if (!payload.url) {
-    sendJson(res, payload.error === 'Missing rid' ? 400 : 502, payload);
+function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
+  let parsed;
+  try {
+    parsed = new URL(String(targetUrl || ''));
+  } catch (error) {
+    sendJson(res, 400, { url: '', error: 'Invalid url' });
+    return;
+  }
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    sendJson(res, 400, { url: '', error: 'Unsupported url' });
     return;
   }
 
-  const targetUrl = payload.url;
-  const client = targetUrl.startsWith('https://') ? https : http;
-  const headers = {
+  const client = parsed.protocol === 'https:' ? https : http;
+  const headers = Object.assign({
     'Accept': '*/*',
-    'Referer': 'https://www.kuwo.cn/',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-  };
+  }, extraHeaders || {});
   if (req.headers.range) headers.Range = req.headers.range;
 
-  const proxyReq = client.request(targetUrl, { method: 'GET', headers }, (proxyRes) => {
+  const proxyReq = client.request(parsed, { method: req.method === 'HEAD' ? 'HEAD' : 'GET', headers }, (proxyRes) => {
     const statusCode = Number(proxyRes.statusCode || 200);
-    res.writeHead(statusCode, {
+    const responseHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': proxyRes.headers['content-type'] || 'audio/mpeg',
-      'Content-Length': proxyRes.headers['content-length'] || undefined,
-      'Content-Range': proxyRes.headers['content-range'] || undefined,
       'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes',
       'Cache-Control': 'public, max-age=1800'
-    });
+    };
+    if (proxyRes.headers['content-length']) responseHeaders['Content-Length'] = proxyRes.headers['content-length'];
+    if (proxyRes.headers['content-range']) responseHeaders['Content-Range'] = proxyRes.headers['content-range'];
+    res.writeHead(statusCode, responseHeaders);
+    if (req.method === 'HEAD') {
+      proxyRes.resume();
+      res.end();
+      return;
+    }
     proxyRes.pipe(res);
   });
 
@@ -408,6 +418,16 @@ async function streamKuwoAudio(req, res, rid) {
     proxyReq.destroy(new Error('request timeout'));
   });
   proxyReq.end();
+}
+
+async function streamKuwoAudio(req, res, rid) {
+  const payload = await resolveKuwoUrl(rid);
+  if (!payload.url) {
+    sendJson(res, payload.error === 'Missing rid' ? 400 : 502, payload);
+    return;
+  }
+
+  streamRemoteAudio(req, res, payload.url, { Referer: 'https://www.kuwo.cn/' });
 }
 
 function buildSuccess(source, title, artist, lines, extra) {
@@ -1627,6 +1647,11 @@ const server = http.createServer(async (req, res) => {
 
   if (requestUrl.pathname === '/api/kuwo-audio') {
     streamKuwoAudio(req, res, requestUrl.searchParams.get('rid') || '');
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/audio-proxy') {
+    streamRemoteAudio(req, res, requestUrl.searchParams.get('url') || '');
     return;
   }
 

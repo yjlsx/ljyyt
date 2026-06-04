@@ -2890,9 +2890,48 @@
       if (source && source !== 'local' && state.sources.indexOf(source) < 0) state.sources.push(source);
       if (url && state.urls.indexOf(url) < 0) state.urls.push(url);
     }
+    function isAudioProxyUrl(url) {
+      try {
+        var parsed = new URL(String(url || ''), location.origin);
+        return parsed.pathname === '/api/audio-proxy' || parsed.pathname === '/api/kuwo-audio' || parsed.pathname === '/proxy';
+      } catch (error) {
+        return false;
+      }
+    }
+    function getAudioProxyUrl(url) {
+      var base = _isLocalDev ? '' : ljyytApiBase;
+      return base + '/api/audio-proxy?url=' + encodeURIComponent(url);
+    }
+    async function tryProxyPlaybackLine(rawUrl) {
+      rawUrl = String(rawUrl || '').trim();
+      if (!/^https?:\/\//i.test(rawUrl) || isAudioProxyUrl(rawUrl)) return false;
+      var proxyUrl = getAudioProxyUrl(rawUrl);
+      try {
+        _isResolvingUrl = true;
+        showToast('已切换备用线路', 1800);
+        currentTrack.src = proxyUrl;
+        audioPlayer.src = proxyUrl;
+        audioPlayer.load();
+        _isResolvingUrl = false;
+        await audioPlayer.play();
+        if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio proxy line did not start playback');
+        _playRetryCount = 0;
+        addHistory(currentTrack);
+        setPlayIcons(true);
+        savePlaybackState(true);
+        return true;
+      } catch (error) {
+        _isResolvingUrl = false;
+        rememberPlaybackFailure(currentTrack, proxyUrl, currentTrack && currentTrack.source);
+        console.warn('tryProxyPlaybackLine failed', error);
+        return false;
+      }
+    }
     async function switchToFallbackSource(reason) {
       if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
-      rememberPlaybackFailure(currentTrack, currentTrack.src || audioPlayer.src, currentTrack.source);
+      var failedUrl = currentTrack.src || audioPlayer.src;
+      if (await tryProxyPlaybackLine(failedUrl)) return true;
+      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         var state = ensureFallbackState(currentTrack);
