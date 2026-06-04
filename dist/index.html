@@ -1536,7 +1536,7 @@
       position: fixed; top: calc(24px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%) translateY(-12px);
       background: rgba(0,0,0,.82); color: #fff; padding: 12px 16px; border-radius: 8px;
       font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
-      pointer-events: none; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+      pointer-events: none; white-space: nowrap; max-width: 90%; margin: 0 auto; overflow: hidden; text-overflow: ellipsis;
     }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
@@ -2809,7 +2809,7 @@
           addHistory(currentTrack);
           setPlayIcons(true);
           savePlaybackState(true);
-          showToast('已自动切换至: ' + (currentTrack.source || currentTrack.sourceLabel || getSourceLabel(currentTrack.source) || '备用音源'), 2200);
+          showToast('已自动切换至 ' + getTrackSourceDisplayName(currentTrack), 2200);
           return true;
         } catch (error) {
           _isResolvingUrl = false;
@@ -3699,6 +3699,12 @@
         migu: 'Migu',
         bilibili: 'B站'
       }[source] || source || '未知来源';
+    }
+    function getTrackSourceDisplayName(track) {
+      if (!track) return '备用音源';
+      var sourceLabel = getSourceLabel(track.source);
+      var label = sourceLabel && sourceLabel !== track.source ? sourceLabel : (track.sourceLabel || track.source || '');
+      return String(label || '备用音源').trim();
     }
     function normalizeExternalTrack(track) {
       var source = String(track.source || '');

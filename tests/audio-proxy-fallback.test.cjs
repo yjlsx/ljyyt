@@ -21,10 +21,16 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes("showToast('正在搜索免费音源...'")) {
     throw new Error(name + ' does not show the Otter-style auto-match loading message');
   }
-  if (!html.includes("showToast('已自动切换至: '")) {
+  if (!html.includes('function getTrackSourceDisplayName')) {
+    throw new Error(name + ' does not normalize the displayed fallback source name');
+  }
+  if (!html.includes("showToast('已自动切换至 ' + getTrackSourceDisplayName(currentTrack)")) {
     throw new Error(name + ' does not show the Otter-style auto-match success message');
   }
-  if (!html.includes('top: calc(24px') || !html.includes('border-radius: 8px')) {
+  if (html.includes("showToast('已自动切换至: '")) {
+    throw new Error(name + ' still uses a colon in the auto-match success message');
+  }
+  if (!html.includes('top: calc(24px') || !html.includes('border-radius: 8px') || !html.includes('margin: 0 auto')) {
     throw new Error(name + ' does not use the Otter-style top toast placement');
   }
 }
