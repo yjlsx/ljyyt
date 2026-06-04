@@ -2127,8 +2127,19 @@
       if (start < 0 || arrayStart < 0 || arrayEnd < 0) throw new Error('数据格式无法识别');
       return Function('"use strict"; return (' + text.slice(arrayStart, arrayEnd + 2) + ');')();
     }
+    function parseTrackDuration(value) {
+      if (value == null || value === '') return 0;
+      if (typeof value === 'string' && value.indexOf(':') >= 0) {
+        var parts = value.split(':').map(function(part) { return Number(part) || 0; });
+        return parts.reduce(function(total, part) { return total * 60 + part; }, 0);
+      }
+      var duration = Number(value) || 0;
+      if (!Number.isFinite(duration)) return 0;
+      if (duration > 10000) duration = duration / 1000;
+      return Math.max(0, duration);
+    }
     function formatDuration(seconds) {
-      const total = Math.max(0, Math.round(Number(seconds) || 0));
+      const total = Math.max(0, Math.round(parseTrackDuration(seconds)));
       return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
     }
     function getTrackKey(track) {
@@ -2608,19 +2619,20 @@
       document.querySelector('.full-meta p').textContent = track.artist;
       setCoverImage(document.querySelector('.full-cover'), cover);
       document.querySelector('.fullscreen-bg').style.backgroundImage = 'linear-gradient(to bottom, rgba(16,28,27,.20), rgba(4,7,8,.88)), url("' + cover + '")';
-      document.getElementById('duration-time').textContent = formatDuration(track.duration || audioPlayer.duration);
+      document.getElementById('duration-time').textContent = formatDuration(track.duration);
       document.getElementById('current-time').textContent = '0:00';
       document.getElementById('seek-line').style.setProperty('--audio-progress', '0%');
       updateMiniProgress(0);
     }
     function setCurrentTrack(track) {
+      var existingDuration = currentTrack && isSameTrack(track, currentTrack) ? currentTrack.duration : 0;
       currentTrack = {
         title: track.title || '未知歌曲',
         artist: track.artist || '未知歌手',
         cover: track.cover || DEFAULT_COVER,
         coverApi: track.coverApi || '',
         src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
-        duration: track.duration || currentTrack.duration,
+        duration: parseTrackDuration(track.duration) || parseTrackDuration(existingDuration),
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || '丽江曲库',
         urlId: track.urlId || track.url_id || track.id || '',
@@ -2697,6 +2709,8 @@
     var _isResolvingUrl = false;
     var _playRequestId = 0;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
+    const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
+    const FALLBACK_PLAYBACK_TIMEOUT_MS = 6500;
     function getTrackFallbackKey(track) {
       if (!track) return '';
       return [
@@ -2756,7 +2770,7 @@
         audioPlayer.src = proxyUrl;
         audioPlayer.load();
         _isResolvingUrl = false;
-        await playAudioWithTimeout();
+        await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
         if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio proxy line did not start playback');
         _playRetryCount = 0;
         addHistory(currentTrack);
@@ -2799,7 +2813,7 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await playAudioWithTimeout();
+          await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
           if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
@@ -2885,7 +2899,7 @@
           audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
           restoredPlaybackTime = 0;
         }
-        await playAudioWithTimeout();
+        await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS);
         if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         _playRetryCount = 0;
         addHistory(currentTrack);
@@ -3727,7 +3741,8 @@
         source: source,
         sourceLabel: getSourceLabel(source),
         urlId: String(track.url_id || track.id || ''),
-        lyric_id: String(track.lyric_id || track.id || '')
+        lyric_id: String(track.lyric_id || track.id || ''),
+        duration: parseTrackDuration(track.duration || track.interval || track.time || track.dt || track.length)
       };
     }
     async function resolveExternalCover(track) {
@@ -5064,8 +5079,14 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopPreviewVideo();
     });
+    function updateAudioDurationUi() {
+      if (!currentTrack) return;
+      var duration = parseTrackDuration(audioPlayer.duration) || parseTrackDuration(currentTrack.duration);
+      if (duration) currentTrack.duration = duration;
+      document.getElementById('duration-time').textContent = formatDuration(duration);
+    }
     audioPlayer.addEventListener('loadedmetadata', () => {
-      document.getElementById('duration-time').textContent = formatDuration(audioPlayer.duration || currentTrack.duration);
+      updateAudioDurationUi();
       if (restoredPlaybackTime) {
         audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
         document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
@@ -5076,6 +5097,8 @@
         restoredPlaybackTime = 0;
       }
     });
+    audioPlayer.addEventListener('durationchange', updateAudioDurationUi);
+    audioPlayer.addEventListener('canplay', updateAudioDurationUi);
     audioPlayer.addEventListener('timeupdate', () => {
       if (!isSeekingAudio) {
         const duration = audioPlayer.duration || currentTrack.duration || 0;

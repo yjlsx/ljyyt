@@ -117,6 +117,7 @@ const sandbox = {
 vm.createContext(sandbox);
 vm.runInContext([
   pickConstObject('TRADITIONAL_CHINESE_MAP'),
+  pickFunction('parseTrackDuration'),
   pickFunction('normalizeTrackText'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('isTrackMatchCandidate'),

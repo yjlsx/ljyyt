@@ -64,6 +64,7 @@ const sandbox = {
 vm.createContext(sandbox);
 vm.runInContext([
   pickFunction('fetchGdMusicJson'),
+  pickFunction('parseTrackDuration'),
   pickFunction('normalizeExternalTrack'),
   pickFunction('resolveExternalCover'),
   pickFunction('fetchExternalSourceTracks'),

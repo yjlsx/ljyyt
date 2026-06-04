@@ -15,6 +15,14 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' does not guard audio.play() with a timeout');
   }
 
+  if (!html.includes('const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200')) {
+    throw new Error(file + ' does not use the faster primary playback timeout before source fallback');
+  }
+
+  if (!html.includes('playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS)')) {
+    throw new Error(file + ' does not apply the faster primary playback timeout to failed source detection');
+  }
+
   if (html.includes('if (!audioPlayer.src) setCurrentTrack(currentTrack)')) {
     throw new Error(file + ' treats an empty audio element as the current page URL');
   }
