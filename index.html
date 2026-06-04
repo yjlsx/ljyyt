@@ -2430,6 +2430,7 @@
     function setQueue(tracks, index) {
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
       queueIndex = Math.max(0, Math.min(Number(index) || 0, playQueue.length - 1));
+      currentTrackIndex = queueIndex;
     }
     var _lastSaveTime = 0;
     function savePlaybackState(force) {
@@ -3154,11 +3155,11 @@
     }
     function previousTrack(event) {
       if (event) event.stopPropagation();
-      playTrackAt(currentTrackIndex - 1);
+      playTrackAt(queueIndex - 1);
     }
     function nextTrack(event) {
       if (event) event.stopPropagation();
-      playTrackAt(currentTrackIndex + 1);
+      playTrackAt(queueIndex + 1);
     }
     async function handleTrackEnded() {
       const mode = playModes[playModeIndex].value;
