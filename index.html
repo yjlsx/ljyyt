@@ -2870,10 +2870,12 @@
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
         if (!track.src) track.src = await recoverPlayableTrackUrl(track);
+        if (!track.src && track.source === 'kuwo' && track.urlId) track.src = getKuwoAudioFallbackUrl(track.urlId);
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
       if (!track.src) {
         track.src = await recoverPlayableTrackUrl(track);
+        if (!track.src && track.source === 'kuwo' && track.urlId) track.src = getKuwoAudioFallbackUrl(track.urlId);
         if (currentTrack && isSameTrack(track, currentTrack)) Object.assign(currentTrack, track);
       }
       return track.src || '';
@@ -2977,10 +2979,13 @@
           if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
+          updateTrackUi(currentTrack);
+          updateLikeButton();
+          loadLyricsForTrack(currentTrack);
           addHistory(currentTrack);
           setPlayIcons(true);
           savePlaybackState(true);
-          showToast('已切换备用音源', 1800);
+          showToast('已自动切换至：' + (currentTrack.sourceLabel || getSourceLabel(currentTrack.source) || '备用音源'), 2200);
           return true;
         } catch (error) {
           _isResolvingUrl = false;
@@ -4217,10 +4222,10 @@
         if (resolved && track.source !== 'kuwo') resolved = resolved.replace(/^http:\/\//i, 'https://');
         if (resolved) return resolved;
       } catch (error) { /* fallthrough */ }
-      if (track.source === 'kuwo' && track.urlId) {
-        return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(track.urlId);
-      }
       return '';
+    }
+    function getKuwoAudioFallbackUrl(urlId) {
+      return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(urlId);
     }
     function filterLocalSearch(query, tracks) {
       var needle = String(query || '').trim().toLowerCase();
