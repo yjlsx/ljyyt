@@ -15,6 +15,9 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes(".replace(/&amp;/g, '&')")) {
     throw new Error(name + ' does not decode escaped ampersands in streaming URLs');
   }
+  if (html.includes("showToast('正在解析播放地址...'")) {
+    throw new Error(name + ' still shows the non-Otter resolving playback toast before auto match');
+  }
   if (!html.includes("showToast('已切换备用线路'")) {
     throw new Error(name + ' does not try a proxy line before source matching');
   }
@@ -24,14 +27,25 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes('function getTrackSourceDisplayName')) {
     throw new Error(name + ' does not normalize the displayed fallback source name');
   }
-  if (!html.includes("showToast('已自动切换至 ' + getTrackSourceDisplayName(currentTrack)")) {
+  if (!html.includes("showToast('已自动切换至: ' + getTrackSourceDisplayName(currentTrack)")) {
     throw new Error(name + ' does not show the Otter-style auto-match success message');
   }
-  if (html.includes("showToast('已自动切换至: '")) {
-    throw new Error(name + ' still uses a colon in the auto-match success message');
+  if (html.includes("showToast('已自动切换至 '")) {
+    throw new Error(name + ' dropped the Otter-style colon in the auto-match success message');
   }
-  if (!html.includes('top: calc(24px') || !html.includes('border-radius: 8px') || !html.includes('margin: 0 auto')) {
-    throw new Error(name + ' does not use the Otter-style top toast placement');
+  for (const marker of [
+    'top: calc(24px + var(--safe-area-top))',
+    'background: #fff',
+    'color: #363636',
+    'box-shadow: 0 3px 10px rgba(0,0,0,.10), 0 3px 3px rgba(0,0,0,.05)',
+    'display: flex',
+    'align-items: center',
+    'border-radius: 8px',
+    'margin: 0 auto'
+  ]) {
+    if (!html.includes(marker)) {
+      throw new Error(name + ' does not match the Otter toast layout marker: ' + marker);
+    }
   }
 }
 

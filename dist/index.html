@@ -22,6 +22,7 @@
     :root {
       --background: #fbfcfc;
       --foreground: #303737;
+      --safe-area-top: env(safe-area-inset-top, 0px);
       --card: #fff;
       --primary: #36a97b;
       --primary-foreground: #fff;
@@ -1533,11 +1534,14 @@
       .fullscreen .full-main.show-lyrics .full-cover { width: min(30vw, 340px); }
     }
     .ljyyt-toast {
-      position: fixed; top: calc(24px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%) translateY(-12px);
-      background: rgba(0,0,0,.82); color: #fff; padding: 12px 16px; border-radius: 8px;
-      font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
+      position: fixed; top: calc(24px + var(--safe-area-top)); left: 50%; transform: translateX(-50%) translateY(-12px);
+      background: #fff; color: #363636; padding: 12px 16px; border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.10), 0 3px 3px rgba(0,0,0,.05);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 14px; line-height: 1.35; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
       pointer-events: none; white-space: nowrap; max-width: 90%; margin: 0 auto; overflow: hidden; text-overflow: ellipsis;
     }
+    html.dark .ljyyt-toast { background: #fff; color: #363636; }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
@@ -2823,7 +2827,7 @@
           addHistory(currentTrack);
           setPlayIcons(true);
           savePlaybackState(true);
-          showToast('已自动切换至 ' + getTrackSourceDisplayName(currentTrack), 2200);
+          showToast('已自动切换至: ' + getTrackSourceDisplayName(currentTrack), 2200);
           return true;
         } catch (error) {
           _isResolvingUrl = false;
