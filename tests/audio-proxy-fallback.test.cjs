@@ -12,8 +12,20 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes('/api/audio-proxy?url=')) {
     throw new Error(name + ' does not build /api/audio-proxy URLs');
   }
+  if (!html.includes(".replace(/&amp;/g, '&')")) {
+    throw new Error(name + ' does not decode escaped ampersands in streaming URLs');
+  }
   if (!html.includes("showToast('已切换备用线路'")) {
     throw new Error(name + ' does not try a proxy line before source matching');
+  }
+  if (!html.includes("showToast('正在搜索免费音源...'")) {
+    throw new Error(name + ' does not show the Otter-style auto-match loading message');
+  }
+  if (!html.includes("showToast('已自动切换至: '")) {
+    throw new Error(name + ' does not show the Otter-style auto-match success message');
+  }
+  if (!html.includes('top: calc(24px') || !html.includes('border-radius: 8px')) {
+    throw new Error(name + ' does not use the Otter-style top toast placement');
   }
 }
 

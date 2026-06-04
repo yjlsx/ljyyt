@@ -26,21 +26,22 @@ const pickFunction = (html, name) => {
 };
 
 for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distHtml]]) {
-  if (!html.includes("track.source === 'kuwo'")) {
-    throw new Error(name + ' does not special-case Kuwo URLs');
-  }
   const resolver = pickFunction(html, 'resolveExternalTrackUrl');
+  if (!resolver.includes("track.source !== 'kuwo'")) {
+    throw new Error(name + ' does not preserve Kuwo HTTP URLs from music-api');
+  }
   if (resolver.includes('/api/kuwo-audio?rid=')) {
     throw new Error(name + ' hardwires Kuwo URL resolution to /api/kuwo-audio instead of music-api auto match');
   }
-  if (!html.includes('function getKuwoAudioFallbackUrl')) {
-    throw new Error(name + ' does not keep Kuwo audio proxy as a last playback fallback');
+  const ensurePlayable = pickFunction(html, 'ensurePlayableTrackUrl');
+  if (ensurePlayable.includes('getKuwoAudioFallbackUrl')) {
+    throw new Error(name + ' tries Kuwo audio proxy before automatic source matching can recover');
   }
-  const branchStart = html.indexOf("track.source === 'kuwo'");
-  const branchEnd = html.indexOf("var url = gdMusicApiBase", branchStart);
-  const branch = html.slice(branchStart, branchEnd);
-  if (branch.includes("replace(/^http")) {
-    throw new Error(name + ' forces Kuwo HTTP URLs to HTTPS');
+  if (!html.includes('function isDeprecatedKuwoAudioUrl')) {
+    throw new Error(name + ' does not detect cached Kuwo prompt-audio URLs');
+  }
+  if (!ensurePlayable.includes('isDeprecatedKuwoAudioUrl(track.src)')) {
+    throw new Error(name + ' still trusts cached /api/kuwo-audio playback URLs');
   }
 }
 

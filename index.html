@@ -1625,8 +1625,8 @@
       .fullscreen .full-main.show-lyrics .full-cover { width: min(30vw, 340px); }
     }
     .ljyyt-toast {
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-      background: rgba(0,0,0,.82); color: #fff; padding: 10px 20px; border-radius: 999px;
+      position: fixed; top: calc(24px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%) translateY(-12px);
+      background: rgba(0,0,0,.82); color: #fff; padding: 12px 16px; border-radius: 8px;
       font-size: 14px; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
       pointer-events: none; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
     }
@@ -2325,7 +2325,8 @@
       '劍': '剑', '緣': '缘', '戀': '恋', '單': '单', '雙': '双', '盡': '尽', '滿': '满', '淚': '泪',
       '藍': '蓝', '貝': '贝', '貓': '猫', '魚': '鱼', '鳥': '鸟', '馬': '马', '島': '岛', '東': '东',
       '西': '西', '南': '南', '北': '北', '廣': '广', '廈': '厦', '灣': '湾', '臺': '台', '台': '台',
-      '舊': '旧', '寫': '写', '讀': '读', '尋': '寻', '終': '终', '輕': '轻', '難': '难', '癡': '痴'
+      '舊': '旧', '寫': '写', '讀': '读', '尋': '寻', '終': '终', '輕': '轻', '難': '难', '癡': '痴',
+      '學': '学', '愛': '爱', '樂': '乐', '風': '风', '選': '选', '經': '经', '傷': '伤'
     };
     function normalizeTrackText(value) {
       return String(value || '').trim().toLowerCase().normalize('NFKC')
@@ -2815,7 +2816,8 @@
       if (!currentTrack.src && prevSrc) {
         _isResolvingUrl = true;
         audioPlayer.pause();
-        audioPlayer.src = '';
+        audioPlayer.removeAttribute('src');
+        audioPlayer.load();
         _isResolvingUrl = false;
       }
       if (!playQueue.length) setQueue([currentTrack], 0);
@@ -2827,7 +2829,7 @@
         resolveExternalCover(currentTrack).then(function() { updateTrackUi(currentTrack); });
       }
       savePlaybackState(true);
-      if (currentTrack.src && audioPlayer.src !== currentTrack.src) {
+      if (currentTrack.src && audioPlayer.getAttribute('src') !== currentTrack.src) {
         audioPlayer.src = currentTrack.src;
         audioPlayer.load();
       }
@@ -2852,8 +2854,10 @@
     async function ensurePlayableTrackUrl(track) {
       if (!track) return '';
       var hasUnstableNeteaseUrl = track.source === 'netease' && /music\.126\.net/i.test(track.src || '');
-      if (track.src && !hasUnstableNeteaseUrl) return track.src;
+      var hasDeprecatedKuwoAudioUrl = isDeprecatedKuwoAudioUrl(track.src);
+      if (track.src && !hasUnstableNeteaseUrl && !hasDeprecatedKuwoAudioUrl) return track.src;
       if (hasUnstableNeteaseUrl) track.src = '';
+      if (hasDeprecatedKuwoAudioUrl) track.src = '';
       if (!track.source || track.source === 'local') {
         var localMatch = findLibraryTrackMatch(track, await ensureLibraryTracks());
         if (localMatch && localMatch.src) {
@@ -2870,12 +2874,10 @@
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
         if (!track.src) track.src = await recoverPlayableTrackUrl(track);
-        if (!track.src && track.source === 'kuwo' && track.urlId) track.src = getKuwoAudioFallbackUrl(track.urlId);
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
       if (!track.src) {
         track.src = await recoverPlayableTrackUrl(track);
-        if (!track.src && track.source === 'kuwo' && track.urlId) track.src = getKuwoAudioFallbackUrl(track.urlId);
         if (currentTrack && isSameTrack(track, currentTrack)) Object.assign(currentTrack, track);
       }
       return track.src || '';
@@ -2918,12 +2920,23 @@
         return false;
       }
     }
+    function isDeprecatedKuwoAudioUrl(url) {
+      try {
+        var parsed = new URL(String(url || ''), location.origin);
+        return parsed.pathname === '/api/kuwo-audio';
+      } catch (error) {
+        return /\/api\/kuwo-audio(?:\?|$)/i.test(String(url || ''));
+      }
+    }
+    function normalizeAudioUrl(url) {
+      return String(url || '').trim().replace(/&amp;/g, '&');
+    }
     function getAudioProxyUrl(url) {
       var base = _isLocalDev ? '' : ljyytApiBase;
-      return base + '/api/audio-proxy?url=' + encodeURIComponent(url);
+      return base + '/api/audio-proxy?url=' + encodeURIComponent(normalizeAudioUrl(url));
     }
     async function tryProxyPlaybackLine(rawUrl) {
-      rawUrl = String(rawUrl || '').trim();
+      rawUrl = normalizeAudioUrl(rawUrl);
       if (!/^https?:\/\//i.test(rawUrl) || isAudioProxyUrl(rawUrl)) return false;
       var proxyUrl = getAudioProxyUrl(rawUrl);
       try {
@@ -2933,7 +2946,7 @@
         audioPlayer.src = proxyUrl;
         audioPlayer.load();
         _isResolvingUrl = false;
-        await audioPlayer.play();
+        await playAudioWithTimeout();
         if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio proxy line did not start playback');
         _playRetryCount = 0;
         addHistory(currentTrack);
@@ -2949,7 +2962,7 @@
     }
     async function switchToFallbackSource(reason) {
       if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
-      var failedUrl = currentTrack.src || audioPlayer.src;
+      var failedUrl = currentTrack.src || audioPlayer.getAttribute('src') || '';
       if (await tryProxyPlaybackLine(failedUrl)) return true;
       rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
@@ -2958,16 +2971,17 @@
         try {
           _isResolvingUrl = true;
           setPlayIcons(true);
-          showToast(reason === 'audio-error' ? '当前线路出错，正在切换音源...' : '当前线路不可用，正在切换音源...', 2000);
+          showToast('正在搜索免费音源...', 2000);
           currentTrack.src = '';
-          audioPlayer.src = '';
+          audioPlayer.removeAttribute('src');
+          audioPlayer.load();
           var fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
             skipSources: state.sources.slice(),
             skipUrls: state.urls.slice()
           });
           _isResolvingUrl = false;
           if (!fallbackUrl) return false;
-          if (audioPlayer.src !== fallbackUrl) {
+          if (audioPlayer.getAttribute('src') !== fallbackUrl) {
             audioPlayer.src = fallbackUrl;
             audioPlayer.load();
           }
@@ -2975,7 +2989,7 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await audioPlayer.play();
+          await playAudioWithTimeout();
           if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
@@ -2985,11 +2999,11 @@
           addHistory(currentTrack);
           setPlayIcons(true);
           savePlaybackState(true);
-          showToast('已自动切换至：' + (currentTrack.sourceLabel || getSourceLabel(currentTrack.source) || '备用音源'), 2200);
+          showToast('已自动切换至: ' + (currentTrack.source || currentTrack.sourceLabel || getSourceLabel(currentTrack.source) || '备用音源'), 2200);
           return true;
         } catch (error) {
           _isResolvingUrl = false;
-          rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.src, currentTrack && currentTrack.source);
+          rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.getAttribute('src') || '', currentTrack && currentTrack.source);
           console.warn('switchToFallbackSource failed', error);
         }
       }
@@ -3003,8 +3017,45 @@
         _audioUnlocked = true;
       } catch (e) {}
     }
+    function waitForAudioReady(timeoutMs) {
+      if (audioPlayer.error) return Promise.reject(new Error('AUDIO_NOT_READY'));
+      if (audioPlayer.readyState >= 2) return Promise.resolve();
+      return new Promise(function(resolve, reject) {
+        var done = false;
+        var timer = setTimeout(function() { finish(reject, new Error('AUDIO_NOT_READY')); }, timeoutMs || 6500);
+        function cleanup() {
+          audioPlayer.removeEventListener('loadedmetadata', onReady);
+          audioPlayer.removeEventListener('canplay', onReady);
+          audioPlayer.removeEventListener('canplaythrough', onReady);
+          audioPlayer.removeEventListener('error', onError);
+          clearTimeout(timer);
+        }
+        function finish(fn, value) {
+          if (done) return;
+          done = true;
+          cleanup();
+          fn(value);
+        }
+        function onReady() { finish(resolve); }
+        function onError() { finish(reject, new Error('AUDIO_NOT_READY')); }
+        audioPlayer.addEventListener('loadedmetadata', onReady, { once: true });
+        audioPlayer.addEventListener('canplay', onReady, { once: true });
+        audioPlayer.addEventListener('canplaythrough', onReady, { once: true });
+        audioPlayer.addEventListener('error', onError, { once: true });
+      });
+    }
+    async function playAudioWithTimeout(timeoutMs) {
+      var playPromise = audioPlayer.play();
+      await Promise.race([
+        playPromise,
+        waitForAudioReady(timeoutMs || 8000),
+        new Promise(function(resolve, reject) {
+          setTimeout(function() { reject(new Error('AUDIO_NOT_READY')); }, timeoutMs || 8000);
+        })
+      ]);
+    }
     async function confirmPlaybackStarted(requestId) {
-      await new Promise(function(resolve) { setTimeout(resolve, 900); });
+      await new Promise(function(resolve) { setTimeout(resolve, 200); });
       if (requestId && requestId !== _playRequestId) return true;
       return !audioPlayer.paused && !audioPlayer.error;
     }
@@ -3012,10 +3063,11 @@
       pausePreviewVideo();
       if (!currentTrack) return;
       var requestId = ++_playRequestId;
-      if (!audioPlayer.src) setCurrentTrack(currentTrack);
+      if (!audioPlayer.getAttribute('src')) setCurrentTrack(currentTrack);
       unlockAudioContext();
+      if (isDeprecatedKuwoAudioUrl(currentTrack.src)) currentTrack.src = '';
       if (currentTrack.src) {
-        if (audioPlayer.src !== currentTrack.src) {
+        if (audioPlayer.getAttribute('src') !== currentTrack.src) {
           audioPlayer.src = currentTrack.src;
           audioPlayer.load();
         }
@@ -3024,7 +3076,7 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await audioPlayer.play();
+          await playAudioWithTimeout();
           if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
@@ -3044,7 +3096,7 @@
       var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
       _isResolvingUrl = false;
       if (requestId !== _playRequestId) return;
-      if (playableUrl && audioPlayer.src !== playableUrl) {
+      if (playableUrl && audioPlayer.getAttribute('src') !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
       }
@@ -3058,7 +3110,7 @@
           audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
           restoredPlaybackTime = 0;
         }
-        await audioPlayer.play();
+        await playAudioWithTimeout();
         if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
@@ -3072,7 +3124,8 @@
           _playRetryCount++;
           currentTrack.src = '';
           _isResolvingUrl = true;
-          audioPlayer.src = '';
+          audioPlayer.removeAttribute('src');
+          audioPlayer.load();
           _isResolvingUrl = false;
           return playCurrentTrack();
         }
@@ -4220,6 +4273,7 @@
         var payload = await fetchGdMusicJson(url);
         var resolved = payload && payload.url ? String(payload.url) : '';
         if (resolved && track.source !== 'kuwo') resolved = resolved.replace(/^http:\/\//i, 'https://');
+        resolved = normalizeAudioUrl(resolved);
         if (resolved) return resolved;
       } catch (error) { /* fallthrough */ }
       return '';
@@ -5654,7 +5708,7 @@
     audioPlayer.addEventListener('play', () => setPlayIcons(true));
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
-      if (!currentTrack || !audioPlayer.src || _isResolvingUrl) return;
+      if (!currentTrack || !audioPlayer.getAttribute('src') || _isResolvingUrl) return;
       console.warn('Audio playback error, attempting source fallback');
       switchToFallbackSource('audio-error').then(function(switched) {
         if (switched) return;
