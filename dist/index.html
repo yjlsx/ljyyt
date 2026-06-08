@@ -4004,7 +4004,7 @@
       var signal = controller.signal;
       var container = document.getElementById('search-results');
       var count = document.getElementById('search-song-count');
-      if (container) container.innerHTML = '';
+      if (container) container.innerHTML = '<div class="empty-note" style="opacity:0.6">搜索中...</div>';
       if (count) count.textContent = '';
       try {
         var sources = getActiveSearchSources();
@@ -4012,17 +4012,39 @@
         if (sources.includes('local')) localTracks = filterLocalSearch(query, await ensureLibraryTracks());
         if (signal.aborted) return;
         var externalSources = sources.filter(function(source) { return source && source !== 'local'; });
-        var externalGroups = await Promise.all(externalSources.map(function(source) {
-          return searchExternalSource(query, source, signal).catch(function(err) {
-            if (err && err.name === 'AbortError') throw err;
-            return [];
+        var allTracks = localTracks.slice();
+        var needsDedup = sources.length > 1;
+        if (localTracks.length) {
+          currentSearchState.songs = localTracks;
+          renderSearchRows(localTracks, activeProvider);
+        }
+        var pending = externalSources.length;
+        if (!pending && localTracks.length) return;
+        if (!pending && !localTracks.length) {
+          if (container) container.innerHTML = '<div class="empty-note">未找到相关歌曲</div>';
+          if (count) count.textContent = '0 首';
+          return;
+        }
+        externalSources.forEach(function(source) {
+          searchExternalSource(query, source, signal).then(function(tracks) {
+            if (signal.aborted) return;
+            if (tracks && tracks.length) {
+              allTracks = allTracks.concat(tracks.filter(function(t) { return t && t.title; }));
+              var results = needsDedup ? deduplicateSearchResults(allTracks) : allTracks;
+              currentSearchState.songs = results;
+              renderSearchRows(results, activeProvider);
+            }
+          }).catch(function(err) {
+            if (err && err.name === 'AbortError') return;
+          }).finally(function() {
+            if (signal.aborted) return;
+            pending--;
+            if (pending <= 0 && !allTracks.length) {
+              if (container) container.innerHTML = '<div class="empty-note">未找到相关歌曲</div>';
+              if (count) count.textContent = '0 首';
+            }
           });
-        }));
-        if (signal.aborted) return;
-        var merged = localTracks.concat.apply(localTracks, externalGroups).filter(function(track) { return track && track.title; });
-        var results = sources.length > 1 ? deduplicateSearchResults(merged) : merged;
-        currentSearchState.songs = results;
-        renderSearchRows(results, activeProvider);
+        });
       } catch (error) {
         if (error && error.name === 'AbortError') return;
         if (container) container.innerHTML = '<div class="empty-note">搜索失败，请稍后重试。</div>';
