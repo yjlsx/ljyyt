@@ -12702,6 +12702,24 @@ function writeScriptStorageValue(key, value) {
   }
 }
 
+function persistCurrentPlayerState(track, currentTime, playing, volume) {
+  if (!track) return;
+
+  try {
+    if (typeof savePlayerState === 'function') {
+      savePlayerState(track.id, currentTime, playing, track, volume);
+      return;
+    }
+  } catch (error) {
+  }
+
+  try {
+    writeScriptStorageValue('currentTrackId', track.id);
+    writeScriptStorageValue('lastPlayedTrack', JSON.stringify(track));
+  } catch (error) {
+  }
+}
+
 // 分页相关变量
 let musicCurrentPage = 1;
 const musicItemsPerPage = 20; 
@@ -12906,12 +12924,7 @@ function loadTrack(index) {
   updateMusicListHighlight();
   
   // 保存播放器状态
-  if (typeof savePlayerState === 'function') {
-    savePlayerState(track.id, 0, isPlaying, track, audioPlayer.volume);
-  } else {
-    writeScriptStorageValue('currentTrackId', track.id);
-    writeScriptStorageValue('lastPlayedTrack', JSON.stringify(track));
-  }
+  persistCurrentPlayerState(track, 0, isPlaying, audioPlayer.volume);
   
   console.log('✅ 音乐加载完成');
 }
@@ -12930,9 +12943,7 @@ function playMusic() {
         updatePlayButton();
         
         // 保存播放器状态
-        if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-          savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex], audioPlayer.volume);
-        }
+        persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, true, audioPlayer.volume);
       }).catch(function(error) {
         console.error('❌ 播放失败:', error);
       });
@@ -12943,9 +12954,7 @@ function playMusic() {
       updatePlayButton();
       
       // 保存播放器状态
-      if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-        savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, true, musicData[currentTrackIndex], audioPlayer.volume);
-      }
+      persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, true, audioPlayer.volume);
     }).catch(function(error) {
       console.error('❌ 播放失败:', error);
     });
@@ -12960,9 +12969,7 @@ function pauseMusic() {
   updatePlayButton();
   
   // 保存播放器状态
-  if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, false, musicData[currentTrackIndex], audioPlayer.volume);
-  }
+  persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, false, audioPlayer.volume);
 }
 
 // 切换播放/暂停
@@ -13241,9 +13248,7 @@ function setVolume(e) {
   audioPlayer.volume = volume;
   
   // 保存音量状态
-  if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], volume);
-  }
+  persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, volume);
 }
 
 // 更新音乐列表的高亮状态
@@ -13612,14 +13617,14 @@ function initPlayerEvents() {
 // 页面卸载前保存状态
 window.addEventListener('beforeunload', function() {
   if (typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], audioPlayer.volume);
+    persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
   }
 });
 
 // 页面隐藏时保存状态（切换标签页等情况）
 document.addEventListener('visibilitychange', function() {
   if (document.hidden && typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
-    savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], audioPlayer.volume);
+    persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
   }
 });
 
@@ -13729,28 +13734,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 添加页面卸载事件监听器，确保状态被保存
   window.addEventListener('beforeunload', function() {
-    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-      savePlayerState(
-        musicData[currentTrackIndex].id,
-        audioPlayer.currentTime,
-        isPlaying,
-        musicData[currentTrackIndex],
-        audioPlayer.volume
-      );
+    if (musicData[currentTrackIndex]) {
+      persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
       console.log('🔄 页面卸载前保存播放器状态');
     }
   });
   
   // 定期保存播放状态（每30秒）
   setInterval(function() {
-    if (typeof savePlayerState === 'function' && musicData[currentTrackIndex]) {
-      savePlayerState(
-        musicData[currentTrackIndex].id,
-        audioPlayer.currentTime,
-        isPlaying,
-        musicData[currentTrackIndex],
-        audioPlayer.volume
-      );
+    if (musicData[currentTrackIndex]) {
+      persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
       console.log('⏰ 定期保存播放器状态');
     }
   }, 30000); // 30秒保存一次
@@ -13780,7 +13773,7 @@ function initSearch() {
     
     // 跳转前强制保存播放状态
     if (typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
-      savePlayerState(musicData[currentTrackIndex].id, audioPlayer.currentTime, isPlaying, musicData[currentTrackIndex], audioPlayer.volume);
+      persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
     }
     
     // 统一进入 index 内的“发现”Tab，避免独立 search.html 与移动端 app 状态不一致
