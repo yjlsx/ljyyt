@@ -6,6 +6,7 @@ const deploySh = fs.readFileSync('deploy.sh', 'utf8');
 const deployBat = fs.readFileSync('deploy.bat', 'utf8');
 const siteConfig = fs.readFileSync('site-config.js', 'utf8');
 const buildScript = fs.readFileSync('scripts/build-dist.cjs', 'utf8');
+const headers = fs.readFileSync('_headers', 'utf8');
 
 function assertDistMatchesSource(relPath) {
   const source = fs.readFileSync(relPath);
@@ -62,6 +63,7 @@ if (buildScript.includes("path.join(ROOT, 'dist', relPath)")) {
 }
 
 for (const requiredSource of [
+  '_headers',
   'ORACLE_DEPLOY.md',
   'robots.txt',
   'sitemap.xml',
@@ -78,7 +80,12 @@ if (!buildScript.includes("'fix_wechat_images.js'")) {
   throw new Error('build-dist.cjs should copy fix_wechat_images.js because index.html references it');
 }
 
+if (!headers.includes('/index.html') || !headers.includes('Cache-Control: no-store')) {
+  throw new Error('_headers should prevent hosted index.html from serving stale inline playback UI code');
+}
+
 for (const required of [
+  'dist/_headers',
   'dist/index.html',
   'dist/server.js',
   'dist/site-config.js',
@@ -99,6 +106,7 @@ for (const required of [
 }
 
 for (const relPath of [
+  '_headers',
   'index.html',
   'server.js',
   'fix_wechat_images.js',

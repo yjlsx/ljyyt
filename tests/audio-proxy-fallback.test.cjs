@@ -18,8 +18,8 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (html.includes("showToast('正在解析播放地址...'")) {
     throw new Error(name + ' still shows the non-Otter resolving playback toast before auto match');
   }
-  if (html.includes("showToast('已切换备用线路'")) {
-    throw new Error(name + ' still shows the non-Otter proxy-line toast');
+  if (/showToast\(['"][^'"]*(?:正在启用备用线路|启用备用线路|已切换备用线路|备用线路)/.test(html)) {
+    throw new Error(name + ' still shows a non-Otter proxy-line toast');
   }
   if (!html.includes("showToast('正在搜索免费音源...'")) {
     throw new Error(name + ' does not show the Otter-style auto-match loading message');

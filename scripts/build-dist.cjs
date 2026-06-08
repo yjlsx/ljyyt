@@ -54,6 +54,7 @@ function writeFile(relPath, content) {
 }
 
 const assetFiles = [
+  '_headers',
   'index.html',
   'style.css',
   'style_mobile.css',
