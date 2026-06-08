@@ -21,6 +21,27 @@ function removePlayerStateValue(key) {
   } catch (error) {}
 }
 
+function serializePlayerState(playerState) {
+  try {
+    return JSON.stringify(playerState);
+  } catch (error) {
+    var safeState = Object.assign({}, playerState, { trackData: null });
+    try {
+      return JSON.stringify(safeState);
+    } catch (fallbackError) {
+      return null;
+    }
+  }
+}
+
+function isFreshPlayerState(state, maxAgeMs) {
+  return !!(
+    state && typeof state === 'object' &&
+    Number.isFinite(state.timestamp) &&
+    Date.now() - state.timestamp < maxAgeMs
+  );
+}
+
 // 保存播放器状态到 localStorage
 function savePlayerState(trackId, currentTime, isPlaying, trackData, volume) {
   const playerState = {
@@ -31,7 +52,9 @@ function savePlayerState(trackId, currentTime, isPlaying, trackData, volume) {
     trackData: trackData || null,
     volume: volume !== undefined ? volume : (typeof audioPlayer !== 'undefined' ? audioPlayer.volume : 0.5)
   };
-  writePlayerStateValue('playerState', JSON.stringify(playerState));
+  var serialized = serializePlayerState(playerState);
+  if (!serialized) return;
+  writePlayerStateValue('playerState', serialized);
   console.log('💾 播放器状态已保存:', playerState);
 }
 
@@ -42,7 +65,7 @@ function restorePlayerState() {
     try {
       const state = JSON.parse(savedState);
       // 检查状态是否还有效（不超过24小时）
-      if (Date.now() - state.timestamp < 24 * 60 * 60 * 1000) {
+      if (isFreshPlayerState(state, 24 * 60 * 60 * 1000)) {
         console.log('📥 恢复播放器状态:', state);
         return state;
       } else {
@@ -71,7 +94,7 @@ function hasSavedPlayerState() {
   if (savedState) {
     try {
       const state = JSON.parse(savedState);
-      return Date.now() - state.timestamp < 30 * 60 * 1000;
+      return isFreshPlayerState(state, 30 * 60 * 1000);
     } catch (e) {
       return false;
     }

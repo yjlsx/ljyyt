@@ -65,7 +65,8 @@ for (const file of ['player_state.js', 'dist/player_state.js']) {
   }
 
   for (const expected of [
-    "writePlayerStateValue('playerState', JSON.stringify(playerState))",
+    'serializePlayerState(playerState)',
+    "writePlayerStateValue('playerState', serialized)",
     "readPlayerStateValue('playerState')",
     "removePlayerStateValue('playerState')"
   ]) {
