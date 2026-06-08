@@ -68,13 +68,30 @@ async function withCache(request, ctx, handler) {
   }
 
   const response = await handler();
-  if (response.ok) {
+  if (await isCacheableApiResponse(response)) {
     const cacheable = new Response(response.body, response);
     cacheable.headers.set('Cache-Control', 'public, max-age=1800');
     ctx.waitUntil(cache.put(request, cacheable.clone()));
     return cacheable;
   }
+  if (response.ok) {
+    const uncacheable = new Response(response.body, response);
+    uncacheable.headers.set('Cache-Control', 'no-store');
+    return uncacheable;
+  }
   return response;
+}
+
+async function isCacheableApiResponse(response) {
+  if (!response.ok) return false;
+  const contentType = response.headers.get('Content-Type') || '';
+  if (!contentType.includes('application/json')) return true;
+  try {
+    const payload = await response.clone().json();
+    return !(payload && payload.found === false);
+  } catch (error) {
+    return false;
+  }
 }
 
 async function handleLyricsRequest(url) {

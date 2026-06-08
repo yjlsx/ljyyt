@@ -1,6 +1,27 @@
 const fs = require('fs');
+const vm = require('vm');
 
 const worker = fs.readFileSync('cloudflare-worker/worker.js', 'utf8');
+
+function extractFunction(source, name, prefix = 'function') {
+  const start = source.indexOf(prefix + ' ' + name);
+  if (start < 0) throw new Error('Missing function ' + name);
+  const bodyStart = source.indexOf('{', source.indexOf(')', start));
+  if (bodyStart < 0) throw new Error('Missing function body ' + name);
+  let depth = 0;
+  let opened = false;
+  for (let index = bodyStart; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === '{') {
+      depth += 1;
+      opened = true;
+    } else if (char === '}') {
+      depth -= 1;
+      if (opened && depth === 0) return source.slice(start, index + 1);
+    }
+  }
+  throw new Error('Could not extract function ' + name);
+}
 
 for (const dynamicRoute of [
   "url.pathname === '/api/lyrics/search'",
@@ -40,3 +61,60 @@ if (noStoreStreamHeaders.length < 2) {
 if (!worker.includes("ctx.waitUntil(cache.put(request, cacheable.clone()))")) {
   throw new Error('withCache should explicitly cache only cacheable cloned responses');
 }
+
+const sandbox = {
+  Response,
+  caches: {
+    default: {
+      async match() {
+        return null;
+      },
+      async put() {}
+    }
+  },
+  cachePuts: 0,
+  ctx: {
+    waitUntil(promise) {
+      sandbox.cachePuts += 1;
+      return promise;
+    }
+  }
+};
+
+vm.createContext(sandbox);
+vm.runInContext([
+  extractFunction(worker, 'withCache', 'async function'),
+  extractFunction(worker, 'isCacheableApiResponse', 'async function')
+].join('\n'), sandbox);
+
+(async () => {
+  const request = new Request('https://worker.test/api/lyrics?title=missing');
+  const negativeResponse = await sandbox.withCache(request, sandbox.ctx, async () => {
+    return new Response(JSON.stringify({ found: false, lines: [] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  });
+  if (negativeResponse.headers.get('Cache-Control') !== 'no-store') {
+    throw new Error('withCache should return no-store for found:false responses');
+  }
+  if (sandbox.cachePuts !== 0) {
+    throw new Error('withCache should not cache found:false responses');
+  }
+
+  const positiveResponse = await sandbox.withCache(request, sandbox.ctx, async () => {
+    return new Response(JSON.stringify({ found: true, lines: ['ok'] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  });
+  if (positiveResponse.headers.get('Cache-Control') !== 'public, max-age=1800') {
+    throw new Error('withCache should keep bounded cache headers for found:true responses');
+  }
+  if (sandbox.cachePuts !== 1) {
+    throw new Error('withCache should cache found:true responses exactly once');
+  }
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
