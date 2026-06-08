@@ -2091,7 +2091,22 @@
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
     }
+    function normalizeFallbackToastMessage(message) {
+      var text = String(message || '');
+      if (/正在解析播放地址|正在启用备用线路|启用备用线路|备用线路/.test(text)) {
+        if (/已切换|已自动切换|成功/.test(text)) {
+          try {
+            return '已自动切换至: ' + getTrackSourceDisplayName(currentTrack);
+          } catch (error) {
+            return '已自动切换至: 可用音源';
+          }
+        }
+        return '正在搜索免费音源...';
+      }
+      return text;
+    }
     function showToast(message, duration) {
+      message = normalizeFallbackToastMessage(message);
       var existing = document.querySelector('.ljyyt-toast');
       if (existing) existing.remove();
       var el = document.createElement('div');
@@ -2413,12 +2428,22 @@
           (!artist || normalizeTrackText(item.artist) === artist);
       }) || null;
     }
+    function getSelectedPlaybackSources() {
+      return (Array.isArray(aggregatedSources) ? aggregatedSources : [])
+        .map(function(source) { return String(source || '').trim(); })
+        .filter(function(source, index, list) {
+          return source && source !== 'local' && source !== 'all' && list.indexOf(source) === index;
+        });
+    }
     function inferTrackSourceCandidates(track) {
       var candidates = [];
       var deferred = [];
+      var selectedSources = getSelectedPlaybackSources();
+      var selectedLookup = new Set(selectedSources);
       var add = function(source) {
         source = String(source || '').trim();
         if (!source || source === 'local' || source === 'all' || candidates.includes(source)) return;
+        if (!selectedLookup.has(source)) return;
         if (source === 'netease') {
           if (!deferred.includes(source)) deferred.push(source);
           return;
@@ -2440,8 +2465,7 @@
       ].forEach(function(pair) {
         if (label.includes(pair[0])) add(pair[1]);
       });
-      (aggregatedSources || []).forEach(add);
-      ['joox', 'kuwo', 'bilibili', 'migu'].forEach(add);
+      selectedSources.forEach(add);
       return candidates.concat(deferred);
     }
     function isTrackMatchCandidate(target, candidate) {

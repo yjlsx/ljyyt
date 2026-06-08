@@ -6,6 +6,7 @@ const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1
 
 for (const name of [
   'normalizeTrackText',
+  'getSelectedPlaybackSources',
   'inferTrackSourceCandidates',
   'isTrackMatchCandidate',
   'normalizeExternalTrack',
@@ -119,6 +120,7 @@ vm.runInContext([
   pickConstObject('TRADITIONAL_CHINESE_MAP'),
   pickFunction('parseTrackDuration'),
   pickFunction('normalizeTrackText'),
+  pickFunction('getSelectedPlaybackSources'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('isTrackMatchCandidate'),
   pickFunction('normalizeExternalTrack'),
@@ -185,7 +187,31 @@ vm.runInContext([
   if (sandbox.calls.some((call) => call.source === 'kuwo')) {
     throw new Error('Expected recovery options to skip failed source Kuwo');
   }
+  if (sandbox.calls.some((call) => call.source === 'migu' || call.source === 'bilibili')) {
+    throw new Error('Expected recovery to stay inside selected aggregate sources');
+  }
 
+  sandbox.aggregatedSources = ['local', 'kuwo'];
+  sandbox.calls = [];
+  const noSelectedAlternative = {
+    title: 'My Soul',
+    artist: 'July',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const noSelectedAlternativeUrl = await sandbox.recoverPlayableTrackUrl(noSelectedAlternative, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (noSelectedAlternativeUrl) {
+    throw new Error('Expected no fallback when no other aggregate source is selected');
+  }
+  if (sandbox.calls.length) {
+    throw new Error('Expected fallback not to query unselected default sources');
+  }
+
+  sandbox.aggregatedSources = ['local', 'joox', 'netease', 'kuwo'];
   sandbox.calls = [];
   const chineseFallback = {
     title: '我会等',

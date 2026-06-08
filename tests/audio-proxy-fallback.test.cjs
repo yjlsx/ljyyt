@@ -15,6 +15,12 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes(".replace(/&amp;/g, '&')")) {
     throw new Error(name + ' does not decode escaped ampersands in streaming URLs');
   }
+  if (!html.includes('function normalizeFallbackToastMessage')) {
+    throw new Error(name + ' does not normalize stale fallback toast messages at runtime');
+  }
+  if (!html.includes('message = normalizeFallbackToastMessage(message);')) {
+    throw new Error(name + ' showToast can still render stale fallback wording from dynamic callers');
+  }
   if (html.includes("showToast('正在解析播放地址...'")) {
     throw new Error(name + ' still shows the non-Otter resolving playback toast before auto match');
   }

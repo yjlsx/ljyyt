@@ -1688,7 +1688,7 @@ function sendFile(req, res, targetPath) {
     const ext = path.extname(targetPath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300'
+      'Cache-Control': ext === '.html' ? 'no-store' : 'public, max-age=300'
     });
     fs.createReadStream(targetPath).pipe(res);
   });
