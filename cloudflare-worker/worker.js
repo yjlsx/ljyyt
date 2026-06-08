@@ -52,6 +52,9 @@ export default {
   }
 };
 
+const MAX_UPSTREAM_JSON_BYTES = 2 * 1024 * 1024;
+const MAX_UPSTREAM_TEXT_BYTES = 256 * 1024;
+
 async function withCache(request, ctx, handler) {
   if (request.method !== 'GET') {
     return handler();
@@ -379,6 +382,39 @@ function scoreCandidateMatch(lookup, candidateTitle, candidateArtist) {
   return score;
 }
 
+async function readLimitedText(response, maxBytes) {
+  const reader = response.body && response.body.getReader ? response.body.getReader() : null;
+  if (!reader) {
+    const text = await response.text();
+    if (new TextEncoder().encode(text).byteLength > maxBytes) {
+      throw new Error('upstream response too large');
+    }
+    return text;
+  }
+
+  const chunks = [];
+  let receivedBytes = 0;
+  while (true) {
+    const result = await reader.read();
+    if (result.done) break;
+    const value = result.value || new Uint8Array();
+    receivedBytes += value.byteLength;
+    if (receivedBytes > maxBytes) {
+      try { await reader.cancel(); } catch (error) {}
+      throw new Error('upstream response too large');
+    }
+    chunks.push(value);
+  }
+
+  const buffer = new Uint8Array(receivedBytes);
+  let offset = 0;
+  chunks.forEach((chunk) => {
+    buffer.set(chunk, offset);
+    offset += chunk.byteLength;
+  });
+  return new TextDecoder().decode(buffer);
+}
+
 async function fetchJson(url) {
   const response = await fetch(url, {
     headers: {
@@ -389,7 +425,8 @@ async function fetchJson(url) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }
-  return response.json();
+  const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
+  return JSON.parse(text);
 }
 
 async function fetchLrclibExact(lookup) {
@@ -703,7 +740,7 @@ async function resolveKuwoRawUrl(rid) {
     if (!response.ok) {
       return '';
     }
-    const text = (await response.text()).trim();
+    const text = (await readLimitedText(response, MAX_UPSTREAM_TEXT_BYTES)).trim();
     if (text && /^https?:\/\//i.test(text)) {
       return text;
     }

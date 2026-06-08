@@ -10,6 +10,7 @@ const PORT = Number(process.env.PORT || 3000);
 const LYRICS_FILE = path.join(ROOT, 'data', 'lyrics.json');
 const THIRD_PARTY_LYRICS_URL = process.env.LYRICS_SEARCH_URL || '';
 const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq', 'local'];
+const MAX_UPSTREAM_TEXT_BYTES = 2 * 1024 * 1024;
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -203,13 +204,20 @@ function requestText(targetUrl, options = {}) {
   const method = options.method || 'GET';
   const headers = options.headers || {};
   const body = options.body || null;
+  const maxBytes = options.maxBytes || MAX_UPSTREAM_TEXT_BYTES;
 
   return new Promise((resolve, reject) => {
     const req = client.request(targetUrl, { method, headers }, (res) => {
       let data = '';
+      let receivedBytes = 0;
       res.setEncoding('utf8');
 
       res.on('data', (chunk) => {
+        receivedBytes += Buffer.byteLength(chunk, 'utf8');
+        if (receivedBytes > maxBytes) {
+          req.destroy(new Error('upstream response too large'));
+          return;
+        }
         data += chunk;
       });
 
