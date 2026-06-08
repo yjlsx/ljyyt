@@ -1643,9 +1643,25 @@ async function searchLyricsCandidates(query, requestedSources) {
   };
 }
 
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Accept, Range'
+  };
+}
+
+function sendCorsPreflight(res) {
+  res.writeHead(204, {
+    ...corsHeaders(),
+    'Cache-Control': 'no-store'
+  });
+  res.end();
+}
+
 function sendJson(res, statusCode, payload) {
   res.writeHead(statusCode, {
-    'Access-Control-Allow-Origin': '*',
+    ...corsHeaders(),
     'Cache-Control': 'no-store',
     'Content-Type': 'application/json; charset=utf-8'
   });
@@ -1703,6 +1719,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   const requestUrl = new URL(req.url, `http://${req.headers.host || `localhost:${PORT}`}`);
+
+  if (req.method === 'OPTIONS') {
+    sendCorsPreflight(res);
+    return;
+  }
 
   if (requestUrl.pathname === '/api/lyrics') {
     try {

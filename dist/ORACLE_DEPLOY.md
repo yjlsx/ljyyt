@@ -124,15 +124,11 @@ AUDIO_RESOLVER_URL=https://your-api.example.com/audio/resolve npm start
 }
 ```
 
-## 4. 可选音频代理
+## 4. 音频代理
 
-如果某些授权音频地址需要由 Oracle 服务器转发，可启用 allowlist 代理：
+如果某些授权音频地址需要由 Oracle 服务器转发，页面会通过同源接口 `/api/audio-proxy?url=...` 拉取音频。该代理默认可用，但只接受 `http`/`https` 公网地址；服务器会拒绝 localhost、内网、链路本地地址，并在 DNS 解析后再次检查，降低 SSRF 和 DNS rebinding 风险。
 
-```bash
-AUDIO_PROXY_MODE=allowlist AUDIO_PROXY_ALLOWLIST=example.com,cdn.example.com npm start
-```
-
-没有配置 `AUDIO_PROXY_ALLOWLIST` 时，代理默认不可用，避免服务器变成开放代理。
+代理会转发浏览器的 `Range` 请求，并向响应暴露 `Accept-Ranges`、`Content-Range`、`Content-Length` 和 `Content-Type`，便于播放器显示进度和拖动。代理响应使用 `Cache-Control: no-store`，不缓存用户提供的音频地址。
 
 ## 5. 歌词和封面
 
