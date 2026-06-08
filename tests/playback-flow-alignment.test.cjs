@@ -25,7 +25,7 @@ for (const file of ['index.html', 'dist/index.html']) {
   const body = pickFunction(script, 'playCurrentTrack');
 
   for (const marker of [
-    'unlockAudioContext();',
+    'unlockAudioContext(!hadPlayableSrc);',
     'if (currentTrack.src) {',
     "if (audioPlayer.getAttribute('src') !== currentTrack.src)",
     "if (requestId !== _playRequestId) return;",

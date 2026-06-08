@@ -2971,6 +2971,7 @@
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 6500;
+    const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
       return [
@@ -3015,13 +3016,22 @@
     function normalizeAudioUrl(url) {
       return String(url || '').trim().replace(/&amp;/g, '&');
     }
+    function isAutoplayPolicyBlocked(error) {
+      var name = String(error && error.name || '');
+      var message = String(error && error.message || error || '').toLowerCase();
+      return name === 'NotAllowedError' || message.includes('user didn') || message.includes('autoplay');
+    }
     function getAudioProxyUrl(url) {
       var base = _isLocalDev ? '' : ljyytApiBase;
       return base + '/api/audio-proxy?url=' + encodeURIComponent(normalizeAudioUrl(url));
     }
-    async function tryProxyPlaybackLine(rawUrl) {
+    function isSilentAudioPrimerSrc(url) {
+      return String(url || '') === SILENT_AUDIO_DATA_URI;
+    }
+    async function tryProxyPlaybackLine(rawUrl, requestId) {
       rawUrl = normalizeAudioUrl(rawUrl);
       if (!/^https?:\/\//i.test(rawUrl) || isAudioProxyUrl(rawUrl)) return false;
+      if (requestId && requestId !== _playRequestId) return false;
       var proxyUrl = getAudioProxyUrl(rawUrl);
       var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
       try {
@@ -3031,7 +3041,8 @@
         audioPlayer.load();
         _isResolvingUrl = false;
         await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
-        if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio proxy line did not start playback');
+        if (requestId && requestId !== _playRequestId) return false;
+        if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio proxy line did not start playback');
         _playRetryCount = 0;
         reconcileCurrentTrackInQueue(previousTrack);
         addHistory(currentTrack);
@@ -3040,18 +3051,23 @@
         return true;
       } catch (error) {
         _isResolvingUrl = false;
+        if (requestId && requestId !== _playRequestId) return false;
+        if (isAutoplayPolicyBlocked(error)) return false;
         rememberPlaybackFailure(currentTrack, proxyUrl, currentTrack && currentTrack.source);
         console.warn('tryProxyPlaybackLine failed', error);
         return false;
       }
     }
-    async function switchToFallbackSource(reason) {
+    async function switchToFallbackSource(reason, requestId, failedUrl) {
+      if (requestId && requestId !== _playRequestId) return false;
       if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
-      var failedUrl = currentTrack.src || audioPlayer.getAttribute('src') || '';
-      if (await tryProxyPlaybackLine(failedUrl)) return true;
+      failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
+      if (await tryProxyPlaybackLine(failedUrl, requestId)) return true;
+      if (requestId && requestId !== _playRequestId) return false;
       rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
+        if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack);
         var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
         try {
@@ -3066,6 +3082,7 @@
             skipUrls: state.urls.slice()
           });
           _isResolvingUrl = false;
+          if (requestId && requestId !== _playRequestId) return false;
           if (!fallbackUrl) return false;
           if (audioPlayer.getAttribute('src') !== fallbackUrl) {
             audioPlayer.src = fallbackUrl;
@@ -3076,7 +3093,8 @@
             restoredPlaybackTime = 0;
           }
           await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
-          if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
+          if (requestId && requestId !== _playRequestId) return false;
+          if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
           reconcileCurrentTrackInQueue(previousTrack);
@@ -3090,17 +3108,36 @@
           return true;
         } catch (error) {
           _isResolvingUrl = false;
+          if (requestId && requestId !== _playRequestId) return false;
+          if (isAutoplayPolicyBlocked(error)) return false;
           rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.getAttribute('src') || '', currentTrack && currentTrack.source);
           console.warn('switchToFallbackSource failed', error);
         }
       }
       return false;
     }
-    function unlockAudioContext() {
+    function unlockAudioContext(useSilentPrimer) {
       if (_audioUnlocked) return;
       try {
-        audioPlayer.volume = audioPlayer.volume;
-        audioPlayer.play().then(function() { audioPlayer.pause(); }).catch(function() {});
+        if (useSilentPrimer && (!audioPlayer.getAttribute('src') || isSilentAudioPrimerSrc(audioPlayer.getAttribute('src')))) {
+          var wasMuted = audioPlayer.muted;
+          audioPlayer.muted = true;
+          audioPlayer.src = SILENT_AUDIO_DATA_URI;
+          audioPlayer.load();
+          audioPlayer.play().then(function() {
+            if (isSilentAudioPrimerSrc(audioPlayer.getAttribute('src'))) {
+              audioPlayer.pause();
+              audioPlayer.removeAttribute('src');
+              audioPlayer.load();
+            }
+            audioPlayer.muted = wasMuted;
+          }).catch(function() {
+            audioPlayer.muted = wasMuted;
+          });
+        } else {
+          audioPlayer.volume = audioPlayer.volume;
+          audioPlayer.play().then(function() { audioPlayer.pause(); }).catch(function() {});
+        }
         _audioUnlocked = true;
       } catch (e) {}
     }
@@ -3150,8 +3187,9 @@
       pausePreviewVideo();
       if (!currentTrack) return;
       var requestId = ++_playRequestId;
-      if (!audioPlayer.getAttribute('src')) setCurrentTrack(currentTrack);
-      unlockAudioContext();
+      if (!audioPlayer.getAttribute('src') || isSilentAudioPrimerSrc(audioPlayer.getAttribute('src'))) setCurrentTrack(currentTrack);
+      var hadPlayableSrc = !!currentTrack.src;
+      unlockAudioContext(!hadPlayableSrc);
       if (isDeprecatedKuwoAudioUrl(currentTrack.src)) currentTrack.src = '';
       if (currentTrack.src) {
         if (audioPlayer.getAttribute('src') !== currentTrack.src) {
@@ -3173,7 +3211,7 @@
           return;
         } catch (e) {
           if (requestId !== _playRequestId) return;
-          if (await switchToFallbackSource('play-failed')) return;
+          if (await switchToFallbackSource('play-failed', requestId)) return;
         }
       }
       _isResolvingUrl = true;
@@ -3188,6 +3226,10 @@
         _isResolvingUrl = false;
       }
       if (requestId !== _playRequestId) return;
+      if (playableUrl) {
+        currentTrack.src = playableUrl;
+        reconcileCurrentTrackInQueue(trackToPlay);
+      }
       if (playableUrl && audioPlayer.getAttribute('src') !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
@@ -3211,7 +3253,13 @@
         savePlaybackState(true);
       } catch (error) {
         if (requestId !== _playRequestId) return;
-        if (await switchToFallbackSource('play-failed')) return;
+        if (isAutoplayPolicyBlocked(error)) {
+          setPlayIcons(false);
+          if (audioPlayer.getAttribute('src')) savePlaybackState(true);
+          showToast('音源已就绪，请再次点击播放');
+          return;
+        }
+        if (await switchToFallbackSource('play-failed', requestId)) return;
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
@@ -3700,21 +3748,24 @@
       var batchId = ++_urlResolveId;
       var pending = tracks.filter(function(t) { return !t.src && t.source && t.source !== 'local' && t.urlId; });
       if (!pending.length) return;
-      var PRE_BATCH = 3;
+      var PREWARM_CONCURRENCY = 8;
       var idx = 0;
-      function nextBatch() {
+      var active = 0;
+      function pump() {
         if (batchId !== _urlResolveId) return;
-        var slice = pending.slice(idx, idx + PRE_BATCH);
-        if (!slice.length) return;
-        idx += PRE_BATCH;
-        Promise.all(slice.map(function(track) {
-          return resolveExternalTrackUrl(track).then(function(url) {
+        while (active < PREWARM_CONCURRENCY && idx < pending.length) {
+          let track = pending[idx++];
+          active += 1;
+          resolveExternalTrackUrl(track).then(function(url) {
             if (batchId !== _urlResolveId) return;
             if (url) track.src = url;
-          }).catch(function() {});
-        })).then(nextBatch);
+          }).catch(function() {}).finally(function() {
+            active -= 1;
+            pump();
+          });
+        }
       }
-      nextBatch();
+      pump();
     }
     function resolveSearchCovers(tracks, container) {
       var batchId = ++_coverResolveId;
@@ -5811,9 +5862,12 @@
     audioPlayer.addEventListener('play', () => setPlayIcons(true));
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
-      if (!currentTrack || !audioPlayer.getAttribute('src') || _isResolvingUrl) return;
+      var requestId = _playRequestId;
+      var failedSrc = audioPlayer.getAttribute('src') || '';
+      if (!currentTrack || !failedSrc || isSilentAudioPrimerSrc(failedSrc) || _isResolvingUrl) return;
       console.warn('Audio playback error, attempting source fallback');
-      switchToFallbackSource('audio-error').then(function(switched) {
+      switchToFallbackSource('audio-error', requestId, failedSrc).then(function(switched) {
+        if (requestId !== _playRequestId || failedSrc !== audioPlayer.getAttribute('src')) return;
         if (switched) return;
         setPlayIcons(false);
         showToast('播放出错，请重试或切换歌曲');

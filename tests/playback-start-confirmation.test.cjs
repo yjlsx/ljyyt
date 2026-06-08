@@ -45,7 +45,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' does not retry fallback when primary play stays paused');
   }
 
-  if (!html.includes("if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');")) {
+  if (!html.includes("if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');")) {
     throw new Error(file + ' does not verify fallback playback startup');
   }
 }
