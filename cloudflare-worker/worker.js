@@ -54,6 +54,7 @@ export default {
 
 const MAX_UPSTREAM_JSON_BYTES = 2 * 1024 * 1024;
 const MAX_UPSTREAM_TEXT_BYTES = 256 * 1024;
+const WORKER_UPSTREAM_TIMEOUT_MS = 12000;
 
 async function withCache(request, ctx, handler) {
   if (request.method !== 'GET') {
@@ -300,7 +301,7 @@ async function handleCoverRequest(url) {
   coverUrl.searchParams.set('title', lookup.title);
   coverUrl.searchParams.set('artist', lookup.artist);
 
-  const response = await fetch(coverUrl.toString(), {
+  const response = await fetchWithTimeout(coverUrl.toString(), {
     method: 'GET',
     redirect: 'follow',
     headers: {
@@ -422,8 +423,44 @@ async function readLimitedText(response, maxBytes) {
   return new TextDecoder().decode(buffer);
 }
 
+async function fetchWithTimeout(url, options = {}) {
+  const timeoutMs = Number(options.timeoutMs) || WORKER_UPSTREAM_TIMEOUT_MS;
+  const controller = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort(new Error('upstream request timeout'));
+  }, timeoutMs);
+
+  if (options.signal) {
+    if (options.signal.aborted) {
+      clearTimeout(timer);
+      throw options.signal.reason || new Error('upstream request aborted');
+    }
+    options.signal.addEventListener('abort', () => {
+      controller.abort(options.signal.reason || new Error('upstream request aborted'));
+    }, { once: true });
+  }
+
+  const fetchOptions = Object.assign({}, options, {
+    signal: controller.signal
+  });
+  delete fetchOptions.timeoutMs;
+
+  try {
+    return await fetch(url, fetchOptions);
+  } catch (error) {
+    if (timedOut) {
+      throw new Error('upstream request timeout');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchJson(url) {
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     headers: {
       'Accept': 'application/json',
       'User-Agent': 'ljyyt-worker/1.0'
@@ -737,7 +774,7 @@ async function resolveKuwoRawUrl(rid) {
   if (!rid) return '';
   const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${encodeURIComponent(rid)}`;
   try {
-    const response = await fetch(target, {
+    const response = await fetchWithTimeout(target, {
       headers: {
         'Accept': 'text/plain,*/*',
         'Referer': 'https://www.kuwo.cn/',
