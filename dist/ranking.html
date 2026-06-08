@@ -230,17 +230,36 @@
       if (i === 2) return 'bronze';
       return 'normal';
     }
+    function readRankingStorageValue(key, fallback) {
+      try {
+        var value = localStorage.getItem(key);
+        return value == null ? fallback : value;
+      } catch (error) {
+        return fallback;
+      }
+    }
+    function readRankingStorageJson(key, fallback) {
+      try {
+        var value = JSON.parse(readRankingStorageValue(key, 'null'));
+        return value == null ? fallback : value;
+      } catch (error) {
+        return fallback;
+      }
+    }
 
     // 深色模式
-    if (localStorage.getItem('ljyyt_dark_mode') === 'true') document.body.classList.add('dark-mode');
+    if (readRankingStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
 
     // 加载数据
     var playCounts = {};
     var favorites = [];
     var playHistory = [];
-    try { playCounts = JSON.parse(localStorage.getItem('ljyyt_play_count')) || {}; } catch(e) {}
-    try { favorites = JSON.parse(localStorage.getItem('ljyyt_favorites')) || []; } catch(e) {}
-    try { playHistory = JSON.parse(localStorage.getItem('ljyyt_play_history')) || []; } catch(e) {}
+    playCounts = readRankingStorageJson('ljyyt_play_count', {});
+    if (!playCounts || typeof playCounts !== 'object' || Array.isArray(playCounts)) playCounts = {};
+    favorites = readRankingStorageJson('ljyyt_favorites', []);
+    if (!Array.isArray(favorites)) favorites = [];
+    playHistory = readRankingStorageJson('ljyyt_play_history', []);
+    if (!Array.isArray(playHistory)) playHistory = [];
 
     function renderRank(containerId, tracks, type) {
       var container = document.getElementById(containerId);
