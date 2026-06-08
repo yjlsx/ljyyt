@@ -3700,7 +3700,7 @@
       container.innerHTML = tracks.map((track, index) => (
         '<div class="track" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
-          '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist + (artistSuffix || '')) + '</div></div>' +
+          '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist + (artistSuffix || '')) + (shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source-tag">' + escapeMarkup(track.sourceLabel) + '</span>' : '') + '</div></div>' +
           '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>' +
         '</div>'
       )).join('');
@@ -3732,7 +3732,7 @@
       sourceLabel = sourceLabel || activeProvider;
       container.innerHTML = tracks.map(function(track, index) {
         var sourceClass = String(track.source || 'local').replace(/[^a-z0-9_-]/gi, '');
-        var badge = '<span class="source-badge ' + escapeMarkup(sourceClass) + '">' + escapeMarkup(track.sourceLabel || getSourceLabel(track.source) || sourceLabel) + '</span>';
+        var badge = shouldShowSourceLabels() ? '<span class="source-badge ' + escapeMarkup(sourceClass) + '">' + escapeMarkup(track.sourceLabel || getSourceLabel(track.source) || sourceLabel) + '</span>' : '';
         var variantBadge = '';
         if (track.variants && track.variants.length) {
           variantBadge = '<span class="variant-badge" data-variant-index="' + index + '">' + iconHtml('layers') + '+' + track.variants.length + '</span>';
@@ -4368,6 +4368,9 @@
         bilibili: 'B站'
       }[source] || source || '未知来源';
     }
+    function shouldShowSourceLabels() {
+      return !appSettings || appSettings.showSourceLabels !== false;
+    }
     function getTrackSourceDisplayName(track) {
       if (!track) return '备用音源';
       var sourceLabel = getSourceLabel(track.source);
@@ -4771,7 +4774,7 @@
         const actionButton = isDrawer
           ? '<button class="queue-remove" aria-label="删除" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
           : '<button class="dots" aria-label="更多">' + iconHtml('more') + '</button>';
-        var sourceTag = track.sourceLabel && track.source !== 'local' ? '<span class="source">' + escapeMarkup(track.sourceLabel) + '</span>' : '';
+        var sourceTag = shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source">' + escapeMarkup(track.sourceLabel) + '</span>' : '';
         return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
           '<div style="position:relative;flex:none"><img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '><span class="playing-bars"><i></i><i></i><i></i></span></div>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + sourceTag + '</div></div>' +
@@ -5047,7 +5050,7 @@
         var cover = track.cover || track.pic || DEFAULT_COVER;
         var title = escapeMarkup(track.title || track.name || '未知歌曲');
         var artist = escapeMarkup(track.artist || track.artists || '未知歌手');
-        var sourceLabel = track.sourceLabel || track.source || '';
+        var sourceLabel = shouldShowSourceLabels() ? (track.sourceLabel || track.source || '') : '';
         return '<div class="track" onclick="playUserPlaylistTrack(' + i + ')">' +
           '<img src="' + cover + '" referrerpolicy="no-referrer" alt="" onerror="this.src=\'' + DEFAULT_COVER + '\'">' +
           '<div class="track-meta"><div class="track-name">' + title + '</div><div class="artist">' + artist + (sourceLabel ? '<span class="source-tag">' + escapeMarkup(sourceLabel) + '</span>' : '') + '</div></div>' +
@@ -5833,6 +5836,13 @@
       if (key) {
         appSettings[key] = enabled;
         saveAppSettings();
+      }
+      if (key === 'showSourceLabels') {
+        renderSearchRows(currentSearchState.songs || [], activeProvider);
+        renderFavorites();
+        renderQueue();
+        renderHistory();
+        renderUserPlaylistDetail();
       }
     }
     function openFullPlayer() {
