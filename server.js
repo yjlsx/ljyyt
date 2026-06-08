@@ -482,7 +482,7 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': proxyRes.headers['content-type'] || 'audio/mpeg',
       'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes',
-      'Cache-Control': 'public, max-age=1800'
+      'Cache-Control': 'no-store'
     };
     if (proxyRes.headers['content-length']) responseHeaders['Content-Length'] = proxyRes.headers['content-length'];
     if (proxyRes.headers['content-range']) responseHeaders['Content-Range'] = proxyRes.headers['content-range'];

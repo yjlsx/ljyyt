@@ -34,6 +34,19 @@ for (const [name, content] of [['server.js', server], ['cloudflare-worker/worker
   }
 }
 
+const streamStart = server.indexOf('async function streamRemoteAudio');
+const streamEnd = server.indexOf('async function streamKuwoAudio', streamStart);
+if (streamStart < 0 || streamEnd < streamStart) {
+  throw new Error('Could not extract server audio proxy stream function');
+}
+const streamRemoteAudioBody = server.slice(streamStart, streamEnd);
+if (!streamRemoteAudioBody.includes("'Cache-Control': 'no-store'")) {
+  throw new Error('server.js audio proxy responses should use Cache-Control: no-store');
+}
+if (streamRemoteAudioBody.includes("'Cache-Control': 'public, max-age=1800'")) {
+  throw new Error('server.js audio proxy should not publicly cache user-provided audio URLs');
+}
+
 const helperStart = server.indexOf('function isBlockedAudioProxyHost');
 const helperEnd = server.indexOf('async function streamRemoteAudio');
 if (helperStart < 0 || helperEnd < helperStart) {
