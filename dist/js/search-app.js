@@ -31,6 +31,9 @@
   var searchIsPlaying = false;
   var searchCurrentTrack = null;
   var searchCurrentIndex = -1;
+  var searchRequestId = 0;
+  var activeSearchAbortController = null;
+  var searchPlayRequestId = 0;
   var discoverPlaylists = [];
 
   var sourceMap = {
@@ -398,7 +401,7 @@
     });
   }
 
-  async function runSearch(query) {
+  async function runSearch(query, signal) {
     var provider = sourceMap[activeSource] || sourceMap.aggregate;
     var providerSource = provider.source;
     var localResults = providerSource === 'local' || providerSource === 'all' ? getLocalResults(query) : [];
@@ -407,11 +410,17 @@
     if (providerSource === 'all') {
       var externalSources = getAggregatedSources().filter(function(source) { return source !== 'local'; });
       var sets = await Promise.all(externalSources.map(function(source) {
-        return searchExternalSource(query, source).catch(function() { return []; });
+        return searchExternalSource(query, source, signal).catch(function(error) {
+          if (error && error.name === 'AbortError') throw error;
+          return [];
+        });
       }));
       externalResults = sets.reduce(function(acc, list) { return acc.concat(list); }, []);
     } else if (providerSource !== 'local') {
-      externalResults = await searchExternalSource(query, providerSource).catch(function() { return []; });
+      externalResults = await searchExternalSource(query, providerSource, signal).catch(function(error) {
+        if (error && error.name === 'AbortError') throw error;
+        return [];
+      });
     }
 
     return {
@@ -606,14 +615,23 @@
   }
 
   async function performSearch(query) {
+    var requestId = ++searchRequestId;
+    if (activeSearchAbortController) activeSearchAbortController.abort();
+    activeSearchAbortController = new AbortController();
+    var signal = activeSearchAbortController.signal;
     var status = document.getElementById('search-status');
     if (status) status.textContent = '正在搜索 "' + query + '" ...';
     try {
-      var results = await runSearch(query);
+      var results = await runSearch(query, signal);
+      if (requestId !== searchRequestId) return;
       displayResults(results, query);
     } catch (error) {
+      if (error && error.name === 'AbortError') return;
+      if (requestId !== searchRequestId) return;
       if (status) status.textContent = '搜索暂时不可用，请稍后重试。';
       displayResults({ music: [], video: [], playlists: getPlaylistCards(query) }, query);
+    } finally {
+      if (requestId === searchRequestId) activeSearchAbortController = null;
     }
   }
 
@@ -698,6 +716,7 @@
 
   async function playTrack(track, explicitIndex) {
     if (!track) return;
+    var requestId = ++searchPlayRequestId;
     searchCurrentIndex = typeof explicitIndex === 'number' ? explicitIndex : currentResults.music.indexOf(track);
     if (track.source === 'local') {
       playLocalTrack(track);
@@ -705,6 +724,7 @@
     }
     updateMiniPlayer(track);
     var url = track.src || await resolveExternalTrackUrl(track);
+    if (requestId !== searchPlayRequestId) return;
     if (!url) {
       openActionSheet(Object.assign({}, track, { error: '暂时无法解析该音源播放地址' }));
       return;
@@ -713,10 +733,12 @@
     if (searchAudio) {
       searchAudio.src = url;
       searchAudio.play().then(function() {
+        if (requestId !== searchPlayRequestId) return;
         searchIsPlaying = true;
         saveSearchPlayerState(track, url);
         updateMiniPlayButton();
       }).catch(function() {
+        if (requestId !== searchPlayRequestId) return;
         searchIsPlaying = false;
         updateMiniPlayButton();
       });
