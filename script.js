@@ -13614,13 +13614,6 @@ function initPlayerEvents() {
   console.log('✅ 播放器事件监听初始化完成');
 }
 
-// 页面卸载前保存状态
-window.addEventListener('beforeunload', function() {
-  if (typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
-    persistCurrentPlayerState(musicData[currentTrackIndex], audioPlayer.currentTime, isPlaying, audioPlayer.volume);
-  }
-});
-
 // 页面隐藏时保存状态（切换标签页等情况）
 document.addEventListener('visibilitychange', function() {
   if (document.hidden && typeof isPlaying !== 'undefined' && typeof audioPlayer !== 'undefined' && audioPlayer && typeof musicData !== 'undefined' && musicData[currentTrackIndex]) {
