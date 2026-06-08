@@ -2926,8 +2926,33 @@
       if (!currentTrack) return;
       var requestId = ++_playRequestId;
       if (!audioPlayer.getAttribute('src')) setCurrentTrack(currentTrack);
+      unlockAudioContext();
       if (isDeprecatedKuwoAudioUrl(currentTrack.src)) currentTrack.src = '';
+      if (currentTrack.src) {
+        if (audioPlayer.getAttribute('src') !== currentTrack.src) {
+          audioPlayer.src = currentTrack.src;
+          audioPlayer.load();
+        }
+        try {
+          if (restoredPlaybackTime && audioPlayer.readyState > 0) {
+            audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
+            restoredPlaybackTime = 0;
+          }
+          await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS);
+          if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
+          if (requestId !== _playRequestId) return;
+          _playRetryCount = 0;
+          addHistory(currentTrack);
+          setPlayIcons(true);
+          savePlaybackState(true);
+          return;
+        } catch (e) {
+          if (requestId !== _playRequestId) return;
+          if (await switchToFallbackSource('play-failed')) return;
+        }
+      }
       _isResolvingUrl = true;
+      setPlayIcons(true);
       var trackToPlay = currentTrack;
       var playableUrl = '';
       try {
@@ -2937,14 +2962,14 @@
       } finally {
         _isResolvingUrl = false;
       }
+      if (requestId !== _playRequestId) return;
       if (playableUrl && audioPlayer.getAttribute('src') !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();
       }
       if (!playableUrl) {
         setPlayIcons(false);
-        showToast('当前音源暂时无法播放，正在尝试下一首...');
-        setTimeout(function() { nextTrack(); }, 2000);
+        showToast('当前音源暂时无法播放');
         return;
       }
       try {
@@ -2954,21 +2979,26 @@
         }
         await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS);
         if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
+        if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState(true);
       } catch (error) {
+        if (requestId !== _playRequestId) return;
         if (await switchToFallbackSource('play-failed')) return;
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
+          _isResolvingUrl = true;
           audioPlayer.removeAttribute('src');
           audioPlayer.load();
+          _isResolvingUrl = false;
           return playCurrentTrack();
         }
         _playRetryCount = 0;
         setPlayIcons(false);
+        showToast('播放失败，请重试或切换歌曲');
       }
     }
     function pauseCurrentTrack() {
