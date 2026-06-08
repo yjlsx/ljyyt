@@ -368,6 +368,29 @@ async function resolveKuwoUrl(rid) {
   }
 }
 
+function isBlockedAudioProxyHost(hostname) {
+  const host = String(hostname || '').trim().toLowerCase().replace(/^\[|\]$/g, '');
+  if (!host) return true;
+  if (host === 'localhost' || host.endsWith('.localhost')) return true;
+  if (host === 'metadata.google.internal') return true;
+  if (host === '::1' || host === '0:0:0:0:0:0:0:1') return true;
+  if (/^(fc|fd)[0-9a-f]{2}:/i.test(host) || /^fe[89ab][0-9a-f]:/i.test(host)) return true;
+
+  const ipv4Match = host.match(/^(\d{1,3})(?:\.(\d{1,3})){3}$/);
+  if (!ipv4Match) return false;
+
+  const parts = host.split('.').map((part) => Number(part));
+  if (parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return true;
+  const first = parts[0];
+  const second = parts[1];
+  if (first === 0 || first === 10 || first === 127) return true;
+  if (first === 169 && second === 254) return true;
+  if (first === 172 && second >= 16 && second <= 31) return true;
+  if (first === 192 && second === 168) return true;
+  if (first >= 224) return true;
+  return false;
+}
+
 function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
   let parsed;
   try {
@@ -378,6 +401,10 @@ function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
   }
   if (!['http:', 'https:'].includes(parsed.protocol)) {
     sendJson(res, 400, { url: '', error: 'Unsupported url' });
+    return;
+  }
+  if (isBlockedAudioProxyHost(parsed.hostname)) {
+    sendJson(res, 403, { url: '', error: 'Blocked audio proxy host' });
     return;
   }
 
@@ -1540,27 +1567,46 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function safeDecodePathname(pathname) {
+  try {
+    return decodeURIComponent(String(pathname || ''));
+  } catch (error) {
+    return null;
+  }
+}
+
+function resolveStaticPath(pathname) {
+  const decodedPathname = safeDecodePathname(pathname);
+  if (decodedPathname === null) return null;
+  const relativePath = decodedPathname === '/' ? '/index.html' : decodedPathname;
+  const resolvedPath = path.resolve(ROOT, '.' + relativePath.replace(/\\/g, '/'));
+  const relativeToRoot = path.relative(ROOT, resolvedPath);
+  if (relativeToRoot && (relativeToRoot.startsWith('..') || path.isAbsolute(relativeToRoot))) {
+    return null;
+  }
+  return resolvedPath;
+}
+
 function sendFile(req, res, targetPath) {
-  const parsedPath = path.normalize(targetPath);
-  if (!parsedPath.startsWith(ROOT)) {
+  if (!targetPath) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
   }
 
-  fs.stat(parsedPath, (statError, stats) => {
+  fs.stat(targetPath, (statError, stats) => {
     if (statError || !stats.isFile()) {
       res.writeHead(404);
       res.end('Not found');
       return;
     }
 
-    const ext = path.extname(parsedPath).toLowerCase();
+    const ext = path.extname(targetPath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
       'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300'
     });
-    fs.createReadStream(parsedPath).pipe(res);
+    fs.createReadStream(targetPath).pipe(res);
   });
 }
 
@@ -1673,9 +1719,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  let relativePath = decodeURIComponent(requestUrl.pathname);
-  if (relativePath === '/') relativePath = '/index.html';
-  const absolutePath = path.join(ROOT, relativePath.replace(/^\/+/, ''));
+  const absolutePath = resolveStaticPath(requestUrl.pathname);
+  if (!absolutePath) {
+    sendJson(res, 400, { error: 'Bad request path' });
+    return;
+  }
   sendFile(req, res, absolutePath);
 });
 

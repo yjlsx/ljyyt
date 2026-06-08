@@ -736,6 +736,29 @@ async function handleKuwoAudioRequest(request, url) {
   });
 }
 
+function isBlockedAudioProxyHost(hostname) {
+  const host = String(hostname || '').trim().toLowerCase().replace(/^\[|\]$/g, '');
+  if (!host) return true;
+  if (host === 'localhost' || host.endsWith('.localhost')) return true;
+  if (host === 'metadata.google.internal') return true;
+  if (host === '::1' || host === '0:0:0:0:0:0:0:1') return true;
+  if (/^(fc|fd)[0-9a-f]{2}:/i.test(host) || /^fe[89ab][0-9a-f]:/i.test(host)) return true;
+
+  const ipv4Match = host.match(/^(\d{1,3})(?:\.(\d{1,3})){3}$/);
+  if (!ipv4Match) return false;
+
+  const parts = host.split('.').map((part) => Number(part));
+  if (parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return true;
+  const first = parts[0];
+  const second = parts[1];
+  if (first === 0 || first === 10 || first === 127) return true;
+  if (first === 169 && second === 254) return true;
+  if (first === 172 && second >= 16 && second <= 31) return true;
+  if (first === 192 && second === 168) return true;
+  if (first >= 224) return true;
+  return false;
+}
+
 async function handleAudioProxyRequest(request, url) {
   const rawUrl = String(url.searchParams.get('url') || '').trim();
   let audioUrl;
@@ -746,6 +769,9 @@ async function handleAudioProxyRequest(request, url) {
   }
   if (!['http:', 'https:'].includes(audioUrl.protocol)) {
     return jsonResponse({ url: '', error: 'Unsupported url' }, 400);
+  }
+  if (isBlockedAudioProxyHost(audioUrl.hostname)) {
+    return jsonResponse({ url: '', error: 'Blocked audio proxy host' }, 403);
   }
   const headers = {
     'Accept': '*/*',

@@ -3115,8 +3115,14 @@
       _isResolvingUrl = true;
       setPlayIcons(true);
       var trackToPlay = currentTrack;
-      var playableUrl = await ensurePlayableTrackUrl(trackToPlay);
-      _isResolvingUrl = false;
+      var playableUrl = '';
+      try {
+        playableUrl = await ensurePlayableTrackUrl(trackToPlay);
+      } catch (error) {
+        console.warn('ensurePlayableTrackUrl failed', error);
+      } finally {
+        _isResolvingUrl = false;
+      }
       if (requestId !== _playRequestId) return;
       if (playableUrl && audioPlayer.getAttribute('src') !== playableUrl) {
         audioPlayer.src = playableUrl;

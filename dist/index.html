@@ -1922,12 +1922,14 @@
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
     const SEARCH_RESULT_LIMIT = 200;
+    var _isLocalDev = /^(localhost|127\.)/.test(location.hostname);
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
         var suffix = url.slice(gdMusicApiBase.length);
         gdMusicFallbackBases.forEach(function(base) { urls.push(base + suffix); });
       }
+      if (!_isLocalDev && urls[0].indexOf(gdMusicApiBase) === 0) urls.shift();
       for (var i = 0; i < urls.length; i++) {
         try {
           var response = await fetch(urls[i], signal ? { signal: signal } : undefined);
@@ -2885,8 +2887,15 @@
       if (!audioPlayer.getAttribute('src')) setCurrentTrack(currentTrack);
       if (isDeprecatedKuwoAudioUrl(currentTrack.src)) currentTrack.src = '';
       _isResolvingUrl = true;
-      var playableUrl = await ensurePlayableTrackUrl(currentTrack);
-      _isResolvingUrl = false;
+      var trackToPlay = currentTrack;
+      var playableUrl = '';
+      try {
+        playableUrl = await ensurePlayableTrackUrl(trackToPlay);
+      } catch (error) {
+        console.warn('ensurePlayableTrackUrl failed', error);
+      } finally {
+        _isResolvingUrl = false;
+      }
       if (playableUrl && audioPlayer.getAttribute('src') !== playableUrl) {
         audioPlayer.src = playableUrl;
         audioPlayer.load();

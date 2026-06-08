@@ -1393,27 +1393,46 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function safeDecodePathname(pathname) {
+  try {
+    return decodeURIComponent(String(pathname || ''));
+  } catch (error) {
+    return null;
+  }
+}
+
+function resolveStaticPath(pathname) {
+  const decodedPathname = safeDecodePathname(pathname);
+  if (decodedPathname === null) return null;
+  const relativePath = decodedPathname === '/' ? '/index.html' : decodedPathname;
+  const resolvedPath = path.resolve(ROOT, '.' + relativePath.replace(/\\/g, '/'));
+  const relativeToRoot = path.relative(ROOT, resolvedPath);
+  if (relativeToRoot && (relativeToRoot.startsWith('..') || path.isAbsolute(relativeToRoot))) {
+    return null;
+  }
+  return resolvedPath;
+}
+
 function sendFile(req, res, targetPath) {
-  const parsedPath = path.normalize(targetPath);
-  if (!parsedPath.startsWith(ROOT)) {
+  if (!targetPath) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
   }
 
-  fs.stat(parsedPath, (statError, stats) => {
+  fs.stat(targetPath, (statError, stats) => {
     if (statError || !stats.isFile()) {
       res.writeHead(404);
       res.end('Not found');
       return;
     }
 
-    const ext = path.extname(parsedPath).toLowerCase();
+    const ext = path.extname(targetPath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
       'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300'
     });
-    fs.createReadStream(parsedPath).pipe(res);
+    fs.createReadStream(targetPath).pipe(res);
   });
 }
 
@@ -1484,9 +1503,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  let relativePath = decodeURIComponent(requestUrl.pathname);
-  if (relativePath === '/') relativePath = '/player.html';
-  const absolutePath = path.join(ROOT, relativePath.replace(/^\/+/, ''));
+  const absolutePath = resolveStaticPath(requestUrl.pathname);
+  if (!absolutePath) {
+    sendJson(res, 400, { error: 'Bad request path' });
+    return;
+  }
   sendFile(req, res, absolutePath);
 });
 
