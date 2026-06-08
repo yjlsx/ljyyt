@@ -1674,7 +1674,7 @@
         <img src="/images/avatar.jpg" alt="丽江音悦台">
         <span>丽江音悦台</span>
       </div>
-      <button class="theme-switch" type="button" aria-label="切换明暗主题" onclick="toggleThemeSetting(event)"><span data-icon="moon"></span></button>
+      <button class="theme-switch" id="theme-switch" type="button" aria-label="当前浅色主题，切换到深色主题" title="切换到深色主题" aria-pressed="false" onclick="toggleThemeSetting(event)"><span data-icon="moon"></span></button>
     </header>
     <div class="search-shell" id="search-shell">
       <div class="search-box">
@@ -5309,6 +5309,13 @@
       document.documentElement.classList.toggle('dark', dark);
       var label = document.getElementById('theme-setting-label');
       if (label) label.textContent = dark ? '深色' : '浅色';
+      var switchButton = document.getElementById('theme-switch');
+      if (switchButton) {
+        switchButton.innerHTML = iconHtml(dark ? 'sun' : 'moon');
+        switchButton.setAttribute('aria-label', dark ? '当前深色主题，切换到浅色主题' : '当前浅色主题，切换到深色主题');
+        switchButton.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        switchButton.title = dark ? '切换到浅色主题' : '切换到深色主题';
+      }
       if (window.LJYYTTheme && typeof window.LJYYTTheme.set === 'function') {
         window.LJYYTTheme.set(appSettings.theme);
       }
