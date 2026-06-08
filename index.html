@@ -2459,6 +2459,27 @@
         currentTrackIndex = queueIndex;
       }
     }
+    function reconcileCurrentTrackInQueue(previousTrack) {
+      if (!currentTrack) return;
+      if (!playQueue.length) {
+        setQueue([currentTrack], 0);
+        return;
+      }
+      var previousKey = previousTrack ? getTrackKey(previousTrack) : '';
+      var replacementIndex = previousKey
+        ? playQueue.findIndex(function(item) { return getTrackKey(item) === previousKey; })
+        : -1;
+      if (replacementIndex < 0) replacementIndex = Math.max(0, Math.min(queueIndex, playQueue.length - 1));
+      playQueue[replacementIndex] = currentTrack;
+      if (previousKey) {
+        playQueue = playQueue.filter(function(item, index) {
+          return index === replacementIndex || getTrackKey(item) !== previousKey;
+        });
+      }
+      queueIndex = Math.max(0, Math.min(replacementIndex, playQueue.length - 1));
+      currentTrackIndex = queueIndex;
+      syncQueueIndexToCurrentTrack();
+    }
     var _lastSaveTime = 0;
     function savePlaybackState(force) {
       if (!currentTrack) return;
@@ -3002,6 +3023,7 @@
       rawUrl = normalizeAudioUrl(rawUrl);
       if (!/^https?:\/\//i.test(rawUrl) || isAudioProxyUrl(rawUrl)) return false;
       var proxyUrl = getAudioProxyUrl(rawUrl);
+      var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
       try {
         _isResolvingUrl = true;
         currentTrack.src = proxyUrl;
@@ -3011,6 +3033,7 @@
         await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
         if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio proxy line did not start playback');
         _playRetryCount = 0;
+        reconcileCurrentTrackInQueue(previousTrack);
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState(true);
@@ -3030,6 +3053,7 @@
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         var state = ensureFallbackState(currentTrack);
+        var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
         try {
           _isResolvingUrl = true;
           setPlayIcons(true);
@@ -3055,6 +3079,7 @@
           if (!await confirmPlaybackStarted(_playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
           resetFallbackState(currentTrack);
+          reconcileCurrentTrackInQueue(previousTrack);
           updateTrackUi(currentTrack);
           updateLikeButton();
           loadLyricsForTrack(currentTrack);
@@ -3331,6 +3356,7 @@
       }
       playQueue = current ? [current, ...rest] : rest;
       queueIndex = 0;
+      currentTrackIndex = 0;
       renderQueue();
       scrollCurrentQueueItemIntoView();
     }
