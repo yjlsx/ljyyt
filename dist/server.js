@@ -1,5 +1,6 @@
 const http = require('http');
 const https = require('https');
+const dns = require('dns');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
@@ -10,6 +11,7 @@ const PORT = Number(process.env.PORT || 3000);
 const LYRICS_FILE = path.join(ROOT, 'data', 'lyrics.json');
 const THIRD_PARTY_LYRICS_URL = process.env.LYRICS_SEARCH_URL || '';
 const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq', 'local'];
+const MAX_UPSTREAM_TEXT_BYTES = 2 * 1024 * 1024;
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -203,13 +205,20 @@ function requestText(targetUrl, options = {}) {
   const method = options.method || 'GET';
   const headers = options.headers || {};
   const body = options.body || null;
+  const maxBytes = options.maxBytes || MAX_UPSTREAM_TEXT_BYTES;
 
   return new Promise((resolve, reject) => {
     const req = client.request(targetUrl, { method, headers }, (res) => {
       let data = '';
+      let receivedBytes = 0;
       res.setEncoding('utf8');
 
       res.on('data', (chunk) => {
+        receivedBytes += Buffer.byteLength(chunk, 'utf8');
+        if (receivedBytes > maxBytes) {
+          req.destroy(new Error('upstream response too large'));
+          return;
+        }
         data += chunk;
       });
 
@@ -281,6 +290,232 @@ async function requestJson(targetUrl, options = {}) {
   } catch (error) {
     throw new Error('invalid JSON response');
   }
+}
+
+async function searchNeteaseSuggest(keyword) {
+  const word = String(keyword || '').trim();
+  if (!word) return { suggestions: [] };
+
+  const suggestUrl = new URL('https://music.163.com/api/search/suggest/web');
+  suggestUrl.searchParams.set('s', word);
+  const payload = await requestJson(suggestUrl.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'Referer': 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0'
+    }
+  });
+  const result = payload && payload.result ? payload.result : {};
+  const seen = new Set();
+  const suggestions = [];
+
+  function pushUnique(text, type, id, meta) {
+    text = String(text || '').trim();
+    if (!text) return;
+    const key = `${type}:${text}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    suggestions.push({
+      text,
+      type,
+      id: id === undefined || id === null ? '' : String(id),
+      source: 'netease',
+      meta: String(meta || '')
+    });
+  }
+
+  (Array.isArray(result.artists) ? result.artists : []).slice(0, 3).forEach((artist) => {
+    pushUnique(artist.name, 'artist', artist.id, '歌手');
+  });
+  (Array.isArray(result.songs) ? result.songs : []).slice(0, 3).forEach((song) => {
+    const artists = Array.isArray(song.artists) ? song.artists.map((item) => item.name).filter(Boolean).join('/') : '';
+    pushUnique([song.name, artists].filter(Boolean).join(' - '), 'song', song.id, artists || '单曲');
+  });
+  (Array.isArray(result.albums) ? result.albums : []).slice(0, 3).forEach((album) => {
+    const artist = album.artist && album.artist.name ? album.artist.name : '';
+    pushUnique([album.name, artist].filter(Boolean).join(' - '), 'album', album.id, artist || '专辑');
+  });
+  (Array.isArray(result.playlists) ? result.playlists : []).slice(0, 3).forEach((playlist) => {
+    pushUnique(playlist.name, 'playlist', playlist.id, '歌单');
+  });
+
+  return { suggestions };
+}
+
+async function proxyGdMusic(query) {
+  const target = new URL('https://music-api.gdstudio.xyz/api.php');
+  for (const [key, value] of query.entries()) {
+    if (['types', 'source', 'name', 'count', 'pages', 'id', 'br', 'size'].includes(key)) {
+      target.searchParams.set(key, value);
+    }
+  }
+  return requestJson(target.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'ljyyt-local-server/1.0'
+    },
+    timeout: 12000
+  });
+}
+
+async function resolveKuwoUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return { url: '', error: 'Missing rid' };
+  const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${encodeURIComponent(rid)}`;
+  try {
+    const text = (await requestText(target, {
+      headers: {
+        'Accept': 'text/plain,*/*',
+        'Referer': 'https://www.kuwo.cn/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      timeout: 12000
+    })).trim();
+    return /^https?:\/\//i.test(text) ? { url: text } : { url: '' };
+  } catch (error) {
+    return { url: '', error: error.message };
+  }
+}
+
+function isBlockedAudioProxyHost(hostname) {
+  const host = String(hostname || '').trim().toLowerCase().replace(/^\[|\]$/g, '');
+  if (!host) return true;
+  if (host === 'localhost' || host.endsWith('.localhost')) return true;
+  if (host === 'metadata.google.internal') return true;
+  if (host === '::' || host === '0:0:0:0:0:0:0:0') return true;
+  if (host === '::1' || host === '0:0:0:0:0:0:0:1') return true;
+  const mappedIpv4 = host.match(/^(?:::ffff:|0:0:0:0:0:ffff:)(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (mappedIpv4) return isBlockedAudioProxyHost(mappedIpv4[1]);
+  if (/^(fc|fd)[0-9a-f]{2}:/i.test(host) || /^fe[89ab][0-9a-f]:/i.test(host)) return true;
+
+  const ipv4Match = host.match(/^(\d{1,3})(?:\.(\d{1,3})){3}$/);
+  if (!ipv4Match) return false;
+
+  const parts = host.split('.').map((part) => Number(part));
+  if (parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return true;
+  const first = parts[0];
+  const second = parts[1];
+  if (first === 0 || first === 10 || first === 127) return true;
+  if (first === 169 && second === 254) return true;
+  if (first === 172 && second >= 16 && second <= 31) return true;
+  if (first === 192 && second === 168) return true;
+  if (first >= 224) return true;
+  return false;
+}
+
+async function createSafeAudioProxyLookup(audioUrl) {
+  const hostname = audioUrl && audioUrl.hostname;
+  if (isBlockedAudioProxyHost(hostname)) {
+    throw new Error('Blocked audio proxy host');
+  }
+
+  const resolvedAddresses = await dns.promises.lookup(hostname, { all: true });
+  if (!resolvedAddresses.length) {
+    throw new Error('No audio proxy DNS addresses');
+  }
+
+  const blockedAddress = resolvedAddresses.find((entry) => isBlockedAudioProxyHost(entry.address));
+  if (blockedAddress) {
+    throw new Error('Blocked audio proxy resolved host');
+  }
+
+  return function safeAudioProxyLookup(_hostname, options, callback) {
+    if (options && options.all) {
+      callback(null, resolvedAddresses.map((entry) => ({
+        address: entry.address,
+        family: entry.family
+      })));
+      return;
+    }
+
+    const requestedFamily = options && (options.family === 4 || options.family === 6) ? options.family : 0;
+    const selected = requestedFamily
+      ? resolvedAddresses.find((entry) => entry.family === requestedFamily)
+      : resolvedAddresses[0];
+
+    if (!selected) {
+      callback(new Error('No safe audio proxy address'));
+      return;
+    }
+    callback(null, selected.address, selected.family);
+  };
+}
+
+async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
+  let parsed;
+  try {
+    parsed = new URL(String(targetUrl || ''));
+  } catch (error) {
+    sendJson(res, 400, { url: '', error: 'Invalid url' });
+    return;
+  }
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    sendJson(res, 400, { url: '', error: 'Unsupported url' });
+    return;
+  }
+  if (isBlockedAudioProxyHost(parsed.hostname)) {
+    sendJson(res, 403, { url: '', error: 'Blocked audio proxy host' });
+    return;
+  }
+  let safeLookup;
+  try {
+    safeLookup = await createSafeAudioProxyLookup(parsed);
+  } catch (error) {
+    sendJson(res, 403, { url: '', error: error.message });
+    return;
+  }
+
+  const client = parsed.protocol === 'https:' ? https : http;
+  const headers = Object.assign({
+    'Accept': '*/*',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+  }, extraHeaders || {});
+  if (req.headers.range) headers.Range = req.headers.range;
+
+  const proxyReq = client.request(parsed, {
+    method: req.method === 'HEAD' ? 'HEAD' : 'GET',
+    headers,
+    lookup: safeLookup
+  }, (proxyRes) => {
+    const statusCode = Number(proxyRes.statusCode || 200);
+    const responseHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': proxyRes.headers['content-type'] || 'audio/mpeg',
+      'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes',
+      'Cache-Control': 'public, max-age=1800'
+    };
+    if (proxyRes.headers['content-length']) responseHeaders['Content-Length'] = proxyRes.headers['content-length'];
+    if (proxyRes.headers['content-range']) responseHeaders['Content-Range'] = proxyRes.headers['content-range'];
+    res.writeHead(statusCode, responseHeaders);
+    if (req.method === 'HEAD') {
+      proxyRes.resume();
+      res.end();
+      return;
+    }
+    proxyRes.pipe(res);
+  });
+
+  proxyReq.on('error', (error) => {
+    if (!res.headersSent) {
+      sendJson(res, 502, { url: '', error: error.message });
+    } else {
+      res.destroy(error);
+    }
+  });
+  proxyReq.setTimeout(15000, () => {
+    proxyReq.destroy(new Error('request timeout'));
+  });
+  proxyReq.end();
+}
+
+async function streamKuwoAudio(req, res, rid) {
+  const payload = await resolveKuwoUrl(rid);
+  if (!payload.url) {
+    sendJson(res, payload.error === 'Missing rid' ? 400 : 502, payload);
+    return;
+  }
+
+  await streamRemoteAudio(req, res, payload.url, { Referer: 'https://www.kuwo.cn/' });
 }
 
 function buildSuccess(source, title, artist, lines, extra) {
@@ -1482,6 +1717,48 @@ const server = http.createServer(async (req, res) => {
         candidates: []
       });
     }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/netease/suggest') {
+    try {
+      const payload = await searchNeteaseSuggest(requestUrl.searchParams.get('keyword') || requestUrl.searchParams.get('q') || '');
+      sendJson(res, 200, payload);
+    } catch (error) {
+      sendJson(res, 502, {
+        suggestions: [],
+        message: error.message
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/gd-music') {
+    try {
+      const payload = await proxyGdMusic(requestUrl.searchParams);
+      sendJson(res, 200, payload);
+    } catch (error) {
+      sendJson(res, 502, {
+        code: 502,
+        msg: error.message
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/kuwo-url') {
+    const payload = await resolveKuwoUrl(requestUrl.searchParams.get('rid') || '');
+    sendJson(res, payload.error === 'Missing rid' ? 400 : 200, payload);
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/kuwo-audio') {
+    streamKuwoAudio(req, res, requestUrl.searchParams.get('rid') || '');
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/audio-proxy') {
+    await streamRemoteAudio(req, res, requestUrl.searchParams.get('url') || '');
     return;
   }
 

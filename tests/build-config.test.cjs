@@ -5,6 +5,15 @@ const scripts = pkg.scripts || {};
 const deploySh = fs.readFileSync('deploy.sh', 'utf8');
 const deployBat = fs.readFileSync('deploy.bat', 'utf8');
 const siteConfig = fs.readFileSync('site-config.js', 'utf8');
+const buildScript = fs.readFileSync('scripts/build-dist.cjs', 'utf8');
+
+function assertDistMatchesSource(relPath) {
+  const source = fs.readFileSync(relPath);
+  const built = fs.readFileSync('dist/' + relPath);
+  if (!source.equals(built)) {
+    throw new Error('dist asset is not synchronized with source: ' + relPath);
+  }
+}
 
 if (!scripts.build) {
   throw new Error('package.json is missing a build script');
@@ -48,6 +57,27 @@ if (!siteConfig.includes("host === 'localhost'") || !siteConfig.includes("host =
   throw new Error('site-config.js should route local development API calls to the same origin');
 }
 
+if (buildScript.includes("path.join(ROOT, 'dist', relPath)")) {
+  throw new Error('build-dist.cjs should build only from source files, not from the previous dist output');
+}
+
+for (const requiredSource of [
+  'ORACLE_DEPLOY.md',
+  'robots.txt',
+  'sitemap.xml',
+  'data/audio-sources.json',
+  'data/audio-sources.example.json',
+  'fix_wechat_images.js'
+]) {
+  if (!fs.existsSync(requiredSource)) {
+    throw new Error('source tree is missing required deploy source asset: ' + requiredSource);
+  }
+}
+
+if (!buildScript.includes("'fix_wechat_images.js'")) {
+  throw new Error('build-dist.cjs should copy fix_wechat_images.js because index.html references it');
+}
+
 for (const required of [
   'dist/index.html',
   'dist/server.js',
@@ -59,10 +89,26 @@ for (const required of [
   'dist/images/gzhh.jpg',
   'dist/js/search-app.js',
   'dist/css/search-app.css',
+  'dist/fix_wechat_images.js',
   'dist/videos/video_data.js',
   'dist/package.json'
 ]) {
   if (!fs.existsSync(required)) {
     throw new Error('dist is missing required deploy asset: ' + required);
   }
+}
+
+for (const relPath of [
+  'index.html',
+  'server.js',
+  'fix_wechat_images.js',
+  'js/icons.js',
+  'js/search-app.js',
+  'data/audio-sources.json',
+  'data/audio-sources.example.json',
+  'ORACLE_DEPLOY.md',
+  'robots.txt',
+  'sitemap.xml'
+]) {
+  assertDistMatchesSource(relPath);
 }

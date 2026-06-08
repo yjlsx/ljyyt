@@ -36,22 +36,15 @@ function assertSafeOutputDir(target) {
   }
 }
 
-function readFirstExisting(relPath) {
-  const candidates = [
-    path.join(ROOT, relPath),
-    path.join(ROOT, 'dist', relPath)
-  ];
-
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
-      return {
-        relPath,
-        content: fs.readFileSync(candidate)
-      };
-    }
+function readSourceFile(relPath) {
+  const source = path.join(ROOT, relPath);
+  if (!fs.existsSync(source) || !fs.statSync(source).isFile()) {
+    throw new Error('Missing build asset: ' + relPath);
   }
-
-  throw new Error('Missing build asset: ' + relPath);
+  return {
+    relPath,
+    content: fs.readFileSync(source)
+  };
 }
 
 function writeFile(relPath, content) {
@@ -72,6 +65,7 @@ const assetFiles = [
   'script.js',
   'components.js',
   'contact_handler.js',
+  'fix_wechat_images.js',
   'music_player_page.js',
   'music-player.html',
   'player_enhanced.js',
@@ -127,7 +121,7 @@ const runtimePackage = JSON.stringify({
 
 assertSafeOutputDir(outDir);
 
-const snapshot = assetFiles.map(readFirstExisting);
+const snapshot = assetFiles.map(readSourceFile);
 fs.rmSync(outDir, { recursive: true, force: true });
 
 for (const item of snapshot) {
