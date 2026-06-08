@@ -2,7 +2,7 @@ const fs = require('fs');
 const vm = require('vm');
 
 function pickFunction(script, name) {
-  const start = script.indexOf('function ' + name);
+  const start = script.indexOf('function ' + name + '(');
   if (start < 0) throw new Error('Missing function ' + name);
   let depth = 0;
   let quote = '';

@@ -2184,9 +2184,9 @@
       cover: 'https://mmbiz.qpic.cn/mmbiz_jpg/jXiaTRzsmA7N7s5enKLic15fx5DKYlTe6R5hBaC2WqqF3rZ22IrqsMY9qWWGD7KuDzzWNA9Z6RWag31oaw7M5NSDMK5fiaRP1mSMfRuLicUzVFU/0?wx_fmt=jpeg',
       duration: 223
     };
-    let favoriteTracks = readStoredList('ljyyt_otter_favorites');
-    let historyTracks = readStoredList('ljyyt_otter_history');
-    let userPlaylists = readStoredList('ljyyt_otter_playlists');
+    let favoriteTracks = readStoredObjectList('ljyyt_otter_favorites');
+    let historyTracks = readStoredObjectList('ljyyt_otter_history');
+    let userPlaylists = readStoredObjectList('ljyyt_otter_playlists');
     const SEARCH_HISTORY_KEY = 'ljyyt_search_history';
     const LEGACY_SEARCH_HISTORY_KEYS = [
       'ljyyt_otter_search_history',
@@ -2208,6 +2208,15 @@
     function readStoredList(key) {
       const value = readStoredJson(key, []);
       return Array.isArray(value) ? value : [];
+    }
+    function filterStoredObjectList(value) {
+      return Array.isArray(value)
+        ? value.filter(function(item) { return item && typeof item === 'object' && !Array.isArray(item); })
+        : [];
+    }
+    function readStoredObjectList(key) {
+      const value = readStoredJson(key, []);
+      return filterStoredObjectList(value);
     }
     function readStoredJson(key, fallback) {
       try {
