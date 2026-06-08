@@ -1930,17 +1930,26 @@
         gdMusicFallbackBases.forEach(function(base) { urls.push(base + suffix); });
       }
       if (!_isLocalDev && urls[0].indexOf(gdMusicApiBase) === 0) urls.shift();
-      for (var i = 0; i < urls.length; i++) {
-        try {
-          var response = await fetch(urls[i], signal ? { signal: signal } : undefined);
-          if (!response.ok) continue;
-          return await response.json();
-        } catch (error) {
-          if (error && error.name === 'AbortError') throw error;
-          console.warn('fetchGdMusicJson: endpoint failed', urls[i], error);
-        }
+      if (!urls.length) throw new Error('gd music request failed');
+      if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      var ac = new AbortController();
+      var merged = ac.signal;
+      if (signal) signal.addEventListener('abort', function() { ac.abort(); });
+      var timer = setTimeout(function() { ac.abort(); }, 10000);
+      try {
+        var result = await Promise.any(urls.map(function(u) {
+          return fetch(u, { signal: merged }).then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+          });
+        }));
+        clearTimeout(timer);
+        return result;
+      } catch (aggErr) {
+        clearTimeout(timer);
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        throw new Error('gd music request failed');
       }
-      throw new Error('gd music request failed');
     }
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
