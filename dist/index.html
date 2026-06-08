@@ -2200,7 +2200,22 @@
       }
     }
     function writeStoredList(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
+      writeStoredJson(key, value);
+    }
+    function writeStoredJson(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (error) {}
+    }
+    function writeStoredValue(key, value) {
+      try {
+        localStorage.setItem(key, String(value));
+      } catch (error) {}
+    }
+    function removeStoredItem(key) {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {}
     }
     function readStoredPlayModeIndex(storage, modeCount) {
       try {
@@ -2228,14 +2243,14 @@
     }
     function setSearchHistory(list) {
       const clean = Array.from(new Set((list || []).map((item) => String(item || '').trim()).filter(Boolean))).slice(0, 20);
-      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(clean));
+      writeStoredJson(SEARCH_HISTORY_KEY, clean);
       return clean;
     }
     function clearStoredSearchHistory() {
-      localStorage.removeItem(SEARCH_HISTORY_KEY);
+      removeStoredItem(SEARCH_HISTORY_KEY);
       sessionStorage.removeItem(SEARCH_HISTORY_KEY);
       LEGACY_SEARCH_HISTORY_KEYS.forEach((key) => {
-        localStorage.removeItem(key);
+        removeStoredItem(key);
         sessionStorage.removeItem(key);
       });
     }
@@ -2248,9 +2263,7 @@
       }
     }
     function writeStoredObject(key, value) {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch (error) {}
+      writeStoredJson(key, value);
     }
     const SETTINGS_KEY = 'ljyyt_otter_settings';
     const defaultSettings = {
@@ -3315,7 +3328,7 @@
     function cyclePlayMode(event) {
       if (event) event.stopPropagation();
       playModeIndex = (playModeIndex + 1) % playModes.length;
-      localStorage.setItem('ljyyt_play_mode_index', playModeIndex);
+      writeStoredValue('ljyyt_play_mode_index', playModeIndex);
       document.getElementById('play-mode-label').textContent = playModes[playModeIndex].label;
       updateControlIcons();
     }
@@ -5335,7 +5348,7 @@
       updateNeteaseLoginSetting();
     }
     function clearNeteaseLogin() {
-      localStorage.removeItem('ljyyt_otter_netease_login');
+      removeStoredItem('ljyyt_otter_netease_login');
       mineDataCache = { recommend: null, created: null, subscribed: null, albums: null };
       updateNeteaseLoginSetting();
       renderNeteaseLoginDrawer();
