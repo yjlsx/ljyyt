@@ -46,6 +46,12 @@ if (!streamRemoteAudioBody.includes("'Cache-Control': 'no-store'")) {
 if (streamRemoteAudioBody.includes("'Cache-Control': 'public, max-age=1800'")) {
   throw new Error('server.js audio proxy should not publicly cache user-provided audio URLs');
 }
+if (!streamRemoteAudioBody.includes("'Access-Control-Expose-Headers': 'Accept-Ranges, Content-Range, Content-Length, Content-Type'")) {
+  throw new Error('server.js audio proxy should expose range/progress headers to browsers');
+}
+if (!streamRemoteAudioBody.includes("'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes'")) {
+  throw new Error('server.js audio proxy should preserve or default Accept-Ranges');
+}
 
 const helperStart = server.indexOf('function isBlockedAudioProxyHost');
 const helperEnd = server.indexOf('async function streamRemoteAudio');

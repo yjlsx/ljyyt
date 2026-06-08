@@ -502,6 +502,7 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
     const statusCode = Number(proxyRes.statusCode || 200);
     const responseHeaders = {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Expose-Headers': 'Accept-Ranges, Content-Range, Content-Length, Content-Type',
       'Content-Type': proxyRes.headers['content-type'] || 'audio/mpeg',
       'Accept-Ranges': proxyRes.headers['accept-ranges'] || 'bytes',
       'Cache-Control': 'no-store'
