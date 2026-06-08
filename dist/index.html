@@ -2565,14 +2565,16 @@
       searchHistory = setSearchHistory([word, ...getSearchHistory().filter((item) => item !== word)]);
     }
     function clearSearchHistory() {
-      searchHistory = [];
-      clearStoredSearchHistory();
-      const box = document.getElementById('search-history');
-      if (box) {
-        box.innerHTML = '';
-        box.hidden = true;
-      }
-      hideSearchHistory();
+      showConfirm('确定清空搜索历史吗？', function() {
+        searchHistory = [];
+        clearStoredSearchHistory();
+        const box = document.getElementById('search-history');
+        if (box) {
+          box.innerHTML = '';
+          box.hidden = true;
+        }
+        hideSearchHistory();
+      });
     }
     function updateSearchClearButton() {
       const searchInput = getSearchInput();
@@ -3065,15 +3067,18 @@
     }
     function clearCurrentQueue(event) {
       if (event) event.stopPropagation();
-      if (queueDrawerTab === 'history') {
-        historyTracks = [];
-        writeStoredList('ljyyt_otter_history', historyTracks);
-      } else {
-        playQueue = currentTrack ? [currentTrack] : [];
-        queueIndex = 0;
-      }
-      renderQueue();
-      renderHistory();
+      var msg = queueDrawerTab === 'history' ? '确定清空播放历史吗？' : '确定清空播放列表吗？';
+      showConfirm(msg, function() {
+        if (queueDrawerTab === 'history') {
+          historyTracks = [];
+          writeStoredList('ljyyt_otter_history', historyTracks);
+        } else {
+          playQueue = currentTrack ? [currentTrack] : [];
+          queueIndex = 0;
+        }
+        renderQueue();
+        renderHistory();
+      });
     }
     function reshuffleQueue(event) {
       if (event) event.stopPropagation();
@@ -3214,12 +3219,14 @@
         writeStoredList('ljyyt_otter_favorites', favoriteTracks);
         updateLikeButton();
         renderFavorites();
+        showToast(liked ? '已取消喜欢' : '已添加到喜欢', 1500);
       } else if (action === 'next') {
         playQueue = playQueue.filter((item) => !isSameTrack(item, track));
         syncQueueIndexToCurrentTrack();
         const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);
         playQueue.splice(insertAt, 0, track);
         renderQueue();
+        showToast('已添加到下一首播放', 1500);
       } else if (action === 'playlist') {
         closeTrackActionDrawer();
         openAddToPlaylistDrawer(track);
@@ -3228,9 +3235,27 @@
         downloadTrack(track);
         return;
       } else if (action === 'artist') {
-        showView('search');
+        var artistQuery = String(track.artist || '').trim();
+        if (artistQuery) {
+          var si = getSearchInput();
+          if (si) si.value = artistQuery;
+          var hi = getHomeSearchInput();
+          if (hi) hi.value = artistQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       } else if (action === 'album' && track.album) {
-        showView('search');
+        var albumQuery = String(track.album).trim();
+        if (albumQuery) {
+          var si2 = getSearchInput();
+          if (si2) si2.value = albumQuery;
+          var hi2 = getHomeSearchInput();
+          if (hi2) hi2.value = albumQuery;
+          closeTrackActionDrawer();
+          performSearch({ remember: true });
+          return;
+        }
       }
       closeTrackActionDrawer();
     }
