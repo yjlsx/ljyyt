@@ -21,6 +21,9 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!html.includes('message = normalizeFallbackToastMessage(message);')) {
     throw new Error(name + ' showToast can still render stale fallback wording from dynamic callers');
   }
+  if (/(?:正在解析播放地址|正在启用备用线路|启用备用线路|已切换备用线路|备用线路)/.test(html)) {
+    throw new Error(name + ' still ships complete stale fallback wording in the runtime HTML');
+  }
   if (html.includes("showToast('正在解析播放地址...'")) {
     throw new Error(name + ' still shows the non-Otter resolving playback toast before auto match');
   }

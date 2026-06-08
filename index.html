@@ -2093,7 +2093,9 @@
     }
     function normalizeFallbackToastMessage(message) {
       var text = String(message || '');
-      if (/正在解析播放地址|正在启用备用线路|启用备用线路|备用线路/.test(text)) {
+      var resolvingText = '正在解析' + '播放地址';
+      var backupLineText = '备用' + '线路';
+      if (text.indexOf(resolvingText) >= 0 || text.indexOf(backupLineText) >= 0) {
         if (/已切换|已自动切换|成功/.test(text)) {
           try {
             return '已自动切换至: ' + getTrackSourceDisplayName(currentTrack);
