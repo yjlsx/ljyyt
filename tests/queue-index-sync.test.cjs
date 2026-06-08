@@ -28,6 +28,37 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!nextBody.includes('playTrackAt(queueIndex + 1)')) {
     throw new Error(file + ' nextTrack does not navigate from the active queue index');
   }
+
+  if (!script.includes('function syncQueueIndexToCurrentTrack')) {
+    throw new Error(file + ' is missing syncQueueIndexToCurrentTrack');
+  }
+
+  const syncStart = script.indexOf('function syncQueueIndexToCurrentTrack');
+  const syncEnd = script.indexOf('function removeTrackFromQueue', syncStart);
+  if (syncStart < 0 || syncEnd < syncStart) {
+    throw new Error(file + ' could not locate queue index sync helper');
+  }
+  const syncBlock = script.slice(syncStart, syncEnd);
+  if (!syncBlock.includes('playQueue.findIndex(function(item) { return isSameTrack(item, currentTrack); })')) {
+    throw new Error(file + ' does not recalculate queueIndex from currentTrack');
+  }
+
+  const removeStart = script.indexOf('function removeTrackFromQueue');
+  const removeEnd = script.indexOf('function scrollCurrentQueueItemIntoView', removeStart);
+  const removeBody = script.slice(removeStart, removeEnd);
+  if (!removeBody.includes('syncQueueIndexToCurrentTrack();')) {
+    throw new Error(file + ' does not resync queueIndex after removing non-current tracks');
+  }
+
+  const actionStart = script.indexOf('function handleTrackAction');
+  const actionEnd = script.indexOf('function downloadTrack', actionStart);
+  const actionBody = script.slice(actionStart, actionEnd);
+  if (!actionBody.includes('syncQueueIndexToCurrentTrack();')) {
+    throw new Error(file + ' does not resync queueIndex before inserting a next track');
+  }
+  if (!actionBody.includes('const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);')) {
+    throw new Error(file + ' does not calculate next-track insertion after queue dedupe');
+  }
 }
 
 const entryFunctions = [

@@ -2448,6 +2448,17 @@
       queueIndex = Math.max(0, Math.min(Number(index) || 0, playQueue.length - 1));
       currentTrackIndex = queueIndex;
     }
+    function syncQueueIndexToCurrentTrack() {
+      if (!playQueue.length || !currentTrack) return;
+      var activeIndex = playQueue.findIndex(function(item) { return isSameTrack(item, currentTrack); });
+      if (activeIndex >= 0) {
+        queueIndex = activeIndex;
+        currentTrackIndex = activeIndex;
+      } else {
+        queueIndex = Math.max(0, Math.min(queueIndex, playQueue.length - 1));
+        currentTrackIndex = queueIndex;
+      }
+    }
     var _lastSaveTime = 0;
     function savePlaybackState(force) {
       if (!currentTrack) return;
@@ -3320,7 +3331,7 @@
           playQueue = [currentTrack];
           queueIndex = 0;
         } else {
-          queueIndex = Math.max(0, Math.min(queueIndex, playQueue.length - 1));
+          syncQueueIndexToCurrentTrack();
         }
       }
       renderQueue();
@@ -3420,8 +3431,9 @@
         renderFavorites();
         showToast(liked ? '已取消喜欢' : '已添加到喜欢', 1500);
       } else if (action === 'next') {
-        const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);
         playQueue = playQueue.filter((item) => !isSameTrack(item, track));
+        syncQueueIndexToCurrentTrack();
+        const insertAt = Math.min(queueIndex + 1, playQueue.length || 1);
         playQueue.splice(insertAt, 0, track);
         renderQueue();
         showToast('已添加到下一首播放', 1500);
