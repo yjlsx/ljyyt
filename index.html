@@ -977,15 +977,29 @@
     .setting-chevron.open { transform: rotate(90deg); }
     .setting-chevron .line-icon { width: 16px; height: 16px; }
     .toggle {
-      width: 40px; height: 23px; border-radius: 22px; position: relative;
-      background: var(--primary);
+      width: 50px; height: 25px; border-radius: 999px; position: relative;
+      background: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 74%, #fff);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+      transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .toggle::before {
+      content: attr(data-state-text); position: absolute; left: 9px; top: 50%;
+      transform: translateY(-50%); color: var(--primary-foreground);
+      font-size: 10px; font-weight: 700; line-height: 1;
     }
     .toggle::after {
       content: ""; position: absolute; width: 19px; height: 19px; border-radius: 50%;
       right: 2px; top: 2px; background: #fff;
       box-shadow: 0 2px 5px rgba(0,0,0,.16);
+      transition: left .18s ease, right .18s ease, transform .18s ease;
     }
-    .toggle.off { background: var(--border); }
+    .toggle.off {
+      background: color-mix(in srgb, var(--muted) 72%, var(--card));
+      border-color: var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .toggle.off::before {
+      left: auto; right: 8px; color: var(--muted-foreground);
+    }
     .toggle.off::after { right: auto; left: 2px; }
     .simple-select {
       font-size: 12px; color: var(--muted-foreground);
@@ -1912,7 +1926,7 @@
         <div class="subpage-head"><button class="back" onclick="showView('mine')" aria-label="返回"><span data-icon="chevronLeft"></span></button><h2>系统设置</h2></div>
         <div class="settings-scroll">
           <div class="setting-group"><h3>常用设置</h3>
-            <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" data-setting="smartSource" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" data-setting="smartSource" data-setting-label="智能音源" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
             <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="aggregate-source-panel" id="aggregate-source-panel">
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
@@ -1929,13 +1943,13 @@
           </div>
           <div class="setting-group"><h3>界面设置</h3>
             <div class="setting-item" onclick="toggleThemeSetting(event)"><span class="setting-icon" data-icon="palette"></span><div class="setting-copy"><p>主题切换</p></div><div class="setting-action"><span class="simple-select" id="theme-setting-label">浅色 / 深色</span></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="tag"></span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" data-setting="showSourceLabels" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="tag"></span><div class="setting-copy"><p>显示音源标签</p><small>在歌曲列表中始终显示音源平台标签</small></div><div class="setting-action"><button class="toggle" data-setting="showSourceLabels" data-setting-label="显示音源标签" onclick="toggleSetting(event, this)" aria-label="显示音源标签开启"></button></div></div>
             <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>全屏背景</p></div><div class="setting-action"><select class="setting-select" id="background-label" data-setting="fullBackgroundMode" onchange="setFullBackgroundMode(this.value)"><option value="theme">动态主题色</option><option value="cover" selected>模糊封面</option><option value="texture">深色质感</option></select></div></div>
           </div>
           <div class="setting-group"><h3>下载设置</h3>
             <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>下载音质</p><small>部分音源不支持无损下载</small></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" data-setting="embedCover" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="fileText"></span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" data-setting="embedLyrics" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="image"></span><div class="setting-copy"><p>内嵌封面</p><small>下载时写入歌曲封面图</small></div><div class="setting-action"><button class="toggle" data-setting="embedCover" data-setting-label="内嵌封面" onclick="toggleSetting(event, this)" aria-label="内嵌封面开启"></button></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="fileText"></span><div class="setting-copy"><p>内嵌歌词</p><small>下载时写入歌词信息</small></div><div class="setting-action"><button class="toggle" data-setting="embedLyrics" data-setting-label="内嵌歌词" onclick="toggleSetting(event, this)" aria-label="内嵌歌词开启"></button></div></div>
           </div>
           <div class="setting-group"><h3>账号数据</h3>
             <div class="setting-item" onclick="openSettingDrawer('netease')"><span class="setting-icon" data-icon="user"></span><div class="setting-copy"><p>网易云账号</p><small id="netease-login-subtitle">登录后可同步歌单</small></div><div class="setting-action"><button class="small-control" id="netease-login-action" onclick="openSettingDrawer('netease'); event.stopPropagation()">登录</button></div></div>
@@ -5296,6 +5310,15 @@
         window.LJYYTTheme.set(appSettings.theme);
       }
     }
+    function syncSettingToggleState(button, enabled) {
+      if (!button) return;
+      var label = button.dataset.settingLabel || button.getAttribute('aria-label') || '设置';
+      button.classList.toggle('off', !enabled);
+      button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      button.setAttribute('aria-label', label + (enabled ? '开启' : '关闭'));
+      button.title = label + (enabled ? '已开启' : '已关闭');
+      button.dataset.stateText = enabled ? '开' : '关';
+    }
     function initSettings() {
       appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
       if (window.LJYYTTheme && typeof window.LJYYTTheme.get === 'function') {
@@ -5305,8 +5328,7 @@
       document.querySelectorAll('.toggle[data-setting]').forEach(function(button) {
         var key = button.dataset.setting;
         var enabled = appSettings[key] !== false;
-        button.classList.toggle('off', !enabled);
-        button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        syncSettingToggleState(button, enabled);
       });
       applyThemeSetting();
       setSettingsVolume(appSettings.volume);
@@ -5807,8 +5829,7 @@
       event.stopPropagation();
       var key = element && element.dataset && element.dataset.setting;
       var enabled = element.classList.contains('off');
-      element.classList.toggle('off', !enabled);
-      element.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      syncSettingToggleState(element, enabled);
       if (key) {
         appSettings[key] = enabled;
         saveAppSettings();
