@@ -4777,12 +4777,17 @@
       );
     }
     function playFirstFavorite() {
+      var visibleTracks = getVisibleFavoriteTracks();
       if (!favoriteTracks.length) {
         showView('search');
         return;
       }
-      setQueue(favoriteTracks, 0);
-      setCurrentTrack(favoriteTracks[0]);
+      if (!visibleTracks.length) {
+        showToast('当前筛选没有可播放的喜欢歌曲');
+        return;
+      }
+      setQueue(visibleTracks, 0);
+      setCurrentTrack(visibleTracks[0]);
       openFullPlayer();
       playCurrentTrack();
     }
