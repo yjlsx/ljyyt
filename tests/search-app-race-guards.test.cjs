@@ -61,8 +61,11 @@ for (const file of ['js/search-app.js', 'dist/js/search-app.js']) {
   if (!runSearch.includes('async function runSearch(query, signal)')) {
     throw new Error(file + ' runSearch should accept a cancellation signal');
   }
-  if (!runSearch.includes('searchExternalSource(query, source, signal)')) {
-    throw new Error(file + ' runSearch should pass the active search signal to external sources');
+  if (!runSearch.includes('externalSources: externalSources')) {
+    throw new Error(file + ' runSearch should return the external sources for progressive rendering');
+  }
+  if (!performSearch.includes('searchExternalSource(query, source, signal)')) {
+    throw new Error(file + ' performSearch should pass the active search signal to external sources');
   }
 
   for (const marker of [

@@ -425,28 +425,19 @@
     var provider = sourceMap[activeSource] || sourceMap.aggregate;
     var providerSource = provider.source;
     var localResults = providerSource === 'local' || providerSource === 'all' ? getLocalResults(query) : [];
-    var externalResults = [];
+    var externalSources = [];
 
     if (providerSource === 'all') {
-      var externalSources = getAggregatedSources().filter(function(source) { return source !== 'local'; });
-      var sets = await Promise.all(externalSources.map(function(source) {
-        return searchExternalSource(query, source, signal).catch(function(error) {
-          if (error && error.name === 'AbortError') throw error;
-          return [];
-        });
-      }));
-      externalResults = sets.reduce(function(acc, list) { return acc.concat(list); }, []);
+      externalSources = getAggregatedSources().filter(function(source) { return source !== 'local'; });
     } else if (providerSource !== 'local') {
-      externalResults = await searchExternalSource(query, providerSource, signal).catch(function(error) {
-        if (error && error.name === 'AbortError') throw error;
-        return [];
-      });
+      externalSources = [providerSource];
     }
 
     return {
-      music: localResults.concat(externalResults),
+      music: localResults,
       video: providerSource === 'all' || providerSource === 'local' ? getVideoResults(query) : [],
-      playlists: getPlaylistCards(query)
+      playlists: getPlaylistCards(query),
+      externalSources: externalSources
     };
   }
 
@@ -645,13 +636,40 @@
       var results = await runSearch(query, signal);
       if (requestId !== searchRequestId) return;
       displayResults(results, query);
+      var externalSources = Array.isArray(results.externalSources) ? results.externalSources : [];
+      var allTracks = (results.music || []).slice();
+      var needsDedup = externalSources.length > 0 && allTracks.length > 0 || externalSources.length > 1;
+      var pending = externalSources.length;
+      if (!pending) {
+        activeSearchAbortController = null;
+        return;
+      }
+      externalSources.forEach(function(source) {
+        searchExternalSource(query, source, signal).then(function(tracks) {
+          if (signal.aborted || requestId !== searchRequestId) return;
+          if (tracks && tracks.length) {
+            allTracks = allTracks.concat(tracks.filter(function(track) { return track && track.title; }));
+            var nextResults = Object.assign({}, results, {
+              music: needsDedup ? uniqueTracks(allTracks, SEARCH_RESULT_LIMIT) : allTracks.slice(0, SEARCH_RESULT_LIMIT)
+            });
+            displayResults(nextResults, query);
+          }
+        }).catch(function(error) {
+          if (error && error.name === 'AbortError') return;
+        }).finally(function() {
+          if (signal.aborted || requestId !== searchRequestId) return;
+          pending--;
+          if (pending <= 0) activeSearchAbortController = null;
+        });
+      });
     } catch (error) {
       if (error && error.name === 'AbortError') return;
       if (requestId !== searchRequestId) return;
       if (status) status.textContent = '搜索暂时不可用，请稍后重试。';
       displayResults({ music: [], video: [], playlists: getPlaylistCards(query) }, query);
+      activeSearchAbortController = null;
     } finally {
-      if (requestId === searchRequestId) activeSearchAbortController = null;
+      if (requestId === searchRequestId && (!activeSearchAbortController || activeSearchAbortController.signal !== signal || signal.aborted)) activeSearchAbortController = null;
     }
   }
 
