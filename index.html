@@ -2156,13 +2156,13 @@
     let queueDrawerTab = 'queue';
     let volumeStep = 3;
     let blurredBackground = true;
-    let playModeIndex = Number(localStorage.getItem('ljyyt_play_mode_index') || 0) % 3;
-    let lastLikeTapAt = 0;
     const playModes = [
       { label: '列表循环', value: 'list' },
       { label: '单曲循环', value: 'single' },
       { label: '随机播放', value: 'shuffle' }
     ];
+    let playModeIndex = readStoredPlayModeIndex(localStorage, playModes.length);
+    let lastLikeTapAt = 0;
     let currentTrack = {
       title: '快乐人生',
       artist: '和月圆',
@@ -2201,6 +2201,17 @@
     }
     function writeStoredList(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
+    }
+    function readStoredPlayModeIndex(storage, modeCount) {
+      try {
+        var count = Number.isFinite(modeCount) && modeCount > 0 ? Math.floor(modeCount) : 3;
+        var raw = Number((storage || localStorage).getItem('ljyyt_play_mode_index'));
+        if (!Number.isFinite(raw)) return 0;
+        var normalized = Math.floor(raw) % count;
+        return normalized < 0 ? normalized + count : normalized;
+      } catch (error) {
+        return 0;
+      }
     }
     function getSearchHistory() {
       try {
