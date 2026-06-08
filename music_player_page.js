@@ -72,16 +72,37 @@
     lyricsSearchResults = document.getElementById('lyrics-search-results');
   }
 
-  function readLyricsOverrides() {
+  function readPlayerPageStorageValue(key, fallback) {
     try {
-      lyricsOverrides = JSON.parse(localStorage.getItem('ljyyt_lyrics_overrides')) || {};
+      var value = localStorage.getItem(key);
+      return value == null ? fallback : value;
     } catch (error) {
-      lyricsOverrides = {};
+      return fallback;
     }
   }
 
+  function writePlayerPageStorageValue(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (error) {}
+  }
+
+  function readPlayerPageStorageJson(key, fallback) {
+    try {
+      var value = JSON.parse(readPlayerPageStorageValue(key, 'null'));
+      return value == null ? fallback : value;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function readLyricsOverrides() {
+    lyricsOverrides = readPlayerPageStorageJson('ljyyt_lyrics_overrides', {});
+    if (!lyricsOverrides || typeof lyricsOverrides !== 'object' || Array.isArray(lyricsOverrides)) lyricsOverrides = {};
+  }
+
   function saveLyricsOverrides() {
-    localStorage.setItem('ljyyt_lyrics_overrides', JSON.stringify(lyricsOverrides));
+    writePlayerPageStorageValue('ljyyt_lyrics_overrides', JSON.stringify(lyricsOverrides));
   }
 
   function getCurrentTrack() {
@@ -116,16 +137,12 @@
   }
 
   function readJsonList(key) {
-    try {
-      var value = JSON.parse(localStorage.getItem(key)) || [];
-      return Array.isArray(value) ? value : [];
-    } catch (error) {
-      return [];
-    }
+    var value = readPlayerPageStorageJson(key, []);
+    return Array.isArray(value) ? value : [];
   }
 
   function writeJsonList(key, list) {
-    localStorage.setItem(key, JSON.stringify(Array.isArray(list) ? list : []));
+    writePlayerPageStorageValue(key, JSON.stringify(Array.isArray(list) ? list : []));
   }
 
   function getFavorites() {
@@ -184,17 +201,17 @@
 
   function cyclePlayMode() {
     var modes = ['order', 'repeat-all', 'repeat-one', 'shuffle'];
-    var current = localStorage.getItem('ljyyt_play_mode') || 'order';
+    var current = readPlayerPageStorageValue('ljyyt_play_mode', 'order');
     var index = modes.indexOf(current);
     var next = modes[(index + 1 + modes.length) % modes.length];
-    localStorage.setItem('ljyyt_play_mode', next);
+    writePlayerPageStorageValue('ljyyt_play_mode', next);
     updateSidebar();
     return next;
   }
 
   function getNextTrackIndexByMode() {
     if (typeof musicData === 'undefined' || !musicData.length || typeof currentTrackIndex !== 'number') return 0;
-    var mode = localStorage.getItem('ljyyt_play_mode') || 'order';
+    var mode = readPlayerPageStorageValue('ljyyt_play_mode', 'order');
     if (mode === 'repeat-one') return currentTrackIndex;
     if (mode === 'shuffle') {
       if (musicData.length <= 1) return currentTrackIndex;
@@ -253,24 +270,14 @@
 
   function getActiveCollection() {
     if (activeView === 'favorites') {
-      var favorites = [];
-      try {
-        favorites = JSON.parse(localStorage.getItem('ljyyt_favorites')) || [];
-      } catch (e) {
-        favorites = [];
-      }
+      var favorites = readJsonList('ljyyt_favorites');
       return (typeof musicData !== 'undefined') ? musicData.filter(function(track) {
         return favorites.indexOf(track.id) !== -1;
       }) : [];
     }
 
     if (activeView === 'history') {
-      var history = [];
-      try {
-        history = JSON.parse(localStorage.getItem('ljyyt_play_history')) || [];
-      } catch (e2) {
-        history = [];
-      }
+      var history = readJsonList('ljyyt_play_history');
       return history.map(function(item) {
         return getTrackById(item.id);
       }).filter(Boolean);
@@ -1428,7 +1435,7 @@
   function updateSidebar() {
     var audio = document.getElementById('audio-player');
     var track = getCurrentTrack();
-    var mode = localStorage.getItem('ljyyt_play_mode') || 'order';
+    var mode = readPlayerPageStorageValue('ljyyt_play_mode', 'order');
 
     if (heroStatus) {
       heroStatus.textContent = track ? ((audio && !audio.paused) ? '正在播放' : '已加载当前歌曲') : '正在准备播放器';
