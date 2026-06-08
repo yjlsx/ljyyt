@@ -80,9 +80,12 @@ for (const file of ['index.html', 'dist/index.html']) {
     pickFunction(html, 'filterStoredObjectList'),
     pickFunction(html, 'readStoredObjectList'),
     pickFunction(html, 'normalizeStoredPlaylists'),
+    pickFunction(html, 'parseTrackDuration'),
+    pickFunction(html, 'normalizeImportedPlaylist'),
     'this.result = readStoredObjectList("tracks");',
     'this.genericResult = readStoredList("tracks");',
-    'this.playlists = normalizeStoredPlaylists([{ name: "Mine", count: 99, tracks: [null, "bad", { title: "Song", artist: "Singer" }] }, { name: "Empty", tracks: "bad" }]);'
+    'this.playlists = normalizeStoredPlaylists([{ name: "Mine", count: 99, tracks: [null, "bad", { title: "Song", artist: "Singer" }] }, { name: "Empty", tracks: "bad" }]);',
+    'this.imported = normalizeImportedPlaylist({ title: { bad: true }, tracks: [{ name: { text: "Ignored" }, songName: "Song", artists: ["A", "B"], album: { name: "Album" }, cover: "http://example.test/cover.jpg", url: 123, duration: "3:04", source: { id: 1 }, sourceLabel: ["Imported"] }] }, "fallback.json");'
   ].join('\n'), sandbox);
 
   if (!Array.isArray(sandbox.result) || sandbox.result.length !== 2) {
@@ -102,6 +105,25 @@ for (const file of ['index.html', 'dist/index.html']) {
   }
   if (!Array.isArray(sandbox.playlists[1].tracks) || sandbox.playlists[1].tracks.length !== 0 || sandbox.playlists[1].count !== 0) {
     throw new Error(file + ' normalizeStoredPlaylists should normalize missing or invalid track arrays');
+  }
+  if (sandbox.imported.name !== 'fallback.json') {
+    throw new Error(file + ' normalizeImportedPlaylist should ignore non-string playlist names');
+  }
+  const importedTrack = sandbox.imported.tracks[0];
+  const expectedImported = {
+    title: 'Song',
+    artist: 'A / B',
+    album: 'Album',
+    cover: 'https://example.test/cover.jpg',
+    src: '',
+    source: 'import',
+    sourceLabel: '导入',
+    duration: 184
+  };
+  for (const [key, expected] of Object.entries(expectedImported)) {
+    if (importedTrack[key] !== expected) {
+      throw new Error(file + ' normalizeImportedPlaylist normalized ' + key + ' to ' + importedTrack[key] + ', expected ' + expected);
+    }
   }
 
   const nonArraySandbox = {
