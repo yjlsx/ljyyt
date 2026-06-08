@@ -1,5 +1,6 @@
 const http = require('http');
 const https = require('https');
+const dns = require('dns');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
@@ -381,7 +382,10 @@ function isBlockedAudioProxyHost(hostname) {
   if (!host) return true;
   if (host === 'localhost' || host.endsWith('.localhost')) return true;
   if (host === 'metadata.google.internal') return true;
+  if (host === '::' || host === '0:0:0:0:0:0:0:0') return true;
   if (host === '::1' || host === '0:0:0:0:0:0:0:1') return true;
+  const mappedIpv4 = host.match(/^(?:::ffff:|0:0:0:0:0:ffff:)(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (mappedIpv4) return isBlockedAudioProxyHost(mappedIpv4[1]);
   if (/^(fc|fd)[0-9a-f]{2}:/i.test(host) || /^fe[89ab][0-9a-f]:/i.test(host)) return true;
 
   const ipv4Match = host.match(/^(\d{1,3})(?:\.(\d{1,3})){3}$/);
@@ -399,7 +403,45 @@ function isBlockedAudioProxyHost(hostname) {
   return false;
 }
 
-function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
+async function createSafeAudioProxyLookup(audioUrl) {
+  const hostname = audioUrl && audioUrl.hostname;
+  if (isBlockedAudioProxyHost(hostname)) {
+    throw new Error('Blocked audio proxy host');
+  }
+
+  const resolvedAddresses = await dns.promises.lookup(hostname, { all: true });
+  if (!resolvedAddresses.length) {
+    throw new Error('No audio proxy DNS addresses');
+  }
+
+  const blockedAddress = resolvedAddresses.find((entry) => isBlockedAudioProxyHost(entry.address));
+  if (blockedAddress) {
+    throw new Error('Blocked audio proxy resolved host');
+  }
+
+  return function safeAudioProxyLookup(_hostname, options, callback) {
+    if (options && options.all) {
+      callback(null, resolvedAddresses.map((entry) => ({
+        address: entry.address,
+        family: entry.family
+      })));
+      return;
+    }
+
+    const requestedFamily = options && (options.family === 4 || options.family === 6) ? options.family : 0;
+    const selected = requestedFamily
+      ? resolvedAddresses.find((entry) => entry.family === requestedFamily)
+      : resolvedAddresses[0];
+
+    if (!selected) {
+      callback(new Error('No safe audio proxy address'));
+      return;
+    }
+    callback(null, selected.address, selected.family);
+  };
+}
+
+async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
   let parsed;
   try {
     parsed = new URL(String(targetUrl || ''));
@@ -415,6 +457,13 @@ function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
     sendJson(res, 403, { url: '', error: 'Blocked audio proxy host' });
     return;
   }
+  let safeLookup;
+  try {
+    safeLookup = await createSafeAudioProxyLookup(parsed);
+  } catch (error) {
+    sendJson(res, 403, { url: '', error: error.message });
+    return;
+  }
 
   const client = parsed.protocol === 'https:' ? https : http;
   const headers = Object.assign({
@@ -423,7 +472,11 @@ function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
   }, extraHeaders || {});
   if (req.headers.range) headers.Range = req.headers.range;
 
-  const proxyReq = client.request(parsed, { method: req.method === 'HEAD' ? 'HEAD' : 'GET', headers }, (proxyRes) => {
+  const proxyReq = client.request(parsed, {
+    method: req.method === 'HEAD' ? 'HEAD' : 'GET',
+    headers,
+    lookup: safeLookup
+  }, (proxyRes) => {
     const statusCode = Number(proxyRes.statusCode || 200);
     const responseHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -462,7 +515,7 @@ async function streamKuwoAudio(req, res, rid) {
     return;
   }
 
-  streamRemoteAudio(req, res, payload.url, { Referer: 'https://www.kuwo.cn/' });
+  await streamRemoteAudio(req, res, payload.url, { Referer: 'https://www.kuwo.cn/' });
 }
 
 function buildSuccess(source, title, artist, lines, extra) {
@@ -1705,7 +1758,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (requestUrl.pathname === '/api/audio-proxy') {
-    streamRemoteAudio(req, res, requestUrl.searchParams.get('url') || '');
+    await streamRemoteAudio(req, res, requestUrl.searchParams.get('url') || '');
     return;
   }
 

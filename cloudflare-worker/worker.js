@@ -788,7 +788,10 @@ function isBlockedAudioProxyHost(hostname) {
   if (!host) return true;
   if (host === 'localhost' || host.endsWith('.localhost')) return true;
   if (host === 'metadata.google.internal') return true;
+  if (host === '::' || host === '0:0:0:0:0:0:0:0') return true;
   if (host === '::1' || host === '0:0:0:0:0:0:0:1') return true;
+  const mappedIpv4 = host.match(/^(?:::ffff:|0:0:0:0:0:ffff:)(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (mappedIpv4) return isBlockedAudioProxyHost(mappedIpv4[1]);
   if (/^(fc|fd)[0-9a-f]{2}:/i.test(host) || /^fe[89ab][0-9a-f]:/i.test(host)) return true;
 
   const ipv4Match = host.match(/^(\d{1,3})(?:\.(\d{1,3})){3}$/);
