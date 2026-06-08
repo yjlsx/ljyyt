@@ -442,6 +442,19 @@ async function createSafeAudioProxyLookup(audioUrl) {
 }
 
 async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
+  let proxyReq = null;
+  let upstreamResponse = null;
+  let downstreamClosed = false;
+  function cleanupUpstreamStream() {
+    downstreamClosed = true;
+    if (proxyReq) {
+      if (!proxyReq.destroyed) proxyReq.destroy();
+    }
+    if (upstreamResponse && !upstreamResponse.destroyed) upstreamResponse.destroy();
+  }
+  req.on('aborted', cleanupUpstreamStream);
+  res.on('close', cleanupUpstreamStream);
+
   let parsed;
   try {
     parsed = new URL(String(targetUrl || ''));
@@ -471,12 +484,21 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
   }, extraHeaders || {});
   if (req.headers.range) headers.Range = req.headers.range;
+  if (downstreamClosed || req.destroyed || res.destroyed) return;
 
-  const proxyReq = client.request(parsed, {
+  proxyReq = client.request(parsed, {
     method: req.method === 'HEAD' ? 'HEAD' : 'GET',
     headers,
     lookup: safeLookup
   }, (proxyRes) => {
+    upstreamResponse = proxyRes;
+    if (downstreamClosed) {
+      proxyRes.destroy();
+      return;
+    }
+    proxyRes.on('error', (error) => {
+      if (!res.destroyed) res.destroy(error);
+    });
     const statusCode = Number(proxyRes.statusCode || 200);
     const responseHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -496,6 +518,7 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
   });
 
   proxyReq.on('error', (error) => {
+    if (downstreamClosed || res.destroyed) return;
     if (!res.headersSent) {
       sendJson(res, 502, { url: '', error: error.message });
     } else {
