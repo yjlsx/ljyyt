@@ -2534,7 +2534,7 @@
       currentTrack = state.track;
       playQueue = Array.isArray(state.queue) && state.queue.length ? state.queue : [currentTrack];
       queueIndex = Math.max(0, Math.min(Number(state.queueIndex) || 0, playQueue.length - 1));
-      currentTrackIndex = Math.max(0, Number(state.currentTrackIndex) || 0);
+      syncQueueIndexToCurrentTrack();
       restoredPlaybackTime = Math.max(0, Number(state.currentTime) || 0);
       updateTrackUi(currentTrack);
       updateLikeButton();
