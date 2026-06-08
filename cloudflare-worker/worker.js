@@ -12,15 +12,15 @@ export default {
       }
 
       if (url.pathname === '/api/lyrics/search') {
-        return await withCache(request, ctx, () => handleLyricsSearchRequest(url));
+        return await handleLyricsSearchRequest(url);
       }
 
       if (url.pathname === '/api/netease/suggest') {
-        return await withCache(request, ctx, () => handleNeteaseSuggestRequest(url));
+        return await handleNeteaseSuggestRequest(url);
       }
 
       if (url.pathname === '/api/gd-music') {
-        return await withCache(request, ctx, () => handleGdMusicRequest(url));
+        return await handleGdMusicRequest(url);
       }
 
       if (url.pathname === '/api/cover') {
@@ -28,7 +28,7 @@ export default {
       }
 
       if (url.pathname === '/api/kuwo-url') {
-        return await withCache(request, ctx, () => handleKuwoUrlRequest(url));
+        return await handleKuwoUrlRequest(url);
       }
 
       if (url.pathname === '/api/kuwo-audio') {
@@ -65,7 +65,10 @@ async function withCache(request, ctx, handler) {
 
   const response = await handler();
   if (response.ok) {
-    ctx.waitUntil(cache.put(request, response.clone()));
+    const cacheable = new Response(response.body, response);
+    cacheable.headers.set('Cache-Control', 'public, max-age=1800');
+    ctx.waitUntil(cache.put(request, cacheable.clone()));
+    return cacheable;
   }
   return response;
 }
@@ -726,7 +729,7 @@ async function handleKuwoAudioRequest(request, url) {
   const response = await fetch(audioUrl, { headers });
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
-  responseHeaders.set('Cache-Control', 'public, max-age=1800');
+  responseHeaders.set('Cache-Control', 'no-store');
   if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
   if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
   return new Response(response.body, {
@@ -782,7 +785,7 @@ async function handleAudioProxyRequest(request, url) {
   const response = await fetch(audioUrl.toString(), { headers });
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
-  responseHeaders.set('Cache-Control', 'public, max-age=1800');
+  responseHeaders.set('Cache-Control', 'no-store');
   if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
   if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
   return new Response(response.body, {
@@ -796,16 +799,16 @@ function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Accept',
-    'Cache-Control': 'public, max-age=1800'
+    'Access-Control-Allow-Headers': 'Content-Type, Accept'
   };
 }
 
-function jsonResponse(payload, status = 200) {
+function jsonResponse(payload, status = 200, cacheControl = 'no-store') {
   return new Response(JSON.stringify(payload), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': cacheControl,
       ...corsHeaders()
     }
   });
