@@ -3403,7 +3403,7 @@
       else pauseCurrentTrack();
     }
     async function playTrackAt(index) {
-      const tracks = playQueue.length > 1 ? playQueue : await ensureLibraryTracks();
+      const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
       if (!tracks.length) return;
       queueIndex = (index + tracks.length) % tracks.length;
       currentTrackIndex = queueIndex;
@@ -3427,7 +3427,7 @@
         return;
       }
       if (mode === 'shuffle') {
-        const tracks = playQueue.length > 1 ? playQueue : await ensureLibraryTracks();
+        const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
         if (!tracks.length) return;
         const nextIndex = tracks.length > 1
           ? (queueIndex + 1 + Math.floor(Math.random() * (tracks.length - 1))) % tracks.length
