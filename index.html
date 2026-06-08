@@ -4983,21 +4983,43 @@
       };
       reader.readAsText(file);
     }
+    function normalizeImportedText(value, fallback, allowStructured) {
+      if (Array.isArray(value)) {
+        if (!allowStructured) return fallback || '';
+        var list = value.map(function(item) { return normalizeImportedText(item, '', true); }).filter(Boolean);
+        return list.length ? list.join(' / ') : (fallback || '');
+      }
+      if (value && typeof value === 'object') {
+        if (!allowStructured) return fallback || '';
+        return normalizeImportedText(value.name || value.title || value.text || value.value || value.url || '', fallback, true);
+      }
+      var text = String(value == null ? '' : value).trim();
+      return text || (fallback || '');
+    }
+    function firstImportedText(values, fallback, allowStructured) {
+      for (var i = 0; i < values.length; i++) {
+        var text = normalizeImportedText(values[i], '', allowStructured);
+        if (text) return text;
+      }
+      return fallback || '';
+    }
     function normalizeImportedPlaylist(data, fallbackName) {
       var source = Array.isArray(data) ? { name: fallbackName || '导入歌单', tracks: data } : (data.playlist || data);
       var rawTracks = filterStoredObjectList(source.tracks);
       var tracks = rawTracks.map(function(item) {
+        var rawUrl = firstImportedText([item.src, item.url], '', false);
         return {
-          title: item.title || item.name || item.songName || '未知歌曲',
-          artist: item.artist || item.artists || item.singer || '未知歌手',
-          album: item.album || '',
-          cover: item.cover || item.pic || item.albumPic || DEFAULT_COVER,
-          src: item.src || item.url || '',
-          source: item.source || 'import',
-          sourceLabel: item.sourceLabel || '导入'
+          title: firstImportedText([item.title, item.name, item.songName], '未知歌曲', false),
+          artist: firstImportedText([item.artist, item.artists, item.singer], '未知歌手', true),
+          album: firstImportedText([item.album], '', true),
+          cover: safeCover(firstImportedText([item.cover, item.pic, item.albumPic], DEFAULT_COVER, true)),
+          src: /^https?:\/\//i.test(rawUrl) ? rawUrl : '',
+          source: firstImportedText([item.source], 'import', false),
+          sourceLabel: firstImportedText([item.sourceLabel], '导入', false),
+          duration: parseTrackDuration(item.duration || item.interval || item.time || item.dt || item.length)
         };
       });
-      return { name: source.name || source.title || fallbackName || '导入歌单', count: tracks.length, tracks: tracks, createdAt: Date.now() };
+      return { name: firstImportedText([source.name, source.title], fallbackName || '导入歌单', false), count: tracks.length, tracks: tracks, createdAt: Date.now() };
     }
     function openAddToPlaylistDrawer(track) {
       pendingPlaylistTrack = track;

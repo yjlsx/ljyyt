@@ -60,6 +60,7 @@ for (const file of ['index.html', 'dist/index.html']) {
   }
 
   const sandbox = {
+    DEFAULT_COVER: 'default-cover.svg',
     localStorage: {
       getItem() {
         return JSON.stringify([
@@ -81,6 +82,9 @@ for (const file of ['index.html', 'dist/index.html']) {
     pickFunction(html, 'readStoredObjectList'),
     pickFunction(html, 'normalizeStoredPlaylists'),
     pickFunction(html, 'parseTrackDuration'),
+    pickFunction(html, 'safeCover'),
+    pickFunction(html, 'normalizeImportedText'),
+    pickFunction(html, 'firstImportedText'),
     pickFunction(html, 'normalizeImportedPlaylist'),
     'this.result = readStoredObjectList("tracks");',
     'this.genericResult = readStoredList("tracks");',
