@@ -9,6 +9,8 @@ for (const name of [
   'getSelectedPlaybackSources',
   'inferTrackSourceCandidates',
   'isTrackMatchCandidate',
+  'isLooseTitleMatchCandidate',
+  'pickFallbackTrackMatch',
   'normalizeExternalTrack',
   'fetchGdMusicJson',
   'fetchExternalSourceTracks',
@@ -53,6 +55,7 @@ const pickConstObject = (name) => {
 const sandbox = {
   console: { warn: function() {}, log: function() {}, error: function() {} },
   DEFAULT_COVER: 'cover.jpg',
+  SEARCH_RESULT_LIMIT: 100,
   gdMusicApiBase: '/api/gd-music',
   gdMusicFallbackBases: ['https://music-api.example.test/api.php'],
   _isLocalDev: true,
@@ -95,6 +98,24 @@ const sandbox = {
             url_id: 'joox-traditional'
           }];
         }
+        if (source === 'joox' && /香港/.test(query)) {
+          const filler = Array.from({ length: 12 }, (_, index) => ({
+            id: 'filler-' + index,
+            name: '香港夜色' + index,
+            artist: ['其它歌手' + index],
+            album: '香港合集',
+            source: 'joox',
+            url_id: 'filler-' + index
+          }));
+          return filler.concat([{
+            id: 'joox-hong-kong',
+            name: '香港',
+            artist: ['不同歌手字段'],
+            album: '香港',
+            source: 'joox',
+            url_id: 'joox-hong-kong'
+          }]);
+        }
         if (source !== 'joox') return [];
         return [{
           id: '123',
@@ -110,6 +131,7 @@ const sandbox = {
   async resolveExternalTrackUrl(track) {
     if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
     if (track && track.urlId === 'joox-traditional') return 'https://cdn.example.com/wo-hui-deng.mp3';
+    if (track && track.urlId === 'joox-hong-kong') return 'https://cdn.example.com/hong-kong.mp3';
     return track && track.urlId === '123' ? 'https://cdn.example.com/my-soul.mp3' : '';
   },
   calls: []
@@ -123,6 +145,8 @@ vm.runInContext([
   pickFunction('getSelectedPlaybackSources'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('isTrackMatchCandidate'),
+  pickFunction('isLooseTitleMatchCandidate'),
+  pickFunction('pickFallbackTrackMatch'),
   pickFunction('normalizeExternalTrack'),
   pickFunction('fetchGdMusicJson'),
   pickFunction('fetchExternalSourceTracks'),
@@ -153,6 +177,12 @@ vm.runInContext([
     { title: '偏偏喜歡你', artist: '陳百強' }
   )) {
     throw new Error('Expected traditional Danny Chan title and artist to match simplified target');
+  }
+  if (!sandbox.isLooseTitleMatchCandidate(
+    { title: '香港', artist: '酷我歌手字段' },
+    { title: '香港', artist: '不同歌手字段' }
+  )) {
+    throw new Error('Expected loose title fallback to accept exact title with different artist metadata');
   }
   const favorite = { title: 'My Soul', artist: 'July', sourceLabel: 'Joox', src: '' };
   const url = await sandbox.recoverPlayableTrackUrl(favorite);
@@ -229,6 +259,25 @@ vm.runInContext([
   }
   if (chineseFallback.source !== 'joox') {
     throw new Error('Expected failed Kuwo track to switch source to Joox');
+  }
+
+  sandbox.calls = [];
+  const deepFallback = {
+    title: '香港',
+    artist: '酷我歌手字段',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const deepFallbackUrl = await sandbox.recoverPlayableTrackUrl(deepFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (deepFallbackUrl !== 'https://cdn.example.com/hong-kong.mp3') {
+    throw new Error('Expected fallback search to scan beyond the first 8 results for 香港, got ' + deepFallbackUrl);
+  }
+  if (!sandbox.calls.some((call) => call.source === 'joox')) {
+    throw new Error('Expected failed Kuwo track to search selected Joox source');
   }
 })().catch((error) => {
   console.error(error);
