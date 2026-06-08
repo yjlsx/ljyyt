@@ -15,6 +15,30 @@
     bottomPlayerCollapsed: 'ljyyt_bottom_player_collapsed'
   };
 
+  function readEnhancedStorageValue(key, fallback) {
+    try {
+      var value = localStorage.getItem(key);
+      return value == null ? fallback : value;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function writeEnhancedStorageValue(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (error) {}
+  }
+
+  function readEnhancedStorageJson(key, fallback) {
+    try {
+      var value = JSON.parse(readEnhancedStorageValue(key, 'null'));
+      return value == null ? fallback : value;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
   // Toast 提示
   function toast(msg, type) {
     var el = document.createElement('div');
@@ -31,9 +55,9 @@
     return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
   }
 
-  var playMode = localStorage.getItem(STORAGE.playMode) || 'order';
-  var bottomPlayerLayout = localStorage.getItem(STORAGE.bottomPlayerLayout) || 'home';
-  var bottomPlayerCollapsed = localStorage.getItem(STORAGE.bottomPlayerCollapsed) === 'true';
+  var playMode = readEnhancedStorageValue(STORAGE.playMode, 'order');
+  var bottomPlayerLayout = readEnhancedStorageValue(STORAGE.bottomPlayerLayout, 'home');
+  var bottomPlayerCollapsed = readEnhancedStorageValue(STORAGE.bottomPlayerCollapsed, 'false') === 'true';
   var favorites = [];
   var playHistory = [];
   var playCounts = {};
@@ -51,7 +75,7 @@
     injectUI();
     initBottomPlayerNavigation();
     initPlayerNavLinks();
-    if (localStorage.getItem(STORAGE.darkMode) === 'true') {
+    if (readEnhancedStorageValue(STORAGE.darkMode, 'false') === 'true') {
       document.body.classList.add('dark-mode');
     }
     console.log('🎵 播放器增强模块 v2 已加载');
@@ -59,11 +83,11 @@
 
   // ========== 收藏 ==========
   function loadFavorites() {
-    try { favorites = JSON.parse(localStorage.getItem(STORAGE.favorites)) || []; }
-    catch(e) { favorites = []; }
+    favorites = readEnhancedStorageJson(STORAGE.favorites, []);
+    if (!Array.isArray(favorites)) favorites = [];
   }
   function saveFavorites() {
-    localStorage.setItem(STORAGE.favorites, JSON.stringify(favorites));
+    writeEnhancedStorageValue(STORAGE.favorites, JSON.stringify(favorites));
   }
   function isFav(id) { return favorites.indexOf(id) !== -1; }
   window.isFav = isFav;
@@ -97,12 +121,12 @@
 
   // ========== 历史 ==========
   function loadHistory() {
-    try { playHistory = JSON.parse(localStorage.getItem(STORAGE.history)) || []; }
-    catch(e) { playHistory = []; }
+    playHistory = readEnhancedStorageJson(STORAGE.history, []);
+    if (!Array.isArray(playHistory)) playHistory = [];
   }
   function saveHistory() {
     if (playHistory.length > 50) playHistory = playHistory.slice(0, 50);
-    localStorage.setItem(STORAGE.history, JSON.stringify(playHistory));
+    writeEnhancedStorageValue(STORAGE.history, JSON.stringify(playHistory));
   }
   function addHistory(track) {
     if (!track) return;
@@ -113,11 +137,11 @@
 
   // ========== 播放计数 ==========
   function loadPlayCounts() {
-    try { playCounts = JSON.parse(localStorage.getItem(STORAGE.playCount)) || {}; }
-    catch(e) { playCounts = {}; }
+    playCounts = readEnhancedStorageJson(STORAGE.playCount, {});
+    if (!playCounts || typeof playCounts !== 'object' || Array.isArray(playCounts)) playCounts = {};
   }
   function savePlayCounts() {
-    localStorage.setItem(STORAGE.playCount, JSON.stringify(playCounts));
+    writeEnhancedStorageValue(STORAGE.playCount, JSON.stringify(playCounts));
   }
   function incrementPlayCount(trackId) {
     playCounts[trackId] = (playCounts[trackId] || 0) + 1;
@@ -126,11 +150,11 @@
 
   // ========== 播放模式 ==========
   function initPlayMode() {
-    playMode = localStorage.getItem(STORAGE.playMode) || 'order';
+    playMode = readEnhancedStorageValue(STORAGE.playMode, 'order');
     updateModeBtn();
   }
   function initBottomPlayerLayout() {
-    bottomPlayerLayout = localStorage.getItem(STORAGE.bottomPlayerLayout) || 'home';
+    bottomPlayerLayout = readEnhancedStorageValue(STORAGE.bottomPlayerLayout, 'home');
     applyBottomPlayerLayout(bottomPlayerLayout);
   }
   function applyBottomPlayerLayout(layout) {
@@ -140,7 +164,7 @@
   }
   function cycleBottomPlayerLayout() {
     var nextLayout = bottomPlayerLayout === 'player' ? 'home' : 'player';
-    localStorage.setItem(STORAGE.bottomPlayerLayout, nextLayout);
+    writeEnhancedStorageValue(STORAGE.bottomPlayerLayout, nextLayout);
     applyBottomPlayerLayout(nextLayout);
   }
   function initBottomPlayerCollapse() {
@@ -165,7 +189,7 @@
       e.stopPropagation();
       var nextCollapsed = !bottomPlayerCollapsed;
       bottomPlayerCollapsed = nextCollapsed;
-      localStorage.setItem(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
+      writeEnhancedStorageValue(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
       bp.classList.toggle('bottom-player-collapsed', nextCollapsed);
       updateCollapseBtn();
       setTimeout(positionToggle, 380);
@@ -201,14 +225,14 @@
   }
   function toggleBottomPlayerCollapse() {
     var nextCollapsed = !bottomPlayerCollapsed;
-    localStorage.setItem(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
+    writeEnhancedStorageValue(STORAGE.bottomPlayerCollapsed, nextCollapsed ? 'true' : 'false');
     applyBottomPlayerCollapsed(nextCollapsed);
   }
   function cycleMode() {
     var modes = ['order', 'repeat-all', 'repeat-one', 'shuffle'];
     var idx = modes.indexOf(playMode);
     playMode = modes[(idx + 1) % modes.length];
-    localStorage.setItem(STORAGE.playMode, playMode);
+    writeEnhancedStorageValue(STORAGE.playMode, playMode);
     updateModeBtn();
   }
   window.cycleMode = cycleMode;
@@ -378,7 +402,7 @@
     updateDarkBtn(btn, document.body.classList.contains('dark-mode'));
     btn.onclick = function() {
       var dark = document.body.classList.toggle('dark-mode');
-      localStorage.setItem(STORAGE.darkMode, dark);
+      writeEnhancedStorageValue(STORAGE.darkMode, dark);
       updateDarkBtn(btn, dark);
       toast(dark ? '深色模式 🌙' : '浅色模式 ☀️');
     };
