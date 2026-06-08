@@ -827,6 +827,7 @@ async function handleKuwoAudioRequest(request, url) {
   const response = await fetchWithTimeout(audioUrl, { headers });
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Type');
   responseHeaders.set('Cache-Control', 'no-store');
   if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
   if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
@@ -887,6 +888,7 @@ async function handleAudioProxyRequest(request, url) {
   if (!response.ok) return response;
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Type');
   responseHeaders.set('Cache-Control', 'no-store');
   if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
   if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
@@ -930,7 +932,7 @@ function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Accept'
+    'Access-Control-Allow-Headers': 'Content-Type, Accept, Range'
   };
 }
 
