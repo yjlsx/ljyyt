@@ -23,6 +23,11 @@ for (const file of ['index.html', 'dist/index.html']) {
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
   const clearSearchHistory = pickFunction(script, 'clearSearchHistory');
   const clearCurrentQueue = pickFunction(script, 'clearCurrentQueue');
+  const showConfirmDefinitions = script.match(/function\s+showConfirm\s*\(/g) || [];
+
+  if (showConfirmDefinitions.length !== 1) {
+    throw new Error(file + ' should have exactly one showConfirm implementation, found ' + showConfirmDefinitions.length);
+  }
 
   if (!clearSearchHistory.includes("showConfirm('确定清空搜索历史吗？'")) {
     throw new Error(file + ' clears search history without custom confirmation');

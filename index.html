@@ -2077,27 +2077,6 @@
     function iconHtml(name) {
       return (window.LJYYTIcons && window.LJYYTIcons[name]) || '';
     }
-    function showConfirm(message, onConfirm) {
-      var overlay = document.createElement('div');
-      overlay.className = 'ljyyt-confirm-overlay';
-      overlay.innerHTML =
-        '<div class="ljyyt-confirm-box">' +
-          '<p>' + escapeMarkup(message) + '</p>' +
-          '<div class="ljyyt-confirm-btns">' +
-            '<button class="ljyyt-confirm-cancel">取消</button>' +
-            '<button class="ljyyt-confirm-ok">确定</button>' +
-          '</div>' +
-        '</div>';
-      document.body.appendChild(overlay);
-      requestAnimationFrame(function() { overlay.classList.add('show'); });
-      function close() {
-        overlay.classList.remove('show');
-        setTimeout(function() { overlay.remove(); }, 200);
-      }
-      overlay.querySelector('.ljyyt-confirm-cancel').onclick = close;
-      overlay.querySelector('.ljyyt-confirm-ok').onclick = function() { close(); onConfirm(); };
-      overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
-    }
     function showToast(message, duration) {
       var existing = document.querySelector('.ljyyt-toast');
       if (existing) existing.remove();
