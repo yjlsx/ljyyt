@@ -5077,12 +5077,12 @@
         return;
       }
       list.innerHTML = tracks.map(function(track, i) {
-        var cover = track.cover || track.pic || DEFAULT_COVER;
+        var cover = safeCover(track.cover || track.pic || DEFAULT_COVER);
         var title = escapeMarkup(track.title || track.name || '未知歌曲');
         var artist = escapeMarkup(track.artist || track.artists || '未知歌手');
         var sourceLabel = shouldShowSourceLabels() ? (track.sourceLabel || track.source || '') : '';
         return '<div class="track" onclick="playUserPlaylistTrack(' + i + ')">' +
-          '<img src="' + cover + '" referrerpolicy="no-referrer" alt="" onerror="this.src=\'' + DEFAULT_COVER + '\'">' +
+          '<img src="' + escapeMarkup(cover) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + title + '</div><div class="artist">' + artist + (sourceLabel ? '<span class="source-tag">' + escapeMarkup(sourceLabel) + '</span>' : '') + '</div></div>' +
           '<button class="track-remove" onclick="event.stopPropagation(); removeFromUserPlaylist(' + i + ')" aria-label="移除">' + iconHtml('close') + '</button>' +
           '</div>';
