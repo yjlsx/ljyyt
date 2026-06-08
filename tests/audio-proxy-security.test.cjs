@@ -84,6 +84,39 @@ new Function('module', 'exports', extractFunction(worker, 'isBlockedAudioProxyHo
 module.exports = { isBlockedAudioProxyHost };
 `)(workerHelperModule, workerHelperModule.exports);
 
+const workerAudioProxyModule = { exports: {} };
+const workerFetchCalls = [];
+const workerFetch = async (targetUrl, options) => {
+  workerFetchCalls.push({ url: targetUrl, options: options || {} });
+  if (!options || options.redirect !== 'manual') {
+    return new Response('private metadata', {
+      status: 200,
+      headers: { 'Content-Type': 'audio/mpeg' }
+    });
+  }
+  return new Response(null, {
+    status: 302,
+    headers: { Location: 'http://169.254.169.254/latest/meta-data' }
+  });
+};
+new Function(
+  'module',
+  'exports',
+  'fetch',
+  'URL',
+  'Headers',
+  'Response',
+  [
+    extractFunction(worker, 'isBlockedAudioProxyHost'),
+    extractFunction(worker, 'handleAudioProxyRequest', 'async function'),
+    extractFunction(worker, 'fetchAudioProxyResponse', 'async function'),
+    extractFunction(worker, 'corsHeaders'),
+    extractFunction(worker, 'jsonResponse')
+  ].join('\n') + `
+module.exports = { handleAudioProxyRequest };
+`
+)(workerAudioProxyModule, workerAudioProxyModule.exports, workerFetch, URL, Headers, Response);
+
 const blockedHosts = [
   'localhost',
   '127.0.0.1',
@@ -158,4 +191,18 @@ async function expectBlockedResolvedHost(hostname) {
       resolve();
     });
   });
+
+  const redirectResponse = await workerAudioProxyModule.exports.handleAudioProxyRequest(
+    { headers: new Headers() },
+    new URL('https://worker.test/api/audio-proxy?url=' + encodeURIComponent('https://public.test/song.mp3'))
+  );
+  if (!workerFetchCalls.length || workerFetchCalls[0].options.redirect !== 'manual') {
+    throw new Error('worker audio proxy should fetch with redirect: manual so every redirect hop is revalidated');
+  }
+  if (redirectResponse.status !== 403) {
+    throw new Error('worker audio proxy allowed redirect to blocked host, status: ' + redirectResponse.status);
+  }
+  if (!String(redirectResponse.headers.get('Content-Type') || '').includes('application/json')) {
+    throw new Error('worker audio proxy redirect rejection should remain a JSON error response');
+  }
 })();

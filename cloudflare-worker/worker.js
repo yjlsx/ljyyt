@@ -829,7 +829,8 @@ async function handleAudioProxyRequest(request, url) {
   };
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
-  const response = await fetch(audioUrl.toString(), { headers });
+  const response = await fetchAudioProxyResponse(audioUrl, headers);
+  if (!response.ok) return response;
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
   responseHeaders.set('Cache-Control', 'no-store');
@@ -840,6 +841,35 @@ async function handleAudioProxyRequest(request, url) {
     statusText: response.statusText,
     headers: responseHeaders
   });
+}
+
+async function fetchAudioProxyResponse(audioUrl, headers, redirectsLeft = 4) {
+  if (!['http:', 'https:'].includes(audioUrl.protocol)) {
+    return jsonResponse({ url: '', error: 'Unsupported redirect url' }, 400);
+  }
+  if (isBlockedAudioProxyHost(audioUrl.hostname)) {
+    return jsonResponse({ url: '', error: 'Blocked audio proxy host' }, 403);
+  }
+
+  const response = await fetch(audioUrl.toString(), {
+    headers,
+    redirect: 'manual'
+  });
+  if (response.status >= 300 && response.status < 400) {
+    const location = response.headers.get('Location');
+    if (!location) return response;
+    if (redirectsLeft <= 0) {
+      return jsonResponse({ url: '', error: 'too many redirects' }, 508);
+    }
+    let nextUrl;
+    try {
+      nextUrl = new URL(location, audioUrl);
+    } catch (error) {
+      return jsonResponse({ url: '', error: 'Invalid redirect url' }, 400);
+    }
+    return fetchAudioProxyResponse(nextUrl, headers, redirectsLeft - 1);
+  }
+  return response;
 }
 
 function corsHeaders() {
