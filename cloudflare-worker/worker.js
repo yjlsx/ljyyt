@@ -197,8 +197,9 @@ async function handleLyricsRequest(url) {
     title: lookup.title,
     artist: lookup.artist,
     lines: [],
-    syncedLyrics: []
-  }, 404);
+    syncedLyrics: [],
+    message: 'No lyrics found'
+  });
 }
 
 async function handleLyricsSearchRequest(url) {
@@ -208,7 +209,11 @@ async function handleLyricsSearchRequest(url) {
   );
 
   if (!lookup.title && !lookup.artist) {
-    return jsonResponse({ candidates: [] });
+    return jsonResponse({
+      code: 200,
+      msg: '成功',
+      candidates: []
+    });
   }
 
   const [lrclibCandidates, rangotecCandidates, neteaseCandidates] = await Promise.all([
@@ -218,7 +223,9 @@ async function handleLyricsSearchRequest(url) {
   ]);
 
   return jsonResponse({
-    candidates: dedupeCandidates([...lrclibCandidates, ...rangotecCandidates, ...neteaseCandidates]).slice(0, 12)
+    code: 200,
+    msg: '成功',
+    candidates: dedupeCandidates([...lrclibCandidates, ...rangotecCandidates, ...neteaseCandidates]).slice(0, 20)
   });
 }
 
