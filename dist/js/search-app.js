@@ -4,6 +4,7 @@
   var SEARCH_HISTORY_KEY = 'ljyyt_search_history';
   var LEGACY_SEARCH_HISTORY_KEYS = ['searchHistory', 'search-history', 'recentSearches', 'recent_searches', 'ljyytSearchHistory'];
   var DEFAULT_COVER = 'https://images.unsplash.com/photo-1677922068836-149f83761ddb?fm=jpg&q=60&w=640&auto=format&fit=crop';
+  var SEARCH_RESULT_LIMIT = 200;
   var GD_MUSIC_API_BASES = [
     'https://otter-music.pages.dev/music-api',
     '/api/gd-music',
@@ -335,12 +336,31 @@
   }
 
   async function searchExternalSource(query, source, signal) {
-    var queryString = '?types=search&source=' + encodeURIComponent(source) +
-      '&name=' + encodeURIComponent(query) + '&count=50&pages=1';
-    var payload = await fetchGdMusicJson(queryString, signal);
-    var tracks = Array.isArray(payload)
-      ? payload.map(normalizeExternalTrack).filter(function(track) { return track.title; })
-      : [];
+    var pageSize = 50;
+    var pageCount = Math.max(1, Math.ceil(SEARCH_RESULT_LIMIT / pageSize));
+    var requests = [];
+    for (var page = 1; page <= pageCount; page++) {
+      var queryString = '?types=search&source=' + encodeURIComponent(source) +
+        '&name=' + encodeURIComponent(query) + '&count=' + pageSize + '&pages=' + page;
+      requests.push(fetchGdMusicJson(queryString, signal).catch(function(error) {
+        if (error && error.name === 'AbortError') throw error;
+        return [];
+      }));
+    }
+    var payloads = await Promise.all(requests);
+    var tracks = [];
+    var seen = {};
+    payloads.forEach(function(payload) {
+      (Array.isArray(payload) ? payload : []).map(normalizeExternalTrack).filter(function(track) {
+        return track.title;
+      }).forEach(function(track) {
+        var key = [track.source, track.urlId || track.id || track.title, track.artist].join(':');
+        if (seen[key]) return;
+        seen[key] = true;
+        tracks.push(track);
+      });
+    });
+    tracks = tracks.slice(0, SEARCH_RESULT_LIMIT);
     return Promise.all(tracks.map(resolveExternalCover));
   }
 
