@@ -29,7 +29,8 @@ for (const file of ['index.html', 'dist/index.html']) {
     'if (currentTrack.src) {',
     "if (audioPlayer.getAttribute('src') !== currentTrack.src)",
     "if (requestId !== _playRequestId) return;",
-    "showToast('当前音源暂时无法播放');",
+    "switchToFallbackSource('resolve-empty', requestId)",
+    "showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');",
     "showToast('播放失败，请重试或切换歌曲');"
   ]) {
     if (!body.includes(marker)) {

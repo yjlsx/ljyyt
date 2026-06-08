@@ -38,7 +38,8 @@ const criticalMarkers = {
   playCurrentTrack: [
     'unlockAudioContext(!hadPlayableSrc);',
     'if (currentTrack.src) {',
-    "showToast('当前音源暂时无法播放');",
+    "switchToFallbackSource('resolve-empty', requestId)",
+    "showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');",
     "showToast('播放失败，请重试或切换歌曲');"
   ],
   handleTrackAction: [

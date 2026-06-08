@@ -824,7 +824,7 @@ async function handleKuwoAudioRequest(request, url) {
   };
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
-  const response = await fetch(audioUrl, { headers });
+  const response = await fetchWithTimeout(audioUrl, { headers });
   const responseHeaders = new Headers(response.headers);
   responseHeaders.set('Access-Control-Allow-Origin', '*');
   responseHeaders.set('Cache-Control', 'no-store');
@@ -905,7 +905,7 @@ async function fetchAudioProxyResponse(audioUrl, headers, redirectsLeft = 4) {
     return jsonResponse({ url: '', error: 'Blocked audio proxy host' }, 403);
   }
 
-  const response = await fetch(audioUrl.toString(), {
+  const response = await fetchWithTimeout(audioUrl.toString(), {
     headers,
     redirect: 'manual'
   });

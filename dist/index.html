@@ -2955,14 +2955,14 @@
       }
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
-        if (!track.src) {
+        if (!track.src && isSmartSourceEnabled()) {
           track.src = await recoverPlayableTrackUrl(track, {
             skipSources: track.source ? [track.source] : []
           });
         }
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
-      if (!track.src) {
+      if (!track.src && isSmartSourceEnabled()) {
         track.src = await recoverPlayableTrackUrl(track);
         if (currentTrack && isSameTrack(track, currentTrack)) Object.assign(currentTrack, track);
       }
@@ -2993,6 +2993,9 @@
     }
     function resetFallbackState(track) {
       _fallbackAttemptState = { key: getTrackFallbackKey(track), sources: [], urls: [] };
+    }
+    function isSmartSourceEnabled() {
+      return !appSettings || appSettings.smartSource !== false;
     }
     function rememberPlaybackFailure(track, url, source) {
       var state = ensureFallbackState(track);
@@ -3065,6 +3068,7 @@
     async function switchToFallbackSource(reason, requestId, failedUrl) {
       if (requestId && requestId !== _playRequestId) return false;
       if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
+      if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
       if (await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
@@ -3239,8 +3243,9 @@
         audioPlayer.load();
       }
       if (!playableUrl) {
+        if (isSmartSourceEnabled() && await switchToFallbackSource('resolve-empty', requestId)) return;
         setPlayIcons(false);
-        showToast('当前音源暂时无法播放');
+        showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');
         return;
       }
       try {

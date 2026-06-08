@@ -47,6 +47,9 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!fallback.includes('if (requestId && requestId !== _playRequestId) return false;')) {
     throw new Error(file + ' source fallback does not reject stale play requests');
   }
+  if (!fallback.includes('if (!isSmartSourceEnabled()) return false;')) {
+    throw new Error(file + ' source fallback ignores the smart source setting');
+  }
   if (!fallback.includes('tryProxyPlaybackLine(failedUrl, requestId)')) {
     throw new Error(file + ' source fallback does not pass the request id into proxy fallback');
   }

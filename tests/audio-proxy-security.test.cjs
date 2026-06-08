@@ -99,10 +99,12 @@ const workerFetch = async (targetUrl, options) => {
     headers: { Location: 'http://169.254.169.254/latest/meta-data' }
   });
 };
+const workerFetchWithTimeout = async (targetUrl, options) => workerFetch(targetUrl, options);
 new Function(
   'module',
   'exports',
   'fetch',
+  'fetchWithTimeout',
   'URL',
   'Headers',
   'Response',
@@ -115,7 +117,7 @@ new Function(
   ].join('\n') + `
 module.exports = { handleAudioProxyRequest };
 `
-)(workerAudioProxyModule, workerAudioProxyModule.exports, workerFetch, URL, Headers, Response);
+)(workerAudioProxyModule, workerAudioProxyModule.exports, workerFetch, workerFetchWithTimeout, URL, Headers, Response);
 
 const blockedHosts = [
   'localhost',
