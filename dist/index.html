@@ -2275,7 +2275,8 @@
     }
     function readStoredObject(key) {
       const value = readStoredJson(key, null);
-      return value && typeof value === 'object' ? value : null;
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+      return value;
     }
     function writeStoredObject(key, value) {
       writeStoredJson(key, value);
@@ -2290,7 +2291,21 @@
       fullBackgroundMode: 'cover',
       theme: 'light'
     };
-    let appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
+    function normalizeAppSettings(stored) {
+      var normalized = Object.assign({}, defaultSettings);
+      if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return normalized;
+      ['smartSource', 'showSourceLabels', 'embedCover', 'embedLyrics'].forEach(function(key) {
+        if (typeof stored[key] === 'boolean') normalized[key] = stored[key];
+      });
+      var volume = Number(stored.volume);
+      if (Number.isFinite(volume)) normalized.volume = Math.max(0, Math.min(100, Math.round(volume)));
+      if (stored.fullBackgroundMode === 'theme' || stored.fullBackgroundMode === 'cover' || stored.fullBackgroundMode === 'texture') {
+        normalized.fullBackgroundMode = stored.fullBackgroundMode;
+      }
+      if (stored.theme === 'dark' || stored.theme === 'light') normalized.theme = stored.theme;
+      return normalized;
+    }
+    let appSettings = normalizeAppSettings(readStoredObject(SETTINGS_KEY));
     function saveAppSettings() {
       writeStoredObject(SETTINGS_KEY, appSettings);
     }
@@ -5330,7 +5345,7 @@
       button.dataset.stateText = enabled ? '开' : '关';
     }
     function initSettings() {
-      appSettings = Object.assign({}, defaultSettings, readStoredObject(SETTINGS_KEY) || {});
+      appSettings = normalizeAppSettings(readStoredObject(SETTINGS_KEY));
       if (window.LJYYTTheme && typeof window.LJYYTTheme.get === 'function') {
         var saved = window.LJYYTTheme.get();
         if (saved === 'dark' || saved === 'light') appSettings.theme = saved;
