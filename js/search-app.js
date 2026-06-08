@@ -78,11 +78,16 @@
   }
 
   function readStoredList(key) {
+    var value = readStoredJson(key, []);
+    return Array.isArray(value) ? value : [];
+  }
+
+  function readStoredJson(key, fallback) {
     try {
-      var value = JSON.parse(localStorage.getItem(key) || '[]');
-      return Array.isArray(value) ? value : [];
+      var raw = localStorage.getItem(key);
+      return raw == null ? fallback : JSON.parse(raw);
     } catch (error) {
-      return [];
+      return fallback;
     }
   }
 
@@ -841,7 +846,7 @@
 
   function restorePlayerStateIfPossible() {
     try {
-      var saved = JSON.parse(localStorage.getItem('ljyyt_search_player_state') || 'null');
+      var saved = readStoredJson('ljyyt_search_player_state', null);
       if (saved && saved.track) {
         saved.track.src = saved.src || saved.track.src || '';
         updateMiniPlayer(saved.track);
