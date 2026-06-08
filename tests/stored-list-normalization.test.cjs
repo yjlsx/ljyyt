@@ -43,10 +43,13 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!html.includes('function filterStoredObjectList')) {
     throw new Error(file + ' is missing filterStoredObjectList');
   }
+  if (!html.includes('function normalizeStoredPlaylists')) {
+    throw new Error(file + ' is missing normalizeStoredPlaylists');
+  }
   for (const marker of [
     "readStoredObjectList('ljyyt_otter_favorites')",
     "readStoredObjectList('ljyyt_otter_history')",
-    "readStoredObjectList('ljyyt_otter_playlists')"
+    "normalizeStoredPlaylists(readStoredObjectList('ljyyt_otter_playlists'))"
   ]) {
     if (!html.includes(marker)) {
       throw new Error(file + ' should use object-list storage reads for marker: ' + marker);
@@ -76,8 +79,10 @@ for (const file of ['index.html', 'dist/index.html']) {
     pickFunction(html, 'readStoredList'),
     pickFunction(html, 'filterStoredObjectList'),
     pickFunction(html, 'readStoredObjectList'),
+    pickFunction(html, 'normalizeStoredPlaylists'),
     'this.result = readStoredObjectList("tracks");',
-    'this.genericResult = readStoredList("tracks");'
+    'this.genericResult = readStoredList("tracks");',
+    'this.playlists = normalizeStoredPlaylists([{ name: "Mine", count: 99, tracks: [null, "bad", { title: "Song", artist: "Singer" }] }, { name: "Empty", tracks: "bad" }]);'
   ].join('\n'), sandbox);
 
   if (!Array.isArray(sandbox.result) || sandbox.result.length !== 2) {
@@ -88,6 +93,15 @@ for (const file of ['index.html', 'dist/index.html']) {
   }
   if (!Array.isArray(sandbox.genericResult) || sandbox.genericResult.length !== 6) {
     throw new Error(file + ' generic readStoredList should preserve non-object array entries');
+  }
+  if (!Array.isArray(sandbox.playlists) || sandbox.playlists.length !== 2) {
+    throw new Error(file + ' normalizeStoredPlaylists should preserve valid playlist objects');
+  }
+  if (sandbox.playlists[0].tracks.length !== 1 || sandbox.playlists[0].count !== 1) {
+    throw new Error(file + ' normalizeStoredPlaylists should filter nested track entries and refresh count');
+  }
+  if (!Array.isArray(sandbox.playlists[1].tracks) || sandbox.playlists[1].tracks.length !== 0 || sandbox.playlists[1].count !== 0) {
+    throw new Error(file + ' normalizeStoredPlaylists should normalize missing or invalid track arrays');
   }
 
   const nonArraySandbox = {

@@ -2186,7 +2186,7 @@
     };
     let favoriteTracks = readStoredObjectList('ljyyt_otter_favorites');
     let historyTracks = readStoredObjectList('ljyyt_otter_history');
-    let userPlaylists = readStoredObjectList('ljyyt_otter_playlists');
+    let userPlaylists = normalizeStoredPlaylists(readStoredObjectList('ljyyt_otter_playlists'));
     const SEARCH_HISTORY_KEY = 'ljyyt_search_history';
     const LEGACY_SEARCH_HISTORY_KEYS = [
       'ljyyt_otter_search_history',
@@ -2217,6 +2217,12 @@
     function readStoredObjectList(key) {
       const value = readStoredJson(key, []);
       return filterStoredObjectList(value);
+    }
+    function normalizeStoredPlaylists(list) {
+      return filterStoredObjectList(list).map(function(playlist) {
+        var tracks = filterStoredObjectList(playlist.tracks);
+        return Object.assign({}, playlist, { tracks: tracks, count: tracks.length });
+      });
     }
     function readStoredJson(key, fallback) {
       try {
@@ -4979,7 +4985,7 @@
     }
     function normalizeImportedPlaylist(data, fallbackName) {
       var source = Array.isArray(data) ? { name: fallbackName || '导入歌单', tracks: data } : (data.playlist || data);
-      var rawTracks = Array.isArray(source.tracks) ? source.tracks : [];
+      var rawTracks = filterStoredObjectList(source.tracks);
       var tracks = rawTracks.map(function(item) {
         return {
           title: item.title || item.name || item.songName || '未知歌曲',
