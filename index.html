@@ -2674,33 +2674,23 @@
           '</button>';
         }).join('');
     }
-    async function renderSearchSuggestions(query) {
-      query = String(query || '').trim();
-      const box = document.getElementById('search-suggestions');
-      if (!box) return;
-      if (!query) {
-        hideSearchSuggestions();
-        return;
-      }
-      const requestId = ++searchSuggestionRequestId;
-      var neteaseSuggestions = await fetchNeteaseSuggestions(query);
-      if (requestId !== searchSuggestionRequestId) return;
-      var suggestions = neteaseSuggestions.length
-        ? groupSuggestionItems(neteaseSuggestions)
-        : buildSearchSuggestions(query, await ensureLibraryTracks().catch(function() { return []; }));
-      var hasSuggestions = Object.keys(suggestions).some(function(type) { return suggestions[type] && suggestions[type].length; });
-      if (!hasSuggestions) {
-        box.innerHTML = '';
-        box.hidden = true;
-        return;
-      }
-      box.innerHTML =
-        renderSuggestionGroup('歌手', suggestions.artist || []) +
-        renderSuggestionGroup('单曲', suggestions.song || []) +
-        renderSuggestionGroup('专辑', suggestions.album || []) +
-        renderSuggestionGroup('歌单', suggestions.playlist || []) +
-        renderSuggestionGroup('最近搜索', suggestions.history || []);
-      box.hidden = false;
+    function mergeSuggestionGroups(primary, fallback) {
+      var groups = { artist: [], song: [], album: [], playlist: [], history: [] };
+      Object.keys(groups).forEach(function(type) {
+        var seen = {};
+        function push(item) {
+          if (!item || !item.text || groups[type].length >= 3) return;
+          var key = String(item.text || '').trim().toLowerCase();
+          if (!key || seen[key]) return;
+          seen[key] = true;
+          groups[type].push(item);
+        }
+        ((primary && primary[type]) || []).forEach(push);
+        ((fallback && fallback[type]) || []).forEach(push);
+      });
+      return groups;
+    }
+    function bindSearchSuggestionClicks(box) {
       box.querySelectorAll('.suggestion-item').forEach(function(button) {
         button.addEventListener('mousedown', function(event) { event.preventDefault(); });
         button.addEventListener('click', function() {
@@ -2712,6 +2702,44 @@
           hideSearchSuggestions();
           performSearch({ remember: true });
         });
+      });
+    }
+    function applySearchSuggestionGroups(box, suggestions) {
+      var hasSuggestions = Object.keys(suggestions || {}).some(function(type) { return suggestions[type] && suggestions[type].length; });
+      if (!hasSuggestions) {
+        box.innerHTML = '';
+        box.hidden = true;
+        return false;
+      }
+      box.innerHTML =
+        renderSuggestionGroup('歌手', suggestions.artist || []) +
+        renderSuggestionGroup('单曲', suggestions.song || []) +
+        renderSuggestionGroup('专辑', suggestions.album || []) +
+        renderSuggestionGroup('歌单', suggestions.playlist || []) +
+        renderSuggestionGroup('最近搜索', suggestions.history || []);
+      box.hidden = false;
+      bindSearchSuggestionClicks(box);
+      return true;
+    }
+    async function renderSearchSuggestions(query) {
+      query = String(query || '').trim();
+      const box = document.getElementById('search-suggestions');
+      if (!box) return;
+      if (!query) {
+        hideSearchSuggestions();
+        return;
+      }
+      const requestId = ++searchSuggestionRequestId;
+      var localSuggestions = buildSearchSuggestions(query, await ensureLibraryTracks().catch(function() { return []; }));
+      if (requestId !== searchSuggestionRequestId) return;
+      applySearchSuggestionGroups(box, localSuggestions);
+      fetchNeteaseSuggestions(query).then(function(neteaseSuggestions) {
+        if (requestId !== searchSuggestionRequestId) return;
+        if (!neteaseSuggestions.length) return;
+        var suggestions = mergeSuggestionGroups(groupSuggestionItems(neteaseSuggestions), localSuggestions);
+        applySearchSuggestionGroups(box, suggestions);
+      }).catch(function(error) {
+        console.warn('renderSearchSuggestions: remote suggestions failed', error);
       });
     }
     function rememberSearchQuery(query) {
