@@ -2192,11 +2192,15 @@
     const audioPlayer = document.getElementById('audio-player');
     const DEFAULT_COVER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="20" y1="12" x2="102" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#f4f7f6"/><stop offset="1" stop-color="#dbe6e3"/></linearGradient></defs><rect width="120" height="120" rx="24" fill="url(#g)"/><circle cx="60" cy="60" r="33" fill="#f9fbfa" stroke="#c8d5d1" stroke-width="2"/><circle cx="60" cy="60" r="10" fill="#d7e1de"/><path d="M71 38v28.5a9.5 9.5 0 1 1-5.8-8.7V43.6l-16 3.2v24.7a9.5 9.5 0 1 1-5.8-8.7V42.2L71 38z" fill="#8fa19b"/></svg>');
     function readStoredList(key) {
+      const value = readStoredJson(key, []);
+      return Array.isArray(value) ? value : [];
+    }
+    function readStoredJson(key, fallback) {
       try {
-        const value = JSON.parse(localStorage.getItem(key) || '[]');
-        return Array.isArray(value) ? value : [];
+        const raw = localStorage.getItem(key);
+        return raw == null ? fallback : JSON.parse(raw);
       } catch (error) {
-        return [];
+        return fallback;
       }
     }
     function writeStoredList(key, value) {
@@ -2234,15 +2238,11 @@
       }
     }
     function getSearchHistory() {
-      try {
-        const primary = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
-        if (Array.isArray(primary) && primary.length) return setSearchHistory(primary);
-      } catch (error) {}
+      const primary = readStoredJson(SEARCH_HISTORY_KEY, []);
+      if (Array.isArray(primary) && primary.length) return setSearchHistory(primary);
       for (const key of LEGACY_SEARCH_HISTORY_KEYS) {
-        try {
-          const legacy = JSON.parse(localStorage.getItem(key) || '[]');
-          if (Array.isArray(legacy) && legacy.length) return setSearchHistory(legacy);
-        } catch (error) {}
+        const legacy = readStoredJson(key, []);
+        if (Array.isArray(legacy) && legacy.length) return setSearchHistory(legacy);
       }
       return [];
     }
@@ -2260,12 +2260,8 @@
       });
     }
     function readStoredObject(key) {
-      try {
-        const value = JSON.parse(localStorage.getItem(key) || 'null');
-        return value && typeof value === 'object' ? value : null;
-      } catch (error) {
-        return null;
-      }
+      const value = readStoredJson(key, null);
+      return value && typeof value === 'object' ? value : null;
     }
     function writeStoredObject(key, value) {
       writeStoredJson(key, value);
