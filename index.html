@@ -2555,6 +2555,29 @@
       syncQueueIndexToCurrentTrack();
     }
     var _lastSaveTime = 0;
+    function normalizePlaybackStateTrack(track) {
+      if (!track || typeof track !== 'object' || Array.isArray(track)) return null;
+      var source = typeof track.source === 'string' && track.source.trim() ? track.source.trim() : 'local';
+      var title = typeof track.title === 'string' && track.title.trim() ? track.title.trim() : '';
+      var artist = typeof track.artist === 'string' && track.artist.trim() ? track.artist.trim() : '';
+      var src = typeof track.src === 'string' ? track.src.trim() : '';
+      var urlId = typeof track.urlId === 'string' ? track.urlId.trim() : (typeof track.url_id === 'string' ? track.url_id.trim() : '');
+      var id = typeof track.id === 'string' ? track.id.trim() : '';
+      if (!title && !artist && !src && !urlId && !id) return null;
+      return {
+        title: title || '未知歌曲',
+        artist: artist || '未知歌手',
+        cover: safeCover(typeof track.cover === 'string' && track.cover ? track.cover : DEFAULT_COVER),
+        coverApi: typeof track.coverApi === 'string' ? track.coverApi : '',
+        src: src,
+        duration: parseTrackDuration(track.duration),
+        source: source,
+        sourceLabel: typeof track.sourceLabel === 'string' && track.sourceLabel.trim() ? track.sourceLabel.trim() : getSourceLabel(source),
+        urlId: urlId,
+        lyric_id: typeof track.lyric_id === 'string' ? track.lyric_id : '',
+        id: id || urlId || src || title
+      };
+    }
     function savePlaybackState(force) {
       if (!currentTrack) return;
       var now = Date.now();
@@ -2572,8 +2595,12 @@
     function restorePlaybackState() {
       const state = readStoredObject('ljyyt_otter_playback_state');
       if (!state || !state.track) return false;
-      currentTrack = state.track;
-      playQueue = Array.isArray(state.queue) && state.queue.length ? state.queue : [currentTrack];
+      var restoredTrack = normalizePlaybackStateTrack(state.track);
+      if (!restoredTrack) return false;
+      currentTrack = restoredTrack;
+      var restoredQueue = filterStoredObjectList(state.queue).map(normalizePlaybackStateTrack).filter(Boolean);
+      playQueue = restoredQueue.length ? restoredQueue : [currentTrack];
+      if (!playQueue.some(function(item) { return isSameTrack(item, currentTrack); })) playQueue.unshift(currentTrack);
       queueIndex = Math.max(0, Math.min(Number(state.queueIndex) || 0, playQueue.length - 1));
       syncQueueIndexToCurrentTrack();
       restoredPlaybackTime = Math.max(0, Number(state.currentTime) || 0);
