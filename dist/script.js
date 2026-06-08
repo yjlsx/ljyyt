@@ -12686,6 +12686,22 @@ const musicIndexById = new Map(musicData.map(function(track, index) {
   return [track.id, index];
 }));
 
+function readScriptStorageValue(key, fallback) {
+  try {
+    var value = localStorage.getItem(key);
+    return value == null ? fallback : value;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function writeScriptStorageValue(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+  } catch (error) {
+  }
+}
+
 // 分页相关变量
 let musicCurrentPage = 1;
 const musicItemsPerPage = 20; 
@@ -12893,8 +12909,8 @@ function loadTrack(index) {
   if (typeof savePlayerState === 'function') {
     savePlayerState(track.id, 0, isPlaying, track, audioPlayer.volume);
   } else {
-    localStorage.setItem('currentTrackId', track.id);
-    localStorage.setItem('lastPlayedTrack', JSON.stringify(track));
+    writeScriptStorageValue('currentTrackId', track.id);
+    writeScriptStorageValue('lastPlayedTrack', JSON.stringify(track));
   }
   
   console.log('✅ 音乐加载完成');
@@ -13045,7 +13061,7 @@ function createMusicCardColumn(track, actualIndex, animationDelay) {
     }
 
     try {
-      var favorites = JSON.parse(localStorage.getItem('ljyyt_favorites')) || [];
+      var favorites = JSON.parse(readScriptStorageValue('ljyyt_favorites', '[]')) || [];
       return favorites.indexOf(track.id) !== -1;
     } catch (error) {
       return false;
