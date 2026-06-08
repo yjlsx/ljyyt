@@ -630,6 +630,22 @@
       return results ? decodeURIComponent(results[1]) : null;
     }
 
+    function readVideoStorageValue(key, fallback) {
+      try {
+        var value = localStorage.getItem(key);
+        return value == null ? fallback : value;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function writeVideoStorageValue(key, value) {
+      try {
+        localStorage.setItem(key, String(value));
+      } catch (error) {
+      }
+    }
+
     function formatTime(seconds) {
       const min = Math.floor(seconds / 60);
       const sec = Math.floor(seconds % 60);
@@ -720,7 +736,7 @@
       video.volume = volumeSlider.value;
       
       // 保存音量到 localStorage
-      localStorage.setItem('videoVolume', volumeSlider.value);
+      writeVideoStorageValue('videoVolume', volumeSlider.value);
       
       // 更新音量图标
       if (video.volume === 0) {
@@ -987,7 +1003,7 @@
       }
       
       // 深色模式
-      if (localStorage.getItem('ljyyt_dark_mode') === 'true') {
+      if (readVideoStorageValue('ljyyt_dark_mode', 'false') === 'true') {
         document.body.classList.add('dark-mode');
       }
       var searchForm = document.getElementById('search-form');
@@ -1000,7 +1016,7 @@
         darkBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         darkBtn.onclick = function() {
           var d = document.body.classList.toggle('dark-mode');
-          localStorage.setItem('ljyyt_dark_mode', d);
+          writeVideoStorageValue('ljyyt_dark_mode', d);
           this.innerHTML = d ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         };
         searchForm.appendChild(darkBtn);
@@ -1096,7 +1112,7 @@
       });
       
       // 恢复音量
-      var savedVolume = localStorage.getItem('videoVolume');
+      var savedVolume = readVideoStorageValue('videoVolume', null);
       if (savedVolume !== null) {
         var volumeSlider = document.getElementById('volumeSlider');
         var videoEl = document.getElementById('customPlayer');
