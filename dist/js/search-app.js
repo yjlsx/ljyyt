@@ -87,8 +87,24 @@
   }
 
   function writeStoredList(key, value) {
+    writeStoredJson(key, Array.isArray(value) ? value : []);
+  }
+
+  function writeStoredJson(key, value) {
     try {
-      localStorage.setItem(key, JSON.stringify(Array.isArray(value) ? value : []));
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {}
+  }
+
+  function removeStoredItem(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {}
+  }
+
+  function removeSessionItem(key) {
+    try {
+      sessionStorage.removeItem(key);
     } catch (error) {}
   }
 
@@ -123,11 +139,11 @@
   }
 
   function clearSearchHistory() {
-    localStorage.removeItem(SEARCH_HISTORY_KEY);
-    sessionStorage.removeItem(SEARCH_HISTORY_KEY);
+    removeStoredItem(SEARCH_HISTORY_KEY);
+    removeSessionItem(SEARCH_HISTORY_KEY);
     LEGACY_SEARCH_HISTORY_KEYS.forEach(function(key) {
-      localStorage.removeItem(key);
-      sessionStorage.removeItem(key);
+      removeStoredItem(key);
+      removeSessionItem(key);
     });
     renderSearchHistory([]);
   }
@@ -635,13 +651,11 @@
   }
 
   function saveSearchPlayerState(track, url) {
-    try {
-      localStorage.setItem('ljyyt_search_player_state', JSON.stringify({
-        track: track,
-        src: url || track && track.src || '',
-        savedAt: Date.now()
-      }));
-    } catch (error) {}
+    writeStoredJson('ljyyt_search_player_state', {
+      track: track,
+      src: url || track && track.src || '',
+      savedAt: Date.now()
+    });
   }
 
   function toggleMiniPlayback() {
