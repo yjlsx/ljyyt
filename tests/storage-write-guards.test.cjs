@@ -37,15 +37,18 @@ const unsafeStorageWrites = [
   "localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(clean));",
   "localStorage.removeItem(SEARCH_HISTORY_KEY);",
   "localStorage.removeItem(key);",
-  "localStorage.setItem('ljyyt_play_mode_index', playModeIndex);"
+  "localStorage.setItem('ljyyt_play_mode_index', playModeIndex);",
+  "sessionStorage.removeItem(SEARCH_HISTORY_KEY);",
+  "sessionStorage.removeItem(key);"
 ];
 
 for (const file of ['index.html', 'dist/index.html']) {
   const html = fs.readFileSync(file, 'utf8');
   const writeJson = pickFunction(html, 'writeStoredJson');
   const removeItem = pickFunction(html, 'removeStoredItem');
+  const removeSessionItem = pickFunction(html, 'removeSessionItem');
   const writeValue = pickFunction(html, 'writeStoredValue');
-  const appCodeWithoutHelpers = [writeJson, removeItem, writeValue].reduce(
+  const appCodeWithoutHelpers = [writeJson, removeItem, removeSessionItem, writeValue].reduce(
     (source, helper) => source.replace(helper, ''),
     html
   );
@@ -53,6 +56,7 @@ for (const file of ['index.html', 'dist/index.html']) {
   for (const [name, body] of [
     ['writeStoredJson', writeJson],
     ['removeStoredItem', removeItem],
+    ['removeSessionItem', removeSessionItem],
     ['writeStoredValue', writeValue]
   ]) {
     if (!/try\s*\{/.test(body) || !/catch\s*\(error\)\s*\{/.test(body)) {
@@ -71,6 +75,8 @@ for (const file of ['index.html', 'dist/index.html']) {
     'writeStoredJson(SEARCH_HISTORY_KEY, clean)',
     'removeStoredItem(SEARCH_HISTORY_KEY)',
     'removeStoredItem(key)',
+    'removeSessionItem(SEARCH_HISTORY_KEY)',
+    'removeSessionItem(key)',
     "writeStoredValue('ljyyt_play_mode_index', playModeIndex)"
   ]) {
     if (!html.includes(expected)) {

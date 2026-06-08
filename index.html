@@ -2217,6 +2217,11 @@
         localStorage.removeItem(key);
       } catch (error) {}
     }
+    function removeSessionItem(key) {
+      try {
+        sessionStorage.removeItem(key);
+      } catch (error) {}
+    }
     function readStoredPlayModeIndex(storage, modeCount) {
       try {
         var count = Number.isFinite(modeCount) && modeCount > 0 ? Math.floor(modeCount) : 3;
@@ -2248,10 +2253,10 @@
     }
     function clearStoredSearchHistory() {
       removeStoredItem(SEARCH_HISTORY_KEY);
-      sessionStorage.removeItem(SEARCH_HISTORY_KEY);
+      removeSessionItem(SEARCH_HISTORY_KEY);
       LEGACY_SEARCH_HISTORY_KEYS.forEach((key) => {
         removeStoredItem(key);
-        sessionStorage.removeItem(key);
+        removeSessionItem(key);
       });
     }
     function readStoredObject(key) {
