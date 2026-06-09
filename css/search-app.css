@@ -375,6 +375,12 @@ body.search-page button {
   cursor: pointer;
 }
 
+.search-page :is(button, a, input):focus-visible {
+  outline: 2px solid var(--search-brand);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(69, 213, 195, 0.18);
+}
+
 body.search-page #navbar-placeholder,
 body.search-page footer.bg-dark,
 body.search-page .navbar {

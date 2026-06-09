@@ -19,6 +19,10 @@ export default {
         return await handleNeteaseSuggestRequest(url);
       }
 
+      if (url.pathname.startsWith('/api/netease/')) {
+        return await handleNeteaseProxyRequest(request, url);
+      }
+
       if (url.pathname === '/api/gd-music') {
         return await handleGdMusicRequest(url);
       }
@@ -55,6 +59,18 @@ export default {
 const MAX_UPSTREAM_JSON_BYTES = 2 * 1024 * 1024;
 const MAX_UPSTREAM_TEXT_BYTES = 256 * 1024;
 const WORKER_UPSTREAM_TIMEOUT_MS = 12000;
+const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
+const NETEASE_PROXY_PATHS = new Set([
+  '/login/qr/key',
+  '/login/qr/create',
+  '/login/qr/check',
+  '/my-info',
+  '/recommend',
+  '/album/sublist',
+  '/user-playlists',
+  '/playlist',
+  '/toplist'
+]);
 
 async function withCache(request, ctx, handler) {
   if (request.method !== 'GET') {
@@ -291,6 +307,53 @@ async function handleNeteaseSuggestRequest(url) {
   });
 
   return jsonResponse({ suggestions });
+}
+
+function isAllowedNeteaseProxyPath(pathname) {
+  const subPath = String(pathname || '').slice('/api/netease'.length);
+  return NETEASE_PROXY_PATHS.has(subPath);
+}
+
+async function handleNeteaseProxyRequest(request, url) {
+  if (!isAllowedNeteaseProxyPath(url.pathname)) {
+    return jsonResponse({ error: 'Unsupported NetEase endpoint' }, 404);
+  }
+  if (request.method !== 'GET' && request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405);
+  }
+
+  const subPath = url.pathname.slice('/api/netease'.length);
+  const target = new URL(OTTER_NETEASE_API_BASE + subPath);
+  url.searchParams.forEach((value, key) => {
+    target.searchParams.append(key, value);
+  });
+
+  const headers = {
+    'Accept': 'application/json',
+    'User-Agent': 'ljyyt-worker/1.0'
+  };
+  const init = {
+    method: request.method,
+    headers,
+    redirect: 'follow'
+  };
+  if (request.method === 'POST') {
+    headers['Content-Type'] = request.headers.get('Content-Type') || 'application/json';
+    init.body = await request.text();
+  }
+
+  const response = await fetchWithTimeout(target.toString(), init);
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Cache-Control', 'no-store');
+  if (!responseHeaders.get('Content-Type')) {
+    responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: responseHeaders
+  });
 }
 
 async function handleGdMusicRequest(url) {
@@ -930,7 +993,7 @@ async function fetchAudioProxyResponse(audioUrl, headers, redirectsLeft = 4) {
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Accept, Range'
   };
 }

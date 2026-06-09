@@ -64,6 +64,9 @@ vm.runInContext([
 
 (async () => {
   const headers = sandbox.corsHeaders();
+  if (headers['Access-Control-Allow-Methods'] !== 'GET, POST, OPTIONS') {
+    throw new Error('worker CORS headers should allow POST account requests');
+  }
   if (headers['Access-Control-Allow-Headers'] !== 'Content-Type, Accept, Range') {
     throw new Error('worker CORS headers do not allow Range');
   }

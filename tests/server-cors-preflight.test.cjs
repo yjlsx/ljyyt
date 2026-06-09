@@ -39,8 +39,8 @@ const headers = sandbox.corsHeaders();
 if (headers['Access-Control-Allow-Origin'] !== '*') {
   throw new Error('server CORS headers should allow hosted pages to call the local API');
 }
-if (headers['Access-Control-Allow-Methods'] !== 'GET, OPTIONS') {
-  throw new Error('server CORS preflight should allow GET API/audio requests');
+if (headers['Access-Control-Allow-Methods'] !== 'GET, POST, OPTIONS') {
+  throw new Error('server CORS preflight should allow GET audio/search requests and POST account requests');
 }
 if (headers['Access-Control-Allow-Headers'] !== 'Content-Type, Accept, Range') {
   throw new Error('server CORS preflight should allow Range request headers');

@@ -12,6 +12,19 @@ const LYRICS_FILE = path.join(ROOT, 'data', 'lyrics.json');
 const THIRD_PARTY_LYRICS_URL = process.env.LYRICS_SEARCH_URL || '';
 const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq', 'local'];
 const MAX_UPSTREAM_TEXT_BYTES = 2 * 1024 * 1024;
+const MAX_REQUEST_BODY_BYTES = 64 * 1024;
+const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
+const NETEASE_PROXY_PATHS = new Set([
+  '/login/qr/key',
+  '/login/qr/create',
+  '/login/qr/check',
+  '/my-info',
+  '/recommend',
+  '/album/sublist',
+  '/user-playlists',
+  '/playlist',
+  '/toplist'
+]);
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -290,6 +303,70 @@ async function requestJson(targetUrl, options = {}) {
   } catch (error) {
     throw new Error('invalid JSON response');
   }
+}
+
+function readRequestBody(req, maxBytes = MAX_REQUEST_BODY_BYTES) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    let receivedBytes = 0;
+    req.setEncoding('utf8');
+    req.on('data', (chunk) => {
+      receivedBytes += Buffer.byteLength(chunk, 'utf8');
+      if (receivedBytes > maxBytes) {
+        reject(new Error('request body too large'));
+        req.destroy();
+        return;
+      }
+      body += chunk;
+    });
+    req.on('end', () => resolve(body));
+    req.on('error', reject);
+  });
+}
+
+function isAllowedNeteaseProxyPath(pathname) {
+  const subPath = String(pathname || '').slice('/api/netease'.length);
+  return NETEASE_PROXY_PATHS.has(subPath);
+}
+
+async function proxyNeteaseApiRequest(req, res, requestUrl) {
+  if (!isAllowedNeteaseProxyPath(requestUrl.pathname)) {
+    sendJson(res, 404, { error: 'Unsupported NetEase endpoint' });
+    return;
+  }
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  const subPath = requestUrl.pathname.slice('/api/netease'.length);
+  const target = new URL(OTTER_NETEASE_API_BASE + subPath);
+  requestUrl.searchParams.forEach((value, key) => {
+    target.searchParams.append(key, value);
+  });
+
+  const headers = {
+    'Accept': 'application/json',
+    'User-Agent': 'ljyyt-local-server/1.0'
+  };
+  let body = null;
+  if (req.method === 'POST') {
+    body = await readRequestBody(req);
+    headers['Content-Type'] = req.headers['content-type'] || 'application/json';
+  }
+
+  const payload = await requestText(target.toString(), {
+    method: req.method,
+    headers,
+    body,
+    timeout: 12000
+  });
+  res.writeHead(200, {
+    ...corsHeaders(),
+    'Cache-Control': 'no-store',
+    'Content-Type': 'application/json; charset=utf-8'
+  });
+  res.end(payload);
 }
 
 async function searchNeteaseSuggest(keyword) {
@@ -1669,7 +1746,7 @@ async function searchLyricsCandidates(query, requestedSources) {
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Accept, Range'
   };
 }
@@ -1808,6 +1885,18 @@ const server = http.createServer(async (req, res) => {
     } catch (error) {
       sendJson(res, 502, {
         suggestions: [],
+        message: error.message
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname.startsWith('/api/netease/')) {
+    try {
+      await proxyNeteaseApiRequest(req, res, requestUrl);
+    } catch (error) {
+      sendJson(res, 502, {
+        error: 'NetEase account proxy failed',
         message: error.message
       });
     }
