@@ -3206,7 +3206,7 @@
     }
     async function switchToFallbackSource(reason, requestId, failedUrl) {
       if (requestId && requestId !== _playRequestId) return false;
-      if (!currentTrack || !currentTrack.source || currentTrack.source === 'local' || _isResolvingUrl) return false;
+      if (!currentTrack || _isResolvingUrl) return false;
       if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
       if (await tryProxyPlaybackLine(failedUrl, requestId)) return true;
