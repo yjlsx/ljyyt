@@ -10,6 +10,8 @@
     "test": "node scripts/run-tests.cjs",
     "build": "node scripts/build-dist.cjs",
     "build:oracle": "node scripts/build-dist.cjs --oracle",
+    "worker:login": "npm exec -- wrangler login",
+    "deploy:worker": "npm exec -- wrangler deploy --config cloudflare-worker/wrangler.toml",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "engines": {

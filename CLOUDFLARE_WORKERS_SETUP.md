@@ -7,10 +7,9 @@
 在本仓库根目录执行：
 
 ```powershell
-npm install -g wrangler
-cd cloudflare-worker
-wrangler login
-wrangler deploy
+npm install
+npm run worker:login
+npm run deploy:worker
 ```
 
 部署成功后会拿到一个类似下面的地址：
@@ -24,9 +23,7 @@ https://ljyyt-api.<your-subdomain>.workers.dev
 编辑根目录的 [site-config.js](D:/GitHub/ljyyt/site-config.js:1)，填入你自己的 Worker 地址：
 
 ```js
-window.LYRICS_API_ENDPOINT = 'https://ljyyt-api.<your-subdomain>.workers.dev/api/lyrics';
-window.LYRICS_SEARCH_API_ENDPOINT = 'https://ljyyt-api.<your-subdomain>.workers.dev/api/lyrics/search';
-window.COVER_API_ENDPOINT = 'https://ljyyt-api.<your-subdomain>.workers.dev/api/cover';
+window.LJYYT_API_BASE = 'https://ljyyt-api.<your-subdomain>.workers.dev';
 ```
 
 然后把前端重新部署到 Render 静态站即可。
@@ -43,6 +40,14 @@ window.COVER_API_ENDPOINT = 'https://ljyyt-api.<your-subdomain>.workers.dev/api/
   - 合并 `LRCLIB`、`rangotec` 和网易云搜索候选
 - `/api/cover`
   - 通过 `api.lrc.cx/cover` 跟随跳转，返回最终图片地址 JSON
+- `/api/gd-music`
+  - 代理聚合音乐接口，供搜索、歌词和播放地址查询使用
+- `/api/kuwo-url`
+  - 解析酷我原始播放地址
+- `/api/kuwo-audio`
+  - 代理酷我音频流，保留 Range 请求
+- `/api/audio-proxy`
+  - 代理公网音频地址，补齐 CORS 和 Range 相关响应头
 
 ## 4. 说明
 
