@@ -246,6 +246,26 @@
         return fallback;
       }
     }
+    function normalizeRankingList(value) {
+      return Array.isArray(value) ? value : [];
+    }
+    function readRankingList(primaryKey, legacyKey) {
+      var primary = normalizeRankingList(readRankingStorageJson(primaryKey, []));
+      if (primary.length) return primary;
+      return normalizeRankingList(readRankingStorageJson(legacyKey, []));
+    }
+    function findRankingTrack(item) {
+      var isObject = item && typeof item === 'object' && !Array.isArray(item);
+      var id = isObject ? item.id : item;
+      if (id != null) {
+        var matched = musicData.find(function(t) { return String(t.id) === String(id); });
+        if (matched) return matched;
+      }
+      return isObject ? item : null;
+    }
+    function normalizeRankingTracks(list) {
+      return normalizeRankingList(list).map(findRankingTrack).filter(Boolean);
+    }
 
     // 深色模式
     if (readRankingStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
@@ -256,10 +276,8 @@
     var playHistory = [];
     playCounts = readRankingStorageJson('ljyyt_play_count', {});
     if (!playCounts || typeof playCounts !== 'object' || Array.isArray(playCounts)) playCounts = {};
-    favorites = readRankingStorageJson('ljyyt_favorites', []);
-    if (!Array.isArray(favorites)) favorites = [];
-    playHistory = readRankingStorageJson('ljyyt_play_history', []);
-    if (!Array.isArray(playHistory)) playHistory = [];
+    favorites = readRankingList('ljyyt_otter_favorites', 'ljyyt_favorites');
+    playHistory = readRankingList('ljyyt_otter_history', 'ljyyt_play_history');
 
     function renderRank(containerId, tracks, type) {
       var container = document.getElementById(containerId);
@@ -305,19 +323,11 @@
     renderRank('hot-list', hotSongs, 'count');
 
     // 收藏最多
-    var favSongs = [];
-    favorites.forEach(function(id) {
-      var track = musicData.find(function(t) { return t.id === id; });
-      if (track) favSongs.push(track);
-    });
+    var favSongs = normalizeRankingTracks(favorites);
     renderRank('fav-list', favSongs, 'fav');
 
     // 最近播放
-    var recentSongs = [];
-    playHistory.forEach(function(h) {
-      var track = musicData.find(function(t) { return t.id === h.id; });
-      if (track) recentSongs.push(track);
-    });
+    var recentSongs = normalizeRankingTracks(playHistory);
     renderRank('recent-list', recentSongs, 'recent');
   </script>
 </body>
