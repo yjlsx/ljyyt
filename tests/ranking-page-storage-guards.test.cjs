@@ -40,17 +40,25 @@ function pickInlineScript(source) {
 }
 
 function createElement(id) {
-  return {
+  const element = {
     id,
     className: '',
     innerHTML: '',
     children: [],
+    style: {},
+    set textContent(value) {
+      this.innerHTML = String(value || '');
+    },
+    get textContent() {
+      return this.innerHTML;
+    },
     addEventListener() {},
     appendChild(child) {
       this.children.push(child);
       this.innerHTML += child.innerHTML || '';
     }
   };
+  return element;
 }
 
 function renderRankingWithStorage(html, storageMap) {

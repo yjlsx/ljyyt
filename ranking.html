@@ -266,6 +266,15 @@
     function normalizeRankingTracks(list) {
       return normalizeRankingList(list).map(findRankingTrack).filter(Boolean);
     }
+    function setRankingImage(image, url) {
+      if (!image) return;
+      var value = String(url || '').trim().replace(/&amp;/g, '&');
+      image.src = /^https?:\/\//i.test(value) || value.indexOf('//') === 0 || value.indexOf('./') === 0 || value.indexOf('/') === 0
+        ? value
+        : './images/avatar.jpg';
+      image.referrerPolicy = 'no-referrer';
+      image.loading = 'lazy';
+    }
 
     // 深色模式
     if (readRankingStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
@@ -292,16 +301,52 @@
         var idx = musicData.findIndex(function(t) { return t.id === track.id; });
         var div = document.createElement('div');
         div.className = 'rank-item';
-        div.innerHTML =
-          '<div class="rank-num ' + getRankClass(i) + '">' + (i+1) + '</div>' +
-          '<img src="' + track.cover + '" class="rank-cover" loading="lazy">' +
-          '<div class="rank-info">' +
-            '<div class="rank-song">' + track.title + '</div>' +
-            '<div class="rank-artist">' + track.artist + '</div>' +
-          '</div>' +
-          (type === 'count' ? '<div class="rank-meta"><div class="rank-count">' + count + '</div><div class="rank-label">次播放</div></div>' :
-           type === 'fav' ? '<div class="rank-meta"><div class="rank-count"><i class="fas fa-heart" style="color:#ff6b6b;font-size:0.75rem"></i></div><div class="rank-label">已收藏</div></div>' :
-           '<div class="rank-meta"><div class="rank-count" style="font-size:0.75rem;color:#999">' + formatTime(track.duration) + '</div></div>');
+        var rankNum = document.createElement('div');
+        rankNum.className = 'rank-num ' + getRankClass(i);
+        rankNum.textContent = i + 1;
+        var cover = document.createElement('img');
+        cover.className = 'rank-cover';
+        setRankingImage(cover, track.cover);
+        var info = document.createElement('div');
+        info.className = 'rank-info';
+        var song = document.createElement('div');
+        song.className = 'rank-song';
+        song.textContent = track.title || '未知歌曲';
+        var artist = document.createElement('div');
+        artist.className = 'rank-artist';
+        artist.textContent = track.artist || '未知歌手';
+        var meta = document.createElement('div');
+        meta.className = 'rank-meta';
+        var countValue = document.createElement('div');
+        countValue.className = 'rank-count';
+        var label = document.createElement('div');
+        label.className = 'rank-label';
+        if (type === 'count') {
+          countValue.textContent = String(count);
+          label.textContent = '次播放';
+          meta.appendChild(countValue);
+          meta.appendChild(label);
+        } else if (type === 'fav') {
+          var heart = document.createElement('i');
+          heart.className = 'fas fa-heart';
+          heart.style.cssText = 'color:#ff6b6b;font-size:0.75rem';
+          label.textContent = '已收藏';
+          countValue.appendChild(heart);
+          meta.appendChild(countValue);
+          meta.appendChild(label);
+        } else {
+          var duration = document.createElement('div');
+          duration.className = 'rank-count';
+          duration.style.cssText = 'font-size:0.75rem;color:#999';
+          duration.textContent = formatTime(track.duration);
+          meta.appendChild(duration);
+        }
+        info.appendChild(song);
+        info.appendChild(artist);
+        div.appendChild(rankNum);
+        div.appendChild(cover);
+        div.appendChild(info);
+        div.appendChild(meta);
         div.addEventListener('click', function() {
           if (idx !== -1) {
             currentTrackIndex = idx;
