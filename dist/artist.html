@@ -124,6 +124,11 @@
       background: rgba(102,126,234,0.1);
       transform: translateX(4px);
     }
+    .artist-song-card:focus-visible,
+    .artist-video-card:focus-visible {
+      outline: 3px solid rgba(102,126,234,0.65);
+      outline-offset: 2px;
+    }
     .artist-song-card.active {
       background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.08));
       border-left: 3px solid #667eea;
@@ -317,6 +322,25 @@
       image.referrerPolicy = 'no-referrer';
       image.loading = 'lazy';
     }
+    function makeLegacyActionCard(element, label, handler) {
+      if (!element || typeof handler !== 'function') return;
+      if (typeof element.setAttribute === 'function') {
+        element.setAttribute('role', 'button');
+        element.setAttribute('aria-label', label);
+      } else {
+        element.role = 'button';
+        element.ariaLabel = label;
+      }
+      element.tabIndex = 0;
+      if (typeof element.addEventListener !== 'function') return;
+      element.addEventListener('click', handler);
+      element.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+          event.preventDefault();
+          handler(event);
+        }
+      });
+    }
 
     // 深色模式
     if (readArtistStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
@@ -397,7 +421,7 @@
           div.appendChild(cover);
           div.appendChild(info);
           div.appendChild(duration);
-          div.addEventListener('click', function() {
+          makeLegacyActionCard(div, '播放歌曲 ' + (track.title || '未知歌曲') + ' - ' + (track.artist || '未知歌手'), function() {
             currentTrackIndex = idx;
             loadTrack(idx);
             playMusic();
@@ -430,7 +454,7 @@
           body.appendChild(videoTitle);
           card.appendChild(image);
           card.appendChild(body);
-          card.addEventListener('click', function() {
+          makeLegacyActionCard(card, '打开视频 ' + (v.title || '未命名视频'), function() {
             window.location.href = 'video-player.html?id=' + v.id;
           });
           col.appendChild(card);

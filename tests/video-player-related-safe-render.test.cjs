@@ -40,7 +40,7 @@ for (const file of ['video-player.html', 'dist/video-player.html']) {
     'function setVideoPlayerImage',
     "title.textContent = v.title || '未命名视频';",
     "artist.textContent = splitArtistNamesLocal(v.artist).join('、') || String(v.artist || '未知艺术家');",
-    "card.addEventListener('click', function() {",
+    "makeLegacyActionCard(card, '打开视频 ' +",
     ".replace(/&amp;/g, '&')"
   ]) {
     if (!html.includes(marker)) {

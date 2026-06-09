@@ -74,6 +74,11 @@
       margin-bottom: 4px;
     }
     .rank-item:hover { background: rgba(102,126,234,0.08); transform: translateX(4px); }
+    .rank-item:focus-visible {
+      outline: 3px solid rgba(102,126,234,0.65);
+      outline-offset: 2px;
+      background: rgba(102,126,234,0.08);
+    }
     .rank-item.active { background: rgba(102,126,234,0.12); }
     body.dark-mode .rank-item:hover { background: rgba(102,126,234,0.15); }
 
@@ -289,6 +294,25 @@
       image.referrerPolicy = 'no-referrer';
       image.loading = 'lazy';
     }
+    function makeLegacyActionCard(element, label, handler) {
+      if (!element || typeof handler !== 'function') return;
+      if (typeof element.setAttribute === 'function') {
+        element.setAttribute('role', 'button');
+        element.setAttribute('aria-label', label);
+      } else {
+        element.role = 'button';
+        element.ariaLabel = label;
+      }
+      element.tabIndex = 0;
+      if (typeof element.addEventListener !== 'function') return;
+      element.addEventListener('click', handler);
+      element.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+          event.preventDefault();
+          handler(event);
+        }
+      });
+    }
 
     // 深色模式
     if (readRankingStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
@@ -361,7 +385,7 @@
         div.appendChild(cover);
         div.appendChild(info);
         div.appendChild(meta);
-        div.addEventListener('click', function() {
+        makeLegacyActionCard(div, '播放歌曲 ' + (track.title || '未知歌曲') + ' - ' + (track.artist || '未知歌手'), function() {
           if (idx !== -1) {
             currentTrackIndex = idx;
             loadTrack(idx);

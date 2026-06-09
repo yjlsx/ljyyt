@@ -9,7 +9,8 @@ for (const file of ['artist.html', 'dist/artist.html']) {
     "title.textContent = track.title || '未知歌曲';",
     "duration.textContent = formatTime(track.duration);",
     "videoTitle.textContent = v.title || '未命名视频';",
-    "card.addEventListener('click', function() {"
+    "makeLegacyActionCard(div, '播放歌曲 ' +",
+    "makeLegacyActionCard(card, '打开视频 ' +"
   ]) {
     if (!html.includes(marker)) {
       throw new Error(file + ' is missing safe artist page render marker: ' + marker);
