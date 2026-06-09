@@ -2553,34 +2553,71 @@
         matches.find(function(item) { return isLooseTitleMatchCandidate(track, item); }) ||
         null;
     }
+    function getFallbackTrackMatches(track, matches) {
+      matches = Array.isArray(matches) ? matches : [];
+      var exact = [];
+      var loose = [];
+      var seen = new Set();
+      function add(list, item) {
+        var key = [
+          item && item.source,
+          item && (item.urlId || item.url_id || item.id || item.title),
+          item && item.artist
+        ].join(':');
+        if (seen.has(key)) return;
+        seen.add(key);
+        list.push(item);
+      }
+      matches.forEach(function(item) {
+        if (isTrackMatchCandidate(track, item)) add(exact, item);
+        else if (isLooseTitleMatchCandidate(track, item)) add(loose, item);
+      });
+      return exact.concat(loose);
+    }
+    async function resolveFallbackTrackFromSource(track, source, skipUrls) {
+      var matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
+      var candidates = getFallbackTrackMatches(track, matches);
+      for (var i = 0; i < candidates.length; i++) {
+        var match = candidates[i];
+        var url = match.src || await resolveExternalTrackUrl(match);
+        if (!url || skipUrls.indexOf(String(url).trim()) >= 0) continue;
+        return { source: source, match: match, url: url };
+      }
+      return null;
+    }
     async function recoverPlayableTrackUrl(track, options) {
       if (!track || !track.title) return '';
       options = options || {};
       var skipSources = (options.skipSources || []).map(function(source) { return String(source || '').trim(); }).filter(Boolean);
       var skipUrls = (options.skipUrls || []).map(function(url) { return String(url || '').trim(); }).filter(Boolean);
       var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
-      for (var i = 0; i < sources.length; i++) {
-        var source = sources[i];
-        try {
-          var matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
-          var match = pickFallbackTrackMatch(track, matches);
-          if (!match) continue;
-          var url = match.src || await resolveExternalTrackUrl(match);
-          if (!url || skipUrls.indexOf(String(url).trim()) >= 0) continue;
-          var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
-          Object.assign(track, match, {
-            title: origTitle || match.title,
-            artist: origArtist || match.artist,
-            cover: origCover || match.cover || DEFAULT_COVER,
-            source: match.source || source,
-            sourceLabel: match.sourceLabel || getSourceLabel(match.source || source),
-            urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
-            src: url
+      if (!sources.length) return '';
+      try {
+        var result = await Promise.any(sources.map(function(source) {
+          return resolveFallbackTrackFromSource(track, source, skipUrls).then(function(found) {
+            if (!found) throw new Error('no fallback match from ' + source);
+            return found;
+          }).catch(function(error) {
+            console.warn('recoverPlayableTrackUrl: source ' + source + ' failed', error);
+            throw error;
           });
-          return url;
-        } catch (error) { console.warn('recoverPlayableTrackUrl: source ' + source + ' failed', error); }
+        }));
+        var match = result.match;
+        var url = result.url;
+        var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
+        Object.assign(track, match, {
+          title: origTitle || match.title,
+          artist: origArtist || match.artist,
+          cover: origCover || match.cover || DEFAULT_COVER,
+          source: match.source || result.source,
+          sourceLabel: match.sourceLabel || getSourceLabel(match.source || result.source),
+          urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
+          src: url
+        });
+        return url;
+      } catch (error) {
+        return '';
       }
-      return '';
     }
     function setQueue(tracks, index) {
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
@@ -3136,14 +3173,13 @@
     var _audioUnlocked = false;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
-    const FALLBACK_PLAYBACK_TIMEOUT_MS = 6500;
+    const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
       return [
         normalizeTrackText(track.title),
-        normalizeTrackText(track.artist),
-        normalizeTrackText(track.id || track.urlId || track.url_id)
+        normalizeTrackText(track.artist)
       ].join('|');
     }
     function ensureFallbackState(track) {
@@ -3239,6 +3275,8 @@
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack);
+        var previousFailedSources = state.sources.slice();
+        var previousFailedUrls = state.urls.slice();
         var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
         try {
           _isResolvingUrl = true;
@@ -3280,6 +3318,13 @@
           _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           if (isAutoplayPolicyBlocked(error)) return false;
+          var activeState = ensureFallbackState(currentTrack);
+          previousFailedSources.forEach(function(source) {
+            if (source && activeState.sources.indexOf(source) < 0) activeState.sources.push(source);
+          });
+          previousFailedUrls.forEach(function(url) {
+            if (url && activeState.urls.indexOf(url) < 0) activeState.urls.push(url);
+          });
           rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.getAttribute('src') || '', currentTrack && currentTrack.source);
           console.warn('switchToFallbackSource failed', error);
         }
@@ -3872,13 +3917,18 @@
         handler(event);
       });
     }
+    function getTrackRowAriaLabel(track) {
+      var title = String(track && track.title || '未知歌曲').trim();
+      var artist = String(track && track.artist || '').trim();
+      return '播放 ' + title + (artist ? ' - ' + artist : '');
+    }
     function renderTrackRows(container, tracks, emptyText, artistSuffix) {
       if (!tracks.length) {
         container.innerHTML = '<div class="empty-note">' + emptyText + '</div>';
         return;
       }
       container.innerHTML = tracks.map((track, index) => (
-        '<div class="track" role="button" tabindex="0" data-index="' + index + '">' +
+        '<div class="track" role="button" tabindex="0" aria-label="' + escapeMarkup(getTrackRowAriaLabel(track)) + '" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist + (artistSuffix || '')) + (shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source-tag">' + escapeMarkup(track.sourceLabel) + '</span>' : '') + '</div></div>' +
           '<button class="dots" type="button" data-track-action-trigger aria-label="更多" aria-haspopup="dialog" aria-expanded="false">' + iconHtml('more') + '</button>' +
@@ -4894,7 +4944,7 @@
       }
       container.innerHTML = tracks.map(function(track, index) {
         var current = isSameTrack(track, currentTrack);
-        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" data-index="' + index + '">' +
+        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" aria-label="' + escapeMarkup(getTrackRowAriaLabel(track)) + '" data-index="' + index + '">' +
           '<div class="page-index">' + (current && !audioPlayer.paused ? '<span class="playing-bars"><i></i><i></i><i></i></span>' : (index + 1)) + '</div>' +
           '<img class="track-cover" loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
@@ -4968,11 +5018,12 @@
       const drawerTracks = queueDrawerTab === 'history' ? historyTracks : drawerQueue;
       const renderItems = (tracks, isDrawer) => tracks.length ? tracks.map((track, index) => {
         const current = isSameTrack(track, currentTrack);
+        var removeLabel = (queueDrawerTab === 'history' ? '从最近播放删除 ' : '从播放列表删除 ') + (track.title || '未知歌曲');
         const actionButton = isDrawer
-          ? '<button class="queue-remove" aria-label="删除" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
+          ? '<button class="queue-remove" aria-label="' + escapeMarkup(removeLabel) + '" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
           : '<button class="dots" type="button" data-track-action-trigger aria-label="更多" aria-haspopup="dialog" aria-expanded="false">' + iconHtml('more') + '</button>';
         var sourceTag = shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source">' + escapeMarkup(track.sourceLabel) + '</span>' : '';
-        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" data-index="' + index + '">' +
+        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" aria-label="' + escapeMarkup(getTrackRowAriaLabel(track)) + '" data-index="' + index + '">' +
           '<div style="position:relative;flex:none"><img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '><span class="playing-bars"><i></i><i></i><i></i></span></div>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + sourceTag + '</div></div>' +
           actionButton +
