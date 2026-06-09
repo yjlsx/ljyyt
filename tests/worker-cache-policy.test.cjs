@@ -53,9 +53,20 @@ if (!worker.includes("function jsonResponse(payload, status = 200, cacheControl 
   throw new Error('jsonResponse should default dynamic API responses to no-store');
 }
 
-const noStoreStreamHeaders = worker.match(/responseHeaders\.set\('Cache-Control', 'no-store'\)/g) || [];
-if (noStoreStreamHeaders.length < 2) {
+if (!worker.includes('function wrapAudioProxyResponse(response)')) {
+  throw new Error('streaming audio proxy responses should share a no-store response wrapper');
+}
+
+const wrapStart = worker.indexOf('function wrapAudioProxyResponse(response)');
+const wrapEnd = worker.indexOf('async function handleKuwoAudioRequest', wrapStart);
+const wrapBody = worker.slice(wrapStart, wrapEnd);
+if (!wrapBody.includes("responseHeaders.set('Cache-Control', 'no-store')")) {
   throw new Error('streaming audio proxy responses should not advertise stale public caching');
+}
+
+const wrapperCalls = worker.match(/return wrapAudioProxyResponse\(response\);/g) || [];
+if (wrapperCalls.length < 2) {
+  throw new Error('Kuwo and generic audio proxy responses should both use the no-store wrapper');
 }
 
 if (!worker.includes("ctx.waitUntil(cache.put(request, cacheable.clone()))")) {

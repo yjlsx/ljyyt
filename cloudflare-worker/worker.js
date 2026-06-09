@@ -811,6 +811,20 @@ async function resolveKuwoRawUrl(rid) {
   }
 }
 
+function wrapAudioProxyResponse(response) {
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Type');
+  responseHeaders.set('Cache-Control', 'no-store');
+  if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
+  if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: responseHeaders
+  });
+}
+
 async function handleKuwoAudioRequest(request, url) {
   const rid = String(url.searchParams.get('rid') || '').trim();
   const audioUrl = await resolveKuwoRawUrl(rid);
@@ -825,17 +839,7 @@ async function handleKuwoAudioRequest(request, url) {
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
   const response = await fetchWithTimeout(audioUrl, { headers });
-  const responseHeaders = new Headers(response.headers);
-  responseHeaders.set('Access-Control-Allow-Origin', '*');
-  responseHeaders.set('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Type');
-  responseHeaders.set('Cache-Control', 'no-store');
-  if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
-  if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: responseHeaders
-  });
+  return wrapAudioProxyResponse(response);
 }
 
 function isBlockedAudioProxyHost(hostname) {
@@ -885,18 +889,7 @@ async function handleAudioProxyRequest(request, url) {
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
   const response = await fetchAudioProxyResponse(audioUrl, headers);
-  if (!response.ok) return response;
-  const responseHeaders = new Headers(response.headers);
-  responseHeaders.set('Access-Control-Allow-Origin', '*');
-  responseHeaders.set('Access-Control-Expose-Headers', 'Accept-Ranges, Content-Range, Content-Length, Content-Type');
-  responseHeaders.set('Cache-Control', 'no-store');
-  if (!responseHeaders.get('Content-Type')) responseHeaders.set('Content-Type', 'audio/mpeg');
-  if (!responseHeaders.get('Accept-Ranges')) responseHeaders.set('Accept-Ranges', 'bytes');
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: responseHeaders
-  });
+  return wrapAudioProxyResponse(response);
 }
 
 async function fetchAudioProxyResponse(audioUrl, headers, redirectsLeft = 4) {

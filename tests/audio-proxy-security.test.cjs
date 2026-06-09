@@ -116,6 +116,7 @@ new Function(
   'Response',
   [
     extractFunction(worker, 'isBlockedAudioProxyHost'),
+    extractFunction(worker, 'wrapAudioProxyResponse'),
     extractFunction(worker, 'handleAudioProxyRequest', 'async function'),
     extractFunction(worker, 'fetchAudioProxyResponse', 'async function'),
     extractFunction(worker, 'corsHeaders'),

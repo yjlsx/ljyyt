@@ -54,6 +54,7 @@ vm.runInContext([
   extractFunction(worker, 'corsHeaders'),
   extractFunction(worker, 'jsonResponse'),
   extractFunction(worker, 'resolveKuwoRawUrl', 'async function'),
+  extractFunction(worker, 'wrapAudioProxyResponse'),
   extractFunction(worker, 'handleKuwoAudioRequest', 'async function'),
   extractFunction(worker, 'isBlockedAudioProxyHost'),
   extractFunction(worker, 'handleAudioProxyRequest', 'async function'),
