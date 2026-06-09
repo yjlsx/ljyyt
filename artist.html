@@ -293,6 +293,15 @@
         localStorage.setItem(key, String(value));
       } catch (error) {}
     }
+    function setArtistPageImage(image, url) {
+      if (!image) return;
+      var value = String(url || '').trim().replace(/&amp;/g, '&');
+      image.src = /^https?:\/\//i.test(value) || value.indexOf('//') === 0 || value.indexOf('./') === 0 || value.indexOf('/') === 0
+        ? value
+        : './images/avatar.jpg';
+      image.referrerPolicy = 'no-referrer';
+      image.loading = 'lazy';
+    }
 
     // 深色模式
     if (readArtistStorageValue('ljyyt_dark_mode', 'false') === 'true') document.body.classList.add('dark-mode');
@@ -339,9 +348,9 @@
 
       // 用第一首歌的封面做头像
       if (songs.length > 0) {
-        document.getElementById('artist-avatar').src = songs[0].cover;
+        setArtistPageImage(document.getElementById('artist-avatar'), songs[0].cover);
       } else if (videos.length > 0) {
-        document.getElementById('artist-avatar').src = videos[0].cover;
+        setArtistPageImage(document.getElementById('artist-avatar'), videos[0].cover);
       }
 
       // 渲染歌曲
@@ -354,11 +363,25 @@
           var div = document.createElement('div');
           div.className = 'artist-song-card';
           div.dataset.index = idx;
-          div.innerHTML =
-            '<span class="artist-song-num">' + (i+1) + '</span>' +
-            '<img src="' + track.cover + '" class="artist-song-cover" loading="lazy">' +
-            '<div class="artist-song-info"><div class="artist-song-title">' + track.title + '</div></div>' +
-            '<span class="artist-song-duration">' + formatTime(track.duration) + '</span>';
+          var num = document.createElement('span');
+          num.className = 'artist-song-num';
+          num.textContent = i + 1;
+          var cover = document.createElement('img');
+          cover.className = 'artist-song-cover';
+          setArtistPageImage(cover, track.cover);
+          var info = document.createElement('div');
+          info.className = 'artist-song-info';
+          var title = document.createElement('div');
+          title.className = 'artist-song-title';
+          title.textContent = track.title || '未知歌曲';
+          info.appendChild(title);
+          var duration = document.createElement('span');
+          duration.className = 'artist-song-duration';
+          duration.textContent = formatTime(track.duration);
+          div.appendChild(num);
+          div.appendChild(cover);
+          div.appendChild(info);
+          div.appendChild(duration);
           div.addEventListener('click', function() {
             currentTrackIndex = idx;
             loadTrack(idx);
@@ -381,9 +404,17 @@
           col.className = 'col-md-6 col-lg-4 mb-3';
           var card = document.createElement('div');
           card.className = 'artist-video-card';
-          card.innerHTML =
-            '<img src="' + v.cover + '" style="width:100%;height:160px;object-fit:cover;" loading="lazy">' +
-            '<div class="p-2"><div class="card-title text-truncate">' + v.title + '</div></div>';
+          var image = document.createElement('img');
+          image.style.cssText = 'width:100%;height:160px;object-fit:cover;';
+          setArtistPageImage(image, v.cover);
+          var body = document.createElement('div');
+          body.className = 'p-2';
+          var videoTitle = document.createElement('div');
+          videoTitle.className = 'card-title text-truncate';
+          videoTitle.textContent = v.title || '未命名视频';
+          body.appendChild(videoTitle);
+          card.appendChild(image);
+          card.appendChild(body);
           card.addEventListener('click', function() {
             window.location.href = 'video-player.html?id=' + v.id;
           });
