@@ -4090,7 +4090,6 @@
       searchVideoCache = await readSourceArray('/videos/video_data.js', 'const videoData');
       return searchVideoCache;
     }
-    const OTTER_API_BASE = 'https://otter-music.pages.dev';
     const RECOMMEND_CATS = [
       { id: '全部', name: '全部' },
       { id: 'mine', name: '我的' },
@@ -4135,7 +4134,7 @@
     }
 
     async function fetchOtterNetease(path, payload) {
-      var response = await fetch(OTTER_API_BASE + '/music-api/netease' + path, {
+      var response = await fetch(neteaseApiBase + path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload || {})

@@ -23,6 +23,7 @@ const NETEASE_PROXY_PATHS = new Set([
   '/album/sublist',
   '/user-playlists',
   '/playlist',
+  '/playlists',
   '/toplist'
 ]);
 

@@ -9,11 +9,15 @@ for (const file of ['index.html', 'dist/index.html']) {
     "neteaseApiBase + '/login/qr/key",
     "neteaseApiBase + '/login/qr/create",
     "neteaseApiBase + '/login/qr/check",
-    "neteaseApiBase + '/my-info'"
+    "neteaseApiBase + '/my-info'",
+    'fetch(neteaseApiBase + path'
   ]) {
     if (!html.includes(marker)) {
       throw new Error(file + ' should route NetEase account requests through the configured API base: ' + marker);
     }
+  }
+  if (html.includes("OTTER_API_BASE + '/music-api/netease'")) {
+    throw new Error(file + ' still bypasses the configured API base for NetEase playlist/account requests');
   }
 }
 
@@ -31,7 +35,13 @@ for (const [name, source] of [['server.js', server], ['cloudflare-worker/worker.
     '/login/qr/key',
     '/login/qr/create',
     '/login/qr/check',
-    '/my-info'
+    '/my-info',
+    '/recommend',
+    '/album/sublist',
+    '/user-playlists',
+    '/playlist',
+    '/playlists',
+    '/toplist'
   ]) {
     if (!source.includes(path)) {
       throw new Error(name + ' should allow-list the NetEase account subpath: ' + path);
