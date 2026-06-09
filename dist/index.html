@@ -1027,6 +1027,23 @@
       position: relative; border-radius: 14px; overflow: hidden; background: #111;
       margin: 8px 0 14px; cursor: pointer; user-select: none;
     }
+    .vp-wrap:fullscreen,
+    .vp-wrap:-webkit-full-screen {
+      width: 100vw !important; height: 100vh !important; border-radius: 0 !important; background: #000 !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+    }
+    .vp-wrap:fullscreen video,
+    .vp-wrap:-webkit-full-screen video {
+      width: 100% !important; height: 100% !important; max-height: none !important; object-fit: contain !important;
+    }
+    .vp-wrap.is-faux-fullscreen {
+      position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100dvh !important;
+      z-index: 99999 !important; border-radius: 0 !important; background: #000 !important;
+    }
+    .vp-wrap.is-faux-fullscreen video {
+      width: 100% !important; height: 100% !important; max-height: none !important; object-fit: contain !important;
+    }
+    body.video-faux-fullscreen { overflow: hidden !important; }
     .vp-wrap video {
       width: 100%; max-height: 70vh; display: block; object-fit: contain; background: #111;
     }
@@ -1042,20 +1059,32 @@
       padding: 32px 14px 10px; display: flex; flex-direction: column; gap: 6px;
       opacity: 1; transition: opacity .25s;
     }
-    .vp-wrap.hide-controls .vp-controls { opacity: 0; pointer-events: none; }
-    .vp-progress {
-      width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25);
-      cursor: pointer; position: relative; transition: height .12s;
-      padding: 8px 0; margin: -8px 0; background-clip: content-box;
+    .vp-wrap.hide-controls .vp-controls { opacity: 1; pointer-events: auto; }
+    .vp-wrap.hide-controls .vp-bar {
+      opacity: 0;
+      pointer-events: none;
     }
-    .vp-progress:hover { height: 6px; }
+    .vp-progress {
+      width: 100%; height: 36px; border-radius: 999px; background: transparent;
+      cursor: pointer; position: relative; transition: height .12s;
+      touch-action: none;
+    }
+    .vp-progress::before {
+      content: ""; position: absolute; left: 0; right: 0; top: 50%;
+      height: 8px; transform: translateY(-50%); border-radius: 999px;
+      background: rgba(255,255,255,.36);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 2px 10px rgba(0,0,0,.28);
+    }
+    .vp-progress:hover::before { height: 10px; }
     .vp-progress-bar {
-      height: 100%; border-radius: 2px; background: var(--primary, #36a97b);
-      pointer-events: none; width: 0%;
+      position: absolute; left: 0; top: 50%; height: 8px; transform: translateY(-50%);
+      border-radius: 999px; background: linear-gradient(90deg, #68e1b2, var(--primary, #36a97b));
+      pointer-events: none; width: 0%; z-index: 2;
+      box-shadow: 0 0 14px rgba(54,169,123,.45);
     }
     .vp-progress-buffer {
-      position: absolute; top: 0; left: 0; height: 100%; border-radius: 2px;
-      background: rgba(255,255,255,.2); pointer-events: none; width: 0%;
+      position: absolute; top: 50%; left: 0; height: 8px; transform: translateY(-50%);
+      border-radius: 999px; background: rgba(255,255,255,.24); pointer-events: none; width: 0%; z-index: 1;
     }
     .vp-bar {
       display: flex; align-items: center; gap: 10px; color: #fff; font-size: 12px;
@@ -5885,6 +5914,40 @@
       var playIcon = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor" stroke="none"/></svg>';
       var pauseIcon = '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1" fill="currentColor"/><rect x="15" y="3" width="4" height="18" rx="1" fill="currentColor"/></svg>';
       function fmtTime(s) { s = Math.floor(s || 0); var m = Math.floor(s / 60); return m + ':' + String(s % 60).padStart(2, '0'); }
+      function setVideoProgressFromClientX(clientX) {
+        if (!vid.duration) return;
+        var progress = document.getElementById('vp-progress');
+        var rect = progress.getBoundingClientRect();
+        var ratio = Math.max(0, Math.min(1, (clientX - rect.left) / (rect.width || 1)));
+        vid.currentTime = ratio * vid.duration;
+        document.getElementById('vp-bar-fill').style.width = (ratio * 100) + '%';
+      }
+      function exitVideoFullscreen() {
+        wrap.classList.remove('is-faux-fullscreen');
+        document.body.classList.remove('video-faux-fullscreen');
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      function enterVideoFullscreen() {
+        if (wrap.classList.contains('is-faux-fullscreen') || document.fullscreenElement || document.webkitFullscreenElement) {
+          exitVideoFullscreen();
+          return;
+        }
+        if (wrap.requestFullscreen) {
+          wrap.requestFullscreen().catch(function() {
+            if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
+            else { wrap.classList.add('is-faux-fullscreen'); document.body.classList.add('video-faux-fullscreen'); }
+          });
+        } else if (vid.webkitEnterFullscreen) {
+          vid.webkitEnterFullscreen();
+        } else {
+          wrap.classList.add('is-faux-fullscreen');
+          document.body.classList.add('video-faux-fullscreen');
+        }
+      }
       function scheduleHide() {
         clearTimeout(hideTimer);
         wrap.classList.remove('hide-controls');
@@ -5898,7 +5961,7 @@
       });
       wrap.addEventListener('dblclick', function(e) {
         if (e.target.closest('button, input, .vp-progress, .vp-controls')) return;
-        if (document.fullscreenElement) document.exitFullscreen(); else wrap.requestFullscreen().catch(function() {});
+        enterVideoFullscreen();
       });
       vid.addEventListener('play', function() {
         wrap.classList.add('is-playing');
@@ -5934,12 +5997,29 @@
         e.stopPropagation();
         if (vid.paused) vid.play(); else vid.pause();
       });
-      document.getElementById('vp-progress').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (!vid.duration) return;
-        var rect = this.getBoundingClientRect();
-        vid.currentTime = ((e.clientX - rect.left) / rect.width) * vid.duration;
-      });
+      (function() {
+        var progress = document.getElementById('vp-progress');
+        var dragging = false;
+        progress.addEventListener('pointerdown', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          dragging = true;
+          progress.setPointerCapture?.(e.pointerId);
+          setVideoProgressFromClientX(e.clientX);
+        });
+        progress.addEventListener('pointermove', function(e) {
+          if (!dragging) return;
+          e.preventDefault();
+          setVideoProgressFromClientX(e.clientX);
+        });
+        function endDrag(e) {
+          if (!dragging) return;
+          dragging = false;
+          try { progress.releasePointerCapture?.(e.pointerId); } catch (error) {}
+        }
+        progress.addEventListener('pointerup', endDrag);
+        progress.addEventListener('pointercancel', endDrag);
+      })();
       document.getElementById('vp-vol').addEventListener('input', function() {
         vid.volume = parseFloat(this.value);
         vid.muted = false;
@@ -5951,11 +6031,17 @@
       });
       document.getElementById('vp-fs').addEventListener('click', function(e) {
         e.stopPropagation();
-        if (document.fullscreenElement) document.exitFullscreen(); else wrap.requestFullscreen().catch(function() {});
+        enterVideoFullscreen();
       });
       document.getElementById('vp-pip').addEventListener('click', function(e) {
         e.stopPropagation();
         if (document.pictureInPictureElement) document.exitPictureInPicture(); else vid.requestPictureInPicture().catch(function() {});
+      });
+      document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement) {
+          wrap.classList.remove('is-faux-fullscreen');
+          document.body.classList.remove('video-faux-fullscreen');
+        }
       });
     })();
     function toggleSetting(event, element) {

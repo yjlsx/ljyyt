@@ -99,7 +99,38 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
     .video-container video, .video-container iframe {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;
+    }
+    .video-container:fullscreen,
+    .video-container:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      max-height: none !important;
+      padding-top: 0 !important;
+      border-radius: 0 !important;
+      background: #000 !important;
+    }
+    .video-container:fullscreen video,
+    .video-container:fullscreen iframe,
+    .video-container:-webkit-full-screen video,
+    .video-container:-webkit-full-screen iframe {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+    }
+    .video-container.is-faux-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      padding-top: 0 !important;
+      z-index: 99999 !important;
+      border-radius: 0 !important;
+      background: #000 !important;
+    }
+    body.video-faux-fullscreen {
+      overflow: hidden !important;
     }
 
     #coverImage { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -277,10 +308,20 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      opacity: 0;
+      opacity: 1;
       transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: translateY(10px);
+      transform: translateY(0);
       pointer-events: auto;
+    }
+    .video-container.hide-controls .custom-controls {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .video-container.hide-controls .custom-controls .control-btn,
+    .video-container.hide-controls .custom-controls .time-display,
+    .video-container.hide-controls .custom-controls .volume-container {
+      opacity: 0;
+      pointer-events: none;
     }
     
     .video-container:hover .custom-controls,
@@ -312,25 +353,43 @@
     
     .progress-container {
       flex-grow: 1;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
+      height: 36px;
+      background: transparent;
+      border-radius: 999px;
       cursor: pointer;
       position: relative;
       transition: height 0.2s;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .progress-container::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 8px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background: rgba(255,255,255,.36);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 2px 10px rgba(0,0,0,.28);
     }
     
     .progress-container:hover {
-      height: 6px;
+      height: 36px;
     }
 
     .progress {
-      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 8px;
+      transform: translateY(-50%);
       background: linear-gradient(90deg, #667eea, #764ba2);
-      border-radius: 2px;
+      border-radius: 999px;
       width: 0%;
-      position: relative;
       box-shadow: 0 0 12px rgba(102, 126, 234, 0.5);
+      z-index: 2;
     }
     
     /* 进度条上的小白点 */
@@ -345,7 +404,7 @@
       background: white;
       border-radius: 50%;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      opacity: 0;
+      opacity: 1;
       transition: opacity 0.2s;
     }
     
@@ -355,12 +414,14 @@
     
     .progress-buffer {
       position: absolute;
-      top: 0;
       left: 0;
-      height: 100%;
+      top: 50%;
+      height: 8px;
+      transform: translateY(-50%);
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
+      border-radius: 999px;
       width: 0%;
+      z-index: 1;
     }
     
     .time-display {
@@ -430,7 +491,7 @@
       }
       
       .progress-container {
-        height: 4px;
+        height: 36px;
       }
       
       .volume-container {
@@ -470,6 +531,7 @@
         order: 1;
         width: 100%;
         margin-top: 6px;
+        height: 36px;
       }
       
       .time-display {
@@ -692,15 +754,21 @@
       currentTimeEl.textContent = formatTime(video.currentTime);
     }
 
-    function setProgress(e) {
+    function setVideoProgressFromClientX(clientX) {
       const video = document.getElementById('customPlayer');
       const progressContainer = document.getElementById('progressContainer');
-      
-      const width = progressContainer.clientWidth;
-      const clickX = e.offsetX;
-      const duration = video.duration;
-      
-      video.currentTime = (clickX / width) * duration;
+      const progress = document.getElementById('progress');
+      if (!video || !progressContainer || !video.duration) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const width = rect.width || progressContainer.clientWidth || 1;
+      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / width));
+      video.currentTime = ratio * video.duration;
+      if (progress) progress.style.width = (ratio * 100) + '%';
+    }
+
+    function setProgress(e) {
+      const clientX = e && typeof e.clientX === 'number' ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      setVideoProgressFromClientX(clientX);
     }
 
     function updatePlayButton() {
@@ -751,25 +819,27 @@
     function toggleFullscreen() {
       const video = document.getElementById('customPlayer');
       const videoContainer = document.getElementById('videoContainer');
+      if (!video || !videoContainer) return;
       
       // 检查当前是否为全屏状态
       const isInFullscreen = document.fullscreenElement || 
                             document.webkitFullscreenElement || 
                             document.mozFullScreenElement || 
-                            document.msFullscreenElement;
+                            document.msFullscreenElement ||
+                            videoContainer.classList.contains('is-faux-fullscreen');
       
       if (!isInFullscreen) {
         // 尝试进入全屏模式
-        if (video.requestFullscreen) {
-          // 标准全屏API
-          video.requestFullscreen().catch(e => {
+        if (videoContainer.requestFullscreen) {
+          // 标准全屏API：让整个容器全屏，保留自定义控制栏
+          videoContainer.requestFullscreen().catch(e => {
             console.warn("标准全屏API失败:", e);
             // 尝试Webkit版本（Safari/iOS）
             if (video.webkitEnterFullscreen) {
               // iOS Safari 特有的全屏方法
               video.webkitEnterFullscreen();
             } else {
-              attemptFallbackFullscreen(video);
+              attemptFallbackFullscreen(videoContainer);
             }
           });
         } else if (video.webkitEnterFullscreen) {
@@ -783,17 +853,19 @@
           video.msRequestFullscreen();
         } else {
           // 尝试备用方法
-          attemptFallbackFullscreen(video);
+          attemptFallbackFullscreen(videoContainer);
         }
       } else {
         // 退出全屏模式
-        if (document.exitFullscreen) {
+        videoContainer.classList.remove('is-faux-fullscreen');
+        document.body.classList.remove('video-faux-fullscreen');
+        if (document.fullscreenElement && document.exitFullscreen) {
           document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
+        } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
+        } else if (document.mozFullScreenElement && document.mozCancelFullScreen) {
           document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
+        } else if (document.msFullscreenElement && document.msExitFullscreen) {
           document.msExitFullscreen();
         }
       }
@@ -801,18 +873,22 @@
 
     // 尝试备用全屏方法
     function attemptFallbackFullscreen(element) {
-      if (element.webkitEnterFullscreen) {
+      const video = document.getElementById('customPlayer');
+      if (video && video.webkitEnterFullscreen) {
         // iOS Safari
-        element.webkitEnterFullscreen();
+        video.webkitEnterFullscreen();
       } else if (element.requestFullscreen) {
-        element.requestFullscreen();
+        element.requestFullscreen().catch(function() {
+          element.classList.add('is-faux-fullscreen');
+          document.body.classList.add('video-faux-fullscreen');
+        });
       } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
       } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
       } else {
-        // 如果所有方法都失败，对于移动端，我们可以尝试模拟全屏效果
-        alert("您的设备可能不支持全屏模式，或者视频需要用户手势才能全屏播放。");
+        element.classList.add('is-faux-fullscreen');
+        document.body.classList.add('video-faux-fullscreen');
       }
     }
     
@@ -1067,34 +1143,36 @@
       (function() {
         var dragging = false;
         var pc = document.getElementById('progressContainer');
-        function getX(e) {
-          var r = pc.getBoundingClientRect();
-          var cx = e.touches ? e.touches[0].clientX : e.clientX;
-          return Math.max(0, Math.min(cx - r.left, r.width));
-        }
         function onStart(e) {
+          if (!pc) return;
           dragging = true;
-          var v = document.getElementById('customPlayer');
-          if (v.duration) v.currentTime = (getX(e) / pc.clientWidth) * v.duration;
+          e.preventDefault();
+          pc.setPointerCapture?.(e.pointerId);
+          setVideoProgressFromClientX(e.clientX);
         }
         function onMove(e) {
           if (!dragging) return;
           e.preventDefault();
-          var v = document.getElementById('customPlayer');
-          if (v.duration) {
-            var pct = (getX(e) / pc.clientWidth) * 100;
-            document.getElementById('progress').style.width = pct + '%';
-            v.currentTime = (getX(e) / pc.clientWidth) * v.duration;
-          }
+          setVideoProgressFromClientX(e.clientX);
         }
-        function onEnd() { dragging = false; }
-        pc.addEventListener('mousedown', onStart);
-        pc.addEventListener('touchstart', onStart, { passive: true });
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('touchmove', onMove, { passive: false });
-        document.addEventListener('mouseup', onEnd);
-        document.addEventListener('touchend', onEnd);
+        function onEnd(e) {
+          if (!dragging) return;
+          dragging = false;
+          try { pc.releasePointerCapture?.(e.pointerId); } catch (error) {}
+        }
+        pc.addEventListener('pointerdown', onStart);
+        pc.addEventListener('pointermove', onMove);
+        pc.addEventListener('pointerup', onEnd);
+        pc.addEventListener('pointercancel', onEnd);
       })();
+
+      document.addEventListener('fullscreenchange', function() {
+        var container = document.getElementById('videoContainer');
+        if (!document.fullscreenElement && container) {
+          container.classList.remove('is-faux-fullscreen');
+          document.body.classList.remove('video-faux-fullscreen');
+        }
+      });
       
       // 键盘快捷键
       document.addEventListener('keydown', function(e) {
