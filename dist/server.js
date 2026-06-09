@@ -441,7 +441,7 @@ async function createSafeAudioProxyLookup(audioUrl) {
   };
 }
 
-async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
+async function streamRemoteAudio(req, res, targetUrl, extraHeaders, redirectsLeft = 4) {
   let proxyReq = null;
   let upstreamResponse = null;
   let downstreamClosed = false;
@@ -490,7 +490,7 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
     method: req.method === 'HEAD' ? 'HEAD' : 'GET',
     headers,
     lookup: safeLookup
-  }, (proxyRes) => {
+  }, async (proxyRes) => {
     upstreamResponse = proxyRes;
     if (downstreamClosed) {
       proxyRes.destroy();
@@ -500,6 +500,29 @@ async function streamRemoteAudio(req, res, targetUrl, extraHeaders) {
       if (!res.destroyed) res.destroy(error);
     });
     const statusCode = Number(proxyRes.statusCode || 200);
+    if (statusCode >= 300 && statusCode < 400) {
+      const locationHeader = proxyRes.headers.location || proxyRes.headers.Location;
+      proxyRes.resume();
+      if (!locationHeader) {
+        if (!res.headersSent && !res.destroyed) sendJson(res, 502, { url: '', error: 'redirect missing location' });
+        return;
+      }
+      if (redirectsLeft <= 0) {
+        if (!res.headersSent && !res.destroyed) sendJson(res, 508, { url: '', error: 'too many redirects' });
+        return;
+      }
+      let nextUrl;
+      try {
+        nextUrl = new URL(locationHeader, parsed);
+      } catch (error) {
+        if (!res.headersSent && !res.destroyed) sendJson(res, 400, { url: '', error: 'Invalid redirect url' });
+        return;
+      }
+      proxyReq = null;
+      upstreamResponse = null;
+      await streamRemoteAudio(req, res, nextUrl.toString(), extraHeaders, redirectsLeft - 1);
+      return;
+    }
     const responseHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Expose-Headers': 'Accept-Ranges, Content-Range, Content-Length, Content-Type',
