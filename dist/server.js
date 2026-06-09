@@ -1711,6 +1711,19 @@ function resolveStaticPath(pathname) {
   return resolvedPath;
 }
 
+function getStaticCacheHeaders(ext) {
+  if (ext === '.html') {
+    return {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    };
+  }
+  return {
+    'Cache-Control': 'public, max-age=300'
+  };
+}
+
 function sendFile(req, res, targetPath) {
   if (!targetPath) {
     res.writeHead(403);
@@ -1728,7 +1741,7 @@ function sendFile(req, res, targetPath) {
     const ext = path.extname(targetPath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-store' : 'public, max-age=300'
+      ...getStaticCacheHeaders(ext)
     });
     fs.createReadStream(targetPath).pipe(res);
   });

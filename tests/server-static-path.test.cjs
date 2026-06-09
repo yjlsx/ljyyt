@@ -18,12 +18,14 @@ if (!server.includes("sendJson(res, 400, { error: 'Bad request path' })")) {
   throw new Error('server.js does not return 400 for invalid encoded pathnames');
 }
 
-if (!server.includes("'Cache-Control': ext === '.html' ? 'no-store' : 'public, max-age=300'")) {
-  throw new Error('server.js should serve local HTML with no-store so inline playback UI code cannot stay stale');
+if (!server.includes('function getStaticCacheHeaders')) {
+  throw new Error('server.js should centralize static cache headers for HTML cache busting');
 }
 
-if (server.includes("ext === '.html' ? 'no-cache'")) {
-  throw new Error('server.js still allows revalidation caching for local HTML');
+if (!server.includes("'Cache-Control': 'no-cache, no-store, must-revalidate'") ||
+    !server.includes("'Pragma': 'no-cache'") ||
+    !server.includes("'Expires': '0'")) {
+  throw new Error('server.js should serve local HTML with strong no-cache headers so inline playback UI code cannot stay stale');
 }
 
 const helperStart = server.indexOf('function safeDecodePathname');

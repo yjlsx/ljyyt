@@ -105,8 +105,22 @@ if (!buildScript.includes("'fix_wechat_images.js'")) {
   throw new Error('build-dist.cjs should copy fix_wechat_images.js because index.html references it');
 }
 
-if (!headers.includes('/index.html') || !headers.includes('Cache-Control: no-store')) {
-  throw new Error('_headers should prevent hosted index.html from serving stale inline playback UI code');
+for (const route of ['/index.html', '/*.html', '/']) {
+  const routeIndex = headers.indexOf(route);
+  if (routeIndex < 0) {
+    throw new Error('_headers is missing the no-cache route for ' + route);
+  }
+  const nextRouteIndex = headers.indexOf('\n/', routeIndex + route.length);
+  const routeBlock = nextRouteIndex < 0 ? headers.slice(routeIndex) : headers.slice(routeIndex, nextRouteIndex);
+  for (const marker of [
+    'Cache-Control: no-cache, no-store, must-revalidate',
+    'Pragma: no-cache',
+    'Expires: 0'
+  ]) {
+    if (!routeBlock.includes(marker)) {
+      throw new Error('_headers should prevent stale inline playback UI code for ' + route + ' with ' + marker);
+    }
+  }
 }
 
 for (const required of [
