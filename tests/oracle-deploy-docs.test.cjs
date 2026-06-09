@@ -7,6 +7,10 @@ for (const relPath of ['ORACLE_DEPLOY.md', 'dist/ORACLE_DEPLOY.md']) {
     throw new Error(relPath + ' still documents a non-existent audio proxy allowlist mode');
   }
 
+  if (/AUDIO_SOURCE_PRIORITY|AUDIO_RESOLVER_URL|\/api\/audio\/resolve/.test(doc)) {
+    throw new Error(relPath + ' still documents an audio resolver setting or route that server.js does not implement');
+  }
+
   if (!doc.includes('/api/audio-proxy')) {
     throw new Error(relPath + ' should document the current local audio proxy route');
   }

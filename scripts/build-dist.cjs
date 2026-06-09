@@ -53,6 +53,23 @@ function writeFile(relPath, content) {
   fs.writeFileSync(target, content);
 }
 
+function getOracleSiteConfigContent() {
+  return Buffer.from([
+    "window.LJYYT_API_BASE = window.LJYYT_API_BASE || (window.location && window.location.origin ? window.location.origin : '');",
+    "window.LYRICS_API_ENDPOINT = window.LJYYT_API_BASE + '/api/lyrics';",
+    "window.LYRICS_SEARCH_API_ENDPOINT = window.LJYYT_API_BASE + '/api/lyrics/search';",
+    "window.COVER_API_ENDPOINT = window.LJYYT_API_BASE + '/api/cover';",
+    "window.AUDIO_API_ENDPOINT = window.AUDIO_API_ENDPOINT || '';",
+    "window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API = window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API !== false;",
+    ''
+  ].join('\n'), 'utf8');
+}
+
+function getSiteConfigContent(item) {
+  if (item.relPath !== 'site-config.js') return item.content;
+  return options.oracle ? getOracleSiteConfigContent() : item.content;
+}
+
 const assetFiles = [
   '_headers',
   'index.html',
@@ -126,7 +143,7 @@ const snapshot = assetFiles.map(readSourceFile);
 fs.rmSync(outDir, { recursive: true, force: true });
 
 for (const item of snapshot) {
-  writeFile(item.relPath, item.content);
+  writeFile(item.relPath, getSiteConfigContent(item));
 }
 
 writeFile('package.json', runtimePackage);

@@ -16,6 +16,7 @@
   <link rel="icon" href="./images/avatar.jpg" type="image/jpeg">
   <link rel="apple-touch-icon" href="./images/avatar.jpg">
   <title>丽江音悦台</title>
+  <script src="site-config.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/icons.js"></script>
   <style>
@@ -1674,7 +1675,8 @@
       box-shadow: 0 3px 10px rgba(0,0,0,.10), 0 3px 3px rgba(0,0,0,.05);
       display: flex; align-items: center; justify-content: center; gap: 8px;
       font-size: 14px; line-height: 1.35; z-index: 9999; opacity: 0; transition: opacity .3s, transform .3s;
-      pointer-events: none; white-space: nowrap; max-width: 90%; margin: 0 auto; overflow: hidden; text-overflow: ellipsis;
+      pointer-events: none; max-width: min(calc(100vw - 32px), 420px); margin: 0 auto;
+      white-space: normal; overflow-wrap: anywhere; text-align: center;
     }
     html.dark .ljyyt-toast { background: #fff; color: #363636; }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -3886,17 +3888,46 @@
       renderFavorites();
       showToast(exists ? '已取消喜欢' : '已添加到喜欢', 1500);
     }
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.top = '-1000px';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      var copied = false;
+      try {
+        copied = document.execCommand && document.execCommand('copy');
+      } finally {
+        textarea.remove();
+      }
+      return !!copied;
+    }
     async function shareCurrentTrack() {
       const text = currentTrack.title + ' - ' + currentTrack.artist;
       try {
-        if (navigator.share) {
+        if (navigator.share && typeof navigator.share === 'function') {
           await navigator.share({ title: '丽江音悦台', text });
-        } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(text);
+        } else if (await copyTextToClipboard(text)) {
           showToast('已复制歌曲信息到剪贴板');
         }
       } catch (error) {
-        if (error && error.name !== 'AbortError') console.warn('share failed', error);
+        if (error && error.name === 'AbortError') return;
+        console.warn('share failed', error);
+        try {
+          if (await copyTextToClipboard(text)) showToast('已复制歌曲信息到剪贴板');
+          else showToast('分享失败，请稍后重试');
+        } catch (copyError) {
+          console.warn('share fallback copy failed', copyError);
+          showToast('分享失败，请稍后重试');
+        }
       }
     }
     function updateLikeButton() {

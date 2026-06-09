@@ -2,11 +2,14 @@ const fs = require('fs');
 
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const scripts = pkg.scripts || {};
+const engines = pkg.engines || {};
 const deploySh = fs.readFileSync('deploy.sh', 'utf8');
 const deployBat = fs.readFileSync('deploy.bat', 'utf8');
 const siteConfig = fs.readFileSync('site-config.js', 'utf8');
 const buildScript = fs.readFileSync('scripts/build-dist.cjs', 'utf8');
 const headers = fs.readFileSync('_headers', 'utf8');
+const indexHtml = fs.readFileSync('index.html', 'utf8');
+const distIndexHtml = fs.readFileSync('dist/index.html', 'utf8');
 
 function assertDistMatchesSource(relPath) {
   const source = fs.readFileSync(relPath);
@@ -18,6 +21,10 @@ function assertDistMatchesSource(relPath) {
 
 if (!scripts.build) {
   throw new Error('package.json is missing a build script');
+}
+
+if (engines.node !== '>=20.3.0') {
+  throw new Error('package.json should declare Node >=20.3.0 for the Wrangler development/deploy toolchain');
 }
 
 if (!scripts['build:oracle']) {
@@ -54,8 +61,26 @@ if (!siteConfig.includes('window.LJYYT_API_BASE')) {
   throw new Error('site-config.js should define LJYYT_API_BASE for consistent local and hosted API routing');
 }
 
+for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distIndexHtml]]) {
+  const configScriptIndex = html.indexOf('<script src="site-config.js"></script>');
+  if (configScriptIndex < 0) {
+    throw new Error(name + ' should load site-config.js before reading LJYYT_API_BASE');
+  }
+  const apiBaseReadIndex = html.indexOf('window.LJYYT_API_BASE');
+  if (apiBaseReadIndex >= 0 && configScriptIndex > apiBaseReadIndex) {
+    throw new Error(name + ' loads site-config.js after LJYYT_API_BASE is already read');
+  }
+}
+
 if (!siteConfig.includes("host === 'localhost'") || !siteConfig.includes("host === '127.0.0.1'")) {
   throw new Error('site-config.js should route local development API calls to the same origin');
+}
+
+if (!buildScript.includes('function getOracleSiteConfigContent()') ||
+    !buildScript.includes('function getSiteConfigContent(item)') ||
+    !buildScript.includes("options.oracle ? getOracleSiteConfigContent() : item.content") ||
+    !buildScript.includes('writeFile(item.relPath, getSiteConfigContent(item))')) {
+  throw new Error('build-dist.cjs should generate a same-origin site-config.js for oracle builds');
 }
 
 if (buildScript.includes("path.join(ROOT, 'dist', relPath)")) {

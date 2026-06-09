@@ -46,13 +46,7 @@ PORT=8080 npm start
 - `script.js` 里的现有曲库：只当“歌曲目录”，保留标题、歌手、封面、原始 `src`。
 - `data/audio-sources.json`：只当“授权播放来源”，同一首歌可以写多条候选。
 
-默认策略是 `library-first`：优先使用 `data/audio-sources.json` 或授权解析服务返回的音源，失败时自动回退到曲库里已有的 `src`。
-
-如果你想先用现在已有的 `src`，只有失败时才尝试授权音源：
-
-```bash
-AUDIO_SOURCE_PRIORITY=existing-first npm start
-```
+当前运行时没有额外的后端音源解析 env 开关。播放器会先使用歌曲已有地址或前端查询到的地址；播放失败时，页面会继续按已选择的音源范围搜索可用免费音源，并自动切换。
 
 如果你有自有或已授权音频地址，可以填到：
 
@@ -79,50 +73,7 @@ data/audio-sources.json
 
 同一首歌可以配置多条候选。播放器会按顺序尝试，当前音源不可播放时自动切换下一条。
 
-播放器页会显示：
-
-- 当前音源来源
-- 候选链位置，例如 `1 / 3 条`
-- 是否走 Oracle 代理
-
 如果你更新了 `data/audio-sources.json`，页面上可以点“刷新音源”重新解析当前歌曲，不必刷新整个页面。
-
-也可以接你自己的授权解析服务：
-
-```bash
-AUDIO_RESOLVER_URL=https://your-api.example.com/audio/resolve npm start
-```
-
-这个上游接口返回 JSON 即可，例如：
-
-```json
-{
-  "found": true,
-  "playableUrl": "https://example.com/audio.mp3",
-  "source": "authorized-api",
-  "quality": "320k"
-}
-```
-
-也支持返回候选链：
-
-```json
-{
-  "found": true,
-  "candidates": [
-    {
-      "playableUrl": "https://cdn1.example.com/audio.mp3",
-      "source": "cdn-1",
-      "quality": "320k"
-    },
-    {
-      "playableUrl": "https://cdn2.example.com/audio.mp3",
-      "source": "cdn-2",
-      "quality": "128k"
-    }
-  ]
-}
-```
 
 ## 4. 音频代理
 
@@ -137,6 +88,5 @@ AUDIO_RESOLVER_URL=https://your-api.example.com/audio/resolve npm start
 - `/api/lyrics`
 - `/api/lyrics/search`
 - `/api/cover`
-- `/api/audio/resolve`
 
-本地歌词可放在 `data/lyrics.json`。线上部署后，`site-config.js` 默认使用同源 API，不再依赖 Cloudflare Worker。
+本地歌词可放在 `data/lyrics.json`。使用 `npm run build:oracle` 时，生成的 `dist/site-config.js` 会默认使用同源 API，不再依赖 Cloudflare Worker。
