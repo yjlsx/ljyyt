@@ -552,7 +552,7 @@
 
   function openDiscoverPlaylist(id) {
     if (id === 'mv') {
-      location.href = 'videos.html';
+      location.href = 'video-player.html';
       return;
     }
     var list = getDiscoverPlaylist(id);
@@ -589,7 +589,7 @@
       row.addEventListener('click', function() {
         var index = Number(row.getAttribute('data-index'));
         var video = currentResults.video[index];
-        if (video) location.href = 'video-index.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
+        if (video) location.href = 'video-player.html?id=' + encodeURIComponent(video.id) + '&autoplay=true';
       });
     });
   }
