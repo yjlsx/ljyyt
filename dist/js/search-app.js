@@ -620,13 +620,29 @@
     });
   }
 
+  function renderInitialSearchState(query) {
+    query = String(query || '').trim();
+    renderDiscover();
+    if (query) {
+      displayResults({ music: [], video: [], playlists: getPlaylistCards(query) }, query);
+      performSearch(query);
+      return;
+    }
+    var defaultList = discoverPlaylists[0] || { tracks: [] };
+    displayResults({ music: defaultList.tracks || [], video: [], playlists: getPlaylistCards('') }, '');
+  }
+
   function submitSearch(query, saveHistory) {
     query = String(query || '').trim();
     if (!query) return;
     if (saveHistory) addSearchHistory(query);
     var url = new URL(location.href);
     url.searchParams.set('q', query);
-    url.searchParams.set('source', activeSource);
+    if (shouldPersistSourceParam()) {
+      url.searchParams.set('source', activeSource);
+    } else {
+      url.searchParams.delete('source');
+    }
     history.replaceState(null, '', url.toString());
     performSearch(query);
     renderSearchHistory();
@@ -860,11 +876,38 @@
     }
   }
 
+  function isSourcePickerInteractive(picker) {
+    return !!picker
+      && !picker.hidden
+      && picker.getAttribute('aria-hidden') !== 'true'
+      && !(picker.classList && picker.classList.contains('sr-only'));
+  }
+
+  function shouldPersistSourceParam() {
+    return isSourcePickerInteractive(document.getElementById('source-picker'));
+  }
+
+  function cleanHiddenSourceParam() {
+    if (!location.search || location.search.indexOf('source=') === -1) return;
+    try {
+      var url = new URL(location.href);
+      if (!url.searchParams.has('source')) return;
+      url.searchParams.delete('source');
+      history.replaceState(null, '', url.toString());
+    } catch (error) {}
+  }
+
   function setupSourcePicker() {
     var picker = document.getElementById('source-picker');
     var button = document.getElementById('source-button');
     var label = document.getElementById('source-label');
     if (!picker || !button || !label) return;
+    if (!isSourcePickerInteractive(picker)) {
+      activeSource = 'aggregate';
+      label.textContent = sourceMap.aggregate.label;
+      cleanHiddenSourceParam();
+      return;
+    }
     var requested = getUrlParameter('source');
     if (sourceMap[requested]) activeSource = requested;
     label.textContent = sourceMap[activeSource].label;
@@ -956,10 +999,7 @@
       var query = getUrlParameter('q');
       var input = document.getElementById('hero-search-input');
       if (input && query) input.value = query;
-      renderDiscover();
-      var defaultList = discoverPlaylists[0] || { tracks: [] };
-      displayResults({ music: defaultList.tracks || [], video: [], playlists: getPlaylistCards(query) }, query);
-      if (query) performSearch(query);
+      renderInitialSearchState(query);
     });
   });
 })();
