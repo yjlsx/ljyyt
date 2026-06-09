@@ -70,6 +70,12 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distI
   if (apiBaseReadIndex >= 0 && configScriptIndex > apiBaseReadIndex) {
     throw new Error(name + ' loads site-config.js after LJYYT_API_BASE is already read');
   }
+  if (!html.includes('window.LYRICS_API_ENDPOINT || (ljyytApiBase + \'/api/lyrics\')')) {
+    throw new Error(name + ' should derive lyricsApiBase from site-config.js instead of a hardcoded Worker URL');
+  }
+  if (html.includes("const lyricsApiBase = 'https://ljyyt-api.yjlsx0.workers.dev/api/lyrics'")) {
+    throw new Error(name + ' still hardcodes lyricsApiBase to the default Worker endpoint');
+  }
 }
 
 if (!siteConfig.includes("host === 'localhost'") || !siteConfig.includes("host === '127.0.0.1'")) {

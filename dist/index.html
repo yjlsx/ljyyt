@@ -2084,8 +2084,8 @@
     const sourceMenu = document.getElementById('source-menu');
     const aggregateSourcePanel = document.getElementById('aggregate-source-panel');
     const providerButton = document.getElementById('provider-button');
-    const lyricsApiBase = 'https://ljyyt-api.yjlsx0.workers.dev/api/lyrics';
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
+    const lyricsApiBase = window.LYRICS_API_ENDPOINT || (ljyytApiBase + '/api/lyrics');
     const neteaseApiBase = ljyytApiBase + '/api/netease';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
