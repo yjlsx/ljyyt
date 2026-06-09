@@ -3000,7 +3000,7 @@
         src: track.source && track.source !== 'local' ? (track.src || '') : (track.src || ''),
         duration: parseTrackDuration(track.duration) || parseTrackDuration(existingDuration),
         source: track.source || 'local',
-        sourceLabel: track.sourceLabel || '丽江曲库',
+        sourceLabel: track.sourceLabel || getSourceLabel(track.source || 'local'),
         urlId: track.urlId || track.url_id || track.id || '',
         lyric_id: track.lyric_id || track.id || '',
         id: track.id || track.urlId || track.url_id || track.src || track.title

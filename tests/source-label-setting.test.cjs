@@ -1,4 +1,5 @@
 const fs = require('fs');
+const vm = require('vm');
 
 function pickFunction(script, name) {
   const start = script.indexOf('function ' + name);
@@ -59,5 +60,49 @@ for (const file of ['index.html', 'dist/index.html']) {
     if (!toggleBody.includes(marker)) {
       throw new Error(file + ' toggleSetting should refresh source label surfaces after marker: ' + marker);
     }
+  }
+
+  const sandbox = {
+    DEFAULT_COVER: 'cover.jpg',
+    currentTrack: null,
+    playQueue: [],
+    queueIndex: 0,
+    currentTrackIndex: 0,
+    setQueue(tracks, index) {
+      this.playQueue = tracks;
+      this.queueIndex = index;
+      this.currentTrackIndex = index;
+    },
+    updateTrackUi() {},
+    updateLikeButton() {},
+    renderQueue() {},
+    loadLyricsForTrack() {},
+    savePlaybackState() {},
+    isSameTrack(a, b) {
+      return a && b && String(a.id || a.title) === String(b.id || b.title);
+    },
+    audioPlayer: {
+      _src: '',
+      pause() {},
+      getAttribute(name) {
+        return name === 'src' ? this._src : '';
+      },
+      setAttribute(name, value) {
+        if (name === 'src') this._src = value;
+      },
+      removeAttribute() {},
+      load() {}
+    }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickFunction(script, 'getSourceLabel'),
+    pickFunction(script, 'parseTrackDuration'),
+    pickFunction(script, 'setCurrentTrack'),
+    'setCurrentTrack({ id: "kuwo-1", title: "偏偏喜欢你", artist: "陈百强", source: "kuwo", src: "https://example.test/song.mp3" });'
+  ].join('\n'), sandbox);
+
+  if (sandbox.currentTrack.sourceLabel !== '酷我') {
+    throw new Error(file + ' setCurrentTrack should derive external source labels from source, got ' + sandbox.currentTrack.sourceLabel);
   }
 }
