@@ -613,6 +613,27 @@
     body.dark-mode .video-card .text-muted { color: var(--dk-muted) !important; }
     body.dark-mode .video-card .fw-bold { color: var(--dk-text); }
     body.dark-mode .pagination-btn { background: linear-gradient(135deg,#667eea,#764ba2); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      #playButtonOverlay:hover i,
+      .video-card:hover,
+      .video-card:hover img,
+      .pagination-btn:hover:not(:disabled),
+      .control-btn:hover {
+        transform: none !important;
+      }
+
+      .video-loading i {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body>

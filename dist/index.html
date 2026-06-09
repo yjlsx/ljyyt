@@ -1457,6 +1457,18 @@
     @keyframes audio-bar { 0%,100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
     @keyframes appear { from { opacity: .2; transform: translateY(3px); } to { opacity: 1; transform: none; } }
     @keyframes rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+      .playing-bars i {
+        animation: none !important;
+        transform: scaleY(.55);
+      }
+    }
     @media (max-width: 640px) {
       html, body { overflow: hidden; }
       .app { width: 100vw; height: 100dvh; min-height: 100svh; }

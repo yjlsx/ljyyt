@@ -133,6 +133,7 @@
     @media (max-width: 768px) {
       body {
         padding-bottom: 96px;
+        background-attachment: scroll;
       }
       .container[style*="max-width:900px"] {
         padding-left: 12px;
@@ -174,6 +175,19 @@
       }
       .rank-count {
         font-size: 0.8rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .rank-item:hover {
+        transform: none !important;
       }
     }
   </style>
