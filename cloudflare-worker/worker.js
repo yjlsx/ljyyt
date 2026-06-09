@@ -838,7 +838,13 @@ async function handleKuwoAudioRequest(request, url) {
   };
   const range = request.headers.get('Range');
   if (range) headers.Range = range;
-  const response = await fetchWithTimeout(audioUrl, { headers });
+  let playbackUrl;
+  try {
+    playbackUrl = new URL(audioUrl);
+  } catch (error) {
+    return jsonResponse({ url: '', error: 'Invalid audio url' }, 502);
+  }
+  const response = await fetchAudioProxyResponse(playbackUrl, headers);
   return wrapAudioProxyResponse(response);
 }
 

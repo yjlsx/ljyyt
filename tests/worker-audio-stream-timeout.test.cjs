@@ -23,11 +23,14 @@ function extractFunction(source, name, prefix = 'function') {
 }
 
 const kuwoAudioBody = extractFunction(worker, 'handleKuwoAudioRequest', 'async function');
-if (!kuwoAudioBody.includes('const response = await fetchWithTimeout(audioUrl, { headers });')) {
-  throw new Error('worker.js handleKuwoAudioRequest should use fetchWithTimeout for bounded audio stream startup latency');
+if (!kuwoAudioBody.includes('const response = await fetchAudioProxyResponse(playbackUrl, headers);')) {
+  throw new Error('worker.js handleKuwoAudioRequest should route Kuwo audio through the bounded shared audio proxy fetcher');
 }
 if (kuwoAudioBody.includes('const response = await fetch(audioUrl, { headers });')) {
   throw new Error('worker.js handleKuwoAudioRequest still uses unbounded fetch for audio streams');
+}
+if (kuwoAudioBody.includes('const response = await fetchWithTimeout(audioUrl, { headers });')) {
+  throw new Error('worker.js handleKuwoAudioRequest still bypasses shared redirect validation for Kuwo audio streams');
 }
 
 const audioProxyBody = extractFunction(worker, 'fetchAudioProxyResponse', 'async function');
