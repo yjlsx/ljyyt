@@ -2087,6 +2087,9 @@
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
     const lyricsApiBase = window.LYRICS_API_ENDPOINT || (ljyytApiBase + '/api/lyrics');
     const neteaseApiBase = ljyytApiBase + '/api/netease';
+    const audioApiEndpoint = String(window.AUDIO_API_ENDPOINT || '').trim().replace(/\/+$/, '');
+    const useSameOriginAudioApi = window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API === true ||
+      String(window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API || '').toLowerCase() === 'true';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
     const SEARCH_RESULT_LIMIT = 100;
@@ -3228,7 +3231,8 @@
       return name === 'NotAllowedError' || message.includes('user didn') || message.includes('autoplay');
     }
     function getAudioProxyUrl(url) {
-      var base = _isLocalDev ? '' : ljyytApiBase;
+      if (audioApiEndpoint) return audioApiEndpoint + '?url=' + encodeURIComponent(normalizeAudioUrl(url));
+      var base = (_isLocalDev || useSameOriginAudioApi) ? '' : ljyytApiBase;
       return base + '/api/audio-proxy?url=' + encodeURIComponent(normalizeAudioUrl(url));
     }
     function isSilentAudioPrimerSrc(url) {
