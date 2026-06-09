@@ -2005,7 +2005,7 @@
             <span data-icon="play"></span>
           </button>
           <button class="mini-control" aria-label="下一首" onclick="nextTrack(event)"><span data-icon="next"></span></button>
-          <button class="queue" aria-label="播放列表" onclick="openQueueFromMini(event)">
+          <button class="queue" id="mini-queue-button" type="button" aria-label="播放列表" aria-controls="queue-drawer" aria-expanded="false" onclick="openQueueFromMini(event)">
             <span data-icon="listVideo"></span>
           </button>
         </div>
@@ -2040,10 +2040,10 @@
       </div>
       <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢"><span data-icon="heart"></span></button></div>
       <div class="seek" id="full-seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><span id="current-time">0:00</span><span id="duration-time">3:43</span></div></div>
-      <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button onclick="toggleQueueDrawer(event)" aria-label="播放列表"></button></div>
+      <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button id="queue-button" type="button" onclick="toggleQueueDrawer(event)" aria-label="播放列表" aria-controls="queue-drawer" aria-expanded="false"></button></div>
     </section>
     <div class="drawer-scrim" id="queue-scrim" onclick="closeQueueDrawer(event)"></div>
-    <aside class="queue-drawer" id="queue-drawer" aria-label="播放队列">
+    <aside class="queue-drawer" id="queue-drawer" role="dialog" aria-modal="true" aria-label="播放队列" aria-hidden="true" tabindex="-1">
       <div class="queue-drawer-head">
         <div class="queue-tabs">
           <button class="queue-tab active" id="queue-tab-list" type="button" onclick="switchQueueTab(event, 'queue')">播放列表 <span id="queue-count">0</span></button>
@@ -3506,7 +3506,7 @@
       renderQueue();
       const drawer = document.getElementById('queue-drawer');
       const willOpen = !drawer?.classList.contains('open');
-      setQueueDrawerOpen(willOpen);
+      setQueueDrawerOpen(willOpen, event && event.currentTarget);
       document.getElementById('action-drawer')?.classList.remove('open');
       scrollCurrentQueueItemIntoView();
     }
@@ -3515,27 +3515,39 @@
       queueDrawerTab = 'queue';
       renderQueue();
       document.getElementById('action-drawer')?.classList.remove('open');
-      setQueueDrawerOpen(true);
+      setQueueDrawerOpen(true, event && event.currentTarget);
       scrollCurrentQueueItemIntoView();
     }
-    function setQueueDrawerOpen(open) {
+    var lastQueueDrawerTrigger = null;
+    function setQueueDrawerOpen(open, trigger) {
       var contentEl = document.querySelector('.content');
+      const drawer = document.getElementById('queue-drawer');
       if (open) {
+        lastQueueDrawerTrigger = trigger && typeof trigger.focus === 'function' ? trigger : document.activeElement;
         document.body.style.overflow = 'hidden';
         if (contentEl) contentEl.style.overflowY = 'hidden';
       } else {
         document.body.style.overflow = '';
         if (contentEl) contentEl.style.overflowY = '';
       }
-      document.getElementById('queue-drawer')?.classList.toggle('open', !!open);
+      drawer?.classList.toggle('open', !!open);
+      drawer?.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.getElementById('queue-button')?.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.getElementById('mini-queue-button')?.setAttribute('aria-expanded', open ? 'true' : 'false');
       const scrim = document.getElementById('queue-scrim');
       scrim?.classList.toggle('open', !!open);
       scrim?.classList.toggle('light', !document.getElementById('full-player')?.classList.contains('open'));
       if (open) {
+        drawer?.focus({ preventScroll: true });
         requestAnimationFrame(function() {
           var current = document.querySelector('#queue-drawer-list .current-track');
           if (current) current.scrollIntoView({ block: 'center', behavior: 'instant' });
         });
+      } else {
+        if (lastQueueDrawerTrigger && typeof lastQueueDrawerTrigger.focus === 'function') {
+          lastQueueDrawerTrigger.focus({ preventScroll: true });
+        }
+        lastQueueDrawerTrigger = null;
       }
     }
     function closeQueueDrawer(event) {
@@ -3849,13 +3861,24 @@
       button.innerHTML = liked ? iconHtml('heartFilled') : iconHtml('heart');
       button.setAttribute('aria-label', liked ? '取消喜欢' : '喜欢');
     }
+    function isKeyboardActivation(event) {
+      return !!event && (event.key === 'Enter' || event.key === ' ' || event.code === 'Space');
+    }
+    function bindTrackRowKeyboard(row, handler) {
+      if (!row || typeof handler !== 'function') return;
+      row.addEventListener('keydown', function(event) {
+        if (event.target !== row || !isKeyboardActivation(event)) return;
+        event.preventDefault();
+        handler(event);
+      });
+    }
     function renderTrackRows(container, tracks, emptyText, artistSuffix) {
       if (!tracks.length) {
         container.innerHTML = '<div class="empty-note">' + emptyText + '</div>';
         return;
       }
       container.innerHTML = tracks.map((track, index) => (
-        '<div class="track" data-index="' + index + '">' +
+        '<div class="track" role="button" tabindex="0" data-index="' + index + '">' +
           '<img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title) + '</div><div class="artist">' + escapeMarkup(track.artist + (artistSuffix || '')) + (shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source-tag">' + escapeMarkup(track.sourceLabel) + '</span>' : '') + '</div></div>' +
           '<button class="dots" type="button" data-track-action-trigger aria-label="更多" aria-haspopup="dialog" aria-expanded="false">' + iconHtml('more') + '</button>' +
@@ -3863,18 +3886,22 @@
       )).join('');
       container.querySelectorAll('.track').forEach((row, index) => {
         row.__ljyytTrack = tracks[index];
+        function playRowTrack() {
+          const track = tracks[index];
+          setQueue(tracks, index);
+          setCurrentTrack(track);
+          openFullPlayer();
+          playCurrentTrack();
+        }
         row.addEventListener('click', (event) => {
           if (event.target.closest('.dots')) {
             event.stopPropagation();
             openTrackActionDrawer(tracks[index], event.target.closest('.dots'));
             return;
           }
-          const track = tracks[index];
-          setQueue(tracks, index);
-          setCurrentTrack(track);
-          openFullPlayer();
-          playCurrentTrack();
+          playRowTrack();
         });
+        bindTrackRowKeyboard(row, playRowTrack);
       });
     }
     var _coverResolveId = 0;
@@ -4867,7 +4894,7 @@
       }
       container.innerHTML = tracks.map(function(track, index) {
         var current = isSameTrack(track, currentTrack);
-        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
+        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" data-index="' + index + '">' +
           '<div class="page-index">' + (current && !audioPlayer.paused ? '<span class="playing-bars"><i></i><i></i><i></i></span>' : (index + 1)) + '</div>' +
           '<img class="track-cover" loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + (track.album ? ' · ' + escapeMarkup(track.album) : '') + '</div></div>' +
@@ -4876,6 +4903,12 @@
       }).join('');
       container.querySelectorAll('.track').forEach(function(row) {
         row.__ljyytTrack = tracks[Number(row.dataset.index) || 0];
+        function playRowTrack() {
+          var index = Number(row.dataset.index) || 0;
+          var track = tracks[index];
+          if (!track) return;
+          if (typeof onPlayTrack === 'function') onPlayTrack(track, index);
+        }
         row.addEventListener('click', function(event) {
           var index = Number(row.dataset.index) || 0;
           var track = tracks[index];
@@ -4886,8 +4919,9 @@
             openTrackActionDrawer(track, event.target.closest('.dots'));
             return;
           }
-          if (typeof onPlayTrack === 'function') onPlayTrack(track, index);
+          playRowTrack();
         });
+        bindTrackRowKeyboard(row, playRowTrack);
       });
     }
     function addHistory(track) {
@@ -4938,7 +4972,7 @@
           ? '<button class="queue-remove" aria-label="删除" onclick="removeTrackFromQueue(event, ' + index + ', ' + (queueDrawerTab === 'history') + ')"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
           : '<button class="dots" type="button" data-track-action-trigger aria-label="更多" aria-haspopup="dialog" aria-expanded="false">' + iconHtml('more') + '</button>';
         var sourceTag = shouldShowSourceLabels() && track.sourceLabel && track.source !== 'local' ? '<span class="source">' + escapeMarkup(track.sourceLabel) + '</span>' : '';
-        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" data-index="' + index + '">' +
+        return '<div class="track' + (current ? ' current-track' : '') + (current && !audioPlayer.paused ? ' is-playing' : '') + '" role="button" tabindex="0" data-index="' + index + '">' +
           '<div style="position:relative;flex:none"><img loading="lazy" src="' + escapeMarkup(safeCover(track.cover)) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '><span class="playing-bars"><i></i><i></i><i></i></span></div>' +
           '<div class="track-meta"><div class="track-name">' + escapeMarkup(track.title || '未知歌曲') + '</div><div class="artist">' + escapeMarkup(track.artist || '未知歌手') + sourceTag + '</div></div>' +
           actionButton +
@@ -4966,7 +5000,7 @@
       [[drawerList, drawerTracks]].forEach(([container, tracks]) => {
         if (!container) return;
         container.querySelectorAll('.track').forEach((row) => {
-          row.addEventListener('click', () => {
+          function playDrawerTrack() {
             const index = Number(row.dataset.index) || 0;
             const track = tracks[index];
             if (!track) return;
@@ -4978,7 +5012,12 @@
             setCurrentTrack(track);
             playCurrentTrack();
             setQueueDrawerOpen(false);
+          }
+          row.addEventListener('click', (event) => {
+            if (event.target.closest('button')) return;
+            playDrawerTrack();
           });
+          bindTrackRowKeyboard(row, playDrawerTrack);
         });
       });
     }
@@ -6221,6 +6260,11 @@
       if (event.key === 'Escape' && document.getElementById('action-drawer')?.classList.contains('open')) {
         event.preventDefault();
         closeTrackActionDrawer();
+        return;
+      }
+      if (event.key === 'Escape' && document.getElementById('queue-drawer')?.classList.contains('open')) {
+        event.preventDefault();
+        setQueueDrawerOpen(false);
         return;
       }
       var tag = (event.target.tagName || '').toLowerCase();
