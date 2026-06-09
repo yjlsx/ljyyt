@@ -27,6 +27,7 @@ for (const file of ['index.html', 'dist/index.html']) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
   const renderBody = pickFunction(script, 'renderSearchSuggestions');
+  const remoteBody = pickFunction(script, 'fetchNeteaseSuggestions');
 
   if (!script.includes('function applySearchSuggestionGroups')) {
     throw new Error(file + ' is missing applySearchSuggestionGroups');
@@ -50,5 +51,13 @@ for (const file of ['index.html', 'dist/index.html']) {
 
   if (!renderBody.includes('if (requestId !== searchSuggestionRequestId) return;')) {
     throw new Error(file + ' does not guard stale async suggestion responses');
+  }
+
+  if (!remoteBody.includes("var endpoint = neteaseApiBase + '/suggest?keyword=' + encodeURIComponent(query);")) {
+    throw new Error(file + ' should use the configured NetEase API base for remote suggestions');
+  }
+
+  if (remoteBody.includes("'/api/netease/suggest?keyword='")) {
+    throw new Error(file + ' still probes same-origin /api/netease/suggest before the configured API base');
   }
 }

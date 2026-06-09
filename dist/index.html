@@ -2859,31 +2859,26 @@
     async function fetchNeteaseSuggestions(query) {
       query = String(query || '').trim();
       if (!query) return [];
-      var endpoints = [
-        '/api/netease/suggest?keyword=' + encodeURIComponent(query),
-        neteaseApiBase + '/suggest?keyword=' + encodeURIComponent(query)
-      ];
-      for (var i = 0; i < endpoints.length; i++) {
-        try {
-          var response = await fetch(endpoints[i]);
-          if (!response.ok) continue;
-          var payload = await response.json();
-          var suggestions = Array.isArray(payload && payload.suggestions) ? payload.suggestions : [];
-          if (suggestions.length) {
-            return suggestions.map(function(item) {
-              var type = ['artist', 'song', 'album', 'playlist'].includes(item.type) ? item.type : 'song';
-              return {
-                type: type,
-                text: String(item.text || '').trim(),
-                meta: String(item.meta || (type === 'artist' ? '歌手' : type === 'album' ? '专辑' : type === 'playlist' ? '歌单' : '单曲')),
-                icon: type === 'artist' ? 'user' : type === 'album' ? 'album' : type === 'playlist' ? 'listVideo' : 'music',
-                score: 100,
-                source: item.source || 'netease'
-              };
-            }).filter(function(item) { return item.text; });
-          }
-        } catch (error) { console.warn('fetchNeteaseSuggestions: endpoint failed', error); }
-      }
+      var endpoint = neteaseApiBase + '/suggest?keyword=' + encodeURIComponent(query);
+      try {
+        var response = await fetch(endpoint);
+        if (!response.ok) return [];
+        var payload = await response.json();
+        var suggestions = Array.isArray(payload && payload.suggestions) ? payload.suggestions : [];
+        if (suggestions.length) {
+          return suggestions.map(function(item) {
+            var type = ['artist', 'song', 'album', 'playlist'].includes(item.type) ? item.type : 'song';
+            return {
+              type: type,
+              text: String(item.text || '').trim(),
+              meta: String(item.meta || (type === 'artist' ? '歌手' : type === 'album' ? '专辑' : type === 'playlist' ? '歌单' : '单曲')),
+              icon: type === 'artist' ? 'user' : type === 'album' ? 'album' : type === 'playlist' ? 'listVideo' : 'music',
+              score: 100,
+              source: item.source || 'netease'
+            };
+          }).filter(function(item) { return item.text; });
+        }
+      } catch (error) { console.warn('fetchNeteaseSuggestions: endpoint failed', error); }
       return [];
     }
     function groupSuggestionItems(items) {
