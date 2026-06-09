@@ -4789,6 +4789,7 @@
         hideSearchSuggestions();
         renderIndexDiscoverPlaylists();
       } else {
+        searchSuggestionRequestId++;
         hideSearchHistory();
         suggestionDebounceTimer = setTimeout(function() {
           renderSearchSuggestions(searchInput.value);
