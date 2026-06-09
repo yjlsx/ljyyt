@@ -217,11 +217,18 @@
 
   function getStoredTracks(keys) {
     var out = [];
+    var library = getMusicLibrary();
     keys.forEach(function(key) {
       readStoredList(key).forEach(function(item) {
         if (!item) return;
         if (item.track) item = item.track;
         if (item.trackData) item = item.trackData;
+        if (typeof item === 'string' || typeof item === 'number') {
+          item = library.find(function(track) { return String(track.id) === String(item); });
+        } else if (item.id != null && !item.title && !item.name) {
+          item = library.find(function(track) { return String(track.id) === String(item.id); }) || item;
+        }
+        if (!item) return;
         if (item.title || item.name) {
           out.push(Object.assign({}, item, {
             title: item.title || item.name,
@@ -260,8 +267,8 @@
 
   function createDiscoverPlaylists() {
     var library = getMusicLibrary();
-    var favorites = getStoredTracks(['ljyyt_otter_favorites', 'favoriteSongs', 'favorites']);
-    var history = getStoredTracks(['ljyyt_otter_history', 'playHistory', 'recentPlays']);
+    var favorites = getStoredTracks(['ljyyt_otter_favorites', 'ljyyt_favorites', 'favoriteSongs', 'favorites']);
+    var history = getStoredTracks(['ljyyt_otter_history', 'ljyyt_play_history', 'playHistory', 'recentPlays']);
     var userPlaylists = readStoredList('ljyyt_otter_playlists').map(function(item, index) {
       var tracks = uniqueTracks(Array.isArray(item.tracks) ? item.tracks.map(function(track) {
         return Object.assign({}, track, {
