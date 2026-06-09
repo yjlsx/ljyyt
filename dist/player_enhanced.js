@@ -6,8 +6,10 @@
   'use strict';
 
   var STORAGE = {
-    favorites: 'ljyyt_favorites',
-    history: 'ljyyt_play_history',
+    favorites: 'ljyyt_otter_favorites',
+    legacyFavorites: 'ljyyt_favorites',
+    history: 'ljyyt_otter_history',
+    legacyHistory: 'ljyyt_play_history',
     playMode: 'ljyyt_play_mode',
     darkMode: 'ljyyt_dark_mode',
     playCount: 'ljyyt_play_count',
@@ -37,6 +39,44 @@
     } catch (error) {
       return fallback;
     }
+  }
+  function normalizeEnhancedStorageList(value) {
+    return Array.isArray(value) ? value.filter(function(item) { return item != null; }) : [];
+  }
+  function getEnhancedTrackId(item) {
+    if (item && typeof item === 'object' && !Array.isArray(item)) return item.id;
+    return item;
+  }
+  function sameEnhancedTrackId(a, b) {
+    var aId = getEnhancedTrackId(a);
+    var bId = getEnhancedTrackId(b);
+    return aId != null && bId != null && String(aId) === String(bId);
+  }
+  function findEnhancedTrackById(id) {
+    if (typeof musicData === 'undefined' || !Array.isArray(musicData)) return null;
+    return musicData.find(function(track) { return sameEnhancedTrackId(track, id); }) || null;
+  }
+  function getEnhancedTrackSnapshot(item) {
+    var track = item && typeof item === 'object' && !Array.isArray(item) ? item : findEnhancedTrackById(item);
+    var id = getEnhancedTrackId(track || item);
+    if (id == null) return null;
+    var snapshot = { id: id };
+    if (track && typeof track === 'object' && !Array.isArray(track)) {
+      ['title', 'artist', 'cover', 'duration', 'source', 'sourceLabel', 'src', 'urlId', 'album'].forEach(function(key) {
+        if (track[key] != null) snapshot[key] = track[key];
+      });
+    }
+    return snapshot;
+  }
+  function readEnhancedTrackList(primaryKey, legacyKey) {
+    var primary = normalizeEnhancedStorageList(readEnhancedStorageJson(primaryKey, []));
+    if (primary.length) return primary;
+    return normalizeEnhancedStorageList(readEnhancedStorageJson(legacyKey, []));
+  }
+  function writeEnhancedTrackList(key, list) {
+    var clean = normalizeEnhancedStorageList(list).map(getEnhancedTrackSnapshot).filter(Boolean);
+    writeEnhancedStorageValue(key, JSON.stringify(clean));
+    return clean;
   }
 
   // Toast 提示
@@ -83,13 +123,12 @@
 
   // ========== 收藏 ==========
   function loadFavorites() {
-    favorites = readEnhancedStorageJson(STORAGE.favorites, []);
-    if (!Array.isArray(favorites)) favorites = [];
+    favorites = readEnhancedTrackList(STORAGE.favorites, STORAGE.legacyFavorites);
   }
   function saveFavorites() {
-    writeEnhancedStorageValue(STORAGE.favorites, JSON.stringify(favorites));
+    favorites = writeEnhancedTrackList(STORAGE.favorites, favorites);
   }
-  function isFav(id) { return favorites.indexOf(id) !== -1; }
+  function isFav(id) { return favorites.some(function(item) { return sameEnhancedTrackId(item, id); }); }
   window.isFav = isFav;
   function toggleFav(id) {
     if (!id && typeof currentTrackIndex !== 'undefined' && typeof musicData !== 'undefined') {
@@ -97,9 +136,9 @@
       if (t) id = t.id;
     }
     if (!id) return;
-    var idx = favorites.indexOf(id);
+    var idx = favorites.findIndex(function(item) { return sameEnhancedTrackId(item, id); });
     if (idx !== -1) { favorites.splice(idx, 1); toast('已取消收藏'); }
-    else { favorites.push(id); toast('已收藏 ❤️', 'success'); }
+    else { favorites.push(getEnhancedTrackSnapshot(id)); toast('已收藏 ❤️', 'success'); }
     saveFavorites();
     updateFavBtn(id);
     document.dispatchEvent(new CustomEvent('ljyyt:favorites-changed', {
@@ -121,17 +160,18 @@
 
   // ========== 历史 ==========
   function loadHistory() {
-    playHistory = readEnhancedStorageJson(STORAGE.history, []);
-    if (!Array.isArray(playHistory)) playHistory = [];
+    playHistory = readEnhancedTrackList(STORAGE.history, STORAGE.legacyHistory);
   }
   function saveHistory() {
     if (playHistory.length > 50) playHistory = playHistory.slice(0, 50);
-    writeEnhancedStorageValue(STORAGE.history, JSON.stringify(playHistory));
+    playHistory = writeEnhancedTrackList(STORAGE.history, playHistory);
   }
   function addHistory(track) {
     if (!track) return;
-    playHistory = playHistory.filter(function(h) { return h.id !== track.id; });
-    playHistory.unshift({ id: track.id, title: track.title, artist: track.artist, cover: track.cover, time: Date.now() });
+    playHistory = playHistory.filter(function(h) { return !sameEnhancedTrackId(h, track); });
+    var snapshot = getEnhancedTrackSnapshot(track);
+    if (snapshot) snapshot.time = Date.now();
+    if (snapshot) playHistory.unshift(snapshot);
     saveHistory();
   }
 
@@ -607,7 +647,7 @@
       loadHistory();
       var tracks = [];
       playHistory.forEach(function(h) {
-        var t = (typeof musicData !== 'undefined') ? musicData.find(function(m) { return m.id === h.id; }) : null;
+        var t = findEnhancedTrackById(h) || (h && typeof h === 'object' && !Array.isArray(h) ? h : null);
         if (t) tracks.push(t);
       });
       renderPanelList(body, tracks);
@@ -636,9 +676,9 @@
 
     container.querySelectorAll('.panel-item').forEach(function(item) {
       item.addEventListener('click', function() {
-        var id = parseInt(this.getAttribute('data-id'));
+        var id = this.getAttribute('data-id');
         if (typeof musicData !== 'undefined') {
-          var idx = musicData.findIndex(function(t) { return t.id === id; });
+          var idx = musicData.findIndex(function(t) { return sameEnhancedTrackId(t, id); });
           if (idx !== -1) {
             currentTrackIndex = idx;
             if (typeof loadTrack === 'function') loadTrack(idx);

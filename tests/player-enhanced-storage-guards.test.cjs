@@ -66,8 +66,10 @@ for (const file of ['player_enhanced.js', 'dist/player_enhanced.js']) {
   for (const expected of [
     'readEnhancedStorageValue(STORAGE.playMode, ',
     'readEnhancedStorageValue(STORAGE.bottomPlayerLayout, ',
-    'readEnhancedStorageJson(STORAGE.favorites, [])',
-    'writeEnhancedStorageValue(STORAGE.favorites, JSON.stringify(favorites))',
+    'readEnhancedTrackList(STORAGE.favorites, STORAGE.legacyFavorites)',
+    'writeEnhancedTrackList(STORAGE.favorites, favorites)',
+    'readEnhancedTrackList(STORAGE.history, STORAGE.legacyHistory)',
+    'writeEnhancedTrackList(STORAGE.history, playHistory)',
     'writeEnhancedStorageValue(STORAGE.playMode, playMode)'
   ]) {
     if (!script.includes(expected)) {

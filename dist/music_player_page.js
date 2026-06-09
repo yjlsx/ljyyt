@@ -145,12 +145,57 @@
     writePlayerPageStorageValue(key, JSON.stringify(Array.isArray(list) ? list : []));
   }
 
+  function normalizePlayerPageStorageList(value) {
+    return Array.isArray(value) ? value.filter(function(item) { return item != null; }) : [];
+  }
+
+  function getPlayerPageTrackId(item) {
+    if (item && typeof item === 'object' && !Array.isArray(item)) return item.id;
+    return item;
+  }
+
+  function samePlayerPageTrackId(a, b) {
+    var aId = getPlayerPageTrackId(a);
+    var bId = getPlayerPageTrackId(b);
+    return aId != null && bId != null && String(aId) === String(bId);
+  }
+
+  function findPlayerPageTrackById(id) {
+    if (typeof musicData === 'undefined' || !Array.isArray(musicData)) return null;
+    return musicData.find(function(track) { return samePlayerPageTrackId(track, id); }) || null;
+  }
+
+  function getPlayerPageTrackSnapshot(item) {
+    var track = item && typeof item === 'object' && !Array.isArray(item) ? item : findPlayerPageTrackById(item);
+    var id = getPlayerPageTrackId(track || item);
+    if (id == null) return null;
+    var snapshot = { id: id };
+    if (track && typeof track === 'object' && !Array.isArray(track)) {
+      ['title', 'artist', 'cover', 'duration', 'source', 'sourceLabel', 'src', 'urlId', 'album'].forEach(function(key) {
+        if (track[key] != null) snapshot[key] = track[key];
+      });
+    }
+    return snapshot;
+  }
+
+  function readPlayerPageTrackList(primaryKey, legacyKey) {
+    var primary = normalizePlayerPageStorageList(readPlayerPageStorageJson(primaryKey, []));
+    if (primary.length) return primary;
+    return normalizePlayerPageStorageList(readPlayerPageStorageJson(legacyKey, []));
+  }
+
+  function writePlayerPageTrackList(key, list) {
+    var clean = normalizePlayerPageStorageList(list).map(getPlayerPageTrackSnapshot).filter(Boolean);
+    writePlayerPageStorageValue(key, JSON.stringify(clean));
+    return clean;
+  }
+
   function getFavorites() {
-    return readJsonList('ljyyt_favorites');
+    return readPlayerPageTrackList('ljyyt_otter_favorites', 'ljyyt_favorites');
   }
 
   function isFavoriteTrack(id) {
-    return getFavorites().indexOf(id) !== -1;
+    return getFavorites().some(function(item) { return samePlayerPageTrackId(item, id); });
   }
 
   function updateFavoriteButton(track) {
@@ -169,11 +214,11 @@
     var track = trackId ? getTrackById(trackId) : getCurrentTrack();
     if (!track) return;
     var favorites = getFavorites();
-    var index = favorites.indexOf(track.id);
+    var index = favorites.findIndex(function(item) { return samePlayerPageTrackId(item, track); });
     var liked = index === -1;
-    if (liked) favorites.unshift(track.id);
+    if (liked) favorites.unshift(track);
     else favorites.splice(index, 1);
-    writeJsonList('ljyyt_favorites', favorites);
+    writePlayerPageTrackList('ljyyt_otter_favorites', favorites);
     updateFavoriteButton(track);
     document.dispatchEvent(new CustomEvent('ljyyt:favorites-changed', {
       detail: { id: track.id, liked: liked }
@@ -185,18 +230,14 @@
 
   function addHistory(track) {
     if (!track) return;
-    var history = readJsonList('ljyyt_play_history')
+    var history = readPlayerPageTrackList('ljyyt_otter_history', 'ljyyt_play_history')
       .filter(function(item) {
-        return item && item.id !== track.id;
+        return item && !samePlayerPageTrackId(item, track);
       });
-    history.unshift({
-      id: track.id,
-      title: track.title,
-      artist: track.artist,
-      cover: track.cover,
-      time: Date.now()
-    });
-    writeJsonList('ljyyt_play_history', history.slice(0, 80));
+    var snapshot = getPlayerPageTrackSnapshot(track);
+    if (snapshot) snapshot.time = Date.now();
+    if (snapshot) history.unshift(snapshot);
+    writePlayerPageTrackList('ljyyt_otter_history', history.slice(0, 80));
   }
 
   function cyclePlayMode() {
@@ -270,16 +311,16 @@
 
   function getActiveCollection() {
     if (activeView === 'favorites') {
-      var favorites = readJsonList('ljyyt_favorites');
+      var favorites = getFavorites();
       return (typeof musicData !== 'undefined') ? musicData.filter(function(track) {
-        return favorites.indexOf(track.id) !== -1;
+        return favorites.some(function(item) { return samePlayerPageTrackId(item, track); });
       }) : [];
     }
 
     if (activeView === 'history') {
-      var history = readJsonList('ljyyt_play_history');
+      var history = readPlayerPageTrackList('ljyyt_otter_history', 'ljyyt_play_history');
       return history.map(function(item) {
-        return getTrackById(item.id);
+        return findPlayerPageTrackById(item) || (item && typeof item === 'object' && !Array.isArray(item) ? item : null);
       }).filter(Boolean);
     }
 
