@@ -10,11 +10,16 @@ for (const file of ['index.html', 'dist/index.html']) {
     "neteaseApiBase + '/login/qr/create",
     "neteaseApiBase + '/login/qr/check",
     "neteaseApiBase + '/my-info'",
-    'fetch(neteaseApiBase + path'
+    'getNeteaseRequestBases()',
+    'neteaseFallbackBases',
+    'isNeteaseProxyHealthPayload'
   ]) {
     if (!html.includes(marker)) {
       throw new Error(file + ' should route NetEase account requests through the configured API base: ' + marker);
     }
+  }
+  if (!html.includes("'https://otter-music.pages.dev/music-api/netease'")) {
+    throw new Error(file + ' should keep the Otter NetEase API as a fallback for stale proxy deployments');
   }
   if (html.includes("OTTER_API_BASE + '/music-api/netease'")) {
     throw new Error(file + ' still bypasses the configured API base for NetEase playlist/account requests');

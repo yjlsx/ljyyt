@@ -2099,6 +2099,7 @@
     const ljyytApiBase = window.LJYYT_API_BASE || 'https://ljyyt-api.yjlsx0.workers.dev';
     const lyricsApiBase = window.LYRICS_API_ENDPOINT || (ljyytApiBase + '/api/lyrics');
     const neteaseApiBase = ljyytApiBase + '/api/netease';
+    const neteaseFallbackBases = ['https://otter-music.pages.dev/music-api/netease'];
     const audioApiEndpoint = String(window.AUDIO_API_ENDPOINT || '').trim().replace(/\/+$/, '');
     const useSameOriginAudioApi = window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API === true ||
       String(window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API || '').toLowerCase() === 'true';
@@ -4144,14 +4145,37 @@
       };
     }
 
-    async function fetchOtterNetease(path, payload) {
-      var response = await fetch(neteaseApiBase + path, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload || {})
+    function getNeteaseRequestBases() {
+      var bases = [neteaseApiBase];
+      neteaseFallbackBases.forEach(function(base) {
+        if (base && bases.indexOf(base) < 0) bases.push(base);
       });
-      if (!response.ok) throw new Error('otter netease api ' + response.status);
-      return response.json();
+      return bases;
+    }
+
+    function isNeteaseProxyHealthPayload(payload) {
+      return !!(payload && payload.ok === true && payload.service === 'ljyyt-worker' && !payload.data && !payload.playlist && !payload.playlists && !payload.result);
+    }
+
+    async function fetchOtterNetease(path, payload) {
+      var bases = getNeteaseRequestBases();
+      var lastError = null;
+      for (var i = 0; i < bases.length; i += 1) {
+        try {
+          var response = await fetch(bases[i] + path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload || {})
+          });
+          if (!response.ok) throw new Error('otter netease api ' + response.status);
+          var data = await response.json();
+          if (isNeteaseProxyHealthPayload(data)) throw new Error('netease proxy returned health payload');
+          return data;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error('otter netease api failed');
     }
 
     function unwrapMarketList(payload, type) {
