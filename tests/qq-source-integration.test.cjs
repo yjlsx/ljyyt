@@ -38,6 +38,7 @@ async function verifyFrontend(file) {
   for (const marker of [
     "data-provider=\"QQ音乐\"",
     "data-source=\"qq\"",
+    "qqFallbackProxyBase",
     "qqApiBase + '/search",
     "qqApiBase + '/url"
   ]) {
@@ -47,6 +48,7 @@ async function verifyFrontend(file) {
   const sandbox = {
     DEFAULT_COVER: 'cover.jpg',
     qqApiBase: '/api/qq',
+    qqFallbackProxyBase: 'https://otter-music.pages.dev/music-api/qqmusic/proxy',
     calls: [],
     safeCover(value) {
       return value || 'cover.jpg';
@@ -64,7 +66,7 @@ async function verifyFrontend(file) {
       return '/api/audio-proxy?url=' + encodeURIComponent(url);
     },
     console: { warn() {} },
-    async fetch(url) {
+    async fetch(url, options) {
       sandbox.calls.push(String(url));
       if (String(url).includes('/search')) {
         return {
@@ -85,7 +87,11 @@ async function verifyFrontend(file) {
   vm.createContext(sandbox);
   vm.runInContext([
     pickFunction(script, 'normalizeExternalTrack'),
+    pickFunction(script, 'normalizeQqProxyTrack'),
+    pickFunction(script, 'isQqProxyHealthPayload'),
+    pickFunction(script, 'fetchQqSearchPage'),
     pickFunction(script, 'searchQqApiTracks'),
+    pickFunction(script, 'fetchQqTrackUrlPayload'),
     pickFunction(script, 'resolveExternalTrackUrl')
   ].join('\n'), sandbox);
   const tracks = await sandbox.searchQqApiTracks('晴天', 1);
@@ -95,6 +101,27 @@ async function verifyFrontend(file) {
   const url = await sandbox.resolveExternalTrackUrl(tracks[0]);
   if (!url.startsWith('/api/audio-proxy?url=')) {
     throw new Error(file + ' should proxy QQ http playback urls, got ' + url);
+  }
+
+  sandbox.calls = [];
+  sandbox.fetch = async function(url, options) {
+    sandbox.calls.push(String(url));
+    if (String(url).includes('/api/qq/search')) {
+      return { ok: true, async json() { return { ok: true, service: 'ljyyt-worker' }; } };
+    }
+    if (String(url).includes('qqmusic/proxy')) {
+      return {
+        ok: true,
+        async json() {
+          return { items: [{ id: 'qq_mid_fallback', name: '晴天', artist: ['周杰伦'], source: 'qq', url_id: 'mid-fallback' }] };
+        }
+      };
+    }
+    throw new Error('Unexpected url ' + url);
+  };
+  const fallbackTracks = await sandbox.searchQqApiTracks('晴天', 1);
+  if (!fallbackTracks.length || fallbackTracks[0].urlId !== 'mid-fallback') {
+    throw new Error(file + ' should fall back to the Otter QQ proxy when the primary worker route is not deployed');
   }
 }
 

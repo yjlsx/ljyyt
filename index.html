@@ -1742,7 +1742,7 @@
             <button class="source-option selected" data-provider="聚合搜索"><span class="source-option-icon" data-icon="radio"></span><span><strong>聚合搜索</strong><small>按设置里的多选音源搜索</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
-            <button class="source-option" data-provider="QQ音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>QQ音乐</strong><small>洛雪接口解析音源</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="QQ音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>QQ音乐</strong><small>华语曲库补充音源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>华语资源丰富</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
@@ -1987,7 +1987,7 @@
             <div class="aggregate-source-panel" id="aggregate-source-panel">
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span><span class="aggregate-source-tools"></span></label>
-              <label class="aggregate-source-option selected" data-source="qq" onclick="toggleAggregateSource(event, 'qq')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>QQ音乐</p><small>洛雪接口解析，补充华语曲库</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="qq" onclick="toggleAggregateSource(event, 'qq')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>QQ音乐</p><small>补充华语和流行音乐资源</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>网易云音乐</p><small>音源稳定，小众资源多</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Migu</p><small>咪咕音乐官方</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span><span class="aggregate-source-tools"></span></label>
@@ -2126,6 +2126,7 @@
     }
     var _isLocalDev = isLocalDevHostname(location.hostname);
     const qqApiBase = (_isLocalDev || useSameOriginAudioApi) ? '/api/qq' : (ljyytApiBase + '/api/qq');
+    const qqFallbackProxyBase = 'https://otter-music.pages.dev/music-api/qqmusic/proxy';
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
@@ -4363,6 +4364,7 @@
         cover: safeCover(cover || DEFAULT_COVER),
         src: '',
         source: '_netease',
+        provider: 'netease-api',
         sourceLabel: 'Netease',
         urlId: String(song.id || song.urlId || song.url_id || ''),
         lyric_id: String(song.id || ''),
@@ -4414,6 +4416,22 @@
       var songs = payload && payload.data && payload.data.result && payload.data.result.songs || [];
       return (Array.isArray(songs) ? songs : []).map(normalizeNeteaseApiSong).filter(function(track) {
         return track.title && track.urlId;
+      });
+    }
+    function normalizeNeteasePrimaryTrack(track) {
+      var normalized = normalizeNeteaseApiSong(track);
+      normalized.source = 'netease';
+      normalized.provider = 'netease-api';
+      normalized.sourceLabel = '网易云音乐';
+      return normalized;
+    }
+    async function searchNeteasePrimaryTracks(query, count) {
+      var tracks = await searchNeteaseApiTracks(query, count);
+      return tracks.map(function(track) {
+        track.source = 'netease';
+        track.provider = 'netease-api';
+        track.sourceLabel = '网易云音乐';
+        return track;
       });
     }
     async function resolveNeteaseApiTrackUrl(track) {
@@ -4971,12 +4989,7 @@
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
       var requests = [];
       for (var page = 1; page <= pageCount; page++) {
-        var url = qqApiBase + '/search?name=' + encodeURIComponent(query) +
-          '&count=' + encodeURIComponent(pageSize) + '&pages=' + page;
-        requests.push(fetch(url, { signal: signal }).then(function(response) {
-          if (!response.ok) throw new Error('QQ search ' + response.status);
-          return response.json();
-        }).catch(function() { return []; }));
+        requests.push(fetchQqSearchPage(query, page, pageSize, signal).catch(function() { return []; }));
       }
       var payloads = await Promise.all(requests);
       var seen = new Set();
@@ -4991,10 +5004,60 @@
       });
       return tracks.slice(0, total);
     }
+    function normalizeQqProxyTrack(track) {
+      if (!track) return null;
+      var songmid = String(track.url_id || track.urlId || track.lyric_id || track.id || '').replace(/^qq_/i, '');
+      return {
+        id: String(track.id || (songmid ? 'qq_' + songmid : '')),
+        name: String(track.name || track.title || ''),
+        title: String(track.name || track.title || ''),
+        artist: Array.isArray(track.artist) ? track.artist : String(track.artist || '').split(/[\/、,，]+/).filter(Boolean),
+        album: String(track.album || ''),
+        pic_id: String(track.pic_id || track.cover || ''),
+        url_id: songmid,
+        lyric_id: String(track.lyric_id || songmid),
+        source: 'qq'
+      };
+    }
+    function isQqProxyHealthPayload(payload) {
+      return payload && !Array.isArray(payload) && payload.ok === true && payload.service;
+    }
+    async function fetchQqSearchPage(query, page, count, signal) {
+      var url = qqApiBase + '/search?name=' + encodeURIComponent(query) +
+        '&count=' + encodeURIComponent(count) + '&pages=' + page;
+      try {
+        var response = await fetch(url, { signal: signal });
+        if (!response.ok) throw new Error('QQ search ' + response.status);
+        var payload = await response.json();
+        if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
+        if (Array.isArray(payload) && payload.length) return payload;
+      } catch (error) {
+        console.warn('QQ primary search failed, using fallback proxy', error);
+      }
+      var fallbackResponse = await fetch(qqFallbackProxyBase, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: signal,
+        body: JSON.stringify({ type: 'search', query: query, page: page })
+      });
+      if (!fallbackResponse.ok) throw new Error('QQ fallback search ' + fallbackResponse.status);
+      var fallbackPayload = await fallbackResponse.json();
+      var items = fallbackPayload && Array.isArray(fallbackPayload.items) ? fallbackPayload.items : [];
+      return items.slice(0, count).map(normalizeQqProxyTrack).filter(Boolean);
+    }
     async function fetchExternalSourceTracks(query, source, count, signal) {
       if (source === '_netease') {
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
         return searchNeteaseApiTracks(query, count);
+      }
+      if (source === 'netease' && typeof searchNeteasePrimaryTracks === 'function') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        try {
+          var neteaseTracks = await searchNeteasePrimaryTracks(query, count);
+          if (neteaseTracks.length) return neteaseTracks;
+        } catch (error) {
+          console.warn('searchNeteasePrimaryTracks failed, using GD fallback', error);
+        }
       }
       if (source === 'qq') {
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
@@ -5036,11 +5099,17 @@
           return '';
         }
       }
+      if (track.source === 'netease' && track.provider === 'netease-api') {
+        try {
+          return await resolveNeteaseApiTrackUrl(track);
+        } catch (error) {
+          console.warn('resolveNeteasePrimaryTrackUrl failed', error);
+          return '';
+        }
+      }
       if (track.source === 'qq') {
         try {
-          var qqResponse = await fetch(qqApiBase + '/url?id=' + encodeURIComponent(track.urlId) + '&br=320');
-          if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
-          var qqPayload = await qqResponse.json();
+          var qqPayload = await fetchQqTrackUrlPayload(track.urlId);
           var qqUrl = normalizeAudioUrl(qqPayload && qqPayload.url ? String(qqPayload.url) : '');
           if (!qqUrl) return '';
           return /^http:\/\//i.test(qqUrl) ? getAudioProxyUrl(qqUrl) : qqUrl;
@@ -5059,6 +5128,24 @@
         if (resolved) return resolved;
       } catch (error) { /* fallthrough */ }
       return '';
+    }
+    async function fetchQqTrackUrlPayload(urlId) {
+      try {
+        var qqResponse = await fetch(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=320');
+        if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
+        var payload = await qqResponse.json();
+        if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
+        if (payload && payload.url) return payload;
+      } catch (error) {
+        console.warn('QQ primary url failed, using fallback proxy', error);
+      }
+      var fallbackResponse = await fetch(qqFallbackProxyBase, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: '320k' })
+      });
+      if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
+      return fallbackResponse.json();
     }
     function getKuwoAudioFallbackUrl(urlId) {
       return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(urlId);
