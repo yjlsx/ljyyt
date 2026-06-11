@@ -75,13 +75,13 @@ function verifySourceConfig(file) {
     pickFunction(script, 'getEnabledSourceOrder'),
     pickFunction(script, 'getSourceConfig'),
     pickFunction(script, 'saveSourceConfigs'),
-    "this.sourceConfigs = normalizeSourceConfigs([{ source: 'bilibili', enabled: true, showInPicker: false }, { source: 'joox', enabled: true }], ['kuwo', 'netease']);",
+    "this.sourceConfigs = normalizeSourceConfigs([{ source: 'bilibili', enabled: true, showInPicker: false }, { source: 'qq', enabled: true }, { source: 'joox', enabled: true }], ['kuwo', 'netease']);",
     'this.enabledBefore = getEnabledSourceOrder();',
     "this.biliConfig = getSourceConfig('bilibili');",
     'saveSourceConfigs();'
   ].join('\n'), sandbox);
 
-  if (sandbox.enabledBefore.join(',') !== 'bilibili,joox,kuwo,netease') {
+  if (sandbox.enabledBefore.join(',') !== 'bilibili,qq,joox,kuwo,netease') {
     throw new Error(file + ' should preserve saved source order before appending missing sources');
   }
   if (!sandbox.biliConfig || sandbox.biliConfig.showInPicker !== false) {
@@ -92,7 +92,7 @@ function verifySourceConfig(file) {
   if (!storedConfigs.some((item) => item.source === 'bilibili' && item.showInPicker === false)) {
     throw new Error(file + ' should persist source picker visibility');
   }
-  if (storedAggregate.join(',') !== 'bilibili,joox,kuwo,netease') {
+  if (storedAggregate.join(',') !== 'bilibili,qq,joox,kuwo,netease') {
     throw new Error(file + ' should keep legacy aggregate source storage in sync');
   }
 }

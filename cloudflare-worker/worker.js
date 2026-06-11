@@ -27,6 +27,14 @@ export default {
         return await handleGdMusicRequest(url);
       }
 
+      if (url.pathname === '/api/qq/search') {
+        return await handleQqSearchRequest(url);
+      }
+
+      if (url.pathname === '/api/qq/url') {
+        return await handleQqUrlRequest(url);
+      }
+
       if (url.pathname === '/api/cover') {
         return await withCache(request, ctx, () => handleCoverRequest(url));
       }
@@ -60,6 +68,10 @@ const MAX_UPSTREAM_JSON_BYTES = 2 * 1024 * 1024;
 const MAX_UPSTREAM_TEXT_BYTES = 256 * 1024;
 const WORKER_UPSTREAM_TIMEOUT_MS = 12000;
 const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
+const QQ_SEARCH_URL = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
+const QQ_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const QQ_REFERER = 'https://y.qq.com/';
+const QQ_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36';
 const NETEASE_PROXY_PATHS = new Set([
   '/login/qr/key',
   '/login/qr/create',
@@ -369,6 +381,83 @@ async function handleGdMusicRequest(url) {
   }
   const payload = await fetchJson(target.toString());
   return jsonResponse(payload);
+}
+
+function normalizeQqSearchSong(song) {
+  const songmid = String(song && (song.mid || song.songmid) || '');
+  const albummid = String(song && ((song.album && song.album.mid) || song.albummid) || '');
+  const artist = Array.isArray(song && song.singer) ? song.singer.map((item) => item && item.name).filter(Boolean) : [];
+  return {
+    id: songmid ? `qq_${songmid}` : String(song && (song.id || song.songid) || ''),
+    name: song && (song.title || song.songname || song.name) || '',
+    title: song && (song.title || song.songname || song.name) || '',
+    artist,
+    album: song && ((song.album && (song.album.title || song.album.name)) || song.albumname) || '',
+    pic_id: albummid ? `https://y.gtimg.cn/music/photo_new/T002R800x800M000${albummid}.jpg` : '',
+    url_id: songmid,
+    lyric_id: songmid,
+    source: 'qq'
+  };
+}
+
+async function handleQqSearchRequest(url) {
+  const query = String(url.searchParams.get('name') || url.searchParams.get('q') || '').trim();
+  if (!query) return jsonResponse([]);
+  const page = Math.max(1, Number(url.searchParams.get('pages') || url.searchParams.get('page')) || 1);
+  const count = Math.max(1, Math.min(50, Number(url.searchParams.get('count')) || 20));
+  const response = await fetchWithTimeout(QQ_SEARCH_URL, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      'Origin': QQ_REFERER.replace(/\/$/, ''),
+      'Referer': QQ_REFERER,
+      'User-Agent': QQ_USER_AGENT,
+      'Cookie': 'uin='
+    },
+    body: JSON.stringify({
+      req_1: {
+        method: 'DoSearchForQQMusicDesktop',
+        module: 'music.search.SearchCgiService',
+        param: {
+          num_per_page: count,
+          page_num: page,
+          query,
+          search_type: 0
+        }
+      }
+    })
+  });
+  if (!response.ok) throw new Error(`QQ search HTTP ${response.status}`);
+  const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
+  const payload = JSON.parse(text);
+  const list = payload && payload.req_1 && payload.req_1.data && payload.req_1.data.body && payload.req_1.data.body.song
+    ? payload.req_1.data.body.song.list
+    : [];
+  return jsonResponse((Array.isArray(list) ? list : []).map(normalizeQqSearchSong).filter((item) => item.name && item.url_id));
+}
+
+function mapQqQuality(br) {
+  const value = Number(br) || 320;
+  if (value <= 128) return '128k';
+  return '320k';
+}
+
+async function handleQqUrlRequest(url) {
+  const songmid = String(url.searchParams.get('id') || url.searchParams.get('songmid') || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return jsonResponse({ url: '', error: 'Missing songmid' }, 400);
+  const quality = mapQqQuality(url.searchParams.get('br'));
+  const response = await fetchWithTimeout(`${QQ_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`, {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': QQ_USER_AGENT,
+      'X-Request-Key': 'share-v3'
+    }
+  });
+  if (!response.ok) return jsonResponse({ url: '', quality, error: `QQ url HTTP ${response.status}` }, 502);
+  const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
+  const payload = JSON.parse(text);
+  return jsonResponse({ url: payload && payload.url ? String(payload.url) : '', quality });
 }
 
 async function handleCoverRequest(url) {

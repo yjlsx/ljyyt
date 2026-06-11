@@ -99,6 +99,10 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' should keep 网易云音乐 mapped to the primary netease source');
   }
 
+  if (providerMap['QQ音乐'] !== 'qq') {
+    throw new Error(file + ' should map the QQ provider option to the qq source');
+  }
+
   if (providerMap.Netease !== '_netease') {
     throw new Error(file + ' should map the Netease provider option to the backup _netease source');
   }

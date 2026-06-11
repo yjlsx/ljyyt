@@ -14,6 +14,10 @@ const DEFAULT_SOURCES = ['kugou', 'rangotec', 'lrcapi', 'kuwo', 'netease', 'qq',
 const MAX_UPSTREAM_TEXT_BYTES = 2 * 1024 * 1024;
 const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
+const QQ_SEARCH_URL = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
+const QQ_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const QQ_REFERER = 'https://y.qq.com/';
+const QQ_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36';
 const NETEASE_PROXY_PATHS = new Set([
   '/login/qr/key',
   '/login/qr/create',
@@ -437,6 +441,84 @@ async function proxyGdMusic(query) {
     },
     timeout: 12000
   });
+}
+
+function normalizeQqSearchSong(song) {
+  const songmid = String(song.mid || song.songmid || '');
+  const albummid = String((song.album && song.album.mid) || song.albummid || '');
+  const artist = Array.isArray(song.singer) ? song.singer.map((item) => item && item.name).filter(Boolean) : [];
+  return {
+    id: songmid ? `qq_${songmid}` : String(song.id || song.songid || ''),
+    name: song.title || song.songname || song.name || '',
+    title: song.title || song.songname || song.name || '',
+    artist,
+    album: (song.album && (song.album.title || song.album.name)) || song.albumname || '',
+    pic_id: albummid ? `https://y.gtimg.cn/music/photo_new/T002R800x800M000${albummid}.jpg` : '',
+    url_id: songmid,
+    lyric_id: songmid,
+    source: 'qq'
+  };
+}
+
+async function searchQqMusic(query, page = 1, count = 20) {
+  query = String(query || '').trim();
+  if (!query) return [];
+  page = Math.max(1, Number(page) || 1);
+  count = Math.max(1, Math.min(50, Number(count) || 20));
+  const payload = await requestJson(QQ_SEARCH_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      req_1: {
+        method: 'DoSearchForQQMusicDesktop',
+        module: 'music.search.SearchCgiService',
+        param: {
+          num_per_page: count,
+          page_num: page,
+          query,
+          search_type: 0
+        }
+      }
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      'Origin': QQ_REFERER.replace(/\/$/, ''),
+      'Referer': QQ_REFERER,
+      'User-Agent': QQ_USER_AGENT,
+      'Cookie': 'uin='
+    },
+    timeout: 12000
+  });
+  const list = payload && payload.req_1 && payload.req_1.data && payload.req_1.data.body && payload.req_1.data.body.song
+    ? payload.req_1.data.body.song.list
+    : [];
+  return (Array.isArray(list) ? list : []).map(normalizeQqSearchSong).filter((item) => item.name && item.url_id);
+}
+
+function mapQqQuality(br) {
+  const value = Number(br) || 320;
+  if (value <= 128) return '128k';
+  return '320k';
+}
+
+async function resolveQqMusicUrl(songmid, br) {
+  songmid = String(songmid || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return { url: '', error: 'Missing songmid' };
+  const quality = mapQqQuality(br);
+  const target = `${QQ_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`;
+  try {
+    const payload = await requestJson(target, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': QQ_USER_AGENT,
+        'X-Request-Key': 'share-v3'
+      },
+      timeout: 12000
+    });
+    return { url: payload && payload.url ? String(payload.url) : '', quality };
+  } catch (error) {
+    return { url: '', quality, error: error.message };
+  }
 }
 
 async function resolveKuwoUrl(rid) {
@@ -1917,6 +1999,32 @@ const server = http.createServer(async (req, res) => {
         msg: error.message
       });
     }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/qq/search') {
+    try {
+      const payload = await searchQqMusic(
+        requestUrl.searchParams.get('name') || requestUrl.searchParams.get('q') || '',
+        requestUrl.searchParams.get('pages') || requestUrl.searchParams.get('page') || '1',
+        requestUrl.searchParams.get('count') || '20'
+      );
+      sendJson(res, 200, payload);
+    } catch (error) {
+      sendJson(res, 502, {
+        code: 502,
+        msg: error.message
+      });
+    }
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/qq/url') {
+    const payload = await resolveQqMusicUrl(
+      requestUrl.searchParams.get('id') || requestUrl.searchParams.get('songmid') || '',
+      requestUrl.searchParams.get('br') || '320'
+    );
+    sendJson(res, payload.error === 'Missing songmid' ? 400 : 200, payload);
     return;
   }
 

@@ -377,6 +377,7 @@
       font-size: 9px; font-weight: 500; line-height: 1; color: var(--muted-foreground);
     }
     .source-badge.joox { color: #22a35b; border-color: rgba(34,163,91,.24); background: rgba(34,163,91,.07); }
+    .source-badge.qq { color: #0ea5e9; border-color: rgba(14,165,233,.24); background: rgba(14,165,233,.07); }
     .source-badge.netease, .source-badge._netease { color: #ef4444; border-color: rgba(239,68,68,.24); background: rgba(239,68,68,.07); }
     .source-badge.kuwo { color: #d97706; border-color: rgba(217,119,6,.24); background: rgba(217,119,6,.07); }
     .source-badge.bilibili, .source-badge.migu { color: #ec4899; border-color: rgba(236,72,153,.24); background: rgba(236,72,153,.07); }
@@ -1741,6 +1742,7 @@
             <button class="source-option selected" data-provider="聚合搜索"><span class="source-option-icon" data-icon="radio"></span><span><strong>聚合搜索</strong><small>按设置里的多选音源搜索</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="QQ音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>QQ音乐</strong><small>洛雪接口解析音源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>华语资源丰富</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
@@ -1985,6 +1987,7 @@
             <div class="aggregate-source-panel" id="aggregate-source-panel">
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="qq" onclick="toggleAggregateSource(event, 'qq')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>QQ音乐</p><small>洛雪接口解析，补充华语曲库</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>网易云音乐</p><small>音源稳定，小众资源多</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Migu</p><small>咪咕音乐官方</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span><span class="aggregate-source-tools"></span></label>
@@ -2122,6 +2125,7 @@
       return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
     }
     var _isLocalDev = isLocalDevHostname(location.hostname);
+    const qqApiBase = (_isLocalDev || useSameOriginAudioApi) ? '/api/qq' : (ljyytApiBase + '/api/qq');
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
       if (url.indexOf(gdMusicApiBase) === 0) {
@@ -2216,23 +2220,25 @@
       '聚合搜索': 'all',
       '丽江曲库': 'local',
       'Joox': 'joox',
+      'QQ音乐': 'qq',
       '网易云音乐': 'netease',
       '酷我音乐': 'kuwo',
       'Migu': 'migu',
       'B站': 'bilibili',
       'Netease': '_netease'
     };
-    const sourceDisplayOrder = ['local', 'joox', 'netease', 'kuwo', 'migu', 'bilibili', '_netease'];
+    const sourceDisplayOrder = ['local', 'joox', 'qq', 'netease', 'kuwo', 'migu', 'bilibili', '_netease'];
     const aggregateSourceLabels = {
       local: '丽江曲库',
       joox: 'Joox',
+      qq: 'QQ音乐',
       netease: '网易云音乐',
       migu: 'Migu',
       kuwo: '酷我音乐',
       bilibili: 'B站',
       _netease: 'Netease'
     };
-    const defaultEnabledSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
+    const defaultEnabledSources = ['local', 'joox', 'qq', 'netease', 'kuwo', 'bilibili'];
     let libraryLoaded = false;
     let videosLoaded = false;
     let libraryTracks = [];
@@ -2609,6 +2615,8 @@
       var label = normalizeTrackText(track && track.sourceLabel);
       [
         ['joox', 'joox'],
+        ['qq', 'qq'],
+        ['qq音乐', 'qq'],
         ['netease', 'netease'],
         ['网易', 'netease'],
         ['酷我', 'kuwo'],
@@ -4905,6 +4913,7 @@
       return {
         local: '丽江曲库',
         joox: 'Joox',
+        qq: 'QQ',
         netease: '网易',
         _netease: 'Netease',
         kuwo: '酷我',
@@ -4956,10 +4965,40 @@
       } catch (error) { console.warn('resolveExternalCover: failed', error); }
       return track;
     }
+    async function searchQqApiTracks(query, count, signal) {
+      var total = Math.max(1, Number(count) || 20);
+      var pageSize = Math.min(50, total);
+      var pageCount = Math.max(1, Math.ceil(total / pageSize));
+      var requests = [];
+      for (var page = 1; page <= pageCount; page++) {
+        var url = qqApiBase + '/search?name=' + encodeURIComponent(query) +
+          '&count=' + encodeURIComponent(pageSize) + '&pages=' + page;
+        requests.push(fetch(url, { signal: signal }).then(function(response) {
+          if (!response.ok) throw new Error('QQ search ' + response.status);
+          return response.json();
+        }).catch(function() { return []; }));
+      }
+      var payloads = await Promise.all(requests);
+      var seen = new Set();
+      var tracks = [];
+      payloads.forEach(function(payload) {
+        (Array.isArray(payload) ? payload : []).map(normalizeExternalTrack).filter(function(track) { return track.title; }).forEach(function(track) {
+          var key = [track.source, track.urlId || track.id || track.title, track.artist].join(':');
+          if (seen.has(key)) return;
+          seen.add(key);
+          tracks.push(track);
+        });
+      });
+      return tracks.slice(0, total);
+    }
     async function fetchExternalSourceTracks(query, source, count, signal) {
       if (source === '_netease') {
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
         return searchNeteaseApiTracks(query, count);
+      }
+      if (source === 'qq') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchQqApiTracks(query, count, signal);
       }
       var total = Math.max(1, Number(count) || 20);
       var pageSize = Math.min(50, total);
@@ -4994,6 +5033,19 @@
           return await resolveNeteaseApiTrackUrl(track);
         } catch (error) {
           console.warn('resolveNeteaseApiTrackUrl failed', error);
+          return '';
+        }
+      }
+      if (track.source === 'qq') {
+        try {
+          var qqResponse = await fetch(qqApiBase + '/url?id=' + encodeURIComponent(track.urlId) + '&br=320');
+          if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
+          var qqPayload = await qqResponse.json();
+          var qqUrl = normalizeAudioUrl(qqPayload && qqPayload.url ? String(qqPayload.url) : '');
+          if (!qqUrl) return '';
+          return /^http:\/\//i.test(qqUrl) ? getAudioProxyUrl(qqUrl) : qqUrl;
+        } catch (error) {
+          console.warn('resolveQqTrackUrl failed', error);
           return '';
         }
       }
