@@ -3338,6 +3338,7 @@
     var _fallbackPrewarmState = { key: '', promise: null, result: null };
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
+    const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -3463,7 +3464,7 @@
         audioPlayer.src = proxyUrl;
         audioPlayer.load();
         _isResolvingUrl = false;
-        await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
+        await playAudioWithTimeout(PROXY_LINE_PLAYBACK_TIMEOUT_MS);
         if (requestId && requestId !== _playRequestId) return false;
         if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio proxy line did not start playback');
         _playRetryCount = 0;
@@ -3486,7 +3487,8 @@
       if (!currentTrack || _isResolvingUrl) return false;
       if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
-      if (await tryProxyPlaybackLine(failedUrl, requestId)) return true;
+      var hasPrewarmedResult = typeof _fallbackPrewarmState !== 'undefined' && _fallbackPrewarmState && _fallbackPrewarmState.key === getTrackFallbackKey(currentTrack) && !!_fallbackPrewarmState.result;
+      if (!hasPrewarmedResult && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
       rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
