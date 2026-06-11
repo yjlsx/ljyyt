@@ -74,7 +74,7 @@ async function verifyEmptyCurrentSourceFallback(file) {
         return { ok: true, async json() { return [{ id: 'ne-empty', name: '山海', artist: ['原源歌手'], source: 'netease', url_id: 'ne-empty' }]; } };
       }
       if (source === 'joox') {
-        return { ok: true, async json() { return [{ id: 'joox-ok', name: '山海', artist: ['现场版歌手字段'], source: 'joox', url_id: 'joox-ok' }]; } };
+        return { ok: true, async json() { return [{ id: 'joox-ok', name: '山海', artist: ['原源歌手'], source: 'joox', url_id: 'joox-ok' }]; } };
       }
       return { ok: true, async json() { return []; } };
     }

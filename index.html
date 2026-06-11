@@ -2678,6 +2678,17 @@
     function getFallbackMatchScore(target, candidate, index) {
       var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
       if (!bilibiliMatch && !isLooseTitleMatchCandidate(target, candidate) && !isTrackMatchCandidate(target, candidate)) return -1;
+      var strictTargetArtist = normalizeTrackText(target && target.artist);
+      if (strictTargetArtist && !bilibiliMatch) {
+        var strictCandidateArtist = normalizeTrackText(candidate && candidate.artist);
+        if (!strictCandidateArtist || strictCandidateArtist === normalizeTrackText('未知歌手')) return -1;
+        if (strictCandidateArtist !== strictTargetArtist) {
+          var strictTargetTokens = getNormalizedArtistTokens(target && target.artist);
+          var strictCandidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
+          var strictTokenHit = strictTargetTokens.some(function(item) { return strictCandidateTokens.indexOf(item) >= 0; });
+          if (!strictTokenHit) return -1;
+        }
+      }
       var score = Math.max(0, 40 - index);
       var title = normalizeTrackText(target && target.title);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
@@ -2725,7 +2736,12 @@
       }).map(function(entry) { return entry.item; });
     }
     async function resolveFallbackTrackFromSource(track, source, skipUrls) {
-      var matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
+      var fallbackArtistTokens = getNormalizedArtistTokens(track && track.artist);
+      var fallbackQuery = fallbackArtistTokens.length ? track.title + ' ' + fallbackArtistTokens[0] : track.title;
+      var matches = await fetchExternalSourceTracks(fallbackQuery, source, SEARCH_RESULT_LIMIT);
+      if (!matches.length && fallbackArtistTokens.length) {
+        matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
+      }
       var candidates = getFallbackTrackMatches(track, matches);
       for (var i = 0; i < candidates.length; i++) {
         var match = candidates[i];

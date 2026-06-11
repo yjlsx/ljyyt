@@ -141,7 +141,7 @@ const sandbox = {
           return filler.concat([{
             id: 'joox-hong-kong',
             name: '香港',
-            artist: ['不同歌手字段'],
+            artist: ['酷我歌手字段'],
             album: '香港',
             source: 'joox',
             url_id: 'joox-hong-kong'
