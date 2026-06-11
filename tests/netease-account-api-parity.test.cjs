@@ -46,7 +46,10 @@ for (const [name, source] of [['server.js', server], ['cloudflare-worker/worker.
     '/user-playlists',
     '/playlist',
     '/playlists',
-    '/toplist'
+    '/toplist',
+    '/search',
+    '/song-url',
+    '/song-detail'
   ]) {
     if (!source.includes(path)) {
       throw new Error(name + ' should allow-list the NetEase account subpath: ' + path);

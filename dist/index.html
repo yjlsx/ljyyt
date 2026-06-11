@@ -242,11 +242,22 @@
       border-radius: 12px; background: color-mix(in srgb, var(--card) 72%, transparent);
       border: 1px solid var(--border);
     }
-    .aggregate-source-panel.open { display: block; }
+    .aggregate-source-panel.open { display: flex; flex-direction: column; }
     .aggregate-source-option {
-      display: flex; align-items: center; gap: 10px;
+      display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px;
       padding: 8px 0; cursor: pointer;
     }
+    .aggregate-source-copy { min-width: 0; }
+    .aggregate-source-tools { display: inline-flex; align-items: center; gap: 4px; }
+    .aggregate-source-tool {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: inline-grid; place-items: center; color: var(--muted-foreground);
+      border: 1px solid transparent;
+    }
+    .aggregate-source-tool:hover { color: var(--primary); background: var(--secondary); }
+    .aggregate-source-tool:disabled { opacity: .38; pointer-events: none; }
+    .aggregate-source-tool.hidden-state { color: var(--foreground); border-color: var(--border); background: var(--muted); }
+    .aggregate-source-tool .line-icon { width: 14px; height: 14px; }
     .aggregate-check {
       width: 18px; height: 18px; border-radius: 5px;
       display: grid; place-items: center; flex: none;
@@ -1972,13 +1983,13 @@
             <div class="setting-item"><span class="setting-icon" data-icon="sparkles"></span><div class="setting-copy"><p>智能音源</p><small>自动切换到可用的免费音源</small></div><div class="setting-action"><button class="toggle" data-setting="smartSource" data-setting-label="智能音源" onclick="toggleSetting(event, this)" aria-label="智能音源开启"></button></div></div>
             <div class="setting-item" onclick="toggleAggregateSourcePanel(event)"><span class="setting-icon" data-icon="radio"></span><div class="setting-copy"><p>聚合音源</p></div><div class="setting-action"><span class="simple-select" id="aggregate-source-label">丽江曲库、Joox、网易云音乐、B站</span><span class="setting-chevron" id="aggregate-source-chevron"><span data-icon="chevronRight"></span></span></div></div>
             <div class="aggregate-source-panel" id="aggregate-source-panel">
-              <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span></label>
-              <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span></label>
-              <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span><p>网易云音乐</p><small>音源稳定，小众资源多</small></span></label>
-              <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span><p>Migu</p><small>咪咕音乐官方</small></span></label>
-              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span></label>
-              <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span></label>
-              <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span><p>Netease</p><small>网易云官方，稳定高速</small></span></label>
+              <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>网易云音乐</p><small>音源稳定，小众资源多</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Migu</p><small>咪咕音乐官方</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Netease</p><small>网易云官方，稳定高速</small></span><span class="aggregate-source-tools"></span></label>
             </div>
             <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" data-setting="volume" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
             <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
@@ -2211,6 +2222,7 @@
       'B站': 'bilibili',
       'Netease': '_netease'
     };
+    const sourceDisplayOrder = ['local', 'joox', 'netease', 'kuwo', 'migu', 'bilibili', '_netease'];
     const aggregateSourceLabels = {
       local: '丽江曲库',
       joox: 'Joox',
@@ -2220,6 +2232,7 @@
       bilibili: 'B站',
       _netease: 'Netease'
     };
+    const defaultEnabledSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
     let libraryLoaded = false;
     let videosLoaded = false;
     let libraryTracks = [];
@@ -2230,8 +2243,8 @@
     let currentMarketPlaylistTracks = [];
     let currentMarketPlaylistMeta = null;
     let searchVideoCache = [];
-    let aggregatedSources = readStoredList('ljyyt_otter_aggregated_sources');
-    if (!aggregatedSources.length) aggregatedSources = ['local', 'joox', 'netease', 'kuwo', 'bilibili'];
+    let sourceConfigs = readSourceConfigs();
+    let aggregatedSources = getEnabledSourceOrder();
     let lyricsRequestId = 0;
     let currentLyrics = { lines: [], synced: [], source: 'empty', activeIndex: -1 };
     let playQueue = [];
@@ -2323,6 +2336,60 @@
       try {
         sessionStorage.removeItem(key);
       } catch (error) {}
+    }
+    function normalizeSourceConfigs(value, legacySources) {
+      var configMap = {};
+      if (Array.isArray(value)) {
+        value.forEach(function(item) {
+          if (!item || typeof item !== 'object') return;
+          var source = String(item.source || '').trim();
+          if (!source || sourceDisplayOrder.indexOf(source) < 0) return;
+          configMap[source] = {
+            source: source,
+            enabled: item.enabled !== false,
+            showInPicker: item.showInPicker !== false
+          };
+        });
+      }
+      var legacyList = Array.isArray(legacySources) && legacySources.length
+        ? legacySources.map(function(source) { return String(source || '').trim(); }).filter(Boolean)
+        : defaultEnabledSources.slice();
+      var configuredOrder = Array.isArray(value)
+        ? value.map(function(item) { return item && String(item.source || '').trim(); }).filter(Boolean)
+        : [];
+      var ordered = [];
+      var seenSources = new Set();
+      configuredOrder.concat(legacyList, sourceDisplayOrder).forEach(function(source) {
+        if (sourceDisplayOrder.indexOf(source) < 0 || seenSources.has(source)) return;
+        var existing = configMap[source];
+        seenSources.add(source);
+        ordered.push(existing || {
+          source: source,
+          enabled: legacyList.indexOf(source) >= 0,
+          showInPicker: true
+        });
+      });
+      return ordered;
+    }
+    function readSourceConfigs() {
+      return normalizeSourceConfigs(
+        readStoredJson('ljyyt_otter_source_configs', []),
+        readStoredList('ljyyt_otter_aggregated_sources')
+      );
+    }
+    function getEnabledSourceOrder() {
+      return sourceConfigs
+        .filter(function(item) { return item && item.enabled !== false; })
+        .map(function(item) { return item.source; });
+    }
+    function getSourceConfig(source) {
+      source = String(source || '').trim();
+      return sourceConfigs.find(function(item) { return item.source === source; }) || null;
+    }
+    function saveSourceConfigs() {
+      aggregatedSources = getEnabledSourceOrder();
+      writeStoredJson('ljyyt_otter_source_configs', sourceConfigs);
+      writeStoredList('ljyyt_otter_aggregated_sources', aggregatedSources);
     }
     function readStoredPlayModeIndex(storage, modeCount) {
       try {
@@ -2506,25 +2573,36 @@
       }) || null;
     }
     function getSelectedPlaybackSources() {
-      return (Array.isArray(aggregatedSources) ? aggregatedSources : [])
+      var sources = typeof getEnabledSourceOrder === 'function'
+        ? getEnabledSourceOrder()
+        : (Array.isArray(aggregatedSources) ? aggregatedSources : []);
+      return sources
         .map(function(source) { return String(source || '').trim(); })
         .filter(function(source, index, list) {
           return source && source !== 'local' && source !== 'all' && list.indexOf(source) === index;
         });
     }
+    function getFallbackSearchSources(track) {
+      var sources = getSelectedPlaybackSources();
+      var source = String(track && track.source || '').trim();
+      if (source === 'netease') {
+        var neteaseIndex = sources.indexOf('netease');
+        if (sources.indexOf('_netease') < 0) {
+          if (neteaseIndex >= 0) sources.splice(neteaseIndex + 1, 0, '_netease');
+          else sources.push('_netease');
+        }
+      }
+      if (source === '_netease' && sources.indexOf('netease') < 0) sources.push('netease');
+      return sources;
+    }
     function inferTrackSourceCandidates(track) {
       var candidates = [];
-      var deferred = [];
-      var selectedSources = getSelectedPlaybackSources();
+      var selectedSources = getFallbackSearchSources(track);
       var selectedLookup = new Set(selectedSources);
       var add = function(source) {
         source = String(source || '').trim();
         if (!source || source === 'local' || source === 'all' || candidates.includes(source)) return;
         if (!selectedLookup.has(source)) return;
-        if (source === 'netease') {
-          if (!deferred.includes(source)) deferred.push(source);
-          return;
-        }
         candidates.push(source);
       };
       add(track && track.source);
@@ -2543,7 +2621,7 @@
         if (label.includes(pair[0])) add(pair[1]);
       });
       selectedSources.forEach(add);
-      return candidates.concat(deferred);
+      return candidates;
     }
     function isTrackMatchCandidate(target, candidate) {
       var title = normalizeTrackText(target && target.title);
@@ -2569,18 +2647,57 @@
       var simpleCandidateTitle = normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
       return !!(title && candidateTitle && (title === candidateTitle || title === simpleCandidateTitle));
     }
+    function isBilibiliTrackMatchCandidate(target, candidate) {
+      if (String(candidate && candidate.source || '') !== 'bilibili') return false;
+      var title = normalizeTrackText(target && target.title);
+      if (!title) return false;
+      var artist = normalizeTrackText(target && target.artist);
+      var blob = normalizeTrackText([
+        candidate && candidate.title,
+        candidate && candidate.artist,
+        candidate && candidate.album
+      ].filter(Boolean).join(' '));
+      if (!blob || blob.indexOf(title) < 0) return false;
+      return !artist || blob.indexOf(artist) >= 0;
+    }
+    function getNormalizedArtistTokens(value) {
+      return normalizeTrackText(value)
+        .split(/(?:feat|featuring|ft|with|和|与|及|\/|、|,|，|&|\+)+/i)
+        .map(function(item) { return normalizeTrackText(item); })
+        .filter(Boolean);
+    }
+    function getFallbackMatchScore(target, candidate, index) {
+      var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
+      if (!bilibiliMatch && !isLooseTitleMatchCandidate(target, candidate) && !isTrackMatchCandidate(target, candidate)) return -1;
+      var score = Math.max(0, 40 - index);
+      var title = normalizeTrackText(target && target.title);
+      var candidateTitle = normalizeTrackText(candidate && candidate.title);
+      var targetArtist = normalizeTrackText(target && target.artist);
+      var candidateArtist = normalizeTrackText(candidate && candidate.artist);
+      if (bilibiliMatch) score += 95;
+      if (title && candidateTitle && title === candidateTitle) score += 120;
+      else if (isLooseTitleMatchCandidate(target, candidate)) score += 90;
+      if (!targetArtist || !candidateArtist || candidateArtist === normalizeTrackText('未知歌手')) {
+        score += 15;
+      } else if (targetArtist === candidateArtist) {
+        score += 100;
+      } else {
+        var targetTokens = getNormalizedArtistTokens(target && target.artist);
+        var candidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
+        if (targetTokens.some(function(item) { return candidateTokens.indexOf(item) >= 0; })) score += 55;
+        else if (candidateArtist.includes(targetArtist) || targetArtist.includes(candidateArtist)) score += 35;
+      }
+      return score;
+    }
     function pickFallbackTrackMatch(track, matches) {
       matches = Array.isArray(matches) ? matches : [];
-      return matches.find(function(item) { return isTrackMatchCandidate(track, item); }) ||
-        matches.find(function(item) { return isLooseTitleMatchCandidate(track, item); }) ||
-        null;
+      return getFallbackTrackMatches(track, matches)[0] || null;
     }
     function getFallbackTrackMatches(track, matches) {
       matches = Array.isArray(matches) ? matches : [];
-      var exact = [];
-      var loose = [];
+      var ranked = [];
       var seen = new Set();
-      function add(list, item) {
+      function add(item, index) {
         var key = [
           item && item.source,
           item && (item.urlId || item.url_id || item.id || item.title),
@@ -2588,13 +2705,15 @@
         ].join(':');
         if (seen.has(key)) return;
         seen.add(key);
-        list.push(item);
+        var score = getFallbackMatchScore(track, item, index);
+        if (score >= 0) ranked.push({ item: item, score: score, index: index });
       }
-      matches.forEach(function(item) {
-        if (isTrackMatchCandidate(track, item)) add(exact, item);
-        else if (isLooseTitleMatchCandidate(track, item)) add(loose, item);
+      matches.forEach(function(item, index) {
+        add(item, index);
       });
-      return exact.concat(loose);
+      return ranked.sort(function(a, b) {
+        return b.score - a.score || a.index - b.index;
+      }).map(function(entry) { return entry.item; });
     }
     async function resolveFallbackTrackFromSource(track, source, skipUrls) {
       var matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
@@ -3074,6 +3193,24 @@
       }
       updateControlIcons();
       renderQueue();
+    }
+    const PAUSE_CONFIRM_DELAY_MS = 200;
+    var pauseConfirmTimer = null;
+    function clearPauseConfirmTimer() {
+      if (!pauseConfirmTimer) return;
+      clearTimeout(pauseConfirmTimer);
+      pauseConfirmTimer = null;
+    }
+    function confirmAudioPaused() {
+      clearPauseConfirmTimer();
+      pauseConfirmTimer = setTimeout(function() {
+        pauseConfirmTimer = null;
+        if (!audioPlayer || audioPlayer.paused) setPlayIcons(false);
+      }, PAUSE_CONFIRM_DELAY_MS);
+    }
+    function confirmAudioPlaying() {
+      clearPauseConfirmTimer();
+      setPlayIcons(true);
     }
     function updateMiniProgress(progress) {
       const mini = document.getElementById('mini-play');
@@ -4203,6 +4340,27 @@
         tags: Array.isArray(item.tags) ? item.tags : []
       };
     }
+    function normalizeNeteaseApiSong(song) {
+      song = song || {};
+      var artists = Array.isArray(song.ar) ? song.ar : (Array.isArray(song.artists) ? song.artists : []);
+      var artistText = artists.map(function(item) { return item && item.name; }).filter(Boolean).join(' / ');
+      var album = song.al || song.album || {};
+      var albumName = typeof album === 'string' ? album : (album.name || '');
+      var cover = typeof album === 'object' ? (album.picUrl || album.picUrlStr || '') : '';
+      return {
+        id: String(song.id || ''),
+        title: String(song.name || song.title || ''),
+        artist: artistText || String(song.artist || '未知歌手'),
+        album: String(albumName || ''),
+        cover: safeCover(cover || DEFAULT_COVER),
+        src: '',
+        source: '_netease',
+        sourceLabel: 'Netease',
+        urlId: String(song.id || song.urlId || song.url_id || ''),
+        lyric_id: String(song.id || ''),
+        duration: song.dt ? parseTrackDuration(song.dt / 1000) : parseTrackDuration(song.duration || song.interval || song.time || song.length)
+      };
+    }
 
     function getNeteaseRequestBases() {
       var bases = [neteaseApiBase];
@@ -4235,6 +4393,30 @@
         }
       }
       throw lastError || new Error('otter netease api failed');
+    }
+    async function searchNeteaseApiTracks(query, count) {
+      var limit = Math.max(1, Math.min(100, Number(count) || SEARCH_RESULT_LIMIT));
+      var payload = await fetchOtterNetease('/search', {
+        keyword: String(query || ''),
+        type: 1,
+        page: 1,
+        limit: limit,
+        cookie: ''
+      });
+      var songs = payload && payload.data && payload.data.result && payload.data.result.songs || [];
+      return (Array.isArray(songs) ? songs : []).map(normalizeNeteaseApiSong).filter(function(track) {
+        return track.title && track.urlId;
+      });
+    }
+    async function resolveNeteaseApiTrackUrl(track) {
+      if (!track || !track.urlId) return '';
+      var payload = await fetchOtterNetease('/song-url', {
+        id: String(track.urlId),
+        br: 192000,
+        cookie: ''
+      });
+      var item = payload && payload.data && Array.isArray(payload.data.data) ? payload.data.data[0] : null;
+      return normalizeAudioUrl(item && item.url || '').replace(/^http:\/\//i, 'https://');
     }
 
     function unwrapMarketList(payload, type) {
@@ -4775,6 +4957,10 @@
       return track;
     }
     async function fetchExternalSourceTracks(query, source, count, signal) {
+      if (source === '_netease') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchNeteaseApiTracks(query, count);
+      }
       var total = Math.max(1, Number(count) || 20);
       var pageSize = Math.min(50, total);
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
@@ -4803,6 +4989,14 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
+      if (track.source === '_netease') {
+        try {
+          return await resolveNeteaseApiTrackUrl(track);
+        } catch (error) {
+          console.warn('resolveNeteaseApiTrackUrl failed', error);
+          return '';
+        }
+      }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
         '&id=' + encodeURIComponent(track.urlId) + '&br=192';
       try {
@@ -4830,7 +5024,9 @@
     }
     function getActiveSearchSources() {
       var provider = activeProvider || '聚合搜索';
-      if (provider === '聚合搜索') return aggregatedSources.slice();
+      if (provider === '聚合搜索') {
+        return (typeof getEnabledSourceOrder === 'function' ? getEnabledSourceOrder() : aggregatedSources.slice());
+      }
       var mapped = providerSourceMap[provider] || 'local';
       return [mapped];
     }
@@ -5354,19 +5550,32 @@
       }
       return fallback || '';
     }
+    function normalizeImportedSource(value, label, url) {
+      var sourceText = normalizeImportedText(value, '', false);
+      var text = [sourceText, label, url].map(function(item) { return String(item || ''); }).join(' ');
+      if (/bilibili|b23|B站|哔哩|嗶哩/i.test(text)) return 'bilibili';
+      if (/netease|music\.163|网易|網易/i.test(text)) return 'netease';
+      if (/kuwo|酷我/i.test(text)) return 'kuwo';
+      if (/migu|咪咕/i.test(text)) return 'migu';
+      if (/joox/i.test(text)) return 'joox';
+      if (/qq\.com|y\.qq|QQ音乐/i.test(text)) return 'qq';
+      return sourceText || 'import';
+    }
     function normalizeImportedPlaylist(data, fallbackName) {
       var source = Array.isArray(data) ? { name: fallbackName || '导入歌单', tracks: data } : (data.playlist || data);
       var rawTracks = filterStoredObjectList(source.tracks);
       var tracks = rawTracks.map(function(item) {
         var rawUrl = firstImportedText([item.src, item.url], '', false);
+        var importedSourceLabel = firstImportedText([item.sourceLabel], '', false);
+        var importedSource = normalizeImportedSource(item.source, importedSourceLabel, rawUrl);
         return {
           title: firstImportedText([item.title, item.name, item.songName], '未知歌曲', false),
           artist: firstImportedText([item.artist, item.artists, item.singer], '未知歌手', true),
           album: firstImportedText([item.album], '', true),
           cover: safeCover(firstImportedText([item.cover, item.pic, item.albumPic], DEFAULT_COVER, true)),
           src: /^https?:\/\//i.test(rawUrl) ? rawUrl : '',
-          source: firstImportedText([item.source], 'import', false),
-          sourceLabel: firstImportedText([item.sourceLabel], '导入', false),
+          source: importedSource,
+          sourceLabel: importedSourceLabel || (importedSource === 'import' ? '导入' : (getSourceLabel(importedSource) || '导入')),
           duration: parseTrackDuration(item.duration || item.interval || item.time || item.dt || item.length)
         };
       });
@@ -6010,30 +6219,81 @@
       });
       sourceMenu.classList.remove('open');
     }
+    function refreshProviderOptionsVisibility() {
+      document.querySelectorAll('.source-option').forEach(function(item) {
+        var provider = item.dataset.provider || '';
+        var source = providerSourceMap[provider];
+        var config = getSourceConfig(source);
+        var hidden = source && source !== 'all' && config && config.showInPicker === false;
+        item.hidden = !!hidden;
+        item.disabled = !!hidden;
+      });
+      var activeSource = providerSourceMap[activeProvider];
+      var activeConfig = getSourceConfig(activeSource);
+      if (activeSource && activeSource !== 'all' && activeConfig && activeConfig.showInPicker === false) {
+        syncProviderSelection('聚合搜索');
+      }
+    }
     function updateAggregateSourceUI() {
       document.querySelectorAll('.aggregate-source-option').forEach((item) => {
-        var selected = aggregatedSources.includes(item.dataset.source);
+        var source = item.dataset.source;
+        var config = getSourceConfig(source);
+        var selected = config ? config.enabled !== false : aggregatedSources.includes(source);
+        var index = sourceConfigs.findIndex(function(entry) { return entry.source === source; });
         item.classList.toggle('selected', selected);
         var check = item.querySelector('.aggregate-check');
         if (check) check.innerHTML = selected ? iconHtml('check') : '';
+        item.style.order = index >= 0 ? String(index) : '99';
+        var tools = item.querySelector('.aggregate-source-tools');
+        if (tools) {
+          var showInPicker = !config || config.showInPicker !== false;
+          tools.innerHTML =
+            '<button class="aggregate-source-tool" type="button" aria-label="上移" onclick="moveAggregateSource(event, \'' + source + '\', -1)"' + (index <= 0 ? ' disabled' : '') + '>' + iconHtml('chevronUp') + '</button>' +
+            '<button class="aggregate-source-tool" type="button" aria-label="下移" onclick="moveAggregateSource(event, \'' + source + '\', 1)"' + (index < 0 || index >= sourceConfigs.length - 1 ? ' disabled' : '') + '>' + iconHtml('chevronDown') + '</button>' +
+            '<button class="aggregate-source-tool' + (showInPicker ? '' : ' hidden-state') + '" type="button" aria-label="' + (showInPicker ? '从下拉框隐藏' : '在下拉框显示') + '" onclick="toggleSourcePickerVisibility(event, \'' + source + '\')">' + iconHtml(showInPicker ? 'eye' : 'eyeOff') + '</button>';
+        }
       });
       document.getElementById('aggregate-source-label').textContent = aggregatedSources
         .map(function(source) { return aggregateSourceLabels[source]; })
         .filter(Boolean)
         .join('\u3001');
+      refreshProviderOptionsVisibility();
     }
     function toggleAggregateSource(event, source) {
       event.preventDefault();
       event.stopPropagation();
-      if (aggregatedSources.includes(source)) {
+      var config = getSourceConfig(source);
+      if (!config) return;
+      if (config.enabled !== false) {
         if (aggregatedSources.length <= 1) return;
-        aggregatedSources = aggregatedSources.filter(function(item) { return item !== source; });
+        config.enabled = false;
       } else {
-        aggregatedSources = aggregatedSources.concat(source);
+        config.enabled = true;
       }
-      writeStoredList('ljyyt_otter_aggregated_sources', aggregatedSources);
+      saveSourceConfigs();
       updateAggregateSourceUI();
       if (activeProvider === '聚合搜索') renderIndexDiscoverPlaylists();
+    }
+    function moveAggregateSource(event, source, delta) {
+      event.preventDefault();
+      event.stopPropagation();
+      var index = sourceConfigs.findIndex(function(item) { return item.source === source; });
+      var nextIndex = index + delta;
+      if (index < 0 || nextIndex < 0 || nextIndex >= sourceConfigs.length) return;
+      var item = sourceConfigs.splice(index, 1)[0];
+      sourceConfigs.splice(nextIndex, 0, item);
+      saveSourceConfigs();
+      updateAggregateSourceUI();
+      if (activeProvider === '聚合搜索') renderIndexDiscoverPlaylists();
+    }
+    function toggleSourcePickerVisibility(event, source) {
+      event.preventDefault();
+      event.stopPropagation();
+      var config = getSourceConfig(source);
+      if (!config) return;
+      config.showInPicker = config.showInPicker === false;
+      saveSourceConfigs();
+      updateAggregateSourceUI();
     }
     document.querySelectorAll('.search-tab').forEach((tab) => {
       tab.addEventListener('click', () => {});
@@ -6367,8 +6627,9 @@
       savePlaybackState();
     });
     window.addEventListener('beforeunload', function() { savePlaybackState(true); });
-    audioPlayer.addEventListener('pause', () => setPlayIcons(false));
-    audioPlayer.addEventListener('play', () => setPlayIcons(true));
+    audioPlayer.addEventListener('pause', confirmAudioPaused);
+    audioPlayer.addEventListener('play', confirmAudioPlaying);
+    audioPlayer.addEventListener('playing', confirmAudioPlaying);
     audioPlayer.addEventListener('ended', handleTrackEnded);
     audioPlayer.addEventListener('error', function() {
       var requestId = _playRequestId;

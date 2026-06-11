@@ -61,6 +61,9 @@ for (const file of ['index.html', 'dist/index.html']) {
 
   const sandbox = {
     DEFAULT_COVER: 'default-cover.svg',
+    getSourceLabel(source) {
+      return { bilibili: 'B站' }[source] || source || '';
+    },
     localStorage: {
       getItem() {
         return JSON.stringify([
@@ -85,6 +88,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     pickFunction(html, 'safeCover'),
     pickFunction(html, 'normalizeImportedText'),
     pickFunction(html, 'firstImportedText'),
+    pickFunction(html, 'normalizeImportedSource'),
     pickFunction(html, 'normalizeImportedPlaylist'),
     'this.result = readStoredObjectList("tracks");',
     'this.genericResult = readStoredList("tracks");',
@@ -128,6 +132,10 @@ for (const file of ['index.html', 'dist/index.html']) {
     if (importedTrack[key] !== expected) {
       throw new Error(file + ' normalizeImportedPlaylist normalized ' + key + ' to ' + importedTrack[key] + ', expected ' + expected);
     }
+  }
+  const biliImported = sandbox.normalizeImportedPlaylist({ tracks: [{ title: 'Live', artist: 'UP', sourceLabel: 'B站下载', url: 'https://www.bilibili.com/audio/au123' }] }, 'bili.json').tracks[0];
+  if (biliImported.source !== 'bilibili' || biliImported.sourceLabel !== 'B站下载') {
+    throw new Error(file + ' normalizeImportedPlaylist should recognize Bilibili imported tracks');
   }
 
   const nonArraySandbox = {

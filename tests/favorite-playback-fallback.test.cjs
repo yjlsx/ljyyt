@@ -7,15 +7,22 @@ const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1
 for (const name of [
   'normalizeTrackText',
   'getSelectedPlaybackSources',
+  'getFallbackSearchSources',
   'inferTrackSourceCandidates',
   'isTrackMatchCandidate',
   'isLooseTitleMatchCandidate',
+  'getNormalizedArtistTokens',
+  'getFallbackMatchScore',
   'pickFallbackTrackMatch',
   'getFallbackTrackMatches',
   'resolveFallbackTrackFromSource',
+  'normalizeNeteaseApiSong',
   'normalizeExternalTrack',
   'fetchGdMusicJson',
+  'searchNeteaseApiTracks',
   'fetchExternalSourceTracks',
+  'normalizeAudioUrl',
+  'resolveNeteaseApiTrackUrl',
   'recoverPlayableTrackUrl'
 ]) {
   if (!script.includes('function ' + name)) {
@@ -70,7 +77,29 @@ const sandbox = {
     return value || 'cover.jpg';
   },
   getSourceLabel(source) {
-    return { joox: 'Joox', netease: '网易云音乐', kuwo: '酷我音乐' }[source] || source;
+    return { joox: 'Joox', netease: '网易云音乐', _netease: 'Netease', kuwo: '酷我音乐' }[source] || source;
+  },
+  async fetchOtterNetease(path, payload) {
+    sandbox.calls.push({ query: payload.keyword || payload.id || '', source: '_netease', path });
+    if (path === '/search') {
+      return {
+        data: {
+          result: {
+            songs: [{
+              id: 'official-netease',
+              name: '网易官方歌',
+              ar: [{ name: '官方歌手' }],
+              al: { name: '官方专辑', picUrl: 'https://img.example.com/ne.jpg' },
+              dt: 180000
+            }]
+          }
+        }
+      };
+    }
+    if (path === '/song-url') {
+      return { data: { data: [{ url: 'http://audio.example.com/official.mp3' }] } };
+    }
+    return {};
   },
   async fetch(url) {
     const parsed = new URL(url);
@@ -131,6 +160,7 @@ const sandbox = {
     };
   },
   async resolveExternalTrackUrl(track) {
+    if (track && track.source === '_netease') return sandbox.resolveNeteaseApiTrackUrl(track);
     if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
     if (track && track.urlId === 'joox-traditional') return 'https://cdn.example.com/wo-hui-deng.mp3';
     if (track && track.urlId === 'joox-hong-kong') return 'https://cdn.example.com/hong-kong.mp3';
@@ -145,15 +175,22 @@ vm.runInContext([
   pickFunction('parseTrackDuration'),
   pickFunction('normalizeTrackText'),
   pickFunction('getSelectedPlaybackSources'),
+  pickFunction('getFallbackSearchSources'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('isTrackMatchCandidate'),
   pickFunction('isLooseTitleMatchCandidate'),
+  pickFunction('getNormalizedArtistTokens'),
+  pickFunction('getFallbackMatchScore'),
   pickFunction('pickFallbackTrackMatch'),
   pickFunction('getFallbackTrackMatches'),
   pickFunction('resolveFallbackTrackFromSource'),
+  pickFunction('normalizeNeteaseApiSong'),
   pickFunction('normalizeExternalTrack'),
   pickFunction('fetchGdMusicJson'),
+  pickFunction('searchNeteaseApiTracks'),
   pickFunction('fetchExternalSourceTracks'),
+  pickFunction('normalizeAudioUrl'),
+  pickFunction('resolveNeteaseApiTrackUrl'),
   pickFunction('recoverPlayableTrackUrl')
 ].join('\n'), sandbox);
 
@@ -282,6 +319,29 @@ vm.runInContext([
   }
   if (!sandbox.calls.some((call) => call.source === 'joox')) {
     throw new Error('Expected failed Kuwo track to search selected Joox source');
+  }
+
+  sandbox.aggregatedSources = ['local', 'netease', 'kuwo'];
+  sandbox.calls = [];
+  const neteaseCompanionFallback = {
+    title: '网易官方歌',
+    artist: '官方歌手',
+    source: 'netease',
+    sourceLabel: '网易云音乐',
+    src: ''
+  };
+  const neteaseCompanionUrl = await sandbox.recoverPlayableTrackUrl(neteaseCompanionFallback, {
+    skipSources: ['netease'],
+    skipUrls: []
+  });
+  if (neteaseCompanionUrl !== 'https://audio.example.com/official.mp3') {
+    throw new Error('Expected failed GD NetEase track to recover through official Netease provider, got ' + neteaseCompanionUrl);
+  }
+  if (neteaseCompanionFallback.source !== '_netease') {
+    throw new Error('Expected GD NetEase fallback to switch to official Netease source');
+  }
+  if (!sandbox.calls.some((call) => call.source === '_netease' && call.path === '/search')) {
+    throw new Error('Expected fallback to search the official Netease provider');
   }
 })().catch((error) => {
   console.error(error);

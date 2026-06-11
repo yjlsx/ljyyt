@@ -24,7 +24,10 @@ const NETEASE_PROXY_PATHS = new Set([
   '/user-playlists',
   '/playlist',
   '/playlists',
-  '/toplist'
+  '/toplist',
+  '/search',
+  '/song-url',
+  '/song-detail'
 ]);
 
 const MIME_TYPES = {
