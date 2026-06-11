@@ -84,6 +84,7 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
     _playRetryCount: 0,
     restoredPlaybackTime: 0,
     FALLBACK_PLAYBACK_TIMEOUT_MS: 6500,
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
     recoverCalls: [],
     isSmartSourceEnabled() {
       return true;
@@ -141,7 +142,12 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
     pickFunction(script, 'getTrackFallbackKey'),
     pickFunction(script, 'ensureFallbackState'),
     pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'normalizeAudioUrl'),
     pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'applyFallbackRecovery'),
     pickFunction(script, 'switchToFallbackSource')
   ].join('\n'), sandbox);
 

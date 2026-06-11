@@ -95,6 +95,12 @@ async function runLocalFallbackCase(file) {
     ensureFallbackState() {
       return sandbox.fallbackState;
     },
+    consumeFallbackPrewarm() {
+      return Promise.resolve(null);
+    },
+    applyFallbackRecovery() {
+      return '';
+    },
     resetFallbackState() {
       sandbox.fallbackState = { sources: [], urls: [] };
     },

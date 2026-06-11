@@ -3189,6 +3189,7 @@
     var _playRequestId = 0;
     var _audioUnlocked = false;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
+    var _fallbackPrewarmState = { key: '', promise: null, result: null };
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
@@ -3218,6 +3219,59 @@
       url = String(url || '').trim();
       if (source && source !== 'local' && state.sources.indexOf(source) < 0) state.sources.push(source);
       if (url && state.urls.indexOf(url) < 0) state.urls.push(url);
+    }
+    function cloneTrackForFallback(track) {
+      return Object.assign({}, track || {});
+    }
+    function startFallbackPrewarm(track) {
+      if (!isSmartSourceEnabled() || !track || !track.title) return null;
+      var key = getTrackFallbackKey(track);
+      if (!key) return null;
+      if (_fallbackPrewarmState.key === key && _fallbackPrewarmState.promise) return _fallbackPrewarmState.promise;
+      var snapshot = cloneTrackForFallback(track);
+      var skipSources = snapshot.source && snapshot.source !== 'local' ? [snapshot.source] : [];
+      var skipUrls = snapshot.src ? [normalizeAudioUrl(snapshot.src)] : [];
+      var promise = recoverPlayableTrackUrl(snapshot, {
+        skipSources: skipSources,
+        skipUrls: skipUrls
+      }).then(function(url) {
+        if (!url) return null;
+        var result = { url: url, track: cloneTrackForFallback(snapshot) };
+        if (_fallbackPrewarmState.key === key) _fallbackPrewarmState.result = result;
+        return result;
+      }).catch(function(error) {
+        console.warn('startFallbackPrewarm failed', error);
+        return null;
+      });
+      _fallbackPrewarmState = { key: key, promise: promise, result: null };
+      return promise;
+    }
+    async function consumeFallbackPrewarm(track, state) {
+      var key = getTrackFallbackKey(track);
+      if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
+      var result = _fallbackPrewarmState.result || await _fallbackPrewarmState.promise;
+      if (!result || !result.url || !result.track) return null;
+      var source = String(result.track.source || '').trim();
+      var url = normalizeAudioUrl(result.url);
+      if (source && state.sources.indexOf(source) >= 0) return null;
+      if (url && state.urls.indexOf(url) >= 0) return null;
+      return result;
+    }
+    function applyFallbackRecovery(track, recovered) {
+      var recoveredTrack = recovered && recovered.track ? recovered.track : recovered;
+      var url = normalizeAudioUrl(recovered && recovered.url || recoveredTrack && recoveredTrack.src || '');
+      if (!track || !recoveredTrack || !url) return '';
+      var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
+      Object.assign(track, recoveredTrack, {
+        title: origTitle || recoveredTrack.title,
+        artist: origArtist || recoveredTrack.artist,
+        cover: origCover || recoveredTrack.cover || DEFAULT_COVER,
+        source: recoveredTrack.source || track.source,
+        sourceLabel: recoveredTrack.sourceLabel || getSourceLabel(recoveredTrack.source || track.source),
+        urlId: recoveredTrack.urlId || recoveredTrack.url_id || recoveredTrack.id || track.urlId || track.url_id || track.id || '',
+        src: url
+      });
+      return url;
     }
     function isAudioProxyUrl(url) {
       try {
@@ -3300,13 +3354,17 @@
           _isResolvingUrl = true;
           setPlayIcons(true);
           showToast('正在搜索免费音源...', 2000);
-          currentTrack.src = '';
-          audioPlayer.removeAttribute('src');
-          audioPlayer.load();
-          var fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
-            skipSources: state.sources.slice(),
-            skipUrls: state.urls.slice()
-          });
+          var prewarmed = await consumeFallbackPrewarm(currentTrack, state);
+          var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
+          if (!fallbackUrl) {
+            currentTrack.src = '';
+            audioPlayer.removeAttribute('src');
+            audioPlayer.load();
+            fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
+              skipSources: state.sources.slice(),
+              skipUrls: state.urls.slice()
+            });
+          }
           _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           if (!fallbackUrl) return false;
@@ -3423,6 +3481,7 @@
       if (!audioPlayer.getAttribute('src') || isSilentAudioPrimerSrc(audioPlayer.getAttribute('src'))) setCurrentTrack(currentTrack);
       var hadPlayableSrc = !!currentTrack.src;
       unlockAudioContext(!hadPlayableSrc);
+      if (isSmartSourceEnabled()) startFallbackPrewarm(currentTrack);
       if (isDeprecatedKuwoAudioUrl(currentTrack.src)) currentTrack.src = '';
       if (currentTrack.src) {
         if (audioPlayer.getAttribute('src') !== currentTrack.src) {
