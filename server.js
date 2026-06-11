@@ -515,7 +515,10 @@ async function resolveQqMusicUrl(songmid, br) {
       },
       timeout: 12000
     });
-    return { url: payload && payload.url ? String(payload.url) : '', quality };
+    const resolvedUrl = payload && payload.url ? String(payload.url) : '';
+    if (resolvedUrl) return { url: resolvedUrl, quality };
+    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
+    return { url: '', quality, error: upstreamMsg };
   } catch (error) {
     return { url: '', quality, error: error.message };
   }
