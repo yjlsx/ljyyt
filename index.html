@@ -3633,10 +3633,25 @@
         })
       ]);
     }
+    function isTruncatedAudioDuration(actualSeconds, expectedSeconds) {
+      actualSeconds = Number(actualSeconds);
+      expectedSeconds = Number(expectedSeconds);
+      if (!Number.isFinite(actualSeconds) || actualSeconds <= 0) return false;
+      if (Number.isFinite(expectedSeconds) && expectedSeconds > 0) {
+        return expectedSeconds - actualSeconds > 30 && actualSeconds < expectedSeconds * 0.6;
+      }
+      return actualSeconds <= 35;
+    }
     async function confirmPlaybackStarted(requestId) {
       await new Promise(function(resolve) { setTimeout(resolve, 200); });
       if (requestId && requestId !== _playRequestId) return true;
-      return !audioPlayer.paused && !audioPlayer.error;
+      if (audioPlayer.paused || audioPlayer.error) return false;
+      var trackSource = typeof currentTrack !== 'undefined' && currentTrack ? String(currentTrack.source || '') : '';
+      if (trackSource && trackSource !== 'local') {
+        var expectedDuration = typeof parseTrackDuration === 'function' && currentTrack ? parseTrackDuration(currentTrack.duration) : 0;
+        if (isTruncatedAudioDuration(audioPlayer.duration, expectedDuration)) return false;
+      }
+      return true;
     }
     async function playCurrentTrack() {
       pausePreviewVideo();

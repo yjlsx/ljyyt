@@ -457,7 +457,10 @@ async function handleQqUrlRequest(url) {
   if (!response.ok) return jsonResponse({ url: '', quality, error: `QQ url HTTP ${response.status}` }, 502);
   const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
   const payload = JSON.parse(text);
-  return jsonResponse({ url: payload && payload.url ? String(payload.url) : '', quality });
+  const resolvedUrl = payload && payload.url ? String(payload.url) : '';
+  if (resolvedUrl) return jsonResponse({ url: resolvedUrl, quality });
+  const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
+  return jsonResponse({ url: '', quality, error: upstreamMsg });
 }
 
 async function handleCoverRequest(url) {
