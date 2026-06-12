@@ -292,7 +292,8 @@ function resolveRedirectUrl(targetUrl, options = {}, redirectsLeft = 4) {
       res.resume();
       resolve({
         finalUrl: targetUrl,
-        contentType: String(res.headers['content-type'] || '')
+        contentType: String(res.headers['content-type'] || ''),
+        contentLength: Number(res.headers['content-length'] || 0)
       });
     });
 
@@ -501,6 +502,30 @@ function mapQqQuality(br) {
   return '320k';
 }
 
+async function validateResolvedQqAudioUrl(resolvedUrl) {
+  if (!/^https?:\/\//i.test(String(resolvedUrl || ''))) {
+    return { ok: false, error: 'QQ upstream returned invalid url' };
+  }
+  try {
+    const info = await resolveRedirectUrl(resolvedUrl, {
+      method: 'HEAD',
+      headers: {
+        'Accept': '*/*',
+        'User-Agent': QQ_USER_AGENT,
+        'Referer': QQ_REFERER
+      },
+      timeout: 8000
+    });
+    const length = Number(info.contentLength || 0);
+    if (length > 0 && length < 512 * 1024) {
+      return { ok: false, error: 'QQ resolved prompt audio', contentLength: length };
+    }
+    return { ok: true, contentLength: length };
+  } catch (error) {
+    return { ok: true, warning: error.message };
+  }
+}
+
 async function resolveQqMusicUrl(songmid, br) {
   songmid = String(songmid || '').trim().replace(/^qq_/i, '');
   if (!songmid) return { url: '', error: 'Missing songmid' };
@@ -516,7 +541,11 @@ async function resolveQqMusicUrl(songmid, br) {
       timeout: 12000
     });
     const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-    if (resolvedUrl) return { url: resolvedUrl, quality };
+    if (resolvedUrl) {
+      const validation = await validateResolvedQqAudioUrl(resolvedUrl);
+      if (!validation.ok) return { url: '', quality, error: validation.error, contentLength: validation.contentLength || 0 };
+      return { url: resolvedUrl, quality, contentLength: validation.contentLength || 0 };
+    }
     const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
     return { url: '', quality, error: upstreamMsg };
   } catch (error) {
