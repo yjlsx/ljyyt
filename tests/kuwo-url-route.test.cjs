@@ -1,7 +1,8 @@
 const fs = require('fs');
+const { readSourceContent } = require('./test-helpers.cjs');
 
-const indexHtml = fs.readFileSync('index.html', 'utf8');
-const distHtml = fs.readFileSync('dist/index.html', 'utf8');
+const src = readSourceContent('.');
+const dist = readSourceContent('dist');
 const server = fs.readFileSync('server.js', 'utf8');
 const worker = fs.readFileSync('cloudflare-worker/worker.js', 'utf8');
 
@@ -25,7 +26,7 @@ const pickFunction = (html, name) => {
   throw new Error('Could not read function ' + name);
 };
 
-for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distHtml]]) {
+for (const [name, html] of [['index.html', src.combined], ['dist/index.html', dist.combined]]) {
   const resolver = pickFunction(html, 'resolveExternalTrackUrl');
   if (!resolver.includes("track.source !== 'kuwo'")) {
     throw new Error(name + ' does not preserve Kuwo HTTP URLs from music-api');
