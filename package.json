@@ -10,6 +10,9 @@
     "test": "node scripts/run-tests.cjs",
     "build": "node scripts/build-dist.cjs",
     "build:oracle": "node scripts/build-dist.cjs --oracle",
+    "lint": "eslint *.js scripts/*.cjs tests/*.cjs cloudflare-worker/*.js",
+    "lint:fix": "eslint --fix *.js scripts/*.cjs tests/*.cjs cloudflare-worker/*.js",
+    "format": "prettier --write \"**/*.{js,cjs,json,md}\"",
     "worker:login": "npm exec -- wrangler login",
     "deploy:worker": "npm exec -- wrangler deploy --config cloudflare-worker/wrangler.toml",
     "deploy": "npm run build && gh-pages -d dist"
@@ -28,8 +31,11 @@
   "author": "丽江音悦台",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
     "gh-pages": "^6.1.1",
     "http-server": "^14.1.1",
+    "prettier": "^3.2.5",
     "wrangler": "^4.84.1"
   },
   "repository": {
