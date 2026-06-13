@@ -148,4 +148,36 @@ for (const item of snapshot) {
 
 writeFile('package.json', runtimePackage);
 
+// Inline external CSS and JS into dist/index.html for monolithic structure
+const distIndexPath = path.join(outDir, 'index.html');
+let distIndexHtml = fs.readFileSync(distIndexPath, 'utf8');
+
+// Inline css/styles.css
+const cssLinkMatch = distIndexHtml.match(/<link\s+rel="stylesheet"\s+href="css\/styles\.css">/i);
+if (cssLinkMatch) {
+  const cssPath = path.join(ROOT, 'css', 'styles.css');
+  if (fs.existsSync(cssPath)) {
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+    distIndexHtml = distIndexHtml.replace(
+      /<link\s+rel="stylesheet"\s+href="css\/styles\.css">/i,
+      `<style>\n${cssContent}\n  </style>`
+    );
+  }
+}
+
+// Inline js/app.js
+const scriptMatch = distIndexHtml.match(/<script\s+src="js\/app\.js"><\/script>/i);
+if (scriptMatch) {
+  const jsPath = path.join(ROOT, 'js', 'app.js');
+  if (fs.existsSync(jsPath)) {
+    const jsContent = fs.readFileSync(jsPath, 'utf8');
+    distIndexHtml = distIndexHtml.replace(
+      /<script\s+src="js\/app\.js"><\/script>/i,
+      `<script>\n${jsContent}\n  </script>`
+    );
+  }
+}
+
+fs.writeFileSync(distIndexPath, distIndexHtml, 'utf8');
+
 console.log('Built ' + path.relative(ROOT, outDir) + (options.oracle ? ' for Oracle' : '') + (options.includeMedia ? ' with media' : ' without local media'));
