@@ -1400,6 +1400,7 @@
       if (requestId && requestId !== _playRequestId) return false;
       rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
+      var shouldShowToast = attemptLimit > 0;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack);
@@ -1409,7 +1410,9 @@
         try {
           _isResolvingUrl = true;
           setPlayIcons(true);
-          showToast('正在搜索免费音源...', 2000);
+          if (shouldShowToast && attempt === 0) {
+            showToast('正在搜索免费音源...', 2000);
+          }
           var prewarmed = await consumeFallbackPrewarm(currentTrack, state);
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
           if (!fallbackUrl) {
@@ -4705,7 +4708,10 @@
         if (requestId !== _playRequestId || failedSrc !== audioPlayer.getAttribute('src')) return;
         if (switched) return;
         setPlayIcons(false);
-        showToast('播放出错，请重试或切换歌曲');
+        showToast('未找到可用音源，播放下一首', 2000);
+        setTimeout(function() {
+          nextTrack();
+        }, 500);
       });
     });
     document.querySelectorAll('img').forEach((image) => {
