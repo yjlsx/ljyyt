@@ -1255,21 +1255,21 @@
         normalizeTrackText(track.artist)
       ].join('|');
     }
-    function ensureFallbackState(track) {
-      var key = getTrackFallbackKey(track);
+    function ensureFallbackState(track, fallbackKey) {
+      var key = fallbackKey || getTrackFallbackKey(track);
       if (_fallbackAttemptState.key !== key) {
         _fallbackAttemptState = { key: key, sources: [], urls: [] };
       }
       return _fallbackAttemptState;
     }
-    function resetFallbackState(track) {
-      _fallbackAttemptState = { key: getTrackFallbackKey(track), sources: [], urls: [] };
+    function resetFallbackState(track, fallbackKey) {
+      _fallbackAttemptState = { key: fallbackKey || getTrackFallbackKey(track), sources: [], urls: [] };
     }
     function isSmartSourceEnabled() {
       return !appSettings || appSettings.smartSource !== false;
     }
-    function rememberPlaybackFailure(track, url, source) {
-      var state = ensureFallbackState(track);
+    function rememberPlaybackFailure(track, url, source, fallbackKey) {
+      var state = ensureFallbackState(track, fallbackKey);
       source = String(source || (track && track.source) || '').trim();
       url = String(url || '').trim();
       if (source && source !== 'local' && state.sources.indexOf(source) < 0) state.sources.push(source);
@@ -1301,8 +1301,8 @@
       _fallbackPrewarmState = { key: key, promise: promise, result: null };
       return promise;
     }
-    async function consumeFallbackPrewarm(track, state) {
-      var key = getTrackFallbackKey(track);
+    async function consumeFallbackPrewarm(track, state, fallbackKey) {
+      var key = fallbackKey || getTrackFallbackKey(track);
       if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
       var result = _fallbackPrewarmState.result || await _fallbackPrewarmState.promise;
       if (!result || !result.url || !result.track) return null;
@@ -1395,15 +1395,16 @@
       if (!currentTrack || _isResolvingUrl) return false;
       if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
-      var hasPrewarmedResult = typeof _fallbackPrewarmState !== 'undefined' && _fallbackPrewarmState && _fallbackPrewarmState.key === getTrackFallbackKey(currentTrack) && !!_fallbackPrewarmState.result;
+      var fallbackKey = typeof getTrackFallbackKey === 'function' ? getTrackFallbackKey(currentTrack) : '';
+      var hasPrewarmedResult = typeof _fallbackPrewarmState !== 'undefined' && _fallbackPrewarmState && _fallbackPrewarmState.key === fallbackKey && !!_fallbackPrewarmState.result;
       if (!hasPrewarmedResult && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
-      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
+      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       var shouldShowToast = attemptLimit > 0;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
-        var state = ensureFallbackState(currentTrack);
+        var state = ensureFallbackState(currentTrack, fallbackKey);
         var previousFailedSources = state.sources.slice();
         var previousFailedUrls = state.urls.slice();
         var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
@@ -1413,7 +1414,7 @@
           if (shouldShowToast && attempt === 0) {
             showToast('正在搜索免费音源...', 2000);
           }
-          var prewarmed = await consumeFallbackPrewarm(currentTrack, state);
+          var prewarmed = await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
           if (!fallbackUrl) {
             currentTrack.src = '';
@@ -1439,7 +1440,7 @@
           if (requestId && requestId !== _playRequestId) return false;
           if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
-          resetFallbackState(currentTrack);
+          resetFallbackState(currentTrack, fallbackKey);
           reconcileCurrentTrackInQueue(previousTrack);
           updateTrackUi(currentTrack);
           updateLikeButton();
@@ -1453,14 +1454,14 @@
           _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           if (isAutoplayPolicyBlocked(error)) return false;
-          var activeState = ensureFallbackState(currentTrack);
+          var activeState = ensureFallbackState(currentTrack, fallbackKey);
           previousFailedSources.forEach(function(source) {
             if (source && activeState.sources.indexOf(source) < 0) activeState.sources.push(source);
           });
           previousFailedUrls.forEach(function(url) {
             if (url && activeState.urls.indexOf(url) < 0) activeState.urls.push(url);
           });
-          rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.getAttribute('src') || '', currentTrack && currentTrack.source);
+          rememberPlaybackFailure(currentTrack, currentTrack && currentTrack.src || audioPlayer.getAttribute('src') || '', currentTrack && currentTrack.source, fallbackKey);
           console.warn('switchToFallbackSource failed', error);
         }
       }
@@ -3059,8 +3060,19 @@
       return '';
     }
     async function fetchQqTrackUrlPayload(urlId) {
+      function fetchWithTimeout(url, options, timeoutMs) {
+        options = options || {};
+        timeoutMs = timeoutMs || 8000;
+        if (typeof AbortController === 'undefined') return fetch(url, options);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(function() { controller.abort(); }, timeoutMs);
+        const requestOptions = Object.assign({}, options, { signal: controller.signal });
+        return fetch(url, requestOptions).finally(function() {
+          clearTimeout(timeoutId);
+        });
+      }
       try {
-        var qqResponse = await fetch(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=320');
+        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=320');
         if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
         var payload = await qqResponse.json();
         if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
@@ -3068,13 +3080,19 @@
       } catch (error) {
         console.warn('QQ primary url failed, using fallback proxy', error);
       }
-      var fallbackResponse = await fetch(qqFallbackProxyBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: '320k' })
-      });
-      if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
-      return fallbackResponse.json();
+
+      try {
+        var fallbackResponse = await fetchWithTimeout(qqFallbackProxyBase, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: '320k' })
+        });
+        if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
+        return fallbackResponse.json();
+      } catch (error) {
+        console.warn('QQ fallback url also failed', error);
+        throw error;
+      }
     }
     function getKuwoAudioFallbackUrl(urlId) {
       return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(urlId);
