@@ -1,18 +1,10 @@
-const path = require('path');
 const fs = require('fs');
 const vm = require('vm');
 
 function getInlineScript(file) {
   const html = fs.readFileSync(file, 'utf8');
-  const srcMatch = html.match(/<script[^>]*\bsrc=["'']([^"']*app\.js)["'']/i);
-  if (srcMatch) {
-    const appJsPath = path.join(path.dirname(file), srcMatch[1]);
-    if (fs.existsSync(appJsPath)) {
-      return fs.readFileSync(appJsPath, 'utf8');
-    }
-  }
   const match = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i);
-  if (!match) throw new Error(file + ' is missing inline application script');
+  if (!match) throw new Error(file + ' is missing the main inline script');
   return match[1];
 }
 

@@ -443,32 +443,6 @@ function mapQqQuality(br) {
   return '320k';
 }
 
-async function validateResolvedQqAudioUrl(resolvedUrl) {
-  if (!/^https?:\/\//i.test(String(resolvedUrl || ''))) {
-    return { ok: false, error: 'QQ upstream returned invalid url' };
-  }
-  try {
-    const response = await fetchWithTimeout(resolvedUrl, {
-      method: 'HEAD',
-      headers: {
-        'Accept': '*/*',
-        'User-Agent': QQ_USER_AGENT,
-        'Referer': QQ_REFERER
-      },
-      redirect: 'follow',
-      timeoutMs: 8000
-    });
-    if (!response.ok) return { ok: true, warning: `QQ HEAD HTTP ${response.status}` };
-    const length = Number(response.headers.get('Content-Length') || 0);
-    if (length > 0 && length < 512 * 1024) {
-      return { ok: false, error: 'QQ resolved prompt audio', contentLength: length };
-    }
-    return { ok: true, contentLength: length };
-  } catch (error) {
-    return { ok: true, warning: error instanceof Error ? error.message : String(error) };
-  }
-}
-
 async function handleQqUrlRequest(url) {
   const songmid = String(url.searchParams.get('id') || url.searchParams.get('songmid') || '').trim().replace(/^qq_/i, '');
   if (!songmid) return jsonResponse({ url: '', error: 'Missing songmid' }, 400);
@@ -484,11 +458,7 @@ async function handleQqUrlRequest(url) {
   const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
   const payload = JSON.parse(text);
   const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-  if (resolvedUrl) {
-    const validation = await validateResolvedQqAudioUrl(resolvedUrl);
-    if (!validation.ok) return jsonResponse({ url: '', quality, error: validation.error, contentLength: validation.contentLength || 0 });
-    return jsonResponse({ url: resolvedUrl, quality, contentLength: validation.contentLength || 0 });
-  }
+  if (resolvedUrl) return jsonResponse({ url: resolvedUrl, quality });
   const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
   return jsonResponse({ url: '', quality, error: upstreamMsg });
 }

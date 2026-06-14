@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>性能优化测试 - 丽江音悦台</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #36a97b; }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #36a97b;
+      padding-bottom: 10px;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .status.success { background: #d4edda; color: #155724; }
+    .status.error { background: #f8d7da; color: #721c24; }
+    .status.info { background: #d1ecf1; color: #0c5460; }
+    button {
+      background: #36a97b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #2d8a66; }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .metric {
+      display: inline-block;
+      margin: 10px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      min-width: 150px;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #36a97b;
+    }
+    .metric-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 丽江音悦台 - 性能优化测试页面</h1>
+
+  <div class="card">
+    <h2>📦 模块加载状态</h2>
+    <div id="module-status"></div>
+  </div>
+
+  <div class="card">
+    <h2>🧪 功能测试</h2>
+    <button onclick="testSearchCache()">测试搜索缓存</button>
+    <button onclick="testUrlCache()">测试 URL 缓存</button>
+    <button onclick="testPerformanceTracking()">测试性能追踪</button>
+    <button onclick="showStats()">查看统计</button>
+    <div id="test-results"></div>
+  </div>
+
+  <div class="card">
+    <h2>📊 实时数据</h2>
+    <div id="metrics"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔗 快速链接</h2>
+    <button onclick="window.location.href='index.html'">打开主页</button>
+    <button onclick="openConsole()">查看控制台命令</button>
+  </div>
+
+  <!-- 加载优化模块 -->
+  <script src="js/performance-cache.js"></script>
+  <script src="js/search-optimization.js"></script>
+
+  <script>
+    // 检查模块加载
+    function checkModules() {
+      const modules = [
+        { name: 'SearchCache', obj: window.searchCache },
+        { name: 'UrlCache', obj: window.urlCache },
+        { name: 'PerformanceTracker', obj: window.performanceTracker },
+        { name: 'performSearchProgressive', obj: window.performSearchProgressive },
+        { name: 'preloadNextTrack', obj: window.preloadNextTrack },
+      ];
+
+      let html = '';
+      modules.forEach(({ name, obj }) => {
+        const status = obj ? 'success' : 'error';
+        const text = obj ? '✅ 已加载' : '❌ 未加载';
+        html += `<div class="status ${status}">${name}: ${text}</div>`;
+      });
+
+      document.getElementById('module-status').innerHTML = html;
+    }
+
+    // 测试搜索缓存
+    function testSearchCache() {
+      const results = document.getElementById('test-results');
+
+      if (!window.searchCache) {
+        results.innerHTML = '<div class="status error">❌ SearchCache 未加载</div>';
+        return;
+      }
+
+      // 模拟缓存操作
+      const testData = [
+        { id: '1', title: '七里香', artist: '周杰伦' },
+        { id: '2', title: '晴天', artist: '周杰伦' }
+      ];
+
+      window.searchCache.set('周杰伦', 'netease', testData);
+      const cached = window.searchCache.get('周杰伦', 'netease');
+
+      const success = cached && cached.length === 2;
+      results.innerHTML = `
+        <div class="status ${success ? 'success' : 'error'}">
+          ${success ? '✅' : '❌'} 搜索缓存测试: ${success ? '通过' : '失败'}
+        </div>
+        <pre>${JSON.stringify(window.searchCache.getStats(), null, 2)}</pre>
+      `;
+    }
+
+    // 测试 URL 缓存
+    function testUrlCache() {
+      const results = document.getElementById('test-results');
+
+      if (!window.urlCache) {
+        results.innerHTML = '<div class="status error">❌ UrlCache 未加载</div>';
+        return;
+      }
+
+      // 模拟缓存操作
+      const testTrack = { id: '123', source: 'netease', urlId: '123' };
+      const testUrl = 'http://example.com/test.mp3';
+
+      window.urlCache.set(testTrack, testUrl, 60000);
+      const cached = window.urlCache.get(testTrack);
+
+      const success = cached === testUrl;
+      results.innerHTML = `
+        <div class="status ${success ? 'success' : 'error'}">
+          ${success ? '✅' : '❌'} URL 缓存测试: ${success ? '通过' : '失败'}
+        </div>
+        <pre>${JSON.stringify(window.urlCache.getStats(), null, 2)}</pre>
+      `;
+    }
+
+    // 测试性能追踪
+    function testPerformanceTracking() {
+      const results = document.getElementById('test-results');
+
+      if (!window.performanceTracker) {
+        results.innerHTML = '<div class="status error">❌ PerformanceTracker 未加载</div>';
+        return;
+      }
+
+      // 模拟性能记录
+      window.performanceTracker.recordSearch('netease', 500);
+      window.performanceTracker.recordSearch('qq', 800);
+      window.performanceTracker.recordUrlResolve('netease', 200, true);
+      window.performanceTracker.recordPreload();
+
+      const stats = window.performanceTracker.getStats();
+      results.innerHTML = `
+        <div class="status success">✅ 性能追踪测试: 通过</div>
+        <pre>${JSON.stringify(stats, null, 2)}</pre>
+      `;
+    }
+
+    // 显示统计
+    function showStats() {
+      const metrics = document.getElementById('metrics');
+
+      if (!window.searchCache || !window.urlCache || !window.performanceTracker) {
+        metrics.innerHTML = '<div class="status error">部分模块未加载</div>';
+        return;
+      }
+
+      const searchStats = window.searchCache.getStats();
+      const urlStats = window.urlCache.getStats();
+      const perfStats = window.performanceTracker.getStats();
+
+      metrics.innerHTML = `
+        <div class="metric">
+          <div class="metric-value">${searchStats.size}/${searchStats.maxSize}</div>
+          <div class="metric-label">搜索缓存</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">${urlStats.size}</div>
+          <div class="metric-label">URL 缓存</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">${urlStats.hitRate}</div>
+          <div class="metric-label">缓存命中率</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">${perfStats.preloadCount}</div>
+          <div class="metric-label">预加载次数</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">${perfStats.avgSearchTime}ms</div>
+          <div class="metric-label">平均搜索时间</div>
+        </div>
+      `;
+    }
+
+    // 显示控制台命令
+    function openConsole() {
+      alert(`在浏览器控制台（F12）中可以使用以下命令：
+
+showPerformanceReport() - 查看完整性能报告
+showCacheStats() - 查看缓存统计
+clearCaches() - 清空所有缓存
+
+这些命令需要在主页 (index.html) 的控制台中运行。`);
+    }
+
+    // 页面加载时检查
+    window.addEventListener('load', () => {
+      checkModules();
+      setTimeout(showStats, 500);
+    });
+  </script>
+</body>
+</html>

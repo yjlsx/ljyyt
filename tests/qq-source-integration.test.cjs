@@ -135,7 +135,7 @@ for (const file of ['index.html', 'dist/index.html']) {
 const server = fs.readFileSync('server.js', 'utf8');
 const worker = fs.readFileSync('cloudflare-worker/worker.js', 'utf8');
 for (const [name, source] of [['server.js', server], ['cloudflare-worker/worker.js', worker]]) {
-  for (const marker of ['/api/qq/search', '/api/qq/url', 'lxmusicapi.onrender.com/url/tx', 'DoSearchForQQMusicDesktop', 'validateResolvedQqAudioUrl', 'QQ resolved prompt audio']) {
+  for (const marker of ['/api/qq/search', '/api/qq/url', 'lxmusicapi.onrender.com/url/tx', 'DoSearchForQQMusicDesktop']) {
     if (!source.includes(marker)) throw new Error(name + ' is missing QQ source marker: ' + marker);
   }
 }

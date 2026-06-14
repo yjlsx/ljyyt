@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { readSourceContent } = require('./test-helpers.cjs');
 
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const scripts = pkg.scripts || {};
@@ -9,8 +8,8 @@ const deployBat = fs.readFileSync('deploy.bat', 'utf8');
 const siteConfig = fs.readFileSync('site-config.js', 'utf8');
 const buildScript = fs.readFileSync('scripts/build-dist.cjs', 'utf8');
 const headers = fs.readFileSync('_headers', 'utf8');
-const src = readSourceContent('.');
-const dist = readSourceContent('dist');
+const indexHtml = fs.readFileSync('index.html', 'utf8');
+const distIndexHtml = fs.readFileSync('dist/index.html', 'utf8');
 
 function assertDistMatchesSource(relPath) {
   const source = fs.readFileSync(relPath);
