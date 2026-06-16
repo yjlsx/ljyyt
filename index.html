@@ -2847,6 +2847,7 @@
     async function recoverPlayableTrackUrl(track, options) {
       if (!track || !track.title) return '';
       options = options || {};
+      var silent = !!options.silent;
       var skipSources = (options.skipSources || []).map(function(source) { return String(source || '').trim(); }).filter(Boolean);
       var skipUrls = (options.skipUrls || []).map(function(url) { return String(url || '').trim(); }).filter(Boolean);
       var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
@@ -2875,6 +2876,7 @@
         });
         return url;
       } catch (error) {
+        if (!silent) console.warn('recoverPlayableTrackUrl failed', error);
         return '';
       }
     }
@@ -3489,7 +3491,8 @@
       var skipUrls = snapshot.src ? [normalizeAudioUrl(snapshot.src)] : [];
       var promise = recoverPlayableTrackUrl(snapshot, {
         skipSources: skipSources,
-        skipUrls: skipUrls
+        skipUrls: skipUrls,
+        silent: true
       }).then(function(url) {
         if (!url) return null;
         var result = { url: url, track: cloneTrackForFallback(snapshot) };
@@ -3602,7 +3605,7 @@
       if (requestId && requestId !== _playRequestId) return false;
       rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
-      var shouldShowToast = attemptLimit > 0;
+      var shouldShowToast = attemptLimit > 0 && requestId && requestId === _playRequestId;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack, fallbackKey);
@@ -4395,7 +4398,7 @@
         while (active < PREWARM_CONCURRENCY && idx < pending.length) {
           let track = pending[idx++];
           active += 1;
-          resolveExternalTrackUrl(track).then(function(url) {
+          resolveExternalTrackUrlForSearchPrewarm(track).then(function(url) {
             if (batchId !== _urlResolveId) return;
             if (url) track.src = url;
           }).catch(function() {}).finally(function() {
@@ -5075,10 +5078,10 @@
       return {
         local: '丽江曲库',
         joox: 'Joox',
-        qq: 'QQ',
-        netease: '网易',
+        qq: 'QQ音乐',
+        netease: '网易云音乐',
         _netease: 'Netease',
-        kuwo: '酷我',
+        kuwo: '酷我音乐',
         migu: 'Migu',
         bilibili: 'B站'
       }[source] || source || '未知来源';
@@ -5274,6 +5277,13 @@
       } catch (error) { /* fallthrough */ }
       return '';
     }
+    async function resolveExternalTrackUrlForSearchPrewarm(track) {
+      try {
+        return await resolveExternalTrackUrl(track);
+      } catch (error) {
+        return '';
+      }
+    }
     async function fetchQqTrackUrlPayload(urlId) {
       function fetchWithTimeout(url, options, timeoutMs) {
         options = options || {};
@@ -5344,8 +5354,18 @@
     function deduplicateSearchResults(tracks) {
       var seen = {};
       var result = [];
-      for (var i = 0; i < tracks.length; i++) {
-        var track = tracks[i];
+      var sourceOrder = getActiveSearchSources();
+      var orderedTracks = (tracks || []).map(function(track, index) {
+        return { track: track, index: index };
+      }).sort(function(a, b) {
+        var left = sourceOrder.indexOf(String(a.track && a.track.source || ''));
+        var right = sourceOrder.indexOf(String(b.track && b.track.source || ''));
+        if (left < 0) left = sourceOrder.length;
+        if (right < 0) right = sourceOrder.length;
+        return left - right || a.index - b.index;
+      }).map(function(item) { return item.track; });
+      for (var i = 0; i < orderedTracks.length; i++) {
+        var track = orderedTracks[i];
         if (!track || !track.title) continue;
         var normTitle = normalizeTrackText(track.title).replace(/\s*[（(].*?[）)]\s*/g, '');
         var normArtist = normalizeTrackText(track.artist).replace(/[\s/、，,]+/g, '/');

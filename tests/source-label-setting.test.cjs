@@ -102,7 +102,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     'setCurrentTrack({ id: "kuwo-1", title: "偏偏喜欢你", artist: "陈百强", source: "kuwo", src: "https://example.test/song.mp3" });'
   ].join('\n'), sandbox);
 
-  if (sandbox.currentTrack.sourceLabel !== '酷我') {
+  if (sandbox.currentTrack.sourceLabel !== '酷我音乐') {
     throw new Error(file + ' setCurrentTrack should derive external source labels from source, got ' + sandbox.currentTrack.sourceLabel);
   }
 }
