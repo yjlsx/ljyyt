@@ -295,8 +295,6 @@
       padding: 16px; max-height: 82vh;
     }
     .setting-drawer.open { transform: translateY(0); }
-    body.full-player-open #setting-drawer-scrim { z-index: 138; }
-    body.full-player-open #setting-drawer { z-index: 139; }
     .setting-drawer h3 { margin: 0 0 4px; text-align: center; font-size: 17px; }
     .setting-drawer p { margin: 0 0 14px; color: var(--muted-foreground); text-align: center; font-size: 12px; }
     .drawer-input {
@@ -1295,6 +1293,45 @@
       transition: background .18s ease, color .18s ease;
     }
     .full-quality-entry:hover { background: rgba(255,255,255,.13); color: white; }
+    .full-quality-menu {
+      position: absolute;
+      left: 50%;
+      top: 58px;
+      transform: translateX(-50%) translateY(-4px);
+      z-index: 4;
+      min-width: 148px;
+      padding: 6px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      color: #111827;
+      box-shadow: 0 18px 45px rgba(0,0,0,.26);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    .full-quality-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .full-quality-option {
+      width: 100%;
+      min-height: 38px;
+      padding: 0 10px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: #111827;
+    }
+    .full-quality-option.active {
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 10%, transparent);
+      font-weight: 650;
+    }
+    .full-quality-option .line-icon { width: 15px; height: 15px; }
     .full-main {
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 18px; padding: 18px 22px; cursor: pointer;
@@ -2165,7 +2202,8 @@
       <div class="fullscreen-bg"></div>
       <header class="full-header">
         <button class="icon-button" onclick="closeFullPlayer()" aria-label="收起播放器"><span data-icon="chevronDown"></span></button>
-        <button class="full-quality-entry" id="full-quality-entry" onclick="openQualityDrawer(event)" type="button">极高</button>
+        <button class="full-quality-entry" id="full-quality-entry" onclick="toggleQualityMenu(event)" type="button" aria-haspopup="menu" aria-expanded="false">极高</button>
+        <div class="full-quality-menu" id="full-quality-menu" role="menu" aria-label="音质选择"></div>
         <button class="icon-button" onclick="shareCurrentTrack()" aria-label="分享"><span data-icon="share"></span></button>
       </header>
       <div class="full-main" id="full-main" onclick="toggleLyricsPanel(event)">
@@ -2729,7 +2767,8 @@
       saveAppSettings();
       syncQualityControls();
       showToast('音质已切换为 ' + getQualityShortLabel(next));
-      if (document.getElementById('setting-drawer-title')?.textContent === '音质选择') renderQualityDrawerBody();
+      renderQualityMenu();
+      closeQualityMenu();
       if (currentTrack && currentTrack.source && currentTrack.source !== 'local') {
         var wasPlaying = !audioPlayer.paused;
         var resumeTime = audioPlayer.currentTime || 0;
@@ -2810,6 +2849,7 @@
       if (select) select.value = appSettings.quality || '320';
       var entry = document.getElementById('full-quality-entry');
       if (entry) entry.textContent = getQualityShortLabel(appSettings.quality || '320');
+      renderQualityMenu();
     }
     function syncPlaybackSpeedUi() {
       if (!audioPlayer) return;
@@ -2832,22 +2872,27 @@
         ['999', '无损 (999kbps)']
       ];
     }
-    function renderQualityDrawerBody() {
-      var body = document.getElementById('setting-drawer-body');
-      if (!body) return;
-      body.innerHTML =
-        '<div class="choice-list">' + getQualityOptions().map(function(item) {
-          var active = (appSettings.quality || '320') === item[0];
-          return '<button class="choice-option' + (active ? ' active' : '') + '" type="button" data-quality-value="' + item[0] + '"><span>' + item[1] + '</span>' + (active ? '<span data-icon="check"></span>' : '') + '</button>';
-        }).join('') + '</div>';
-      body.querySelectorAll('[data-quality-value]').forEach(function(button) {
+    function renderQualityMenu() {
+      var menu = document.getElementById('full-quality-menu');
+      if (!menu) return;
+      menu.innerHTML = getQualityOptions().map(function(item) {
+        var active = (appSettings.quality || '320') === item[0];
+        return '<button class="full-quality-option' + (active ? ' active' : '') + '" type="button" data-quality-value="' + item[0] + '" role="menuitem"><span>' + item[1] + '</span>' + (active ? '<span data-icon="check"></span>' : '') + '</button>';
+      }).join('');
+      menu.querySelectorAll('[data-quality-value]').forEach(function(button) {
         button.addEventListener('click', function(event) {
           event.preventDefault();
           event.stopPropagation();
           setAudioQuality(button.dataset.qualityValue);
         });
       });
-      hydrateIcons(body);
+      hydrateIcons(menu);
+    }
+    function closeQualityMenu() {
+      var menu = document.getElementById('full-quality-menu');
+      var entry = document.getElementById('full-quality-entry');
+      if (menu) menu.classList.remove('open');
+      if (entry) entry.setAttribute('aria-expanded', 'false');
     }
     function updatePlayerMetaActions() {
       var current = document.getElementById('current-time');
@@ -2882,14 +2927,15 @@
       var input = document.getElementById('bilibili-match-keywords');
       if (input) input.value = appSettings.bilibiliMatchKeywords || '';
     }
-    function openQualityDrawer(event) {
+    function toggleQualityMenu(event) {
       event?.stopPropagation?.();
-      closeTrackActionDrawer();
-      document.getElementById('setting-drawer-title').textContent = '音质选择';
-      document.getElementById('setting-drawer-desc').textContent = '切换后会即时刷新当前音源。';
-      renderQualityDrawerBody();
-      document.getElementById('setting-drawer').classList.add('open');
-      document.getElementById('setting-drawer-scrim').classList.add('open');
+      var menu = document.getElementById('full-quality-menu');
+      var entry = document.getElementById('full-quality-entry');
+      if (!menu) return;
+      renderQualityMenu();
+      var open = !menu.classList.contains('open');
+      menu.classList.toggle('open', open);
+      if (entry) entry.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
     function openPlaybackSpeedDrawer(event) {
       event?.stopPropagation?.();
@@ -6521,6 +6567,7 @@
     }
     function toggleLyricsPanel(event) {
       if (event?.target?.closest?.('button, input, .seek, .controls, .full-meta')) return;
+      closeQualityMenu();
       var main = document.getElementById('full-main');
       var opening = !main.classList.contains('show-lyrics');
       main.classList.toggle('show-lyrics', opening);
@@ -6967,6 +7014,7 @@
       sourceMenu.classList.remove('open');
       aggregateSourcePanel.classList.remove('open');
       document.getElementById('aggregate-source-chevron')?.classList.remove('open');
+      closeQualityMenu();
     });
     function handleLikePointer(event) {
       const likeButton = event.target.closest('.full-meta .like');
@@ -7236,6 +7284,7 @@
     function closeFullPlayer() {
       setQueueDrawerOpen(false);
       closeTrackActionDrawer();
+      closeQualityMenu();
       document.getElementById('full-player').classList.remove('open');
       document.getElementById('full-main').classList.remove('show-lyrics');
       document.body.classList.remove('full-player-open');
