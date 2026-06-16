@@ -1372,6 +1372,25 @@
       border-radius: 16px; display: grid; place-items: center; transition: background .18s ease, color .18s ease, transform .18s ease;
       flex: 0 0 auto;
     }
+    .controls .mode-control {
+      width: 58px;
+      height: 52px;
+      gap: 2px;
+      grid-template-rows: 24px 14px;
+      font-size: 10px;
+      line-height: 1;
+      color: rgba(255,255,255,.68);
+    }
+    .controls .mode-control .mode-label {
+      max-width: 56px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 10px;
+      transform: scale(.92);
+      transform-origin: center;
+    }
+    .controls .mode-control.active { color: #fff; background: rgba(255,255,255,.1); }
     .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .progress svg, .progress .line-icon, .queue svg, .queue .line-icon {
       width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     }
@@ -1624,6 +1643,8 @@
       }
       .controls { height: 92px; padding: 12px 22px 24px; }
       .controls button { width: 45px; height: 45px; border-radius: 15px; }
+      .controls .mode-control { width: 54px; height: 49px; }
+      .controls .mode-control .mode-label { max-width: 52px; }
       .controls .main-play { width: 64px; height: 64px; }
       .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .queue svg, .queue .line-icon { width: 21px; height: 21px; }
       .controls .main-play svg, .controls .main-play .line-icon { width: 23px; height: 23px; }
@@ -2167,7 +2188,7 @@
       </div>
       <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢"><span data-icon="heart"></span></button></div>
       <div class="seek" id="full-seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><button class="time-action" id="current-time" onclick="openPlaybackSpeedDrawer(event)" type="button">0:00</button><button class="time-action" id="duration-time" onclick="openSleepTimerDrawer(event)" type="button">3:43</button></div></div>
-      <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button id="queue-button" type="button" onclick="toggleQueueDrawer(event)" aria-label="播放列表" aria-controls="queue-drawer" aria-expanded="false"></button></div>
+      <div class="controls"><button class="mode-control" id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button id="queue-button" type="button" onclick="toggleQueueDrawer(event)" aria-label="播放列表" aria-controls="queue-drawer" aria-expanded="false"></button></div>
     </section>
     <div class="drawer-scrim" id="queue-scrim" onclick="closeQueueDrawer(event)"></div>
     <aside class="queue-drawer" id="queue-drawer" role="dialog" aria-modal="true" aria-label="播放队列" aria-hidden="true" tabindex="-1">
@@ -3583,8 +3604,12 @@
     };
     function updateControlIcons() {
       const mode = playModes[playModeIndex].value;
-      document.getElementById('mode-button').innerHTML = mode === 'single' ? icons.repeat1 : (mode === 'shuffle' ? icons.shuffle : icons.repeat);
-      document.getElementById('mode-button').setAttribute('aria-label', playModes[playModeIndex].label);
+      var modeButton = document.getElementById('mode-button');
+      if (modeButton) {
+        modeButton.innerHTML = '<span class="mode-icon">' + (mode === 'single' ? icons.repeat1 : (mode === 'shuffle' ? icons.shuffle : icons.repeat)) + '</span><span class="mode-label">' + playModes[playModeIndex].label + '</span>';
+        modeButton.setAttribute('aria-label', playModes[playModeIndex].label);
+        modeButton.classList.toggle('active', mode !== 'loop');
+      }
       document.querySelector('.controls button[aria-label="上一首"]').innerHTML = icons.skipBack;
       document.querySelector('.controls button[aria-label="下一首"]').innerHTML = icons.skipForward;
       document.querySelector('.controls button[aria-label="播放列表"]').innerHTML = icons.listVideo;
@@ -4200,9 +4225,8 @@
       if (event) event.stopPropagation();
       playModeIndex = (playModeIndex + 1) % playModes.length;
       writeStoredValue('ljyyt_play_mode_index', playModeIndex);
-      var playModeLabel = document.getElementById('play-mode-label');
-      if (playModeLabel) playModeLabel.textContent = playModes[playModeIndex].label;
       updateControlIcons();
+      showToast('播放模式：' + playModes[playModeIndex].label);
     }
     function toggleQueueDrawer(event) {
       if (event) event.stopPropagation();
