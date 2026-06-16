@@ -1254,6 +1254,7 @@
     .full-header {
       height: 74px; padding: 18px 19px; display: flex; align-items: center; justify-content: space-between;
       color: rgba(255,255,255,.7);
+      position: relative;
     }
     .icon-button {
       width: 42px; height: 42px; display: grid; place-items: center; cursor: pointer;
@@ -1270,6 +1271,28 @@
       transition: background .18s ease, color .18s ease;
     }
     .mode:hover { background: rgba(255,255,255,.11); color: white; }
+    .full-quality-entry {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      min-width: 64px;
+      max-width: 42%;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: rgba(255,255,255,.08);
+      transition: background .18s ease, color .18s ease;
+    }
+    .full-quality-entry:hover { background: rgba(255,255,255,.13); color: white; }
     .full-main {
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 18px; padding: 18px 22px; cursor: pointer;
@@ -1334,6 +1357,15 @@
     .seek-line::before { content: ""; width: var(--audio-progress, 0%); position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: white; }
     .seek-line::after { content: ""; position: absolute; left: calc(var(--audio-progress, 0%) - 6px); top: 50%; width: 12px; height: 12px; transform: translateY(-50%); border-radius: 50%; background: white; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
     .times { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.45); margin-top: 8px; }
+    .time-action {
+      min-width: 54px;
+      color: rgba(255,255,255,.58);
+      text-align: left;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .time-action:last-child { text-align: right; }
+    .time-action.active { color: #fff; font-weight: 650; }
     .controls { height: 100px; padding: 15px 31px 27px; display: flex; align-items: center; justify-content: space-between; }
     .controls button {
       color: rgba(255,255,255,.72); font-size: 23px; width: 48px; height: 48px;
@@ -1478,6 +1510,41 @@
     .queue-drawer .track img { width: 48px; height: 48px; border-radius: 10px; }
     .queue-drawer .track .track-name { font-size: 15px; font-weight: 500; line-height: 1.35; }
     .queue-drawer .track .artist { font-size: 13px; margin-top: 2px; opacity: .7; }
+    .choice-list { display: grid; gap: 8px; padding: 4px 0 0; }
+    .choice-option {
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--foreground);
+      background: transparent;
+      font-size: 14px;
+      text-align: left;
+    }
+    .choice-option.active { color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); }
+    .choice-option .line-icon { width: 16px; height: 16px; }
+    .drawer-slider-row { display: grid; gap: 12px; padding: 8px 2px 4px; }
+    .drawer-slider-row input[type="range"] { width: 100%; accent-color: var(--primary); }
+    .drawer-scale { display: flex; justify-content: space-between; color: var(--muted-foreground); font-size: 12px; }
+    .keyword-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .keyword-preset {
+      min-height: 30px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--muted);
+      color: var(--foreground);
+      font-size: 13px;
+    }
+    .keyword-preset.active {
+      border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+      background: color-mix(in srgb, var(--primary) 10%, transparent);
+      color: var(--primary);
+    }
     .track.current-track { background: color-mix(in srgb, var(--muted) 58%, transparent); border-radius: 16px; }
     .track.current-track .track-name { color: var(--primary); font-weight: 700; }
     .queue-remove {
@@ -2026,7 +2093,7 @@
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Netease</p><small>网易云官方，稳定高速</small></span><span class="aggregate-source-tools"></span></label>
             </div>
             <div class="setting-item"><span class="setting-icon" data-icon="volume"></span><div class="setting-copy"><p>音量调节</p></div><div class="setting-action volume-control"><span id="volume-label">100%</span><input class="volume-slider" data-setting="volume" type="range" min="0" max="100" step="1" value="100" oninput="setSettingsVolume(this.value)"></div></div>
-            <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select"><option>标准 (128kbps)</option><option>高品 (192kbps)</option><option selected>极高 (320kbps)</option><option>无损 (999kbps)</option></select></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="music"></span><div class="setting-copy"><p>音质设置</p></div><div class="setting-action"><select class="setting-select" id="quality-select" onchange="setAudioQuality(this.value)"><option value="128">标准 (128kbps)</option><option value="192">高品 (192kbps)</option><option value="320">极高 (320kbps)</option><option value="999">无损 (999kbps)</option></select></div></div>
 
           </div>
           <div class="setting-group"><h3>界面设置</h3>
@@ -2045,7 +2112,7 @@
             <div class="setting-item" onclick="showView('trash')"><span class="setting-icon" data-icon="trash"></span><div class="setting-copy"><p>回收站</p><small>恢复误删的歌曲和歌单</small></div><div class="setting-action"><span class="setting-chevron" data-icon="chevronRight"></span></div></div>
           </div>
           <div class="setting-group"><h3>高级设置</h3>
-            <div class="setting-item"><span class="setting-icon" data-icon="video"></span><div class="setting-copy"><p>B站换源匹配关键词</p><small>多个关键词用逗号分隔，用于放宽 B站备用音源匹配</small></div><div class="setting-action"><input class="setting-select" id="bilibili-match-keywords" type="text" placeholder="现场, cover" onchange="setBilibiliMatchKeywords(this.value)" onkeydown="if(event.key==='Enter') setBilibiliMatchKeywords(this.value)"></div></div>
+            <div class="setting-item"><span class="setting-icon" data-icon="video"></span><div class="setting-copy"><p>B站换源匹配关键词</p><small>多个关键词用空格或逗号分隔，用于放宽 B站备用音源匹配</small><div class="keyword-presets" id="bilibili-keyword-presets"></div></div><div class="setting-action"><input class="setting-select" id="bilibili-match-keywords" type="text" placeholder="高音质 原曲" onchange="setBilibiliMatchKeywords(this.value)" onkeydown="if(event.key==='Enter') setBilibiliMatchKeywords(this.value)"></div></div>
             <div class="setting-item" onclick="openSettingDrawer('api')"><span class="setting-icon" data-icon="globe"></span><div class="setting-copy"><p>API 地址</p><small>使用默认地址</small></div><div class="setting-action"><span class="simple-select">默认</span></div></div>
           </div>
           <div class="setting-group"><h3>关于系统</h3>
@@ -2089,7 +2156,7 @@
       <div class="fullscreen-bg"></div>
       <header class="full-header">
         <button class="icon-button" onclick="closeFullPlayer()" aria-label="收起播放器"><span data-icon="chevronDown"></span></button>
-        <button class="mode" id="play-mode-label" onclick="cyclePlayMode(event)" type="button">列表循环</button>
+        <button class="full-quality-entry" id="full-quality-entry" onclick="openQualityDrawer(event)" type="button">极高</button>
         <button class="icon-button" onclick="shareCurrentTrack()" aria-label="分享"><span data-icon="share"></span></button>
       </header>
       <div class="full-main" id="full-main" onclick="toggleLyricsPanel(event)">
@@ -2099,7 +2166,7 @@
         </div>
       </div>
       <div class="full-meta"><div><h2>快乐人生</h2><p>和月圆</p></div><button class="like" type="button" aria-label="喜欢"><span data-icon="heart"></span></button></div>
-      <div class="seek" id="full-seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><span id="current-time">0:00</span><span id="duration-time">3:43</span></div></div>
+      <div class="seek" id="full-seek" onclick="seekAudio(event)"><div class="seek-line" id="seek-line"></div><div class="times"><button class="time-action" id="current-time" onclick="openPlaybackSpeedDrawer(event)" type="button">0:00</button><button class="time-action" id="duration-time" onclick="openSleepTimerDrawer(event)" type="button">3:43</button></div></div>
       <div class="controls"><button id="mode-button" onclick="cyclePlayMode(event)" aria-label="播放模式"></button><button onclick="previousTrack()" aria-label="上一首"></button><button class="main-play" id="full-play" onclick="toggleAudio(event)" aria-label="播放"></button><button onclick="nextTrack()" aria-label="下一首"></button><button id="queue-button" type="button" onclick="toggleQueueDrawer(event)" aria-label="播放列表" aria-controls="queue-drawer" aria-expanded="false"></button></div>
     </section>
     <div class="drawer-scrim" id="queue-scrim" onclick="closeQueueDrawer(event)"></div>
@@ -2481,10 +2548,16 @@
       embedCover: true,
       embedLyrics: true,
       volume: 100,
+      quality: '320',
       fullBackgroundMode: 'cover',
       theme: 'light',
       playlistSortMode: 'added',
-      bilibiliMatchKeywords: ''
+      bilibiliMatchKeywords: '',
+      playbackSpeed: 1,
+      sleepTimerDuration: 30,
+      sleepTimerRemaining: 0,
+      sleepTimerIsActive: false,
+      sleepTimerEndTime: 0
     };
     function normalizeAppSettings(stored) {
       var normalized = Object.assign({}, defaultSettings);
@@ -2495,9 +2568,21 @@
       if (stored.playlistSortMode === 'added' || stored.playlistSortMode === 'artist' || stored.playlistSortMode === 'title') {
         normalized.playlistSortMode = stored.playlistSortMode;
       }
+      if (typeof stored.quality === 'string' && ['128', '192', '320', '999'].includes(stored.quality)) {
+        normalized.quality = stored.quality;
+      }
       if (typeof stored.bilibiliMatchKeywords === 'string') {
         normalized.bilibiliMatchKeywords = stored.bilibiliMatchKeywords.trim().slice(0, 120);
       }
+      var playbackSpeed = Number(stored.playbackSpeed);
+      if (Number.isFinite(playbackSpeed)) normalized.playbackSpeed = Math.max(0.5, Math.min(2, Math.round(playbackSpeed * 10) / 10));
+      var sleepTimerDuration = Number(stored.sleepTimerDuration);
+      if (Number.isFinite(sleepTimerDuration)) normalized.sleepTimerDuration = Math.max(1, Math.min(120, Math.round(sleepTimerDuration)));
+      var sleepTimerRemaining = Number(stored.sleepTimerRemaining);
+      if (Number.isFinite(sleepTimerRemaining)) normalized.sleepTimerRemaining = Math.max(0, Math.round(sleepTimerRemaining));
+      if (typeof stored.sleepTimerIsActive === 'boolean') normalized.sleepTimerIsActive = stored.sleepTimerIsActive;
+      var sleepTimerEndTime = Number(stored.sleepTimerEndTime);
+      if (Number.isFinite(sleepTimerEndTime)) normalized.sleepTimerEndTime = Math.max(0, Math.round(sleepTimerEndTime));
       var volume = Number(stored.volume);
       if (Number.isFinite(volume)) normalized.volume = Math.max(0, Math.min(100, Math.round(volume)));
       if (stored.fullBackgroundMode === 'theme' || stored.fullBackgroundMode === 'cover' || stored.fullBackgroundMode === 'texture') {
@@ -2594,14 +2679,210 @@
     }
     function getBilibiliMatchKeywords() {
       return String(appSettings && appSettings.bilibiliMatchKeywords || '')
-        .split(/[,\n，、]+/)
+        .split(/[,\n，、\s]+/)
+        .map(function(item) { return String(item || '').trim(); })
+        .filter(Boolean)
         .map(function(item) { return normalizeTrackText(item); })
+        .filter(Boolean);
+    }
+    function getBilibiliRawKeywords() {
+      return String(appSettings && appSettings.bilibiliMatchKeywords || '')
+        .split(/[,\n，、\s]+/)
+        .map(function(item) { return String(item || '').trim(); })
         .filter(Boolean);
     }
     function setBilibiliMatchKeywords(value) {
       appSettings.bilibiliMatchKeywords = String(value || '').trim().slice(0, 120);
       saveAppSettings();
+      syncBilibiliKeywordPresets();
       showToast('已保存 B站匹配关键词');
+    }
+    function getQualityLabel(value) {
+      var map = { '128': '标准 (128kbps)', '192': '高品 (192kbps)', '320': '极高 (320kbps)', '999': '无损 (999kbps)' };
+      return map[String(value)] || map['320'];
+    }
+    function getQualityShortLabel(value) {
+      var map = { '128': '标准', '192': '高品', '320': '极高', '999': '无损' };
+      return map[String(value)] || '极高';
+    }
+    function getPlaybackSpeedLabel(speed) {
+      var value = Math.max(0.5, Math.min(2, Number(speed) || 1));
+      return value.toFixed(1) + 'x';
+    }
+    function getSleepTimerLabel() {
+      if (!appSettings.sleepTimerIsActive || !appSettings.sleepTimerRemaining) return '睡眠';
+      return formatDuration(appSettings.sleepTimerRemaining);
+    }
+    function setAudioQuality(value) {
+      var next = ['128', '192', '320', '999'].includes(String(value)) ? String(value) : '320';
+      if (appSettings.quality === next) return;
+      appSettings.quality = next;
+      saveAppSettings();
+      syncQualityControls();
+      showToast('音质已切换为 ' + getQualityShortLabel(next));
+      if (document.getElementById('setting-drawer-title')?.textContent === '音质选择') openQualityDrawer({ stopPropagation: function() {} });
+      if (currentTrack && currentTrack.source && currentTrack.source !== 'local') {
+        var wasPlaying = !audioPlayer.paused;
+        var resumeTime = audioPlayer.currentTime || 0;
+        currentTrack.src = '';
+        _isResolvingUrl = true;
+        Promise.resolve(ensurePlayableTrackUrl(currentTrack)).then(function() {
+          _isResolvingUrl = false;
+          if (currentTrack.src) {
+            audioPlayer.src = currentTrack.src;
+            audioPlayer.load();
+            if (resumeTime > 0) {
+              var restoreQualityTime = function() {
+                audioPlayer.removeEventListener('loadedmetadata', restoreQualityTime);
+                audioPlayer.currentTime = Math.min(resumeTime, audioPlayer.duration || resumeTime);
+              };
+              audioPlayer.addEventListener('loadedmetadata', restoreQualityTime);
+            }
+            if (wasPlaying) audioPlayer.play().catch(function() {});
+          }
+        }).catch(function() {
+          _isResolvingUrl = false;
+        });
+      }
+      updatePlayerMetaActions();
+    }
+    function setPlaybackSpeed(value) {
+      var next = Math.max(0.5, Math.min(2, Math.round((Number(value) || 1) * 10) / 10));
+      appSettings.playbackSpeed = next;
+      saveAppSettings();
+      audioPlayer.playbackRate = next;
+      syncPlaybackSpeedUi();
+      updatePlayerMetaActions();
+      var title = document.getElementById('setting-drawer-title');
+      if (title && title.textContent.indexOf('倍速') >= 0) title.textContent = '倍速：' + getPlaybackSpeedLabel(next);
+    }
+    function setSleepTimerDuration(value) {
+      var next = Math.max(1, Math.min(120, Math.round(Number(value) || 30)));
+      appSettings.sleepTimerDuration = next;
+      saveAppSettings();
+      var label = document.getElementById('sleep-duration-label');
+      if (label) label.textContent = next + '分钟';
+    }
+    function stopSleepTimer() {
+      appSettings.sleepTimerIsActive = false;
+      appSettings.sleepTimerRemaining = 0;
+      appSettings.sleepTimerEndTime = 0;
+      saveAppSettings();
+      syncSleepTimerUi();
+      updatePlayerMetaActions();
+      closeSettingDrawer();
+    }
+    function startSleepTimer() {
+      var duration = Math.max(1, Math.min(120, Math.round(Number(appSettings.sleepTimerDuration) || 30)));
+      appSettings.sleepTimerDuration = duration;
+      appSettings.sleepTimerRemaining = duration * 60;
+      appSettings.sleepTimerEndTime = Date.now() + appSettings.sleepTimerRemaining * 1000;
+      appSettings.sleepTimerIsActive = true;
+      saveAppSettings();
+      syncSleepTimerUi();
+      updatePlayerMetaActions();
+      closeSettingDrawer();
+    }
+    function tickSleepTimer() {
+      if (!appSettings.sleepTimerIsActive) return;
+      var remaining = Math.max(0, Math.ceil((Number(appSettings.sleepTimerEndTime) - Date.now()) / 1000));
+      if (!remaining) {
+        stopSleepTimer();
+        audioPlayer.pause();
+        return;
+      }
+      appSettings.sleepTimerRemaining = remaining;
+      saveAppSettings();
+      syncSleepTimerUi();
+      updatePlayerMetaActions();
+    }
+    function syncQualityControls() {
+      var select = document.getElementById('quality-select');
+      if (select) select.value = appSettings.quality || '320';
+      var entry = document.getElementById('full-quality-entry');
+      if (entry) entry.textContent = getQualityShortLabel(appSettings.quality || '320');
+    }
+    function syncPlaybackSpeedUi() {
+      if (!audioPlayer) return;
+      audioPlayer.playbackRate = Math.max(0.5, Math.min(2, Number(appSettings.playbackSpeed) || 1));
+      var current = document.getElementById('current-time');
+      if (current) current.dataset.speed = getPlaybackSpeedLabel(appSettings.playbackSpeed);
+    }
+    function syncSleepTimerUi() {
+      var duration = document.getElementById('duration-time');
+      if (duration) duration.dataset.timer = appSettings.sleepTimerIsActive ? formatDuration(appSettings.sleepTimerRemaining) : '';
+      var current = document.getElementById('current-time');
+      if (current) current.classList.toggle('active', Math.abs((Number(appSettings.playbackSpeed) || 1) - 1) > 0.01);
+      if (duration) duration.classList.toggle('active', !!appSettings.sleepTimerIsActive && appSettings.sleepTimerRemaining > 0);
+    }
+    function updatePlayerMetaActions() {
+      var current = document.getElementById('current-time');
+      var speedChanged = Math.abs((Number(appSettings.playbackSpeed) || 1) - 1) > 0.01;
+      if (current) current.textContent = formatDuration(audioPlayer.currentTime || 0) + (speedChanged ? ' x' + (Number(appSettings.playbackSpeed) || 1).toFixed(1) : '');
+      var duration = document.getElementById('duration-time');
+      if (duration) {
+        var trackDuration = formatDuration(currentTrack && currentTrack.duration);
+        duration.textContent = appSettings.sleepTimerIsActive && appSettings.sleepTimerRemaining > 0 ? trackDuration + ' · ' + formatDuration(appSettings.sleepTimerRemaining) : trackDuration;
+      }
+      syncPlaybackSpeedUi();
+      syncSleepTimerUi();
+    }
+    function syncBilibiliKeywordPresets() {
+      var presetList = document.getElementById('bilibili-keyword-presets');
+      if (!presetList) return;
+      var presets = ['高音质', '无损', 'HiFi', 'Hi-Res', '原曲'];
+      var keywords = new Set(getBilibiliMatchKeywords());
+      presetList.innerHTML = presets.map(function(keyword) {
+        var active = keywords.has(normalizeTrackText(keyword));
+        return '<button class="keyword-preset' + (active ? ' active' : '') + '" type="button" onclick="toggleBilibiliKeywordPreset(\'' + keyword + '\')">' + escapeMarkup(keyword) + '</button>';
+      }).join('');
+    }
+    function toggleBilibiliKeywordPreset(keyword) {
+      var rawWords = getBilibiliRawKeywords();
+      var words = new Set(rawWords);
+      var normalized = normalizeTrackText(keyword);
+      var existing = rawWords.find(function(item) { return normalizeTrackText(item) === normalized; });
+      if (existing) words.delete(existing);
+      else words.add(keyword);
+      setBilibiliMatchKeywords(Array.from(words).join(' '));
+      var input = document.getElementById('bilibili-match-keywords');
+      if (input) input.value = appSettings.bilibiliMatchKeywords || '';
+    }
+    function openQualityDrawer(event) {
+      event?.stopPropagation?.();
+      var options = [
+        ['128', '标准 (128kbps)'],
+        ['192', '高品 (192kbps)'],
+        ['320', '极高 (320kbps)'],
+        ['999', '无损 (999kbps)']
+      ];
+      openSettingDrawer('quality');
+      document.getElementById('setting-drawer-title').textContent = '音质选择';
+      document.getElementById('setting-drawer-desc').textContent = '切换后会即时刷新当前音源。';
+      document.getElementById('setting-drawer-body').innerHTML =
+        '<div class="choice-list">' + options.map(function(item) {
+          return '<button class="choice-option' + ((appSettings.quality || '320') === item[0] ? ' active' : '') + '" type="button" onclick="setAudioQuality(\'' + item[0] + '\')"><span>' + item[1] + '</span>' + (((appSettings.quality || '320') === item[0]) ? '<span data-icon="check"></span>' : '') + '</button>';
+        }).join('') + '</div>';
+      hydrateIcons(document.getElementById('setting-drawer-body'));
+    }
+    function openPlaybackSpeedDrawer(event) {
+      event?.stopPropagation?.();
+      var speeds = [0.5, 0.8, 1.0, 1.2, 1.5, 2.0];
+      openSettingDrawer('speed');
+      document.getElementById('setting-drawer-title').textContent = '倍速播放';
+      document.getElementById('setting-drawer-desc').textContent = '当前 ' + getPlaybackSpeedLabel(appSettings.playbackSpeed);
+      document.getElementById('setting-drawer-body').innerHTML =
+        '<div class="drawer-slider-row"><input id="speed-slider" type="range" min="5" max="20" step="1" value="' + Math.round((appSettings.playbackSpeed || 1) * 10) + '" oninput="setPlaybackSpeed(Number(this.value)/10)"><div class="drawer-scale">' + speeds.map(function(speed) { return '<button class="keyword-preset' + (Math.abs(speed - (appSettings.playbackSpeed || 1)) < 0.01 ? ' active' : '') + '" type="button" onclick="setPlaybackSpeed(' + speed + ')">' + speed.toFixed(1) + 'x</button>'; }).join('') + '</div></div>';
+    }
+    function openSleepTimerDrawer(event) {
+      event?.stopPropagation?.();
+      openSettingDrawer('sleep');
+      document.getElementById('setting-drawer-title').textContent = '睡眠定时';
+      document.getElementById('setting-drawer-desc').textContent = appSettings.sleepTimerIsActive ? '剩余 ' + formatDuration(appSettings.sleepTimerRemaining) : '开启后到点自动停止播放。';
+      document.getElementById('setting-drawer-body').innerHTML =
+        '<div class="drawer-slider-row"><input id="sleep-slider" type="range" min="1" max="120" step="1" value="' + (appSettings.sleepTimerDuration || 30) + '" oninput="setSleepTimerDuration(this.value)"><div class="drawer-scale"><span>1分钟</span><span id="sleep-duration-label">' + (appSettings.sleepTimerDuration || 30) + '分钟</span><span>120分钟</span></div></div><div class="drawer-actions">' +
+          (appSettings.sleepTimerIsActive ? '<button onclick="stopSleepTimer()">停止定时</button>' : '<button class="primary" onclick="startSleepTimer()">开启定时关闭</button>') +
+        '</div>';
     }
     function getSeekableDuration() {
       return parseTrackDuration(audioPlayer && audioPlayer.duration) ||
@@ -3351,6 +3632,7 @@
       document.getElementById('current-time').textContent = '0:00';
       document.getElementById('seek-line').style.setProperty('--audio-progress', '0%');
       updateMiniProgress(0);
+      updatePlayerMetaActions();
     }
     function setCurrentTrack(track) {
       var prevSrc = currentTrack && currentTrack.src;
@@ -3388,6 +3670,9 @@
         audioPlayer.src = currentTrack.src;
         audioPlayer.load();
       }
+      if (typeof syncQualityControls === 'function') syncQualityControls();
+      if (typeof syncPlaybackSpeedUi === 'function') syncPlaybackSpeedUi();
+      if (typeof syncSleepTimerUi === 'function') syncSleepTimerUi();
     }
     async function ensureLibraryTracks() {
       if (libraryTracks.length) return libraryTracks;
@@ -5239,6 +5524,11 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
+      var quality = '320';
+      try {
+        var settingQuality = typeof appSettings !== 'undefined' && appSettings ? String(appSettings.quality || '320') : '320';
+        quality = ['128', '192', '320', '999'].includes(settingQuality) ? settingQuality : '320';
+      } catch (error) {}
       if (track.source === '_netease') {
         try {
           return await resolveNeteaseApiTrackUrl(track);
@@ -5257,7 +5547,7 @@
       }
       if (track.source === 'qq') {
         try {
-          var qqPayload = await fetchQqTrackUrlPayload(track.urlId);
+          var qqPayload = await fetchQqTrackUrlPayload(track.urlId, quality);
           var qqUrl = normalizeAudioUrl(qqPayload && qqPayload.url ? String(qqPayload.url) : '');
           if (!qqUrl) return '';
           return /^http:\/\//i.test(qqUrl) ? getAudioProxyUrl(qqUrl) : qqUrl;
@@ -5267,7 +5557,7 @@
         }
       }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
-        '&id=' + encodeURIComponent(track.urlId) + '&br=192';
+        '&id=' + encodeURIComponent(track.urlId) + '&br=' + encodeURIComponent(quality);
       try {
         var payload = await fetchGdMusicJson(url);
         var resolved = payload && payload.url ? String(payload.url) : '';
@@ -5284,7 +5574,7 @@
         return '';
       }
     }
-    async function fetchQqTrackUrlPayload(urlId) {
+    async function fetchQqTrackUrlPayload(urlId, quality) {
       function fetchWithTimeout(url, options, timeoutMs) {
         options = options || {};
         timeoutMs = timeoutMs || 8000;
@@ -5297,7 +5587,7 @@
         });
       }
       try {
-        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=320');
+        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=' + encodeURIComponent(quality || '320'));
         if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
         var payload = await qqResponse.json();
         if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
@@ -5310,7 +5600,7 @@
         var fallbackResponse = await fetchWithTimeout(qqFallbackProxyBase, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: '320k' })
+          body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: String(quality || '320') + 'k' })
         });
         if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
         return fallbackResponse.json();
@@ -6928,13 +7218,14 @@
       if (!currentTrack) return;
       var duration = parseTrackDuration(audioPlayer.duration) || parseTrackDuration(currentTrack.duration);
       if (duration) currentTrack.duration = duration;
-      document.getElementById('duration-time').textContent = formatDuration(duration);
+      updatePlayerMetaActions();
     }
     audioPlayer.addEventListener('loadedmetadata', () => {
       updateAudioDurationUi();
+      syncPlaybackSpeedUi();
       if (restoredPlaybackTime) {
         audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
-        document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
+        updatePlayerMetaActions();
         const duration = audioPlayer.duration || currentTrack.duration || 0;
         const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
         document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
@@ -6948,13 +7239,14 @@
       if (!isSeekingAudio) {
         const duration = audioPlayer.duration || currentTrack.duration || 0;
         const progress = duration ? Math.min(100, (audioPlayer.currentTime / duration) * 100) : 0;
-        document.getElementById('current-time').textContent = formatDuration(audioPlayer.currentTime);
+        updatePlayerMetaActions();
         document.getElementById('seek-line').style.setProperty('--audio-progress', progress + '%');
         updateMiniProgress(progress);
         syncLyrics();
       }
       savePlaybackState();
     });
+    setInterval(tickSleepTimer, 1000);
     window.addEventListener('beforeunload', function() { savePlaybackState(true); });
     audioPlayer.addEventListener('pause', confirmAudioPaused);
     audioPlayer.addEventListener('play', confirmAudioPlaying);
@@ -6985,6 +7277,10 @@
     if (!restorePlaybackState()) {
       setCurrentTrack(currentTrack);
     }
+    syncQualityControls();
+    syncPlaybackSpeedUi();
+    syncSleepTimerUi();
+    syncBilibiliKeywordPresets();
     hydrateIcons(document);
     initSeekDragging();
     updateControlIcons();
