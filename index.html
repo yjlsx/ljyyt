@@ -1373,22 +1373,9 @@
       flex: 0 0 auto;
     }
     .controls .mode-control {
-      width: 58px;
-      height: 52px;
-      gap: 2px;
-      grid-template-rows: 24px 14px;
-      font-size: 10px;
-      line-height: 1;
+      width: 48px;
+      height: 48px;
       color: rgba(255,255,255,.68);
-    }
-    .controls .mode-control .mode-label {
-      max-width: 56px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 10px;
-      transform: scale(.92);
-      transform-origin: center;
     }
     .controls .mode-control.active { color: #fff; background: rgba(255,255,255,.1); }
     .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .progress svg, .progress .line-icon, .queue svg, .queue .line-icon {
@@ -1643,8 +1630,7 @@
       }
       .controls { height: 92px; padding: 12px 22px 24px; }
       .controls button { width: 45px; height: 45px; border-radius: 15px; }
-      .controls .mode-control { width: 54px; height: 49px; }
-      .controls .mode-control .mode-label { max-width: 52px; }
+      .controls .mode-control { width: 45px; height: 45px; }
       .controls .main-play { width: 64px; height: 64px; }
       .controls svg, .controls .line-icon, .icon-button svg, .icon-button .line-icon, .queue svg, .queue .line-icon { width: 21px; height: 21px; }
       .controls .main-play svg, .controls .main-play .line-icon { width: 23px; height: 23px; }
@@ -3606,7 +3592,7 @@
       const mode = playModes[playModeIndex].value;
       var modeButton = document.getElementById('mode-button');
       if (modeButton) {
-        modeButton.innerHTML = '<span class="mode-icon">' + (mode === 'single' ? icons.repeat1 : (mode === 'shuffle' ? icons.shuffle : icons.repeat)) + '</span><span class="mode-label">' + playModes[playModeIndex].label + '</span>';
+        modeButton.innerHTML = '<span class="mode-icon">' + (mode === 'single' ? icons.repeat1 : (mode === 'shuffle' ? icons.shuffle : icons.repeat)) + '</span>';
         modeButton.setAttribute('aria-label', playModes[playModeIndex].label);
         modeButton.classList.toggle('active', mode !== 'loop');
       }

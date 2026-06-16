@@ -13,7 +13,6 @@ for (const file of ['index.html', 'dist/index.html']) {
     'function stopSleepTimer',
     'id="full-quality-entry"',
     'class="mode-control"',
-    'class="mode-label"',
     "showToast('播放模式：'",
     'onclick="openPlaybackSpeedDrawer(event)"',
     'onclick="openSleepTimerDrawer(event)"',
