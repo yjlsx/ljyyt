@@ -668,6 +668,35 @@
     .discover-market-loading .line-icon { width: 24px; height: 24px; animation: spin 1s linear infinite; color: var(--primary); }
     @keyframes spin { to { transform: rotate(360deg); } }
     .discover-market-error { text-transform: none; letter-spacing: 0; padding: 24px; text-align: center; }
+    .playlist-sort-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 14px;
+      scrollbar-width: none;
+    }
+    .playlist-sort-controls::-webkit-scrollbar { display: none; }
+    .playlist-sort-controls .sort-btn {
+      flex: none;
+      min-height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--muted-foreground);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 14px;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .playlist-sort-controls .sort-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: var(--primary-foreground);
+      box-shadow: 0 2px 10px rgba(54,169,123,.18);
+    }
+    .playlist-sort-controls .sort-btn:active { transform: scale(.96); }
     .discover-my-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 8px 4px 16px;
@@ -1873,6 +1902,7 @@
             <button class="round-play" onclick="playFirstMarketPlaylist()" aria-label="播放歌单歌曲"><span data-icon="play"></span></button>
           </div>
         </div>
+        <div id="market-playlist-sort"></div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
         <div class="track-list playlist-page-list" id="market-playlist-list"><div class="empty-note">加载中...</div></div>
       </div>
@@ -1975,6 +2005,7 @@
           <div class="playlist-summary-cover" data-icon="music"></div>
           <div class="playlist-summary"><h2 id="user-playlist-hero-title">歌单</h2><p id="user-playlist-count">0 首歌曲</p><button class="round-play" onclick="playUserPlaylistAll()" aria-label="播放全部"><span data-icon="play"></span></button></div>
         </div>
+        <div id="user-playlist-sort"></div>
         <div class="page-list-head"><span>#</span><span>标题</span><span>操作</span></div>
         <div class="track-list playlist-page-list" id="user-playlist-list"><div class="empty-note">歌单暂无歌曲</div></div>
       </div>
@@ -2014,6 +2045,7 @@
             <div class="setting-item" onclick="showView('trash')"><span class="setting-icon" data-icon="trash"></span><div class="setting-copy"><p>回收站</p><small>恢复误删的歌曲和歌单</small></div><div class="setting-action"><span class="setting-chevron" data-icon="chevronRight"></span></div></div>
           </div>
           <div class="setting-group"><h3>高级设置</h3>
+            <div class="setting-item"><span class="setting-icon" data-icon="video"></span><div class="setting-copy"><p>B站换源匹配关键词</p><small>多个关键词用逗号分隔，用于放宽 B站备用音源匹配</small></div><div class="setting-action"><input class="setting-select" id="bilibili-match-keywords" type="text" placeholder="现场, cover" onchange="setBilibiliMatchKeywords(this.value)" onkeydown="if(event.key==='Enter') setBilibiliMatchKeywords(this.value)"></div></div>
             <div class="setting-item" onclick="openSettingDrawer('api')"><span class="setting-icon" data-icon="globe"></span><div class="setting-copy"><p>API 地址</p><small>使用默认地址</small></div><div class="setting-action"><span class="simple-select">默认</span></div></div>
           </div>
           <div class="setting-group"><h3>关于系统</h3>
@@ -2119,6 +2151,7 @@
       String(window.LJYYT_ENABLE_SAME_ORIGIN_AUDIO_API || '').toLowerCase() === 'true';
     const gdMusicApiBase = '/api/gd-music';
     const gdMusicFallbackBases = ['https://otter-music.pages.dev/music-api', ljyytApiBase + '/api/gd-music', 'https://music-api.gdstudio.xyz/api.php'];
+    const kuwoLxApiBase = 'https://otter-music.pages.dev/music-api';
     const SEARCH_RESULT_LIMIT = 100;
     function isLocalDevHostname(hostname) {
       hostname = String(hostname || '');
@@ -2126,6 +2159,7 @@
     }
     var _isLocalDev = isLocalDevHostname(location.hostname);
     const qqApiBase = (_isLocalDev || useSameOriginAudioApi) ? '/api/qq' : (ljyytApiBase + '/api/qq');
+    const qqOfficialApiBase = qqApiBase;
     const qqFallbackProxyBase = 'https://otter-music.pages.dev/music-api/qqmusic/proxy';
     async function fetchGdMusicJson(url, signal) {
       var urls = [url];
@@ -2440,6 +2474,7 @@
       writeStoredJson(key, value);
     }
     const SETTINGS_KEY = 'ljyyt_otter_settings';
+    const PLAYLIST_SORT_KEY = 'ljyyt_otter_playlist_sort';
     const defaultSettings = {
       smartSource: true,
       showSourceLabels: true,
@@ -2447,7 +2482,9 @@
       embedLyrics: true,
       volume: 100,
       fullBackgroundMode: 'cover',
-      theme: 'light'
+      theme: 'light',
+      playlistSortMode: 'added',
+      bilibiliMatchKeywords: ''
     };
     function normalizeAppSettings(stored) {
       var normalized = Object.assign({}, defaultSettings);
@@ -2455,6 +2492,12 @@
       ['smartSource', 'showSourceLabels', 'embedCover', 'embedLyrics'].forEach(function(key) {
         if (typeof stored[key] === 'boolean') normalized[key] = stored[key];
       });
+      if (stored.playlistSortMode === 'added' || stored.playlistSortMode === 'artist' || stored.playlistSortMode === 'title') {
+        normalized.playlistSortMode = stored.playlistSortMode;
+      }
+      if (typeof stored.bilibiliMatchKeywords === 'string') {
+        normalized.bilibiliMatchKeywords = stored.bilibiliMatchKeywords.trim().slice(0, 120);
+      }
       var volume = Number(stored.volume);
       if (Number.isFinite(volume)) normalized.volume = Math.max(0, Math.min(100, Math.round(volume)));
       if (stored.fullBackgroundMode === 'theme' || stored.fullBackgroundMode === 'cover' || stored.fullBackgroundMode === 'texture') {
@@ -2511,6 +2554,54 @@
     function formatDuration(seconds) {
       const total = Math.max(0, Math.round(parseTrackDuration(seconds)));
       return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+    }
+    function getPlaylistSortMode(scope) {
+      var key = PLAYLIST_SORT_KEY + '_' + String(scope || 'default');
+      var stored = readStoredJson(key, null);
+      var mode = typeof stored === 'string' ? stored : appSettings.playlistSortMode;
+      return mode === 'artist' || mode === 'title' || mode === 'added' ? mode : 'added';
+    }
+    function sortPlaylistTracks(tracks, mode) {
+      var list = Array.isArray(tracks) ? tracks.slice() : [];
+      mode = mode === 'artist' || mode === 'title' ? mode : 'added';
+      if (mode === 'added') return list;
+      return list
+        .map(function(track, index) { return { track: track, index: index }; })
+        .sort(function(a, b) {
+          var left = normalizeTrackText(mode === 'artist' ? a.track && a.track.artist : a.track && (a.track.title || a.track.name));
+          var right = normalizeTrackText(mode === 'artist' ? b.track && b.track.artist : b.track && (b.track.title || b.track.name));
+          return left.localeCompare(right, 'zh-Hans') || a.index - b.index;
+        })
+        .map(function(item) { return item.track; });
+    }
+    function renderPlaylistSortControls(scope) {
+      var mode = getPlaylistSortMode(scope);
+      var safeScope = String(scope || 'default').replace(/[^a-z0-9_-]/gi, '') || 'default';
+      return '<div class="playlist-sort-controls" data-playlist-sort-scope="' + escapeMarkup(safeScope) + '">' +
+        '<button class="sort-btn' + (mode === 'added' ? ' active' : '') + '" type="button" data-playlist-sort="added" onclick="setPlaylistSortMode(\'' + safeScope + '\', \'added\')">添加时间</button>' +
+        '<button class="sort-btn' + (mode === 'artist' ? ' active' : '') + '" type="button" data-playlist-sort="artist" onclick="setPlaylistSortMode(\'' + safeScope + '\', \'artist\')">歌手名</button>' +
+        '<button class="sort-btn' + (mode === 'title' ? ' active' : '') + '" type="button" data-playlist-sort="title" onclick="setPlaylistSortMode(\'' + safeScope + '\', \'title\')">歌曲名</button>' +
+      '</div>';
+    }
+    function setPlaylistSortMode(scope, mode) {
+      scope = String(scope || 'default');
+      mode = mode === 'artist' || mode === 'title' ? mode : 'added';
+      writeStoredJson(PLAYLIST_SORT_KEY + '_' + scope, mode);
+      appSettings.playlistSortMode = mode;
+      saveAppSettings();
+      if (scope === 'market') renderMarketPlaylistDetail(currentMarketPlaylistMeta, currentMarketPlaylistTracks);
+      if (scope === 'user') renderUserPlaylistDetail();
+    }
+    function getBilibiliMatchKeywords() {
+      return String(appSettings && appSettings.bilibiliMatchKeywords || '')
+        .split(/[,\n，、]+/)
+        .map(function(item) { return normalizeTrackText(item); })
+        .filter(Boolean);
+    }
+    function setBilibiliMatchKeywords(value) {
+      appSettings.bilibiliMatchKeywords = String(value || '').trim().slice(0, 120);
+      saveAppSettings();
+      showToast('已保存 B站匹配关键词');
     }
     function getSeekableDuration() {
       return parseTrackDuration(audioPlayer && audioPlayer.duration) ||
@@ -2667,7 +2758,9 @@
         candidate && candidate.album
       ].filter(Boolean).join(' '));
       if (!blob || blob.indexOf(title) < 0) return false;
-      return !artist || blob.indexOf(artist) >= 0;
+      var keywords = getBilibiliMatchKeywords();
+      var keywordHit = keywords.length && keywords.some(function(keyword) { return blob.indexOf(keyword) >= 0; });
+      return keywordHit || !artist || blob.indexOf(artist) >= 0;
     }
     function getNormalizedArtistTokens(value) {
       return normalizeTrackText(value)
@@ -4487,7 +4580,7 @@
       var raw = [];
       if (Array.isArray(data)) raw = data;
       else if (type === 'toplist') raw = data && data.list || [];
-      else raw = data && (data.playlists || data.result || (data.data && data.data.playlists)) || [];
+      else raw = data && (data.playlists || data.result || data.list || data.records || data.items || (data.data && (data.data.playlists || data.data.result || data.data.list || data.data.items))) || [];
       return raw.map(normalizeMarketPlaylist).filter(function(item) { return item.id && item.coverUrl; });
     }
 
@@ -4506,6 +4599,14 @@
             cookie: ''
           });
       var list = unwrapMarketList(payload, isToplist ? 'toplist' : 'playlist');
+      if (!list.length && !isToplist && (!offset || offset <= 0)) {
+        try {
+          var fallbackPayload = await fetchOtterNetease('/recommend', { limit: MARKET_PAGE_SIZE, cookie: '' });
+          list = unwrapMarketList(fallbackPayload, 'playlist');
+        } catch (error) {
+          console.warn('market recommend fallback failed', error);
+        }
+      }
       marketCache[cacheKey] = list;
       return list;
     }
@@ -4545,6 +4646,7 @@
 
     function normalizeNeteasePlaylistTrack(track) {
       var artists = Array.isArray(track.ar) ? track.ar.map(function(item) { return item && item.name; }).filter(Boolean).join(' / ') : '';
+      if (!artists && Array.isArray(track.artists)) artists = track.artists.map(function(item) { return item && item.name; }).filter(Boolean).join(' / ');
       var album = track.al || {};
       return {
         id: String(track.id || ''),
@@ -4598,6 +4700,7 @@
       var dateNode = document.getElementById('market-playlist-date');
       var descNode = document.getElementById('market-playlist-description');
       var summaryNode = document.getElementById('market-playlist-summary');
+      var sortNode = document.getElementById('market-playlist-sort');
       var description = String(currentMarketPlaylistMeta.description || '').trim();
       var creator = String(currentMarketPlaylistMeta.creator || '').trim();
       var date = formatDetailDate(currentMarketPlaylistMeta.publishTime);
@@ -4619,8 +4722,12 @@
         descNode.classList.remove('expanded');
       }
       if (summaryNode) summaryNode.classList.toggle('has-description', !!description);
-      renderPageTrackRows(document.getElementById('market-playlist-list'), currentMarketPlaylistTracks, loadingText || '这个歌单暂无可播放歌曲。', function(track, index) {
-        setQueue(currentMarketPlaylistTracks, index);
+      if (sortNode) sortNode.innerHTML = currentMarketPlaylistTracks.length ? renderPlaylistSortControls('market') : '';
+      var visibleTracks = sortPlaylistTracks(currentMarketPlaylistTracks, getPlaylistSortMode('market'));
+      renderPageTrackRows(document.getElementById('market-playlist-list'), visibleTracks, loadingText || '这个歌单暂无可播放歌曲。', function(track) {
+        var queueIndex = currentMarketPlaylistTracks.indexOf(track);
+        if (queueIndex < 0) queueIndex = 0;
+        setQueue(currentMarketPlaylistTracks, queueIndex);
         setCurrentTrack(track);
         openFullPlayer();
         playCurrentTrack();
@@ -4992,7 +5099,8 @@
       var coverApi = '';
       var cover = /^https?:\/\//i.test(picId) || picId.startsWith('//') ? picId : DEFAULT_COVER;
       if (picId && cover === DEFAULT_COVER) {
-        coverApi = gdMusicApiBase + '?types=pic&source=' + encodeURIComponent(source) + '&id=' + encodeURIComponent(picId) + '&size=300';
+        var coverSize = source === 'migu' ? 800 : 300;
+        coverApi = gdMusicApiBase + '?types=pic&source=' + encodeURIComponent(source) + '&id=' + encodeURIComponent(picId) + '&size=' + coverSize;
       }
       if (cover.startsWith('//')) cover = 'https:' + cover;
       return {
@@ -5847,19 +5955,25 @@
       var tracks = Array.isArray(playlist.tracks) ? playlist.tracks : [];
       document.getElementById('user-playlist-count').textContent = tracks.length + ' 首歌曲';
       var list = document.getElementById('user-playlist-list');
+      var sortNode = document.getElementById('user-playlist-sort');
       if (!tracks.length) {
+        if (sortNode) sortNode.innerHTML = '';
         list.innerHTML = '<div class="empty-note">歌单暂无歌曲，去搜索页添加喜欢的音乐吧。</div>';
         return;
       }
-      list.innerHTML = tracks.map(function(track, i) {
+      if (sortNode) sortNode.innerHTML = renderPlaylistSortControls('user');
+      var visibleTracks = sortPlaylistTracks(tracks, getPlaylistSortMode('user'));
+      list.innerHTML = visibleTracks.map(function(track, i) {
+        var sourceIndex = tracks.indexOf(track);
+        if (sourceIndex < 0) sourceIndex = i;
         var cover = safeCover(track.cover || track.pic || DEFAULT_COVER);
         var title = escapeMarkup(track.title || track.name || '未知歌曲');
         var artist = escapeMarkup(track.artist || track.artists || '未知歌手');
         var sourceLabel = shouldShowSourceLabels() ? (track.sourceLabel || track.source || '') : '';
-        return '<div class="track" onclick="playUserPlaylistTrack(' + i + ')">' +
+        return '<div class="track" onclick="playUserPlaylistTrack(' + sourceIndex + ')">' +
           '<img src="' + escapeMarkup(cover) + '" referrerpolicy="no-referrer"' + imageFallbackAttr() + '>' +
           '<div class="track-meta"><div class="track-name">' + title + '</div><div class="artist">' + artist + (sourceLabel ? '<span class="source-tag">' + escapeMarkup(sourceLabel) + '</span>' : '') + '</div></div>' +
-          '<button class="track-remove" onclick="event.stopPropagation(); removeFromUserPlaylist(' + i + ')" aria-label="移除">' + iconHtml('close') + '</button>' +
+          '<button class="track-remove" onclick="event.stopPropagation(); removeFromUserPlaylist(' + sourceIndex + ')" aria-label="移除">' + iconHtml('close') + '</button>' +
           '</div>';
       }).join('');
     }
@@ -6148,6 +6262,8 @@
       applyThemeSetting();
       setSettingsVolume(appSettings.volume);
       setFullBackgroundMode(appSettings.fullBackgroundMode);
+      var bilibiliKeywordsInput = document.getElementById('bilibili-match-keywords');
+      if (bilibiliKeywordsInput) bilibiliKeywordsInput.value = appSettings.bilibiliMatchKeywords || '';
     }
 
     function openSettingDrawer(type) {

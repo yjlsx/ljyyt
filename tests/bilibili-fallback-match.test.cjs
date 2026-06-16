@@ -42,11 +42,16 @@ function pickConstObject(script, name) {
 function verifyBilibiliMatch(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
-  const sandbox = {};
+  const sandbox = {
+    appSettings: {
+      bilibiliMatchKeywords: ''
+    }
+  };
   vm.createContext(sandbox);
   vm.runInContext([
     pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
     pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getBilibiliMatchKeywords'),
     pickFunction(script, 'isTrackMatchCandidate'),
     pickFunction(script, 'isLooseTitleMatchCandidate'),
     pickFunction(script, 'isBilibiliTrackMatchCandidate'),
@@ -66,6 +71,11 @@ function verifyBilibiliMatch(file) {
   }
   if (sandbox.getFallbackMatchScore(target, candidates[1], 0) >= 0) {
     throw new Error(file + ' should reject Bilibili candidates missing the target artist in their searchable blob');
+  }
+
+  sandbox.appSettings.bilibiliMatchKeywords = '翻弹';
+  if (sandbox.getFallbackMatchScore(target, candidates[1], 0) < 0) {
+    throw new Error(file + ' should allow user-defined Bilibili match keywords to loosen artist matching');
   }
 }
 

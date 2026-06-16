@@ -69,9 +69,16 @@ const MAX_UPSTREAM_TEXT_BYTES = 256 * 1024;
 const WORKER_UPSTREAM_TIMEOUT_MS = 12000;
 const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
 const QQ_SEARCH_URL = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
-const QQ_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const QQ_OFFICIAL_MEDIA_URL = QQ_SEARCH_URL;
+const QQ_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const KUWO_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/kw';
 const QQ_REFERER = 'https://y.qq.com/';
 const QQ_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36';
+const QQ_FILE_CONFIG = [
+  { key: '320k', prefix: 'M800', ext: '.mp3' },
+  { key: '128k', prefix: 'M500', ext: '.mp3' },
+  { key: 'm4a', prefix: 'C400', ext: '.m4a' }
+];
 const NETEASE_PROXY_PATHS = new Set([
   '/login/qr/key',
   '/login/qr/create',
@@ -339,6 +346,24 @@ async function handleNeteaseProxyRequest(request, url) {
   }
 
   const subPath = url.pathname.slice('/api/netease'.length);
+  if (subPath === '/playlist') {
+    let bodyPayload = {};
+    if (request.method === 'POST') {
+      try {
+        bodyPayload = await request.clone().json();
+      } catch (error) {
+        bodyPayload = {};
+      }
+    }
+    const playlistId = bodyPayload.playlistId || bodyPayload.id || url.searchParams.get('playlistId') || url.searchParams.get('id');
+    if (!playlistId) {
+      return jsonResponse({ error: 'Missing playlistId' }, 400);
+    }
+    const cookie = bodyPayload.cookie || url.searchParams.get('cookie') || '';
+    const payload = await fetchNeteasePlaylistDetail(playlistId, cookie);
+    return jsonResponse(payload);
+  }
+
   const target = new URL(OTTER_NETEASE_API_BASE + subPath);
   url.searchParams.forEach((value, key) => {
     target.searchParams.append(key, value);
@@ -370,6 +395,110 @@ async function handleNeteaseProxyRequest(request, url) {
     statusText: response.statusText,
     headers: responseHeaders
   });
+}
+
+function normalizeNeteasePlaylistTrack(track) {
+  const rawArtists = Array.isArray(track.ar) ? track.ar : (Array.isArray(track.artists) ? track.artists : []);
+  const album = track.al || track.album || {};
+  return {
+    id: String(track.id || ''),
+    name: track.name || track.title || '',
+    title: track.name || track.title || '',
+    ar: rawArtists.length ? rawArtists.map((item) => ({ id: item && item.id || 0, name: item && item.name || '' })) : [],
+    al: {
+      id: String(album.id || ''),
+      name: album.name || '',
+      picUrl: album.picUrl || album.pic_url || ''
+    },
+    dt: Number(track.dt || track.duration || track.interval || track.time || 0)
+  };
+}
+
+async function fetchNeteaseSongDetailsByIds(trackIds, cookie) {
+  const ids = (Array.isArray(trackIds) ? trackIds : [])
+    .map((item) => String(item && (item.id || item) || '').trim())
+    .filter(Boolean);
+  if (!ids.length) return [];
+
+  const songs = [];
+  const chunkSize = 100;
+  for (let index = 0; index < ids.length; index += chunkSize) {
+    const chunk = ids.slice(index, index + chunkSize);
+    const target = new URL('https://music.163.com/api/v3/song/detail');
+    target.searchParams.set('c', JSON.stringify(chunk.map((id) => ({ id: Number(id) || id }))));
+    target.searchParams.set('ids', JSON.stringify(chunk.map((id) => Number(id) || id)));
+    const response = await fetchWithTimeout(target.toString(), {
+      headers: {
+        'Accept': 'application/json',
+        'Referer': 'https://music.163.com/',
+        'User-Agent': 'Mozilla/5.0',
+        'Cookie': String(cookie || '')
+      }
+    });
+    if (!response.ok) {
+      throw new Error('NetEase song detail HTTP ' + response.status);
+    }
+    const text = await response.text();
+    if (/^\s*</.test(text)) {
+      throw new Error('NetEase song detail returned HTML');
+    }
+    const payload = JSON.parse(text);
+    if (Array.isArray(payload && payload.songs)) {
+      songs.push(...payload.songs);
+    }
+  }
+  const byId = new Map(songs.map((song) => [String(song && song.id || ''), song]));
+  return ids.map((id) => byId.get(String(id))).filter(Boolean);
+}
+
+async function fetchNeteasePlaylistDetail(playlistId, cookie) {
+  const target = new URL('https://music.163.com/api/v6/playlist/detail');
+  target.searchParams.set('id', String(playlistId || ''));
+  target.searchParams.set('n', '1000');
+  target.searchParams.set('s', '8');
+  const response = await fetchWithTimeout(target.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'Referer': 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0',
+      'Cookie': String(cookie || '')
+    }
+  });
+  if (!response.ok) {
+    throw new Error('NetEase playlist detail HTTP ' + response.status);
+  }
+  const text = await response.text();
+  if (/^\s*</.test(text)) {
+    throw new Error('NetEase playlist detail returned HTML');
+  }
+  const payload = JSON.parse(text);
+  const playlist = payload && (payload.playlist || payload.result) ? (payload.playlist || payload.result) : payload;
+  const partialSongs = Array.isArray(playlist && playlist.tracks) ? playlist.tracks : [];
+  const trackIds = Array.isArray(playlist && playlist.trackIds) ? playlist.trackIds : [];
+  let songs = partialSongs;
+  if (trackIds.length > partialSongs.length) {
+    try {
+      const fullSongs = await fetchNeteaseSongDetailsByIds(trackIds, cookie);
+      if (fullSongs.length > partialSongs.length) {
+        songs = fullSongs;
+      }
+    } catch (error) {
+      songs = partialSongs;
+    }
+  }
+  return {
+    playlist: {
+      id: String(playlist && playlist.id || playlistId || ''),
+      name: String(playlist && playlist.name || ''),
+      description: String(playlist && playlist.description || ''),
+      coverImgUrl: String(playlist && playlist.coverImgUrl || ''),
+      creator: playlist && playlist.creator ? playlist.creator : {},
+      createTime: Number(playlist && playlist.createTime || 0),
+      updateTime: Number(playlist && playlist.updateTime || 0),
+      trackCount: Number(playlist && playlist.trackCount || trackIds.length || songs.length || 0),
+      tracks: songs.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name)
+    }
+  };
 }
 
 async function handleGdMusicRequest(url) {
@@ -443,24 +572,108 @@ function mapQqQuality(br) {
   return '320k';
 }
 
-async function handleQqUrlRequest(url) {
-  const songmid = String(url.searchParams.get('id') || url.searchParams.get('songmid') || '').trim().replace(/^qq_/i, '');
-  if (!songmid) return jsonResponse({ url: '', error: 'Missing songmid' }, 400);
-  const quality = mapQqQuality(url.searchParams.get('br'));
-  const response = await fetchWithTimeout(`${QQ_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`, {
+function buildQqVkeyRequestBody(songmid, qualityKeys) {
+  const filenames = qualityKeys
+    .map((key) => QQ_FILE_CONFIG.find((item) => item.key === key))
+    .filter(Boolean)
+    .map((item) => `${item.prefix}${songmid}${songmid}${item.ext}`);
+  return {
+    req_1: {
+      module: 'vkey.GetVkeyServer',
+      method: 'CgiGetVkey',
+      param: {
+        filename: filenames,
+        guid: '10000',
+        songmid: qualityKeys.map(() => songmid),
+        songtype: qualityKeys.map(() => 0),
+        uin: '0',
+        loginflag: 1,
+        platform: '20'
+      }
+    },
+    loginUin: '0',
+    comm: {
+      uin: '0',
+      format: 'json',
+      ct: 24,
+      cv: 0
+    }
+  };
+}
+
+function extractQqVkeyUrl(payload) {
+  const data = payload && payload.req_1 && payload.req_1.data;
+  const sip = data && Array.isArray(data.sip) ? data.sip : [];
+  const midurlinfo = data && Array.isArray(data.midurlinfo) ? data.midurlinfo : [];
+  if (!sip.length || !midurlinfo.length) return '';
+  for (const info of midurlinfo) {
+    if (info && info.purl) return String(sip[0] || '') + String(info.purl);
+  }
+  return '';
+}
+
+async function resolveQqOfficialUrl(songmid, br) {
+  songmid = String(songmid || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return { url: '', error: 'Missing songmid' };
+  const preferred = mapQqQuality(br);
+  const qualityKeys = [preferred].concat(QQ_FILE_CONFIG.map((item) => item.key).filter((key) => key !== preferred));
+  const response = await fetchWithTimeout(QQ_OFFICIAL_MEDIA_URL, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      'Origin': QQ_REFERER.replace(/\/$/, ''),
+      'Referer': QQ_REFERER,
+      'User-Agent': QQ_USER_AGENT
+    },
+    body: JSON.stringify(buildQqVkeyRequestBody(songmid, qualityKeys))
+  });
+  if (!response.ok) return { url: '', quality: preferred, error: `QQ official HTTP ${response.status}` };
+  const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
+  const payload = JSON.parse(text);
+  const resolvedUrl = extractQqVkeyUrl(payload);
+  return resolvedUrl ? { url: resolvedUrl, quality: preferred, provider: 'qq-official' } : { url: '', quality: preferred, error: 'QQ official returned no url' };
+}
+
+async function resolveQqLxUrl(songmid, br) {
+  songmid = String(songmid || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return { url: '', error: 'Missing songmid' };
+  const quality = mapQqQuality(br);
+  const response = await fetchWithTimeout(`${QQ_LX_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`, {
     headers: {
       'Accept': 'application/json',
       'User-Agent': QQ_USER_AGENT,
       'X-Request-Key': 'share-v3'
     }
   });
-  if (!response.ok) return jsonResponse({ url: '', quality, error: `QQ url HTTP ${response.status}` }, 502);
+  if (!response.ok) return { url: '', quality, error: `QQ LX HTTP ${response.status}` };
   const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
   const payload = JSON.parse(text);
   const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-  if (resolvedUrl) return jsonResponse({ url: resolvedUrl, quality });
-  const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
-  return jsonResponse({ url: '', quality, error: upstreamMsg });
+  if (resolvedUrl) return { url: resolvedUrl, quality, provider: 'qq-lx' };
+  const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ LX upstream returned no url';
+  return { url: '', quality, error: upstreamMsg };
+}
+
+async function resolveQqMusicUrl(songmid, br) {
+  try {
+    const official = await resolveQqOfficialUrl(songmid, br);
+    if (official.url || official.error === 'Missing songmid') return official;
+    const lx = await resolveQqLxUrl(songmid, br);
+    if (lx.url) return lx;
+    return Object.assign({}, lx, { error: `${official.error || 'QQ official failed'}; ${lx.error || 'QQ LX failed'}` });
+  } catch (error) {
+    const lx = await resolveQqLxUrl(songmid, br).catch((lxError) => ({ url: '', error: lxError.message }));
+    if (lx.url) return lx;
+    return { url: '', error: `${error.message}; ${lx.error || 'QQ LX failed'}` };
+  }
+}
+
+async function handleQqUrlRequest(url) {
+  const songmid = String(url.searchParams.get('id') || url.searchParams.get('songmid') || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return jsonResponse({ url: '', error: 'Missing songmid' }, 400);
+  const payload = await resolveQqMusicUrl(songmid, url.searchParams.get('br'));
+  return jsonResponse(payload, payload.url || payload.error !== 'Missing songmid' ? 200 : 400);
 }
 
 async function handleCoverRequest(url) {
@@ -938,11 +1151,41 @@ async function handleKuwoUrlRequest(url) {
   if (!rid) {
     return jsonResponse({ url: '', error: 'Missing rid' }, 400);
   }
-  const text = await resolveKuwoRawUrl(rid);
-  if (text) {
-    return jsonResponse({ url: text });
+  const payload = await resolveKuwoUrl(rid);
+  return jsonResponse(payload);
+}
+
+async function resolveKuwoLxUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return { url: '', error: 'Missing rid' };
+  try {
+    const response = await fetchWithTimeout(`${KUWO_LX_MEDIA_URL}/${encodeURIComponent(rid)}/320k`, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': QQ_USER_AGENT,
+        'X-Request-Key': 'share-v3'
+      }
+    });
+    if (!response.ok) return { url: '', error: `Kuwo LX HTTP ${response.status}` };
+    const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
+    const payload = JSON.parse(text);
+    const resolvedUrl = payload && payload.url ? String(payload.url) : '';
+    if (resolvedUrl) return { url: resolvedUrl, provider: 'kuwo-lx' };
+    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'Kuwo LX upstream returned no url';
+    return { url: '', error: upstreamMsg };
+  } catch (error) {
+    return { url: '', error: error.message };
   }
-  return jsonResponse({ url: '' });
+}
+
+async function resolveKuwoUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return { url: '', error: 'Missing rid' };
+  const lx = await resolveKuwoLxUrl(rid);
+  if (lx.url) return lx;
+  const text = await resolveKuwoRawUrl(rid);
+  if (text) return { url: text, provider: 'kuwo-antiserver' };
+  return { url: '', error: lx.error || 'Kuwo returned no url' };
 }
 
 async function resolveKuwoRawUrl(rid) {

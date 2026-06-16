@@ -15,9 +15,16 @@ const MAX_UPSTREAM_TEXT_BYTES = 2 * 1024 * 1024;
 const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 const OTTER_NETEASE_API_BASE = 'https://otter-music.pages.dev/music-api/netease';
 const QQ_SEARCH_URL = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
-const QQ_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const QQ_OFFICIAL_MEDIA_URL = QQ_SEARCH_URL;
+const QQ_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
+const KUWO_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/kw';
 const QQ_REFERER = 'https://y.qq.com/';
 const QQ_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36';
+const QQ_FILE_CONFIG = [
+  { key: '320k', prefix: 'M800', ext: '.mp3' },
+  { key: '128k', prefix: 'M500', ext: '.mp3' },
+  { key: 'm4a', prefix: 'C400', ext: '.m4a' }
+];
 const NETEASE_PROXY_PATHS = new Set([
   '/login/qr/key',
   '/login/qr/create',
@@ -306,8 +313,12 @@ function resolveRedirectUrl(targetUrl, options = {}, redirectsLeft = 4) {
 
 async function requestJson(targetUrl, options = {}) {
   const text = await requestText(targetUrl, options);
+  const trimmed = String(text || '').trim();
+  if (trimmed.startsWith('<')) {
+    throw new Error('unexpected HTML response');
+  }
   try {
-    return JSON.parse(text);
+    return JSON.parse(trimmed);
   } catch (error) {
     throw new Error('invalid JSON response');
   }
@@ -332,6 +343,17 @@ function readRequestBody(req, maxBytes = MAX_REQUEST_BODY_BYTES) {
   });
 }
 
+async function readJsonRequestBody(req) {
+  if (req.method !== 'POST') return {};
+  const raw = await readRequestBody(req);
+  if (!String(raw || '').trim()) return {};
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    return {};
+  }
+}
+
 function isAllowedNeteaseProxyPath(pathname) {
   const subPath = String(pathname || '').slice('/api/netease'.length);
   return NETEASE_PROXY_PATHS.has(subPath);
@@ -348,6 +370,17 @@ async function proxyNeteaseApiRequest(req, res, requestUrl) {
   }
 
   const subPath = requestUrl.pathname.slice('/api/netease'.length);
+  if (subPath === '/playlist') {
+    const bodyPayload = await readJsonRequestBody(req);
+    const playlistId = bodyPayload.playlistId || bodyPayload.id || requestUrl.searchParams.get('playlistId') || requestUrl.searchParams.get('id');
+    if (!playlistId) {
+      sendJson(res, 400, { error: 'Missing playlistId' });
+      return;
+    }
+    sendJson(res, 200, await fetchNeteasePlaylistDetail(playlistId, bodyPayload.cookie || requestUrl.searchParams.get('cookie') || ''));
+    return;
+  }
+
   const target = new URL(OTTER_NETEASE_API_BASE + subPath);
   requestUrl.searchParams.forEach((value, key) => {
     target.searchParams.append(key, value);
@@ -375,6 +408,97 @@ async function proxyNeteaseApiRequest(req, res, requestUrl) {
     'Content-Type': 'application/json; charset=utf-8'
   });
   res.end(payload);
+}
+
+function normalizeNeteasePlaylistTrack(track) {
+  const rawArtists = Array.isArray(track.ar) ? track.ar : (Array.isArray(track.artists) ? track.artists : []);
+  const artists = rawArtists.map((item) => item && item.name).filter(Boolean).join(' / ');
+  const album = track.al || track.album || {};
+  return {
+    id: String(track.id || ''),
+    name: track.name || track.title || '',
+    title: track.name || track.title || '',
+    ar: rawArtists.length ? rawArtists.map((item) => ({ id: item && item.id || 0, name: item && item.name || '' })) : (artists ? [{ name: artists }] : []),
+    al: {
+      id: String(album.id || ''),
+      name: album.name || '',
+      picUrl: album.picUrl || album.pic_url || ''
+    },
+    dt: Number(track.dt || track.duration || track.interval || track.time || 0)
+  };
+}
+
+async function fetchNeteaseSongDetailsByIds(trackIds, cookie) {
+  const ids = (Array.isArray(trackIds) ? trackIds : [])
+    .map((item) => String(item && (item.id || item) || '').trim())
+    .filter(Boolean);
+  if (!ids.length) return [];
+
+  const songs = [];
+  const chunkSize = 100;
+  for (let index = 0; index < ids.length; index += chunkSize) {
+    const chunk = ids.slice(index, index + chunkSize);
+    const target = new URL('https://music.163.com/api/v3/song/detail');
+    target.searchParams.set('c', JSON.stringify(chunk.map((id) => ({ id: Number(id) || id }))));
+    target.searchParams.set('ids', JSON.stringify(chunk.map((id) => Number(id) || id)));
+    const payload = await requestJson(target.toString(), {
+      headers: {
+        'Accept': 'application/json',
+        'Referer': 'https://music.163.com/',
+        'User-Agent': 'Mozilla/5.0',
+        'Cookie': String(cookie || '')
+      },
+      timeout: 12000
+    });
+    if (Array.isArray(payload && payload.songs)) {
+      songs.push(...payload.songs);
+    }
+  }
+  const byId = new Map(songs.map((song) => [String(song && song.id || ''), song]));
+  return ids.map((id) => byId.get(String(id))).filter(Boolean);
+}
+
+async function fetchNeteasePlaylistDetail(playlistId, cookie) {
+  const target = new URL('https://music.163.com/api/v6/playlist/detail');
+  target.searchParams.set('id', String(playlistId || ''));
+  target.searchParams.set('n', '1000');
+  target.searchParams.set('s', '8');
+  const playlistDetail = await requestJson(target.toString(), {
+    headers: {
+      'Accept': 'application/json',
+      'Referer': 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0',
+      'Cookie': String(cookie || '')
+    },
+    timeout: 12000
+  });
+  const playlist = playlistDetail && (playlistDetail.playlist || playlistDetail.result) ? (playlistDetail.playlist || playlistDetail.result) : playlistDetail;
+  const partialSongs = Array.isArray(playlist && playlist.tracks) ? playlist.tracks : [];
+  const trackIds = Array.isArray(playlist && playlist.trackIds) ? playlist.trackIds : [];
+  let songs = partialSongs;
+  if (trackIds.length > partialSongs.length) {
+    try {
+      const fullSongs = await fetchNeteaseSongDetailsByIds(trackIds, cookie);
+      if (fullSongs.length > partialSongs.length) {
+        songs = fullSongs;
+      }
+    } catch (error) {
+      songs = partialSongs;
+    }
+  }
+  return {
+    playlist: {
+      id: String(playlist && playlist.id || playlistId || ''),
+      name: String(playlist && playlist.name || ''),
+      description: String(playlist && playlist.description || ''),
+      coverImgUrl: String(playlist && playlist.coverImgUrl || ''),
+      creator: playlist && playlist.creator ? playlist.creator : {},
+      createTime: Number(playlist && playlist.createTime || 0),
+      updateTime: Number(playlist && playlist.updateTime || 0),
+      trackCount: Number(playlist && playlist.trackCount || trackIds.length || songs.length || 0),
+      tracks: songs.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name)
+    }
+  };
 }
 
 async function searchNeteaseSuggest(keyword) {
@@ -501,11 +625,76 @@ function mapQqQuality(br) {
   return '320k';
 }
 
-async function resolveQqMusicUrl(songmid, br) {
+function buildQqVkeyRequestBody(songmid, qualityKeys) {
+  const filenames = qualityKeys
+    .map((key) => QQ_FILE_CONFIG.find((item) => item.key === key))
+    .filter(Boolean)
+    .map((item) => `${item.prefix}${songmid}${songmid}${item.ext}`);
+  return {
+    req_1: {
+      module: 'vkey.GetVkeyServer',
+      method: 'CgiGetVkey',
+      param: {
+        filename: filenames,
+        guid: '10000',
+        songmid: qualityKeys.map(() => songmid),
+        songtype: qualityKeys.map(() => 0),
+        uin: '0',
+        loginflag: 1,
+        platform: '20'
+      }
+    },
+    loginUin: '0',
+    comm: {
+      uin: '0',
+      format: 'json',
+      ct: 24,
+      cv: 0
+    }
+  };
+}
+
+function extractQqVkeyUrl(payload) {
+  const data = payload && payload.req_1 && payload.req_1.data;
+  const sip = data && Array.isArray(data.sip) ? data.sip : [];
+  const midurlinfo = data && Array.isArray(data.midurlinfo) ? data.midurlinfo : [];
+  if (!sip.length || !midurlinfo.length) return '';
+  for (const info of midurlinfo) {
+    if (info && info.purl) return String(sip[0] || '') + String(info.purl);
+  }
+  return '';
+}
+
+async function resolveQqOfficialUrl(songmid, br) {
+  songmid = String(songmid || '').trim().replace(/^qq_/i, '');
+  if (!songmid) return { url: '', error: 'Missing songmid' };
+  const preferred = mapQqQuality(br);
+  const qualityKeys = [preferred].concat(QQ_FILE_CONFIG.map((item) => item.key).filter((key) => key !== preferred));
+  try {
+    const payload = await requestJson(QQ_OFFICIAL_MEDIA_URL, {
+      method: 'POST',
+      body: JSON.stringify(buildQqVkeyRequestBody(songmid, qualityKeys)),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Origin': QQ_REFERER.replace(/\/$/, ''),
+        'Referer': QQ_REFERER,
+        'User-Agent': QQ_USER_AGENT
+      },
+      timeout: 12000
+    });
+    const resolvedUrl = extractQqVkeyUrl(payload);
+    return resolvedUrl ? { url: resolvedUrl, quality: preferred, provider: 'qq-official' } : { url: '', quality: preferred, error: 'QQ official returned no url' };
+  } catch (error) {
+    return { url: '', quality: preferred, error: error.message };
+  }
+}
+
+async function resolveQqLxUrl(songmid, br) {
   songmid = String(songmid || '').trim().replace(/^qq_/i, '');
   if (!songmid) return { url: '', error: 'Missing songmid' };
   const quality = mapQqQuality(br);
-  const target = `${QQ_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`;
+  const target = `${QQ_LX_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`;
   try {
     const payload = await requestJson(target, {
       headers: {
@@ -516,17 +705,49 @@ async function resolveQqMusicUrl(songmid, br) {
       timeout: 12000
     });
     const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-    if (resolvedUrl) return { url: resolvedUrl, quality };
-    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ upstream returned no url';
+    if (resolvedUrl) return { url: resolvedUrl, quality, provider: 'qq-lx' };
+    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ LX upstream returned no url';
     return { url: '', quality, error: upstreamMsg };
   } catch (error) {
     return { url: '', quality, error: error.message };
   }
 }
 
+async function resolveQqMusicUrl(songmid, br) {
+  const official = await resolveQqOfficialUrl(songmid, br);
+  if (official.url || official.error === 'Missing songmid') return official;
+  const lx = await resolveQqLxUrl(songmid, br);
+  if (lx.url) return lx;
+  return Object.assign({}, lx, { error: `${official.error || 'QQ official failed'}; ${lx.error || 'QQ LX failed'}` });
+}
+
+async function resolveKuwoLxUrl(rid) {
+  rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
+  if (!rid) return { url: '', error: 'Missing rid' };
+  const target = `${KUWO_LX_MEDIA_URL}/${encodeURIComponent(rid)}/320k`;
+  try {
+    const payload = await requestJson(target, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': QQ_USER_AGENT,
+        'X-Request-Key': 'share-v3'
+      },
+      timeout: 12000
+    });
+    const resolvedUrl = payload && payload.url ? String(payload.url) : '';
+    if (resolvedUrl) return { url: resolvedUrl, provider: 'kuwo-lx' };
+    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'Kuwo LX upstream returned no url';
+    return { url: '', error: upstreamMsg };
+  } catch (error) {
+    return { url: '', error: error.message };
+  }
+}
+
 async function resolveKuwoUrl(rid) {
   rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
   if (!rid) return { url: '', error: 'Missing rid' };
+  const lx = await resolveKuwoLxUrl(rid);
+  if (lx.url) return lx;
   const target = `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=MUSIC_${encodeURIComponent(rid)}`;
   try {
     const text = (await requestText(target, {
@@ -537,9 +758,9 @@ async function resolveKuwoUrl(rid) {
       },
       timeout: 12000
     })).trim();
-    return /^https?:\/\//i.test(text) ? { url: text } : { url: '' };
+    return /^https?:\/\//i.test(text) ? { url: text, provider: 'kuwo-antiserver' } : { url: '', error: lx.error || 'Kuwo returned no url' };
   } catch (error) {
-    return { url: '', error: error.message };
+    return { url: '', error: `${lx.error || 'Kuwo LX failed'}; ${error.message}` };
   }
 }
 

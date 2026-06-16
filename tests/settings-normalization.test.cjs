@@ -105,7 +105,9 @@ for (const file of ['index.html', 'dist/index.html']) {
     embedLyrics: true,
     volume: 88,
     fullBackgroundMode: 'cover',
-    theme: 'light'
+    theme: 'light',
+    playlistSortMode: 'added',
+    bilibiliMatchKeywords: ''
   };
 
   for (const [key, value] of Object.entries(expected)) {
@@ -118,8 +120,20 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' normalizeAppSettings should discard unknown keys');
   }
 
-  const clamped = helpers.normalizeAppSettings({ volume: 200, theme: 'dark', fullBackgroundMode: 'texture' });
-  if (clamped.volume !== 100 || clamped.theme !== 'dark' || clamped.fullBackgroundMode !== 'texture') {
-    throw new Error(file + ' should clamp volume and preserve valid enum settings');
+  const clamped = helpers.normalizeAppSettings({
+    volume: 200,
+    theme: 'dark',
+    fullBackgroundMode: 'texture',
+    playlistSortMode: 'artist',
+    bilibiliMatchKeywords: '  live, cover  '
+  });
+  if (
+    clamped.volume !== 100 ||
+    clamped.theme !== 'dark' ||
+    clamped.fullBackgroundMode !== 'texture' ||
+    clamped.playlistSortMode !== 'artist' ||
+    clamped.bilibiliMatchKeywords !== 'live, cover'
+  ) {
+    throw new Error(file + ' should clamp volume and preserve valid enum/text settings');
   }
 }
