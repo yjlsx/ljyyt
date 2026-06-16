@@ -12,6 +12,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     'function startSleepTimer',
     'function stopSleepTimer',
     'id="full-quality-entry"',
+    'body.full-player-open #setting-drawer',
     'class="mode-control"',
     "showToast('播放模式：'",
     'onclick="openPlaybackSpeedDrawer(event)"',
