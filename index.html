@@ -2720,7 +2720,7 @@
       saveAppSettings();
       syncQualityControls();
       showToast('音质已切换为 ' + getQualityShortLabel(next));
-      if (document.getElementById('setting-drawer-title')?.textContent === '音质选择') openQualityDrawer({ stopPropagation: function() {} });
+      if (document.getElementById('setting-drawer-title')?.textContent === '音质选择') renderQualityDrawerBody();
       if (currentTrack && currentTrack.source && currentTrack.source !== 'local') {
         var wasPlaying = !audioPlayer.paused;
         var resumeTime = audioPlayer.currentTime || 0;
@@ -2815,6 +2815,31 @@
       if (current) current.classList.toggle('active', Math.abs((Number(appSettings.playbackSpeed) || 1) - 1) > 0.01);
       if (duration) duration.classList.toggle('active', !!appSettings.sleepTimerIsActive && appSettings.sleepTimerRemaining > 0);
     }
+    function getQualityOptions() {
+      return [
+        ['128', '标准 (128kbps)'],
+        ['192', '高品 (192kbps)'],
+        ['320', '极高 (320kbps)'],
+        ['999', '无损 (999kbps)']
+      ];
+    }
+    function renderQualityDrawerBody() {
+      var body = document.getElementById('setting-drawer-body');
+      if (!body) return;
+      body.innerHTML =
+        '<div class="choice-list">' + getQualityOptions().map(function(item) {
+          var active = (appSettings.quality || '320') === item[0];
+          return '<button class="choice-option' + (active ? ' active' : '') + '" type="button" data-quality-value="' + item[0] + '"><span>' + item[1] + '</span>' + (active ? '<span data-icon="check"></span>' : '') + '</button>';
+        }).join('') + '</div>';
+      body.querySelectorAll('[data-quality-value]').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          setAudioQuality(button.dataset.qualityValue);
+        });
+      });
+      hydrateIcons(body);
+    }
     function updatePlayerMetaActions() {
       var current = document.getElementById('current-time');
       var speedChanged = Math.abs((Number(appSettings.playbackSpeed) || 1) - 1) > 0.01;
@@ -2850,20 +2875,12 @@
     }
     function openQualityDrawer(event) {
       event?.stopPropagation?.();
-      var options = [
-        ['128', '标准 (128kbps)'],
-        ['192', '高品 (192kbps)'],
-        ['320', '极高 (320kbps)'],
-        ['999', '无损 (999kbps)']
-      ];
-      openSettingDrawer('quality');
+      closeTrackActionDrawer();
       document.getElementById('setting-drawer-title').textContent = '音质选择';
       document.getElementById('setting-drawer-desc').textContent = '切换后会即时刷新当前音源。';
-      document.getElementById('setting-drawer-body').innerHTML =
-        '<div class="choice-list">' + options.map(function(item) {
-          return '<button class="choice-option' + ((appSettings.quality || '320') === item[0] ? ' active' : '') + '" type="button" onclick="setAudioQuality(\'' + item[0] + '\')"><span>' + item[1] + '</span>' + (((appSettings.quality || '320') === item[0]) ? '<span data-icon="check"></span>' : '') + '</button>';
-        }).join('') + '</div>';
-      hydrateIcons(document.getElementById('setting-drawer-body'));
+      renderQualityDrawerBody();
+      document.getElementById('setting-drawer').classList.add('open');
+      document.getElementById('setting-drawer-scrim').classList.add('open');
     }
     function openPlaybackSpeedDrawer(event) {
       event?.stopPropagation?.();
@@ -4183,7 +4200,8 @@
       if (event) event.stopPropagation();
       playModeIndex = (playModeIndex + 1) % playModes.length;
       writeStoredValue('ljyyt_play_mode_index', playModeIndex);
-      document.getElementById('play-mode-label').textContent = playModes[playModeIndex].label;
+      var playModeLabel = document.getElementById('play-mode-label');
+      if (playModeLabel) playModeLabel.textContent = playModes[playModeIndex].label;
       updateControlIcons();
     }
     function toggleQueueDrawer(event) {
@@ -7284,7 +7302,8 @@
     hydrateIcons(document);
     initSeekDragging();
     updateControlIcons();
-    document.getElementById('play-mode-label').textContent = playModes[playModeIndex].label;
+    var initialPlayModeLabel = document.getElementById('play-mode-label');
+    if (initialPlayModeLabel) initialPlayModeLabel.textContent = playModes[playModeIndex].label;
     setPlayIcons(!audioPlayer.paused);
     initSettings();
     updateAggregateSourceUI();
