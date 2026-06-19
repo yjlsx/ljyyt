@@ -35,6 +35,10 @@ export default {
         return await handleQqUrlRequest(url);
       }
 
+      if (url.pathname === '/api/lx/url') {
+        return await handleLxUrlRequest(url);
+      }
+
       if (url.pathname === '/api/cover') {
         return await withCache(request, ctx, () => handleCoverRequest(url));
       }
@@ -72,6 +76,10 @@ const QQ_SEARCH_URL = 'https://u.y.qq.com/cgi-bin/musicu.fcg';
 const QQ_OFFICIAL_MEDIA_URL = QQ_SEARCH_URL;
 const QQ_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/tx';
 const KUWO_LX_MEDIA_URL = 'https://lxmusicapi.onrender.com/url/kw';
+const LX_MEDIA_URLS = {
+  tx: QQ_LX_MEDIA_URL,
+  kw: KUWO_LX_MEDIA_URL
+};
 const QQ_REFERER = 'https://y.qq.com/';
 const QQ_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36';
 const QQ_FILE_CONFIG = [
@@ -451,12 +459,94 @@ async function fetchNeteaseSongDetailsByIds(trackIds, cookie) {
   return ids.map((id) => byId.get(String(id))).filter(Boolean);
 }
 
-async function fetchNeteasePlaylistDetail(playlistId, cookie) {
+function unwrapNeteasePlaylistPayload(payload) {
+  if (!payload) return null;
+  if (payload.playlist || payload.result) return payload.playlist || payload.result;
+  if (payload.data) {
+    if (payload.data.playlist || payload.data.result) return payload.data.playlist || payload.data.result;
+    return payload.data;
+  }
+  return payload;
+}
+
+function normalizeNeteasePlaylistPayload(payload, playlistId) {
+  const playlist = unwrapNeteasePlaylistPayload(payload) || {};
+  const tracks = Array.isArray(playlist.tracks)
+    ? playlist.tracks
+    : (Array.isArray(playlist.songs)
+      ? playlist.songs
+      : (Array.isArray(payload && payload.tracks)
+        ? payload.tracks
+        : (Array.isArray(payload && payload.songs) ? payload.songs : [])));
+  const trackIds = Array.isArray(playlist.trackIds)
+    ? playlist.trackIds
+    : (Array.isArray(playlist.track_ids)
+      ? playlist.track_ids
+      : (Array.isArray(payload && payload.trackIds) ? payload.trackIds : []));
+  const normalizedTracks = tracks.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name);
+  return {
+    playlist: {
+      id: String(playlist && playlist.id || playlistId || ''),
+      name: String(playlist && playlist.name || playlist.title || ''),
+      description: String(playlist && playlist.description || playlist.desc || ''),
+      coverImgUrl: String(playlist && (playlist.coverImgUrl || playlist.cover || playlist.picUrl || playlist.img1v1Url) || ''),
+      creator: playlist && playlist.creator ? playlist.creator : {},
+      createTime: Number(playlist && playlist.createTime || 0),
+      updateTime: Number(playlist && playlist.updateTime || 0),
+      trackCount: Number(playlist && (playlist.trackCount || playlist.songCount || playlist.count) || trackIds.length || normalizedTracks.length || 0),
+      tracks: normalizedTracks
+    }
+  };
+}
+
+async function fetchOtterNeteasePlaylistDetail(playlistId, cookie) {
+  const body = JSON.stringify({ playlistId: String(playlistId || ''), id: String(playlistId || ''), cookie: String(cookie || '') });
+  const attempts = [
+    { method: 'POST', url: OTTER_NETEASE_API_BASE + '/playlist', body },
+    { method: 'GET', url: OTTER_NETEASE_API_BASE + '/playlist?id=' + encodeURIComponent(String(playlistId || '')) },
+    { method: 'GET', url: OTTER_NETEASE_API_BASE + '/playlist?playlistId=' + encodeURIComponent(String(playlistId || '')) }
+  ];
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      const payload = await fetchJsonWithInit(attempt.url, {
+        method: attempt.method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'User-Agent': 'ljyyt-worker/1.0'
+        },
+        body: attempt.method === 'POST' ? attempt.body : null
+      });
+      const normalized = normalizeNeteasePlaylistPayload(payload, playlistId);
+      if (normalized.playlist.name || normalized.playlist.tracks.length) {
+        return normalized;
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error('Otter NetEase playlist proxy returned empty payload');
+}
+
+async function fetchJsonWithInit(url, init) {
+  const response = await fetchWithTimeout(url, init);
+  if (!response.ok) {
+    throw new Error('NetEase proxy HTTP ' + response.status);
+  }
+  const text = await response.text();
+  if (/^\s*</.test(text)) {
+    throw new Error('NetEase proxy returned HTML');
+  }
+  return JSON.parse(text);
+}
+
+async function fetchOfficialNeteasePlaylistDetail(playlistId, cookie) {
   const target = new URL('https://music.163.com/api/v6/playlist/detail');
   target.searchParams.set('id', String(playlistId || ''));
   target.searchParams.set('n', '1000');
   target.searchParams.set('s', '8');
-  const response = await fetchWithTimeout(target.toString(), {
+  const playlistDetail = await fetchJsonWithInit(target.toString(), {
     headers: {
       'Accept': 'application/json',
       'Referer': 'https://music.163.com/',
@@ -464,41 +554,34 @@ async function fetchNeteasePlaylistDetail(playlistId, cookie) {
       'Cookie': String(cookie || '')
     }
   });
-  if (!response.ok) {
-    throw new Error('NetEase playlist detail HTTP ' + response.status);
-  }
-  const text = await response.text();
-  if (/^\s*</.test(text)) {
-    throw new Error('NetEase playlist detail returned HTML');
-  }
-  const payload = JSON.parse(text);
-  const playlist = payload && (payload.playlist || payload.result) ? (payload.playlist || payload.result) : payload;
+  const normalized = normalizeNeteasePlaylistPayload(playlistDetail, playlistId);
+  const playlist = unwrapNeteasePlaylistPayload(playlistDetail) || {};
   const partialSongs = Array.isArray(playlist && playlist.tracks) ? playlist.tracks : [];
   const trackIds = Array.isArray(playlist && playlist.trackIds) ? playlist.trackIds : [];
-  let songs = partialSongs;
   if (trackIds.length > partialSongs.length) {
     try {
       const fullSongs = await fetchNeteaseSongDetailsByIds(trackIds, cookie);
       if (fullSongs.length > partialSongs.length) {
-        songs = fullSongs;
+        normalized.playlist.tracks = fullSongs.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name);
       }
     } catch (error) {
-      songs = partialSongs;
+      normalized.playlist.tracks = partialSongs.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name);
     }
   }
-  return {
-    playlist: {
-      id: String(playlist && playlist.id || playlistId || ''),
-      name: String(playlist && playlist.name || ''),
-      description: String(playlist && playlist.description || ''),
-      coverImgUrl: String(playlist && playlist.coverImgUrl || ''),
-      creator: playlist && playlist.creator ? playlist.creator : {},
-      createTime: Number(playlist && playlist.createTime || 0),
-      updateTime: Number(playlist && playlist.updateTime || 0),
-      trackCount: Number(playlist && playlist.trackCount || trackIds.length || songs.length || 0),
-      tracks: songs.map(normalizeNeteasePlaylistTrack).filter((item) => item.id && item.name)
+  normalized.playlist.trackCount = Number(playlist && playlist.trackCount || trackIds.length || normalized.playlist.tracks.length || 0);
+  return normalized;
+}
+
+async function fetchNeteasePlaylistDetail(playlistId, cookie) {
+  try {
+    const officialPayload = await fetchOfficialNeteasePlaylistDetail(playlistId, cookie);
+    if (officialPayload.playlist.name && (!officialPayload.playlist.trackCount || officialPayload.playlist.tracks.length >= officialPayload.playlist.trackCount)) {
+      return officialPayload;
     }
-  };
+  } catch (error) {
+    // Fall through to the Otter proxy when NetEase blocks or returns HTML/5xx.
+  }
+  return fetchOtterNeteasePlaylistDetail(playlistId, cookie);
 }
 
 async function handleGdMusicRequest(url) {
@@ -572,6 +655,19 @@ function mapQqQuality(br) {
   return '320k';
 }
 
+function normalizeLxSource(source) {
+  const value = String(source || '').trim().toLowerCase();
+  if (value === 'tx' || value === 'qq' || value === 'lx_qq') return 'tx';
+  if (value === 'kw' || value === 'kuwo' || value === 'lx_kuwo') return 'kw';
+  return '';
+}
+
+function mapLxQuality(br) {
+  const value = String(br || '').trim().toLowerCase();
+  if (value === '128k' || Number(value) <= 128) return '128k';
+  return '320k';
+}
+
 function buildQqVkeyRequestBody(songmid, qualityKeys) {
   const filenames = qualityKeys
     .map((key) => QQ_FILE_CONFIG.find((item) => item.key === key))
@@ -638,34 +734,42 @@ async function resolveQqOfficialUrl(songmid, br) {
 async function resolveQqLxUrl(songmid, br) {
   songmid = String(songmid || '').trim().replace(/^qq_/i, '');
   if (!songmid) return { url: '', error: 'Missing songmid' };
-  const quality = mapQqQuality(br);
-  const response = await fetchWithTimeout(`${QQ_LX_MEDIA_URL}/${encodeURIComponent(songmid)}/${encodeURIComponent(quality)}`, {
+  return resolveLxUrl('tx', songmid, br);
+}
+
+async function resolveLxUrl(source, id, br) {
+  const sourceCode = normalizeLxSource(source);
+  const cleanId = String(id || '').trim().replace(/^qq_/i, '').replace(/^MUSIC_/i, '');
+  if (!sourceCode) return { url: '', error: 'Unsupported LX source' };
+  if (!cleanId) return { url: '', error: 'Missing id' };
+  const quality = mapLxQuality(br);
+  const response = await fetchWithTimeout(`${LX_MEDIA_URLS[sourceCode]}/${encodeURIComponent(cleanId)}/${encodeURIComponent(quality)}`, {
     headers: {
       'Accept': 'application/json',
       'User-Agent': QQ_USER_AGENT,
       'X-Request-Key': 'share-v3'
     }
   });
-  if (!response.ok) return { url: '', quality, error: `QQ LX HTTP ${response.status}` };
+  if (!response.ok) return { url: '', quality, error: `LX HTTP ${response.status}` };
   const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
   const payload = JSON.parse(text);
   const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-  if (resolvedUrl) return { url: resolvedUrl, quality, provider: 'qq-lx' };
-  const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'QQ LX upstream returned no url';
+  if (resolvedUrl) return { url: resolvedUrl, quality, provider: `lx-${sourceCode}` };
+  const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'LX upstream returned no url';
   return { url: '', quality, error: upstreamMsg };
 }
 
 async function resolveQqMusicUrl(songmid, br) {
   try {
+    const lx = await resolveLxUrl('tx', songmid, br);
+    if (lx.url || lx.error === 'Missing id') return lx.error === 'Missing id' ? { url: '', error: 'Missing songmid' } : lx;
     const official = await resolveQqOfficialUrl(songmid, br);
-    if (official.url || official.error === 'Missing songmid') return official;
-    const lx = await resolveQqLxUrl(songmid, br);
-    if (lx.url) return lx;
-    return Object.assign({}, lx, { error: `${official.error || 'QQ official failed'}; ${lx.error || 'QQ LX failed'}` });
+    if (official.url) return official;
+    return Object.assign({}, official, { error: `${lx.error || 'QQ LX failed'}; ${official.error || 'QQ official failed'}` });
   } catch (error) {
-    const lx = await resolveQqLxUrl(songmid, br).catch((lxError) => ({ url: '', error: lxError.message }));
-    if (lx.url) return lx;
-    return { url: '', error: `${error.message}; ${lx.error || 'QQ LX failed'}` };
+    const official = await resolveQqOfficialUrl(songmid, br).catch((officialError) => ({ url: '', error: officialError.message }));
+    if (official.url) return official;
+    return { url: '', error: `${error.message}; ${official.error || 'QQ official failed'}` };
   }
 }
 
@@ -674,6 +778,15 @@ async function handleQqUrlRequest(url) {
   if (!songmid) return jsonResponse({ url: '', error: 'Missing songmid' }, 400);
   const payload = await resolveQqMusicUrl(songmid, url.searchParams.get('br'));
   return jsonResponse(payload, payload.url || payload.error !== 'Missing songmid' ? 200 : 400);
+}
+
+async function handleLxUrlRequest(url) {
+  const payload = await resolveLxUrl(
+    url.searchParams.get('source') || '',
+    url.searchParams.get('id') || url.searchParams.get('rid') || url.searchParams.get('songmid') || '',
+    url.searchParams.get('br') || '320'
+  );
+  return jsonResponse(payload, payload.error === 'Unsupported LX source' || payload.error === 'Missing id' ? 400 : 200);
 }
 
 async function handleCoverRequest(url) {
@@ -1158,24 +1271,7 @@ async function handleKuwoUrlRequest(url) {
 async function resolveKuwoLxUrl(rid) {
   rid = String(rid || '').trim().replace(/^MUSIC_/i, '');
   if (!rid) return { url: '', error: 'Missing rid' };
-  try {
-    const response = await fetchWithTimeout(`${KUWO_LX_MEDIA_URL}/${encodeURIComponent(rid)}/320k`, {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': QQ_USER_AGENT,
-        'X-Request-Key': 'share-v3'
-      }
-    });
-    if (!response.ok) return { url: '', error: `Kuwo LX HTTP ${response.status}` };
-    const text = await readLimitedText(response, MAX_UPSTREAM_JSON_BYTES);
-    const payload = JSON.parse(text);
-    const resolvedUrl = payload && payload.url ? String(payload.url) : '';
-    if (resolvedUrl) return { url: resolvedUrl, provider: 'kuwo-lx' };
-    const upstreamMsg = payload && payload.msg ? String(payload.msg) : 'Kuwo LX upstream returned no url';
-    return { url: '', error: upstreamMsg };
-  } catch (error) {
-    return { url: '', error: error.message };
-  }
+  return resolveLxUrl('kw', rid, '320');
 }
 
 async function resolveKuwoUrl(rid) {
@@ -1346,4 +1442,11 @@ function jsonResponse(payload, status = 200, cacheControl = 'no-store') {
       ...corsHeaders()
     }
   });
+}
+
+function getErrorMessage(error) {
+  if (!error) return 'Unknown error';
+  if (typeof error.message === 'string' && error.message.trim()) return error.message;
+  if (typeof error.name === 'string' && error.name.trim()) return error.name;
+  return String(error || 'Unknown error');
 }

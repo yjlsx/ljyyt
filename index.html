@@ -1885,8 +1885,10 @@
             <button class="source-option" data-provider="丽江曲库"><span class="source-option-icon" data-icon="database"></span><span><strong>丽江曲库</strong><small>本站纳西音乐和 MV</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Joox"><span class="source-option-icon" data-icon="globe"></span><span><strong>Joox</strong><small>海外华语音乐源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="QQ音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>QQ音乐</strong><small>华语曲库补充音源</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="小秋音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>小秋音乐</strong><small>QQ 曲库补充播放源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="网易云音乐"><span class="source-option-icon" data-icon="music"></span><span><strong>网易云</strong><small>小众资源匹配较多</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="酷我音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>酷我</strong><small>华语资源丰富</small></span><span class="source-option-check" data-icon="check"></span></button>
+            <button class="source-option" data-provider="小蜗音乐"><span class="source-option-icon" data-icon="headphones"></span><span><strong>小蜗音乐</strong><small>酷我曲库补充播放源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Migu"><span class="source-option-icon" data-icon="radio"></span><span><strong>Migu</strong><small>咪咕音乐来源</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="B站"><span class="source-option-icon" data-icon="video"></span><span><strong>B站</strong><small>用户上传音乐内容</small></span><span class="source-option-check" data-icon="check"></span></button>
             <button class="source-option" data-provider="Netease"><span class="source-option-icon" data-icon="refresh"></span><span><strong>Netease</strong><small>网易云备用接口</small></span><span class="source-option-check" data-icon="check"></span></button>
@@ -2132,9 +2134,11 @@
               <label class="aggregate-source-option selected" data-source="local" onclick="toggleAggregateSource(event, 'local')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>丽江曲库</p><small>本站原有纳西音乐数据</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="joox" onclick="toggleAggregateSource(event, 'joox')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>Joox</p><small>QQ音乐海外版，专注东南亚及港台流行资源</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="qq" onclick="toggleAggregateSource(event, 'qq')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>QQ音乐</p><small>补充华语和流行音乐资源</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="lx_qq" onclick="toggleAggregateSource(event, 'lx_qq')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>小秋音乐</p><small>QQ 曲库备用播放线路</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="netease" onclick="toggleAggregateSource(event, 'netease')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>网易云音乐</p><small>音源稳定，小众资源多</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option" data-source="migu" onclick="toggleAggregateSource(event, 'migu')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Migu</p><small>咪咕音乐官方</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="kuwo" onclick="toggleAggregateSource(event, 'kuwo')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>酷我音乐</p><small>华语资源丰富，通过专线接口解析</small></span><span class="aggregate-source-tools"></span></label>
+              <label class="aggregate-source-option selected" data-source="lx_kuwo" onclick="toggleAggregateSource(event, 'lx_kuwo')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>小蜗音乐</p><small>酷我曲库备用播放线路</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option selected" data-source="bilibili" onclick="toggleAggregateSource(event, 'bilibili')"><span class="aggregate-check" data-icon="check"></span><span class="aggregate-source-copy"><p>B站</p><small>Bilibili 官方，用户上传资源丰富</small></span><span class="aggregate-source-tools"></span></label>
               <label class="aggregate-source-option" data-source="_netease" onclick="toggleAggregateSource(event, '_netease')"><span class="aggregate-check"></span><span class="aggregate-source-copy"><p>Netease</p><small>网易云官方，稳定高速</small></span><span class="aggregate-source-tools"></span></label>
             </div>
@@ -2368,24 +2372,28 @@
       '丽江曲库': 'local',
       'Joox': 'joox',
       'QQ音乐': 'qq',
+      '小秋音乐': 'lx_qq',
       '网易云音乐': 'netease',
       '酷我音乐': 'kuwo',
+      '小蜗音乐': 'lx_kuwo',
       'Migu': 'migu',
       'B站': 'bilibili',
       'Netease': '_netease'
     };
-    const sourceDisplayOrder = ['local', 'joox', 'qq', 'netease', 'kuwo', 'migu', 'bilibili', '_netease'];
+    const sourceDisplayOrder = ['local', 'joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'migu', 'bilibili', '_netease'];
     const aggregateSourceLabels = {
       local: '丽江曲库',
       joox: 'Joox',
       qq: 'QQ音乐',
+      lx_qq: '小秋音乐',
       netease: '网易云音乐',
       migu: 'Migu',
       kuwo: '酷我音乐',
+      lx_kuwo: '小蜗音乐',
       bilibili: 'B站',
       _netease: 'Netease'
     };
-    const defaultEnabledSources = ['local', 'joox', 'qq', 'netease', 'kuwo', 'bilibili'];
+    const defaultEnabledSources = ['local', 'joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'bilibili'];
     let libraryLoaded = false;
     let videosLoaded = false;
     let libraryTracks = [];
@@ -3807,6 +3815,8 @@
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
+    const PREWARM_FAST_SWITCH_GRACE_MS = 180;
+    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -3862,16 +3872,35 @@
       _fallbackPrewarmState = { key: key, promise: promise, result: null };
       return promise;
     }
+    function isUsableFallbackPrewarmResult(result, state) {
+      if (!result || !result.url || !result.track) return false;
+      state = state || { sources: [], urls: [] };
+      var source = String(result.track.source || '').trim();
+      var url = normalizeAudioUrl(result.url);
+      if (source && state.sources.indexOf(source) >= 0) return false;
+      if (url && state.urls.indexOf(url) >= 0) return false;
+      return true;
+    }
     async function consumeFallbackPrewarm(track, state, fallbackKey) {
       var key = fallbackKey || getTrackFallbackKey(track);
       if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
       var result = _fallbackPrewarmState.result || await _fallbackPrewarmState.promise;
-      if (!result || !result.url || !result.track) return null;
-      var source = String(result.track.source || '').trim();
-      var url = normalizeAudioUrl(result.url);
-      if (source && state.sources.indexOf(source) >= 0) return null;
-      if (url && state.urls.indexOf(url) >= 0) return null;
-      return result;
+      return isUsableFallbackPrewarmResult(result, state) ? result : null;
+    }
+    async function waitForFallbackPrewarmResult(track, state, fallbackKey, timeoutMs) {
+      var key = fallbackKey || getTrackFallbackKey(track);
+      if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
+      if (_fallbackPrewarmState.result) {
+        return isUsableFallbackPrewarmResult(_fallbackPrewarmState.result, state) ? _fallbackPrewarmState.result : null;
+      }
+      var timeout = Math.max(0, Number(timeoutMs) || 0);
+      if (!timeout) return null;
+      return Promise.race([
+        _fallbackPrewarmState.promise.then(function(result) {
+          return isUsableFallbackPrewarmResult(result, state) ? result : null;
+        }),
+        new Promise(function(resolve) { setTimeout(function() { resolve(null); }, timeout); })
+      ]);
     }
     function applyFallbackRecovery(track, recovered) {
       var recoveredTrack = recovered && recovered.track ? recovered.track : recovered;
@@ -3957,10 +3986,15 @@
       if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
       var fallbackKey = typeof getTrackFallbackKey === 'function' ? getTrackFallbackKey(currentTrack) : '';
-      var hasPrewarmedResult = typeof _fallbackPrewarmState !== 'undefined' && _fallbackPrewarmState && _fallbackPrewarmState.key === fallbackKey && !!_fallbackPrewarmState.result;
+      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
+      var initialState = ensureFallbackState(currentTrack, fallbackKey);
+      var prewarmGraceMs = typeof PREWARM_FAST_SWITCH_GRACE_MS === 'number' ? PREWARM_FAST_SWITCH_GRACE_MS : 180;
+      var fastPrewarmed = typeof waitForFallbackPrewarmResult === 'function'
+        ? await waitForFallbackPrewarmResult(currentTrack, initialState, fallbackKey, prewarmGraceMs)
+        : null;
+      var hasPrewarmedResult = !!fastPrewarmed;
       if (!hasPrewarmedResult && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
-      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       var shouldShowToast = attemptLimit > 0 && requestId && requestId === _playRequestId;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
@@ -3975,7 +4009,8 @@
           if (shouldShowToast && attempt === 0) {
             showToast('正在搜索免费音源...', 2000);
           }
-          var prewarmed = await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
+          var prewarmed = fastPrewarmed || await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
+          fastPrewarmed = null;
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
           if (!fallbackUrl) {
             currentTrack.src = '';
@@ -4080,15 +4115,55 @@
         audioPlayer.addEventListener('error', onError, { once: true });
       });
     }
-    async function playAudioWithTimeout(timeoutMs) {
+    function isPrewarmFallbackReadySignal(error) {
+      return String(error && error.message || error || '') === 'PREWARM_FALLBACK_READY';
+    }
+    function waitForPrewarmFallbackDuringPrimary(track, fallbackKey, timeoutMs) {
+      if (!isSmartSourceEnabled() || typeof waitForFallbackPrewarmResult !== 'function') return null;
+      if (!track || !track.title) return null;
+      var key = fallbackKey || getTrackFallbackKey(track);
+      if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
+      var state = ensureFallbackState(track, key);
+      var timeout = Math.max(0, Number(timeoutMs) || 0);
+      if (!timeout) return null;
+      return new Promise(function(resolve, reject) {
+        var done = false;
+        var timer = setTimeout(function() {
+          done = true;
+          resolve(null);
+        }, timeout);
+        waitForFallbackPrewarmResult(track, state, key, timeout).then(function(result) {
+          if (done || !result) return;
+          done = true;
+          clearTimeout(timer);
+          reject(new Error('PREWARM_FALLBACK_READY'));
+        }).catch(function() {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          resolve(null);
+        });
+      });
+    }
+    async function playAudioWithTimeout(timeoutMs, options) {
+      options = options || {};
       var playPromise = audioPlayer.play();
-      await Promise.race([
+      var races = [
         playPromise,
         waitForAudioReady(timeoutMs || 8000),
         new Promise(function(resolve, reject) {
           setTimeout(function() { reject(new Error('AUDIO_NOT_READY')); }, timeoutMs || 8000);
         })
-      ]);
+      ];
+      var prewarmRace = options.prewarmFallbackTrack
+        ? waitForPrewarmFallbackDuringPrimary(
+          options.prewarmFallbackTrack,
+          options.fallbackKey,
+          options.prewarmFallbackGraceMs
+        )
+        : null;
+      if (prewarmRace) races.push(prewarmRace);
+      await Promise.race(races);
     }
     function isTruncatedAudioDuration(actualSeconds, expectedSeconds) {
       actualSeconds = Number(actualSeconds);
@@ -4129,7 +4204,11 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS);
+          await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS, {
+            prewarmFallbackTrack: currentTrack,
+            fallbackKey: getTrackFallbackKey(currentTrack),
+            prewarmFallbackGraceMs: PRIMARY_PREWARM_FALLBACK_GRACE_MS
+          });
           if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
@@ -4139,6 +4218,7 @@
           return;
         } catch (e) {
           if (requestId !== _playRequestId) return;
+          if (isPrewarmFallbackReadySignal(e) && await switchToFallbackSource('prewarm-ready', requestId)) return;
           if (await switchToFallbackSource('play-failed', requestId)) return;
         }
       }
@@ -4182,6 +4262,7 @@
         savePlaybackState(true);
       } catch (error) {
         if (requestId !== _playRequestId) return;
+        if (isPrewarmFallbackReadySignal(error) && await switchToFallbackSource('prewarm-ready', requestId)) return;
         if (isAutoplayPolicyBlocked(error)) {
           setPlayIcons(false);
           if (audioPlayer.getAttribute('src')) savePlaybackState(true);
@@ -5436,9 +5517,11 @@
         local: '丽江曲库',
         joox: 'Joox',
         qq: 'QQ音乐',
+        lx_qq: '小秋音乐',
         netease: '网易云音乐',
         _netease: 'Netease',
         kuwo: '酷我音乐',
+        lx_kuwo: '小蜗音乐',
         migu: 'Migu',
         bilibili: 'B站'
       }[source] || source || '未知来源';
@@ -5509,6 +5592,21 @@
       });
       return tracks.slice(0, total);
     }
+    function cloneTracksForSource(tracks, source) {
+      return (Array.isArray(tracks) ? tracks : []).map(function(track) {
+        return Object.assign({}, track, {
+          source: source,
+          sourceLabel: getSourceLabel(source)
+        });
+      });
+    }
+    async function searchLxQqTracks(query, count, signal) {
+      return cloneTracksForSource(await searchQqApiTracks(query, count, signal), 'lx_qq');
+    }
+    async function searchLxKuwoTracks(query, count, signal) {
+      var tracks = await searchGdMusicSourceTracks(query, 'kuwo', count, signal);
+      return cloneTracksForSource(tracks, 'lx_kuwo');
+    }
     function normalizeQqProxyTrack(track) {
       if (!track) return null;
       var songmid = String(track.url_id || track.urlId || track.lyric_id || track.id || '').replace(/^qq_/i, '');
@@ -5568,6 +5666,17 @@
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
         return searchQqApiTracks(query, count, signal);
       }
+      if (source === 'lx_qq') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchLxQqTracks(query, count, signal);
+      }
+      if (source === 'lx_kuwo') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchLxKuwoTracks(query, count, signal);
+      }
+      return searchGdMusicSourceTracks(query, source, count, signal);
+    }
+    async function searchGdMusicSourceTracks(query, source, count, signal) {
       var total = Math.max(1, Number(count) || 20);
       var pageSize = Math.min(50, total);
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
@@ -5628,6 +5737,17 @@
           return '';
         }
       }
+      if (track.source === 'lx_qq' || track.source === 'lx_kuwo') {
+        try {
+          var lxPayload = await fetchLxTrackUrlPayload(track.source, track.urlId, quality);
+          var lxUrl = normalizeAudioUrl(lxPayload && lxPayload.url ? String(lxPayload.url) : '');
+          if (!lxUrl) return '';
+          return /^http:\/\//i.test(lxUrl) ? getAudioProxyUrl(lxUrl) : lxUrl;
+        } catch (error) {
+          console.warn('resolveLxTrackUrl failed', error);
+          return '';
+        }
+      }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
         '&id=' + encodeURIComponent(track.urlId) + '&br=' + encodeURIComponent(quality);
       try {
@@ -5645,6 +5765,21 @@
       } catch (error) {
         return '';
       }
+    }
+    function getLxSourceCode(source) {
+      return source === 'lx_kuwo' ? 'kw' : (source === 'lx_qq' ? 'tx' : '');
+    }
+    function mapLxQuality(quality) {
+      return String(quality || '320') === '128' ? '128k' : '320k';
+    }
+    async function fetchLxTrackUrlPayload(source, urlId, quality) {
+      var code = getLxSourceCode(source);
+      var id = String(urlId || '').replace(/^qq_/i, '').replace(/^MUSIC_/i, '');
+      if (!code || !id) return { url: '' };
+      var base = (_isLocalDev || useSameOriginAudioApi) ? '' : ljyytApiBase;
+      var response = await fetch(base + '/api/lx/url?source=' + encodeURIComponent(code) + '&id=' + encodeURIComponent(id) + '&br=' + encodeURIComponent(mapLxQuality(quality)));
+      if (!response.ok) throw new Error('LX url ' + response.status);
+      return response.json();
     }
     async function fetchQqTrackUrlPayload(urlId, quality) {
       function fetchWithTimeout(url, options, timeoutMs) {
@@ -7060,8 +7195,11 @@
         all: '聚合搜索',
         local: '丽江曲库',
         joox: 'Joox',
+        qq: 'QQ音乐',
+        lx_qq: '小秋音乐',
         netease: '网易云音乐',
         kuwo: '酷我音乐',
+        lx_kuwo: '小蜗音乐',
         migu: 'Migu',
         bilibili: 'B站',
         _netease: 'Netease'

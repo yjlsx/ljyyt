@@ -114,24 +114,28 @@
       '丽江曲库': 'local',
       'Joox': 'joox',
       'QQ音乐': 'qq',
+      '小秋音乐': 'lx_qq',
       '网易云音乐': 'netease',
       '酷我音乐': 'kuwo',
+      '小蜗音乐': 'lx_kuwo',
       'Migu': 'migu',
       'B站': 'bilibili',
       'Netease': '_netease'
     };
-    const sourceDisplayOrder = ['local', 'joox', 'qq', 'netease', 'kuwo', 'migu', 'bilibili', '_netease'];
+    const sourceDisplayOrder = ['local', 'joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'migu', 'bilibili', '_netease'];
     const aggregateSourceLabels = {
       local: '丽江曲库',
       joox: 'Joox',
       qq: 'QQ音乐',
+      lx_qq: '小秋音乐',
       netease: '网易云音乐',
       migu: 'Migu',
       kuwo: '酷我音乐',
+      lx_kuwo: '小蜗音乐',
       bilibili: 'B站',
       _netease: 'Netease'
     };
-    const defaultEnabledSources = ['local', 'joox', 'qq', 'netease', 'kuwo', 'bilibili'];
+    const defaultEnabledSources = ['local', 'joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'bilibili'];
     let libraryLoaded = false;
     let videosLoaded = false;
     let libraryTracks = [];
@@ -1247,6 +1251,8 @@
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
+    const PREWARM_FAST_SWITCH_GRACE_MS = 180;
+    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -1301,16 +1307,35 @@
       _fallbackPrewarmState = { key: key, promise: promise, result: null };
       return promise;
     }
+    function isUsableFallbackPrewarmResult(result, state) {
+      if (!result || !result.url || !result.track) return false;
+      state = state || { sources: [], urls: [] };
+      var source = String(result.track.source || '').trim();
+      var url = normalizeAudioUrl(result.url);
+      if (source && state.sources.indexOf(source) >= 0) return false;
+      if (url && state.urls.indexOf(url) >= 0) return false;
+      return true;
+    }
     async function consumeFallbackPrewarm(track, state, fallbackKey) {
       var key = fallbackKey || getTrackFallbackKey(track);
       if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
       var result = _fallbackPrewarmState.result || await _fallbackPrewarmState.promise;
-      if (!result || !result.url || !result.track) return null;
-      var source = String(result.track.source || '').trim();
-      var url = normalizeAudioUrl(result.url);
-      if (source && state.sources.indexOf(source) >= 0) return null;
-      if (url && state.urls.indexOf(url) >= 0) return null;
-      return result;
+      return isUsableFallbackPrewarmResult(result, state) ? result : null;
+    }
+    async function waitForFallbackPrewarmResult(track, state, fallbackKey, timeoutMs) {
+      var key = fallbackKey || getTrackFallbackKey(track);
+      if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
+      if (_fallbackPrewarmState.result) {
+        return isUsableFallbackPrewarmResult(_fallbackPrewarmState.result, state) ? _fallbackPrewarmState.result : null;
+      }
+      var timeout = Math.max(0, Number(timeoutMs) || 0);
+      if (!timeout) return null;
+      return Promise.race([
+        _fallbackPrewarmState.promise.then(function(result) {
+          return isUsableFallbackPrewarmResult(result, state) ? result : null;
+        }),
+        new Promise(function(resolve) { setTimeout(function() { resolve(null); }, timeout); })
+      ]);
     }
     function applyFallbackRecovery(track, recovered) {
       var recoveredTrack = recovered && recovered.track ? recovered.track : recovered;
@@ -1396,10 +1421,15 @@
       if (!isSmartSourceEnabled()) return false;
       failedUrl = failedUrl || currentTrack.src || audioPlayer.getAttribute('src') || '';
       var fallbackKey = typeof getTrackFallbackKey === 'function' ? getTrackFallbackKey(currentTrack) : '';
-      var hasPrewarmedResult = typeof _fallbackPrewarmState !== 'undefined' && _fallbackPrewarmState && _fallbackPrewarmState.key === fallbackKey && !!_fallbackPrewarmState.result;
+      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
+      var initialState = ensureFallbackState(currentTrack, fallbackKey);
+      var prewarmGraceMs = typeof PREWARM_FAST_SWITCH_GRACE_MS === 'number' ? PREWARM_FAST_SWITCH_GRACE_MS : 180;
+      var fastPrewarmed = typeof waitForFallbackPrewarmResult === 'function'
+        ? await waitForFallbackPrewarmResult(currentTrack, initialState, fallbackKey, prewarmGraceMs)
+        : null;
+      var hasPrewarmedResult = !!fastPrewarmed;
       if (!hasPrewarmedResult && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
-      rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source, fallbackKey);
       var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
       var shouldShowToast = attemptLimit > 0;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
@@ -1414,7 +1444,8 @@
           if (shouldShowToast && attempt === 0) {
             showToast('正在搜索免费音源...', 2000);
           }
-          var prewarmed = await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
+          var prewarmed = fastPrewarmed || await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
+          fastPrewarmed = null;
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
           if (!fallbackUrl) {
             currentTrack.src = '';
@@ -1519,15 +1550,55 @@
         audioPlayer.addEventListener('error', onError, { once: true });
       });
     }
-    async function playAudioWithTimeout(timeoutMs) {
+    function isPrewarmFallbackReadySignal(error) {
+      return String(error && error.message || error || '') === 'PREWARM_FALLBACK_READY';
+    }
+    function waitForPrewarmFallbackDuringPrimary(track, fallbackKey, timeoutMs) {
+      if (!isSmartSourceEnabled() || typeof waitForFallbackPrewarmResult !== 'function') return null;
+      if (!track || !track.title) return null;
+      var key = fallbackKey || getTrackFallbackKey(track);
+      if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
+      var state = ensureFallbackState(track, key);
+      var timeout = Math.max(0, Number(timeoutMs) || 0);
+      if (!timeout) return null;
+      return new Promise(function(resolve, reject) {
+        var done = false;
+        var timer = setTimeout(function() {
+          done = true;
+          resolve(null);
+        }, timeout);
+        waitForFallbackPrewarmResult(track, state, key, timeout).then(function(result) {
+          if (done || !result) return;
+          done = true;
+          clearTimeout(timer);
+          reject(new Error('PREWARM_FALLBACK_READY'));
+        }).catch(function() {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          resolve(null);
+        });
+      });
+    }
+    async function playAudioWithTimeout(timeoutMs, options) {
+      options = options || {};
       var playPromise = audioPlayer.play();
-      await Promise.race([
+      var races = [
         playPromise,
         waitForAudioReady(timeoutMs || 8000),
         new Promise(function(resolve, reject) {
           setTimeout(function() { reject(new Error('AUDIO_NOT_READY')); }, timeoutMs || 8000);
         })
-      ]);
+      ];
+      var prewarmRace = options.prewarmFallbackTrack
+        ? waitForPrewarmFallbackDuringPrimary(
+          options.prewarmFallbackTrack,
+          options.fallbackKey,
+          options.prewarmFallbackGraceMs
+        )
+        : null;
+      if (prewarmRace) races.push(prewarmRace);
+      await Promise.race(races);
     }
     function isTruncatedAudioDuration(actualSeconds, expectedSeconds) {
       actualSeconds = Number(actualSeconds);
@@ -1568,7 +1639,11 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS);
+          await playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS, {
+            prewarmFallbackTrack: currentTrack,
+            fallbackKey: getTrackFallbackKey(currentTrack),
+            prewarmFallbackGraceMs: PRIMARY_PREWARM_FALLBACK_GRACE_MS
+          });
           if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
@@ -1578,6 +1653,7 @@
           return;
         } catch (e) {
           if (requestId !== _playRequestId) return;
+          if (isPrewarmFallbackReadySignal(e) && await switchToFallbackSource('prewarm-ready', requestId)) return;
           if (await switchToFallbackSource('play-failed', requestId)) return;
         }
       }
@@ -1621,6 +1697,7 @@
         savePlaybackState(true);
       } catch (error) {
         if (requestId !== _playRequestId) return;
+        if (isPrewarmFallbackReadySignal(error) && await switchToFallbackSource('prewarm-ready', requestId)) return;
         if (isAutoplayPolicyBlocked(error)) {
           setPlayIcons(false);
           if (audioPlayer.getAttribute('src')) savePlaybackState(true);
@@ -2861,10 +2938,12 @@
       return {
         local: '丽江曲库',
         joox: 'Joox',
-        qq: 'QQ',
-        netease: '网易',
+        qq: 'QQ音乐',
+        lx_qq: '小秋音乐',
+        netease: '网易云音乐',
         _netease: 'Netease',
-        kuwo: '酷我',
+        kuwo: '酷我音乐',
+        lx_kuwo: '小蜗音乐',
         migu: 'Migu',
         bilibili: 'B站'
       }[source] || source || '未知来源';
@@ -2934,6 +3013,21 @@
       });
       return tracks.slice(0, total);
     }
+    function cloneTracksForSource(tracks, source) {
+      return (Array.isArray(tracks) ? tracks : []).map(function(track) {
+        return Object.assign({}, track, {
+          source: source,
+          sourceLabel: getSourceLabel(source)
+        });
+      });
+    }
+    async function searchLxQqTracks(query, count, signal) {
+      return cloneTracksForSource(await searchQqApiTracks(query, count, signal), 'lx_qq');
+    }
+    async function searchLxKuwoTracks(query, count, signal) {
+      var tracks = await searchGdMusicSourceTracks(query, 'kuwo', count, signal);
+      return cloneTracksForSource(tracks, 'lx_kuwo');
+    }
     function normalizeQqProxyTrack(track) {
       if (!track) return null;
       var songmid = String(track.url_id || track.urlId || track.lyric_id || track.id || '').replace(/^qq_/i, '');
@@ -2993,6 +3087,17 @@
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
         return searchQqApiTracks(query, count, signal);
       }
+      if (source === 'lx_qq') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchLxQqTracks(query, count, signal);
+      }
+      if (source === 'lx_kuwo') {
+        if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        return searchLxKuwoTracks(query, count, signal);
+      }
+      return searchGdMusicSourceTracks(query, source, count, signal);
+    }
+    async function searchGdMusicSourceTracks(query, source, count, signal) {
       var total = Math.max(1, Number(count) || 20);
       var pageSize = Math.min(50, total);
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
@@ -3021,6 +3126,11 @@
     }
     async function resolveExternalTrackUrl(track) {
       if (!track || !track.source || !track.urlId) return '';
+      var quality = '320';
+      try {
+        var settingQuality = typeof appSettings !== 'undefined' && appSettings ? String(appSettings.quality || '320') : '320';
+        quality = ['128', '192', '320', '999'].includes(settingQuality) ? settingQuality : '320';
+      } catch (error) {}
       if (track.source === '_netease') {
         try {
           return await resolveNeteaseApiTrackUrl(track);
@@ -3039,7 +3149,7 @@
       }
       if (track.source === 'qq') {
         try {
-          var qqPayload = await fetchQqTrackUrlPayload(track.urlId);
+          var qqPayload = await fetchQqTrackUrlPayload(track.urlId, quality);
           var qqUrl = normalizeAudioUrl(qqPayload && qqPayload.url ? String(qqPayload.url) : '');
           if (!qqUrl) return '';
           return /^http:\/\//i.test(qqUrl) ? getAudioProxyUrl(qqUrl) : qqUrl;
@@ -3048,8 +3158,19 @@
           return '';
         }
       }
+      if (track.source === 'lx_qq' || track.source === 'lx_kuwo') {
+        try {
+          var lxPayload = await fetchLxTrackUrlPayload(track.source, track.urlId, quality);
+          var lxUrl = normalizeAudioUrl(lxPayload && lxPayload.url ? String(lxPayload.url) : '');
+          if (!lxUrl) return '';
+          return /^http:\/\//i.test(lxUrl) ? getAudioProxyUrl(lxUrl) : lxUrl;
+        } catch (error) {
+          console.warn('resolveLxTrackUrl failed', error);
+          return '';
+        }
+      }
       var url = gdMusicApiBase + '?types=url&source=' + encodeURIComponent(track.source) +
-        '&id=' + encodeURIComponent(track.urlId) + '&br=192';
+        '&id=' + encodeURIComponent(track.urlId) + '&br=' + encodeURIComponent(quality);
       try {
         var payload = await fetchGdMusicJson(url);
         var resolved = payload && payload.url ? String(payload.url) : '';
@@ -3059,7 +3180,22 @@
       } catch (error) { /* fallthrough */ }
       return '';
     }
-    async function fetchQqTrackUrlPayload(urlId) {
+    function getLxSourceCode(source) {
+      return source === 'lx_kuwo' ? 'kw' : (source === 'lx_qq' ? 'tx' : '');
+    }
+    function mapLxQuality(quality) {
+      return String(quality || '320') === '128' ? '128k' : '320k';
+    }
+    async function fetchLxTrackUrlPayload(source, urlId, quality) {
+      var code = getLxSourceCode(source);
+      var id = String(urlId || '').replace(/^qq_/i, '').replace(/^MUSIC_/i, '');
+      if (!code || !id) return { url: '' };
+      var base = (_isLocalDev || useSameOriginAudioApi) ? '' : ljyytApiBase;
+      var response = await fetch(base + '/api/lx/url?source=' + encodeURIComponent(code) + '&id=' + encodeURIComponent(id) + '&br=' + encodeURIComponent(mapLxQuality(quality)));
+      if (!response.ok) throw new Error('LX url ' + response.status);
+      return response.json();
+    }
+    async function fetchQqTrackUrlPayload(urlId, quality) {
       function fetchWithTimeout(url, options, timeoutMs) {
         options = options || {};
         timeoutMs = timeoutMs || 8000;
@@ -3072,7 +3208,7 @@
         });
       }
       try {
-        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=320');
+        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=' + encodeURIComponent(quality || '320'));
         if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
         var payload = await qqResponse.json();
         if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
@@ -3085,7 +3221,7 @@
         var fallbackResponse = await fetchWithTimeout(qqFallbackProxyBase, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: '320k' })
+          body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: mapLxQuality(quality || '320') })
         });
         if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
         return fallbackResponse.json();
@@ -4453,8 +4589,11 @@
         all: '聚合搜索',
         local: '丽江曲库',
         joox: 'Joox',
+        qq: 'QQ音乐',
+        lx_qq: '小秋音乐',
         netease: '网易云音乐',
         kuwo: '酷我音乐',
+        lx_kuwo: '小蜗音乐',
         migu: 'Migu',
         bilibili: 'B站',
         _netease: 'Netease'
