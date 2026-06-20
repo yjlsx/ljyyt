@@ -129,6 +129,56 @@ async function verifyFrontend(file) {
   }
 }
 
+async function verifyQqSearchFallbackDoesNotWaitForSlowPrimary(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    DEFAULT_COVER: 'cover.jpg',
+    qqApiBase: '/api/qq',
+    qqFallbackProxyBase: 'https://otter-music.pages.dev/music-api/qqmusic/proxy',
+    AbortController,
+    setTimeout,
+    clearTimeout,
+    console: { warn() {} },
+    calls: [],
+    safeCover(value) { return value || 'cover.jpg'; },
+    getSourceLabel(source) { return source === 'qq' ? 'QQ' : source; },
+    parseTrackDuration() { return 0; },
+    async fetch(url) {
+      sandbox.calls.push(String(url));
+      if (String(url).includes('/api/qq/search')) return new Promise(() => {});
+      if (String(url).includes('qqmusic/proxy')) {
+        return {
+          ok: true,
+          async json() {
+            return { items: [{ id: 'qq_fast_fallback', name: '晴天', artist: ['周杰伦'], source: 'qq', url_id: 'mid-fast' }] };
+          }
+        };
+      }
+      throw new Error('Unexpected url ' + url);
+    }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickFunction(script, 'normalizeExternalTrack'),
+    pickFunction(script, 'normalizeQqProxyTrack'),
+    pickFunction(script, 'isQqProxyHealthPayload'),
+    pickFunction(script, 'fetchQqSearchPage'),
+    pickFunction(script, 'searchQqApiTracks')
+  ].join('\n'), sandbox);
+
+  const result = await Promise.race([
+    sandbox.searchQqApiTracks('晴天', 1),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 120))
+  ]);
+
+  if (result === 'blocked') {
+    throw new Error(file + ' should not wait for slow QQ primary search before using the fallback proxy');
+  }
+  if (!Array.isArray(result) || !result.length || result[0].urlId !== 'mid-fast') {
+    throw new Error(file + ' should return fast QQ fallback search results');
+  }
+}
 
 async function verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file) {
   const html = fs.readFileSync(file, 'utf8');
@@ -176,7 +226,7 @@ async function verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file) {
 }
 
 for (const file of ['index.html', 'dist/index.html']) {
-  Promise.all([verifyFrontend(file), verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file)]).catch((error) => {
+  Promise.all([verifyFrontend(file), verifyQqSearchFallbackDoesNotWaitForSlowPrimary(file), verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file)]).catch((error) => {
     console.error(error);
     process.exit(1);
   });

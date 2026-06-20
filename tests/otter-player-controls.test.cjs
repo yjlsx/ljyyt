@@ -24,7 +24,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     "'Hi-Res'",
     "audioPlayer.playbackRate",
     "'&br=' + encodeURIComponent(quality)",
-    "String(quality || '320') + 'k'"
+    'function mapLxQuality'
   ]) {
     if (!html.includes(marker)) {
       throw new Error(file + ' is missing Otter player control marker: ' + marker);

@@ -509,9 +509,8 @@ async function fetchOtterNeteasePlaylistDetail(playlistId, cookie) {
     { method: 'GET', url: OTTER_NETEASE_API_BASE + '/playlist?id=' + encodeURIComponent(String(playlistId || '')) },
     { method: 'GET', url: OTTER_NETEASE_API_BASE + '/playlist?playlistId=' + encodeURIComponent(String(playlistId || '')) }
   ];
-  let lastError = null;
-  for (const attempt of attempts) {
-    try {
+  try {
+    return await Promise.any(attempts.map(async (attempt) => {
       const payload = await requestJson(attempt.url, {
         method: attempt.method,
         headers: {
@@ -520,17 +519,17 @@ async function fetchOtterNeteasePlaylistDetail(playlistId, cookie) {
           'User-Agent': 'ljyyt-local-server/1.0'
         },
         body: attempt.method === 'POST' ? attempt.body : null,
-        timeout: 12000
+        timeout: 8000
       });
       const normalized = normalizeNeteasePlaylistPayload(payload, playlistId);
       if (normalized.playlist.name || normalized.playlist.tracks.length) {
         return normalized;
       }
-    } catch (error) {
-      lastError = error;
-    }
+      throw new Error('Otter NetEase playlist proxy returned empty payload');
+    }));
+  } catch (error) {
+    throw new Error('Otter NetEase playlist proxy failed');
   }
-  throw lastError || new Error('Otter NetEase playlist proxy returned empty payload');
 }
 
 async function fetchOfficialNeteasePlaylistDetail(playlistId, cookie) {
@@ -568,7 +567,7 @@ async function fetchOfficialNeteasePlaylistDetail(playlistId, cookie) {
 async function fetchNeteasePlaylistDetail(playlistId, cookie) {
   try {
     const officialPayload = await fetchOfficialNeteasePlaylistDetail(playlistId, cookie);
-    if (officialPayload.playlist.name && (!officialPayload.playlist.trackCount || officialPayload.playlist.tracks.length >= officialPayload.playlist.trackCount)) {
+    if (officialPayload.playlist.name && officialPayload.playlist.tracks.length) {
       return officialPayload;
     }
   } catch (error) {

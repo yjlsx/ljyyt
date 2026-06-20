@@ -30,8 +30,8 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (/showToast\(['"][^'"]*(?:正在启用备用线路|启用备用线路|已切换备用线路|备用线路)/.test(html)) {
     throw new Error(name + ' still shows a non-Otter proxy-line toast');
   }
-  if (!html.includes("showToast('正在搜索免费音源...'")) {
-    throw new Error(name + ' does not show the Otter-style auto-match loading message');
+  if (html.includes("showToast('正在搜索免费音源...'")) {
+    throw new Error(name + ' still shows the auto-match loading toast');
   }
   if (!html.includes('function getTrackSourceDisplayName')) {
     throw new Error(name + ' does not normalize the displayed fallback source name');

@@ -103,9 +103,63 @@ async function verify(file) {
   }
 }
 
+
+async function verifyNeteaseFallbackDoesNotWaitForSlowPrimary(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    neteaseApiBase: 'https://primary.example/api/netease',
+    neteaseFallbackBases: ['https://otter.example/music-api/netease'],
+    AbortController,
+    DOMException,
+    setTimeout,
+    clearTimeout,
+    console: { warn() {} },
+    safeCover(value) { return value || 'cover.jpg'; },
+    parseTrackDuration() { return 0; },
+    calls: [],
+    async fetch(url) {
+      sandbox.calls.push(String(url));
+      if (String(url).startsWith('https://primary.example')) return new Promise(() => {});
+      if (String(url).startsWith('https://otter.example') && String(url).includes('/search')) {
+        return {
+          ok: true,
+          async json() {
+            return { data: { result: { songs: [{ id: 186016, name: '晴天', ar: [{ name: '周杰伦' }], al: { name: '叶惠美', picUrl: 'cover.jpg' } }] } } };
+          }
+        };
+      }
+      throw new Error('Unexpected url ' + url);
+    }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickFunction(script, 'getNeteaseRequestBases'),
+    pickFunction(script, 'isNeteaseProxyHealthPayload'),
+    pickFunction(script, 'fetchOtterNetease'),
+    pickFunction(script, 'normalizeNeteaseApiSong'),
+    pickFunction(script, 'searchNeteaseApiTracks')
+  ].join('\n'), sandbox);
+
+  const result = await Promise.race([
+    sandbox.searchNeteaseApiTracks('周杰伦 晴天', 3),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 120))
+  ]);
+
+  if (result === 'blocked') {
+    throw new Error(file + ' should not wait for a slow primary NetEase proxy before using the Otter fallback');
+  }
+  if (!Array.isArray(result) || !result.length || result[0].urlId !== '186016') {
+    throw new Error(file + ' should return fast NetEase fallback search results');
+  }
+}
+
 (async () => {
   for (const file of ['index.html', 'dist/index.html']) {
     await verify(file);
+    await verifyNeteaseFallbackDoesNotWaitForSlowPrimary(file);
   }
 })().catch((error) => {
   console.error(error);

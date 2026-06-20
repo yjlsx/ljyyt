@@ -2321,12 +2321,13 @@
             return '已自动切换至: 可用音源';
           }
         }
-        return '正在搜索免费音源...';
+        return '';
       }
       return text;
     }
     function showToast(message, duration) {
       message = normalizeFallbackToastMessage(message);
+      if (!message) return;
       var existing = document.querySelector('.ljyyt-toast');
       if (existing) existing.remove();
       var el = document.createElement('div');
@@ -3997,11 +3998,12 @@
       var fastPrewarmed = typeof waitForFallbackPrewarmResult === 'function'
         ? await waitForFallbackPrewarmResult(currentTrack, initialState, fallbackKey, prewarmGraceMs)
         : null;
-      var hasPrewarmedResult = !!fastPrewarmed;
-      if (!hasPrewarmedResult && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       if (requestId && requestId !== _playRequestId) return false;
-      var attemptLimit = Math.max(1, inferTrackSourceCandidates(currentTrack).length);
-      var shouldShowToast = attemptLimit > 0 && requestId && requestId === _playRequestId;
+      var candidateSources = inferTrackSourceCandidates(currentTrack);
+      var hasAlternativeSource = candidateSources.some(function(source) {
+        return initialState.sources.indexOf(source) < 0;
+      });
+      var attemptLimit = Math.max(1, candidateSources.length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack, fallbackKey);
@@ -4011,9 +4013,6 @@
         try {
           _isResolvingUrl = true;
           setPlayIcons(true);
-          if (shouldShowToast && attempt === 0) {
-            showToast('正在搜索免费音源...', 2000);
-          }
           var prewarmed = fastPrewarmed || await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
           fastPrewarmed = null;
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
@@ -4066,6 +4065,7 @@
           console.warn('switchToFallbackSource failed', error);
         }
       }
+      if (!hasAlternativeSource && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       return false;
     }
     function unlockAudioContext(useSilentPrimer) {
@@ -4971,23 +4971,24 @@
 
     async function fetchOtterNetease(path, payload) {
       var bases = getNeteaseRequestBases();
-      var lastError = null;
-      for (var i = 0; i < bases.length; i += 1) {
-        try {
-          var response = await fetch(bases[i] + path, {
+      if (!bases.length) throw new Error('otter netease api failed');
+      try {
+        return await Promise.any(bases.map(function(base) {
+          return fetch(base + path, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload || {})
+          }).then(function(response) {
+            if (!response.ok) throw new Error('otter netease api ' + response.status);
+            return response.json();
+          }).then(function(data) {
+            if (isNeteaseProxyHealthPayload(data)) throw new Error('netease proxy returned health payload');
+            return data;
           });
-          if (!response.ok) throw new Error('otter netease api ' + response.status);
-          var data = await response.json();
-          if (isNeteaseProxyHealthPayload(data)) throw new Error('netease proxy returned health payload');
-          return data;
-        } catch (error) {
-          lastError = error;
-        }
+        }));
+      } catch (error) {
+        throw new Error('otter netease api failed');
       }
-      throw lastError || new Error('otter netease api failed');
     }
     async function searchNeteaseApiTracks(query, count) {
       var limit = Math.max(1, Math.min(100, Number(count) || SEARCH_RESULT_LIMIT));
@@ -5642,25 +5643,39 @@
     async function fetchQqSearchPage(query, page, count, signal) {
       var url = qqApiBase + '/search?name=' + encodeURIComponent(query) +
         '&count=' + encodeURIComponent(count) + '&pages=' + page;
-      try {
-        var response = await fetch(url, { signal: signal });
+      var primary = fetch(url, { signal: signal }).then(function(response) {
         if (!response.ok) throw new Error('QQ search ' + response.status);
-        var payload = await response.json();
+        return response.json();
+      }).then(function(payload) {
         if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
-        if (Array.isArray(payload) && payload.length) return payload;
-      } catch (error) {
-        console.warn('QQ primary search failed, using fallback proxy', error);
-      }
-      var fallbackResponse = await fetch(qqFallbackProxyBase, {
+        if (!Array.isArray(payload) || !payload.length) throw new Error('QQ search empty');
+        return payload;
+      }).catch(function(error) {
+        console.warn('QQ primary search failed', error);
+        throw error;
+      });
+      var fallback = fetch(qqFallbackProxyBase, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal: signal,
         body: JSON.stringify({ type: 'search', query: query, page: page })
+      }).then(function(response) {
+        if (!response.ok) throw new Error('QQ fallback search ' + response.status);
+        return response.json();
+      }).then(function(payload) {
+        var items = payload && Array.isArray(payload.items) ? payload.items : [];
+        var tracks = items.slice(0, count).map(normalizeQqProxyTrack).filter(Boolean);
+        if (!tracks.length) throw new Error('QQ fallback search empty');
+        return tracks;
+      }).catch(function(error) {
+        console.warn('QQ fallback search failed', error);
+        throw error;
       });
-      if (!fallbackResponse.ok) throw new Error('QQ fallback search ' + fallbackResponse.status);
-      var fallbackPayload = await fallbackResponse.json();
-      var items = fallbackPayload && Array.isArray(fallbackPayload.items) ? fallbackPayload.items : [];
-      return items.slice(0, count).map(normalizeQqProxyTrack).filter(Boolean);
+      try {
+        return await Promise.any([primary, fallback]);
+      } catch (error) {
+        return [];
+      }
     }
     async function fetchExternalSourceTracks(query, source, count, signal) {
       if (source === '_netease') {
