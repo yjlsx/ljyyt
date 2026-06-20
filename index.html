@@ -3881,11 +3881,15 @@
       if (url && state.urls.indexOf(url) >= 0) return false;
       return true;
     }
-    async function consumeFallbackPrewarm(track, state, fallbackKey) {
+    async function consumeFallbackPrewarm(track, state, fallbackKey, timeoutMs) {
       var key = fallbackKey || getTrackFallbackKey(track);
       if (!_fallbackPrewarmState.promise || _fallbackPrewarmState.key !== key) return null;
-      var result = _fallbackPrewarmState.result || await _fallbackPrewarmState.promise;
-      return isUsableFallbackPrewarmResult(result, state) ? result : null;
+      if (_fallbackPrewarmState.result) {
+        return isUsableFallbackPrewarmResult(_fallbackPrewarmState.result, state) ? _fallbackPrewarmState.result : null;
+      }
+      var timeout = Math.max(0, Number(timeoutMs) || 0);
+      if (!timeout) return null;
+      return waitForFallbackPrewarmResult(track, state, key, timeout);
     }
     async function waitForFallbackPrewarmResult(track, state, fallbackKey, timeoutMs) {
       var key = fallbackKey || getTrackFallbackKey(track);
