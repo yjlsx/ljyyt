@@ -350,6 +350,7 @@ async function verifyConcurrentSelectedSourceRecovery(file) {
     pickFunction(script, 'getFallbackMatchScore'),
     pickFunction(script, 'pickFallbackTrackMatch'),
     pickFunction(script, 'getFallbackTrackMatches'),
+    pickFunction(script, 'resolvePlayableFallbackCandidate'),
     pickFunction(script, 'resolveFallbackTrackFromSource'),
     pickFunction(script, 'normalizeExternalTrack'),
     pickFunction(script, 'fetchGdMusicJson'),
@@ -382,6 +383,200 @@ async function verifyConcurrentSelectedSourceRecovery(file) {
   }
 }
 
+async function verifyRecoverySkipsSlowUnplayableCandidate(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    gdMusicApiBase: '/api/gd-music',
+    gdMusicFallbackBases: [],
+    _isLocalDev: true,
+    AbortController,
+    DOMException,
+    setTimeout,
+    clearTimeout,
+    aggregatedSources: ['local', 'joox', 'netease', 'kuwo'],
+    safeCover(value) {
+      return value || 'cover.jpg';
+    },
+    getSourceLabel(source) {
+      return { joox: 'Joox', netease: '网易', kuwo: '酷我' }[source] || source;
+    },
+    async fetch(url) {
+      const parsed = new URL(url, 'https://example.test');
+      const source = parsed.searchParams.get('source');
+      if (source !== 'joox') return { ok: true, async json() { return []; } };
+      return {
+        ok: true,
+        async json() {
+          return [{
+            id: 'joox-slow',
+            name: '香港别来无恙',
+            artist: ['王某某'],
+            source: 'joox',
+            url_id: 'joox-slow'
+          }, {
+            id: 'joox-ready',
+            name: '香港别来无恙',
+            artist: ['王某某'],
+            source: 'joox',
+            url_id: 'joox-ready'
+          }];
+        }
+      };
+    },
+    async resolveExternalTrackUrl(track) {
+      if (track && track.urlId === 'joox-slow') {
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        return '';
+      }
+      return track && track.urlId === 'joox-ready' ? 'https://cdn.example.test/joox-ready.mp3' : '';
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'parseTrackDuration'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getSelectedPlaybackSources'),
+    pickFunction(script, 'getFallbackSearchSources'),
+    pickFunction(script, 'inferTrackSourceCandidates'),
+    pickFunction(script, 'isTrackMatchCandidate'),
+    pickFunction(script, 'isLooseTitleMatchCandidate'),
+    pickFunction(script, 'getNormalizedArtistTokens'),
+    pickFunction(script, 'getFallbackMatchScore'),
+    pickFunction(script, 'pickFallbackTrackMatch'),
+    pickFunction(script, 'getFallbackTrackMatches'),
+    pickFunction(script, 'resolvePlayableFallbackCandidate'),
+    pickFunction(script, 'resolveFallbackTrackFromSource'),
+    pickFunction(script, 'normalizeExternalTrack'),
+    pickFunction(script, 'fetchGdMusicJson'),
+    pickFunction(script, 'searchGdMusicSourceTracks'),
+    pickFunction(script, 'fetchExternalSourceTracks'),
+    pickFunction(script, 'recoverPlayableTrackUrl')
+  ].join('\n'), sandbox);
+
+  const track = {
+    title: '香港别来无恙',
+    artist: '王某某',
+    source: 'kuwo',
+    sourceLabel: '酷我',
+    src: 'https://cdn.example.test/failed-kuwo.mp3'
+  };
+  const timeout = new Promise((resolve) => setTimeout(() => resolve('__timeout__'), 80));
+  const recovered = await Promise.race([
+    sandbox.recoverPlayableTrackUrl(track, {
+      skipSources: ['kuwo'],
+      skipUrls: ['https://cdn.example.test/failed-kuwo.mp3']
+    }),
+    timeout
+  ]);
+
+  if (recovered === '__timeout__') {
+    throw new Error(file + ' waited on a slow unplayable first candidate instead of checking another candidate');
+  }
+  if (recovered !== 'https://cdn.example.test/joox-ready.mp3' || track.urlId !== 'joox-ready') {
+    throw new Error(file + ' should switch to the first quickly resolvable fallback candidate');
+  }
+}
+
+async function verifyQuickOnlyRecoveryDoesNotDeepSearch(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    gdMusicApiBase: '/api/gd-music',
+    gdMusicFallbackBases: [],
+    _isLocalDev: true,
+    AbortController,
+    DOMException,
+    setTimeout,
+    clearTimeout,
+    aggregatedSources: ['local', 'joox', 'netease', 'kuwo'],
+    safeCover(value) {
+      return value || 'cover.jpg';
+    },
+    getSourceLabel(source) {
+      return { joox: 'Joox', netease: '网易', kuwo: '酷我' }[source] || source;
+    },
+    async fetch(url) {
+      const parsed = new URL(url, 'https://example.test');
+      const count = Number(parsed.searchParams.get('count') || 0);
+      if (count > 12) {
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        return {
+          ok: true,
+          async json() {
+            return [{
+              id: 'deep-hit',
+              name: '香港别来无恙',
+              artist: ['王某某'],
+              source: parsed.searchParams.get('source'),
+              url_id: 'deep-hit'
+            }];
+          }
+        };
+      }
+      return { ok: true, async json() { return []; } };
+    },
+    async resolveExternalTrackUrl(track) {
+      return track && track.urlId === 'deep-hit' ? 'https://cdn.example.test/deep-hit.mp3' : '';
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'parseTrackDuration'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getSelectedPlaybackSources'),
+    pickFunction(script, 'getFallbackSearchSources'),
+    pickFunction(script, 'inferTrackSourceCandidates'),
+    pickFunction(script, 'isTrackMatchCandidate'),
+    pickFunction(script, 'isLooseTitleMatchCandidate'),
+    pickFunction(script, 'getNormalizedArtistTokens'),
+    pickFunction(script, 'getFallbackMatchScore'),
+    pickFunction(script, 'pickFallbackTrackMatch'),
+    pickFunction(script, 'getFallbackTrackMatches'),
+    pickFunction(script, 'resolvePlayableFallbackCandidate'),
+    pickFunction(script, 'resolveFallbackTrackFromSource'),
+    pickFunction(script, 'normalizeExternalTrack'),
+    pickFunction(script, 'fetchGdMusicJson'),
+    pickFunction(script, 'searchGdMusicSourceTracks'),
+    pickFunction(script, 'fetchExternalSourceTracks'),
+    pickFunction(script, 'recoverPlayableTrackUrl')
+  ].join('\n'), sandbox);
+
+  const track = {
+    title: '香港别来无恙',
+    artist: '王某某',
+    source: 'kuwo',
+    sourceLabel: '酷我',
+    src: 'https://cdn.example.test/failed-kuwo.mp3'
+  };
+  const timeout = new Promise((resolve) => setTimeout(() => resolve('__timeout__'), 80));
+  const recovered = await Promise.race([
+    sandbox.recoverPlayableTrackUrl(track, {
+      skipSources: ['kuwo'],
+      skipUrls: ['https://cdn.example.test/failed-kuwo.mp3'],
+      quickOnly: true
+    }),
+    timeout
+  ]);
+
+  if (recovered === '__timeout__') {
+    throw new Error(file + ' quick playback recovery should not block on deep fallback search');
+  }
+  if (recovered) {
+    throw new Error(file + ' quick playback recovery should return empty instead of using deep fallback result');
+  }
+}
+
 function verifyFallbackTimeoutIsResponsive(file) {
   const html = fs.readFileSync(file, 'utf8');
   const match = html.match(/const FALLBACK_PLAYBACK_TIMEOUT_MS = (\d+);/);
@@ -398,6 +593,8 @@ function verifyFallbackTimeoutIsResponsive(file) {
     await verifyFallbackStateKeepsOriginalFailures(file);
     await verifyFallbackStateSurvivesCandidateMetadataChanges(file);
     await verifyConcurrentSelectedSourceRecovery(file);
+    await verifyRecoverySkipsSlowUnplayableCandidate(file);
+    await verifyQuickOnlyRecoveryDoesNotDeepSearch(file);
   }
 })().catch((error) => {
   console.error(error);

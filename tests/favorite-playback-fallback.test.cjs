@@ -184,6 +184,7 @@ vm.runInContext([
   pickFunction('getFallbackMatchScore'),
   pickFunction('pickFallbackTrackMatch'),
   pickFunction('getFallbackTrackMatches'),
+  pickFunction('resolvePlayableFallbackCandidate'),
   pickFunction('resolveFallbackTrackFromSource'),
   pickFunction('normalizeNeteaseApiSong'),
   pickFunction('normalizeExternalTrack'),

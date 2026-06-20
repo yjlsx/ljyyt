@@ -96,6 +96,7 @@ async function verifyEmptyCurrentSourceFallback(file) {
     pickFunction(script, 'getFallbackTrackMatches'),
     pickFunction(script, 'normalizeAudioUrl'),
     pickFunction(script, 'resolveExternalTrackUrl'),
+    pickFunction(script, 'resolvePlayableFallbackCandidate'),
     pickFunction(script, 'resolveFallbackTrackFromSource'),
     pickFunction(script, 'normalizeExternalTrack'),
     pickFunction(script, 'fetchGdMusicJson'),

@@ -3186,19 +3186,31 @@
         return b.score - a.score || a.index - b.index;
       }).map(function(entry) { return entry.item; });
     }
-    async function resolveFallbackTrackFromSource(track, source, skipUrls) {
+    async function resolvePlayableFallbackCandidate(track, source, match, skipUrls) {
+      var url = match && match.src ? match.src : await resolveExternalTrackUrl(match);
+      if (!url || skipUrls.indexOf(String(url).trim()) >= 0) throw new Error('unplayable fallback candidate');
+      return { source: source, match: match, url: url };
+    }
+    async function resolveFallbackTrackFromSource(track, source, skipUrls, limit) {
       var fallbackArtistTokens = getNormalizedArtistTokens(track && track.artist);
       var fallbackQuery = fallbackArtistTokens.length ? track.title + ' ' + fallbackArtistTokens[0] : track.title;
-      var matches = await fetchExternalSourceTracks(fallbackQuery, source, SEARCH_RESULT_LIMIT);
+      var searchLimit = Math.max(1, Number(limit) || SEARCH_RESULT_LIMIT);
+      var matches = await fetchExternalSourceTracks(fallbackQuery, source, searchLimit);
       if (!matches.length && fallbackArtistTokens.length) {
-        matches = await fetchExternalSourceTracks(track.title, source, SEARCH_RESULT_LIMIT);
+        matches = await fetchExternalSourceTracks(track.title, source, searchLimit);
       }
       var candidates = getFallbackTrackMatches(track, matches);
-      for (var i = 0; i < candidates.length; i++) {
-        var match = candidates[i];
-        var url = match.src || await resolveExternalTrackUrl(match);
-        if (!url || skipUrls.indexOf(String(url).trim()) >= 0) continue;
-        return { source: source, match: match, url: url };
+      if (!candidates.length) return null;
+      try {
+        return await Promise.any(candidates.slice(0, Math.min(6, searchLimit)).map(function(match) {
+          return resolvePlayableFallbackCandidate(track, source, match, skipUrls);
+        }));
+      } catch (error) {
+        for (var i = 6; i < candidates.length; i++) {
+          try {
+            return await resolvePlayableFallbackCandidate(track, source, candidates[i], skipUrls);
+          } catch (candidateError) {}
+        }
       }
       return null;
     }
@@ -3211,8 +3223,9 @@
       var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
       if (!sources.length) return '';
       try {
+        var quickLimit = Math.min(12, SEARCH_RESULT_LIMIT);
         var result = await Promise.any(sources.map(function(source) {
-          return resolveFallbackTrackFromSource(track, source, skipUrls).then(function(found) {
+          return resolveFallbackTrackFromSource(track, source, skipUrls, quickLimit).then(function(found) {
             if (!found) throw new Error('no fallback match from ' + source);
             return found;
           }).catch(function(error) {
@@ -3233,10 +3246,35 @@
           src: url
         });
         return url;
-      } catch (error) {
-        if (!silent) console.warn('recoverPlayableTrackUrl failed', error);
-        return '';
       }
+      catch (error) {}
+      if (options.quickOnly) return '';
+      if (SEARCH_RESULT_LIMIT > 12) {
+        try {
+          var deepResult = await Promise.any(sources.map(function(source) {
+            return resolveFallbackTrackFromSource(track, source, skipUrls, SEARCH_RESULT_LIMIT).then(function(found) {
+              if (!found) throw new Error('no deep fallback match from ' + source);
+              return found;
+            });
+          }));
+          var deepMatch = deepResult.match;
+          var deepUrl = deepResult.url;
+          var deepOrigTitle = track.title, deepOrigArtist = track.artist, deepOrigCover = track.cover;
+          Object.assign(track, deepMatch, {
+            title: deepOrigTitle || deepMatch.title,
+            artist: deepOrigArtist || deepMatch.artist,
+            cover: deepOrigCover || deepMatch.cover || DEFAULT_COVER,
+            source: deepMatch.source || deepResult.source,
+            sourceLabel: deepMatch.sourceLabel || getSourceLabel(deepMatch.source || deepResult.source),
+            urlId: deepMatch.urlId || deepMatch.url_id || deepMatch.id || track.urlId || track.url_id || track.id || '',
+            src: deepUrl
+          });
+          return deepUrl;
+        } catch (deepError) {
+          if (!silent) console.warn('recoverPlayableTrackUrl failed', deepError);
+        }
+      }
+      return '';
     }
     function setQueue(tracks, index) {
       playQueue = Array.isArray(tracks) && tracks.length ? tracks.slice() : [currentTrack];
@@ -3861,6 +3899,7 @@
       var promise = recoverPlayableTrackUrl(snapshot, {
         skipSources: skipSources,
         skipUrls: skipUrls,
+        quickOnly: true,
         silent: true
       }).then(function(url) {
         if (!url) return null;
@@ -4022,7 +4061,8 @@
             audioPlayer.load();
             fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
               skipSources: state.sources.slice(),
-              skipUrls: state.urls.slice()
+              skipUrls: state.urls.slice(),
+              quickOnly: true
             });
           }
           _isResolvingUrl = false;
