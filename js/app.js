@@ -1253,6 +1253,7 @@
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
     const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
+    const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 900;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -1666,9 +1667,18 @@
       var trackToPlay = currentTrack;
       var playableUrl = '';
       try {
-        playableUrl = await ensurePlayableTrackUrl(trackToPlay);
+        var resolvePromise = ensurePlayableTrackUrl(trackToPlay);
+        var resolvePrewarmRace = isSmartSourceEnabled()
+          ? waitForPrewarmFallbackDuringPrimary(trackToPlay, getTrackFallbackKey(trackToPlay), PRIMARY_RESOLVE_PREWARM_GRACE_MS)
+          : null;
+        playableUrl = resolvePrewarmRace ? await Promise.race([resolvePromise, resolvePrewarmRace]) : await resolvePromise;
       } catch (error) {
-        console.warn('ensurePlayableTrackUrl failed', error);
+        if (isPrewarmFallbackReadySignal(error)) {
+          _isResolvingUrl = false;
+          if (await switchToFallbackSource('prewarm-ready', requestId)) return;
+        } else {
+          console.warn('ensurePlayableTrackUrl failed', error);
+        }
       } finally {
         _isResolvingUrl = false;
       }
@@ -3202,7 +3212,7 @@
     async function fetchQqTrackUrlPayload(urlId, quality) {
       function fetchWithTimeout(url, options, timeoutMs) {
         options = options || {};
-        timeoutMs = timeoutMs || 8000;
+        timeoutMs = timeoutMs || 4500;
         if (typeof AbortController === 'undefined') return fetch(url, options);
         const controller = new AbortController();
         const timeoutId = setTimeout(function() { controller.abort(); }, timeoutMs);
@@ -3211,28 +3221,32 @@
           clearTimeout(timeoutId);
         });
       }
-      try {
-        var qqResponse = await fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=' + encodeURIComponent(quality || '320'));
-        if (!qqResponse.ok) throw new Error('QQ url ' + qqResponse.status);
-        var payload = await qqResponse.json();
-        if (isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
-        if (payload && payload.url) return payload;
-      } catch (error) {
-        console.warn('QQ primary url failed, using fallback proxy', error);
+      function asPlayablePayload(promise, label) {
+        return promise.then(function(response) {
+          if (!response.ok) throw new Error(label + ' ' + response.status);
+          return response.json();
+        }).then(function(payload) {
+          if (label === 'QQ url' && isQqProxyHealthPayload(payload)) throw new Error('QQ api route not deployed');
+          if (!payload || !payload.url) throw new Error(label + ' empty url');
+          return payload;
+        }).catch(function(error) {
+          console.warn(label + ' failed', error);
+          throw error;
+        });
       }
-
-      try {
-        var fallbackResponse = await fetchWithTimeout(qqFallbackProxyBase, {
+      var official = asPlayablePayload(
+        fetchWithTimeout(qqApiBase + '/url?id=' + encodeURIComponent(urlId) + '&br=' + encodeURIComponent(quality || '320'), null, 4500),
+        'QQ url'
+      );
+      var fallback = asPlayablePayload(
+        fetchWithTimeout(qqFallbackProxyBase, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'url', songmid: String(urlId || '').replace(/^qq_/i, ''), quality: mapLxQuality(quality || '320') })
-        });
-        if (!fallbackResponse.ok) throw new Error('QQ fallback url ' + fallbackResponse.status);
-        return fallbackResponse.json();
-      } catch (error) {
-        console.warn('QQ fallback url also failed', error);
-        throw error;
-      }
+        }, 4500),
+        'QQ fallback url'
+      );
+      return Promise.any([official, fallback]);
     }
     function getKuwoAudioFallbackUrl(urlId) {
       return (_isLocalDev ? '' : ljyytApiBase) + '/api/kuwo-audio?rid=' + encodeURIComponent(urlId);

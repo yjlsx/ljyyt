@@ -59,6 +59,9 @@ async function verifyFrontend(file) {
     parseTrackDuration() {
       return 0;
     },
+    mapLxQuality(quality) {
+      return String(quality || '320') + 'k';
+    },
     normalizeAudioUrl(url) {
       return String(url || '').trim().replace(/&amp;/g, '&');
     },
@@ -91,6 +94,7 @@ async function verifyFrontend(file) {
     pickFunction(script, 'isQqProxyHealthPayload'),
     pickFunction(script, 'fetchQqSearchPage'),
     pickFunction(script, 'searchQqApiTracks'),
+    pickFunction(script, 'mapLxQuality'),
     pickFunction(script, 'fetchQqTrackUrlPayload'),
     pickFunction(script, 'resolveExternalTrackUrl')
   ].join('\n'), sandbox);
@@ -125,8 +129,54 @@ async function verifyFrontend(file) {
   }
 }
 
+
+async function verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    qqApiBase: '/api/qq',
+    qqFallbackProxyBase: 'https://otter-music.pages.dev/music-api/qqmusic/proxy',
+    AbortController,
+    setTimeout,
+    clearTimeout,
+    console: { warn() {} },
+    calls: [],
+    async fetch(url) {
+      sandbox.calls.push(String(url));
+      if (String(url).includes('/api/qq/url')) return new Promise(() => {});
+      if (String(url).includes('qqmusic/proxy')) {
+        return {
+          ok: true,
+          async json() {
+            return { url: 'https://fast.example.test/qq-fallback.mp3' };
+          }
+        };
+      }
+      throw new Error('Unexpected url ' + url);
+    }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickFunction(script, 'isQqProxyHealthPayload'),
+    pickFunction(script, 'mapLxQuality'),
+    pickFunction(script, 'fetchQqTrackUrlPayload')
+  ].join('\n'), sandbox);
+
+  const result = await Promise.race([
+    sandbox.fetchQqTrackUrlPayload('mid-slow', '320'),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 120))
+  ]);
+
+  if (result === 'blocked') {
+    throw new Error(file + ' should not wait for slow QQ official URL route before using the fallback proxy');
+  }
+  if (!result || result.url !== 'https://fast.example.test/qq-fallback.mp3') {
+    throw new Error(file + ' should return the fast QQ fallback proxy URL');
+  }
+}
+
 for (const file of ['index.html', 'dist/index.html']) {
-  verifyFrontend(file).catch((error) => {
+  Promise.all([verifyFrontend(file), verifyQqUrlFallbackDoesNotWaitForSlowPrimary(file)]).catch((error) => {
     console.error(error);
     process.exit(1);
   });

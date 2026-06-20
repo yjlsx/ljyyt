@@ -16,8 +16,14 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!block.includes('try {')) {
     throw new Error(file + ' does not guard ensurePlayableTrackUrl with try/finally');
   }
-  if (!block.includes('playableUrl = await ensurePlayableTrackUrl(trackToPlay);')) {
-    throw new Error(file + ' does not resolve playable URLs inside the guarded block');
+  if (!block.includes('var resolvePromise = ensurePlayableTrackUrl(trackToPlay);')) {
+    throw new Error(file + ' does not start playable URL resolution inside the guarded block');
+  }
+  if (!block.includes('Promise.race([resolvePromise, resolvePrewarmRace])')) {
+    throw new Error(file + ' does not let fallback prewarm race slow primary URL resolution');
+  }
+  if (!block.includes("switchToFallbackSource('prewarm-ready', requestId)")) {
+    throw new Error(file + ' does not switch to the prewarmed source during slow URL resolution');
   }
   if (!block.includes('currentTrack.src = playableUrl;')) {
     throw new Error(file + ' does not write resolved playable URL back to currentTrack');

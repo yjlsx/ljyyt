@@ -421,6 +421,230 @@ async function verifySlowPrewarmDoesNotBlockDirectRecovery(file) {
   }
 }
 
+async function verifyPrewarmCanBeatSlowPrimaryResolve(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const fallbackUrl = 'https://cdn.example.test/joox-resolve-ready.mp3';
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
+    Promise,
+    Math,
+    Set,
+    DEFAULT_COVER: 'cover.jpg',
+    PRIMARY_RESOLVE_PREWARM_GRACE_MS: 20,
+    PRIMARY_PLAYBACK_TIMEOUT_MS: 3200,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    PROXY_LINE_PLAYBACK_TIMEOUT_MS: 2500,
+    PRIMARY_PREWARM_FALLBACK_GRACE_MS: 900,
+    PREWARM_FAST_SWITCH_GRACE_MS: 10,
+    SILENT_AUDIO_DATA_URI: 'data:audio/wav;base64,test',
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    _playRequestId: 0,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    _audioUnlocked: true,
+    currentTrack: {
+      title: '解析别卡住',
+      artist: '测试歌手',
+      source: 'netease',
+      sourceLabel: '网易云音乐',
+      urlId: 'netease-slow',
+      src: ''
+    },
+    audioPlayer: {
+      _src: '',
+      readyState: 0,
+      duration: 240,
+      paused: false,
+      error: null,
+      getAttribute(name) { return name === 'src' ? this._src : ''; },
+      removeAttribute(name) { if (name === 'src') this._src = ''; },
+      load() {},
+      play() { this.paused = false; return Promise.resolve(); },
+      pause() { this.paused = true; },
+      addEventListener() {},
+      removeEventListener() {},
+      set src(value) { this._src = value; },
+      get src() { return this._src; }
+    },
+    restoredPlaybackTime: 0,
+    appSettings: { smartSource: true },
+    pausePreviewVideo() {},
+    setCurrentTrack(track) { sandbox.currentTrack = track; },
+    unlockAudioContext() {},
+    isDeprecatedKuwoAudioUrl() { return false; },
+    isSilentAudioPrimerSrc() { return false; },
+    setPlayIcons() {},
+    showToast() {},
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) { return track.sourceLabel || track.source; },
+    getSourceLabel(source) { return source === 'joox' ? 'Joox' : source; },
+    inferTrackSourceCandidates() { return ['netease', 'joox']; },
+    tryProxyPlaybackLine() { return Promise.resolve(false); },
+    playAudioWithTimeout() { return Promise.resolve(); },
+    confirmPlaybackStarted() { return Promise.resolve(true); },
+    isAutoplayPolicyBlocked() { return false; },
+    ensurePlayableTrackUrl() { return new Promise(() => {}); },
+    recoverPlayableTrackUrl(track) {
+      return new Promise((resolve) => setTimeout(() => {
+        Object.assign(track, {
+          source: 'joox',
+          sourceLabel: 'Joox',
+          urlId: 'joox-ready',
+          src: fallbackUrl
+        });
+        resolve(fallbackUrl);
+      }, 5));
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'isSmartSourceEnabled'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource'),
+    pickFunction(script, 'isPrewarmFallbackReadySignal'),
+    pickFunction(script, 'waitForPrewarmFallbackDuringPrimary'),
+    pickFunction(script, 'playCurrentTrack')
+  ].join('\n'), sandbox);
+
+  const result = await Promise.race([
+    sandbox.playCurrentTrack().then(() => 'played'),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 80))
+  ]);
+
+  if (result === 'blocked') {
+    throw new Error(file + ' should let prewarmed fallback beat a slow primary URL resolution');
+  }
+  if (sandbox.currentTrack.source !== 'joox' || sandbox.audioPlayer.getAttribute('src') !== fallbackUrl) {
+    throw new Error(file + ' did not switch to the prewarmed fallback during primary URL resolution');
+  }
+}
+
+async function verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const failedUrl = 'https://cdn.example.test/stale-direct.mp3';
+  const fallbackUrl = 'https://cdn.example.test/joox-direct-ready.mp3';
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
+    Math,
+    Set,
+    DEFAULT_COVER: 'cover.jpg',
+    appSettings: { smartSource: true },
+    PREWARM_FAST_SWITCH_GRACE_MS: 0,
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    currentTrack: {
+      title: '别等代理',
+      artist: '测试歌手',
+      source: 'kuwo',
+      sourceLabel: '酷我音乐',
+      urlId: 'kuwo-stale',
+      src: failedUrl
+    },
+    audioPlayer: {
+      _src: failedUrl,
+      readyState: 0,
+      duration: 0,
+      getAttribute(name) { return name === 'src' ? this._src : ''; },
+      removeAttribute(name) { if (name === 'src') this._src = ''; },
+      load() {},
+      set src(value) { this._src = value; },
+      get src() { return this._src; }
+    },
+    _playRequestId: 41,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    restoredPlaybackTime: 0,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    proxyCalls: 0,
+    recoverCalls: 0,
+    isSmartSourceEnabled() { return true; },
+    tryProxyPlaybackLine() {
+      sandbox.proxyCalls += 1;
+      return new Promise(() => {});
+    },
+    inferTrackSourceCandidates() { return ['kuwo', 'joox']; },
+    setPlayIcons() {},
+    showToast() {},
+    recoverPlayableTrackUrl(track) {
+      sandbox.recoverCalls += 1;
+      Object.assign(track, {
+        source: 'joox',
+        sourceLabel: 'Joox',
+        urlId: 'joox-direct-ready',
+        src: fallbackUrl
+      });
+      return Promise.resolve(fallbackUrl);
+    },
+    playAudioWithTimeout() { return Promise.resolve(); },
+    confirmPlaybackStarted() { return Promise.resolve(true); },
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) { return track.sourceLabel || track.source; },
+    getSourceLabel(source) { return source === 'joox' ? 'Joox' : source; },
+    isAutoplayPolicyBlocked() { return false; }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'isSmartSourceEnabled'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource')
+  ].join('\n'), sandbox);
+
+  const switched = await Promise.race([
+    sandbox.switchToFallbackSource('play-failed', 41, failedUrl),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 80))
+  ]);
+
+  if (switched === 'blocked') {
+    throw new Error(file + ' should search fallback sources without waiting for slow proxy retry');
+  }
+  if (!switched || sandbox.currentTrack.source !== 'joox' || sandbox.audioPlayer.getAttribute('src') !== fallbackUrl) {
+    throw new Error(file + ' should switch to a searched fallback while proxy retry is still pending');
+  }
+}
+
 function verifyPlaybackStartsPrewarm(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
@@ -436,6 +660,8 @@ function verifyPlaybackStartsPrewarm(file) {
     await verifyPrewarmedFallback(file);
     await verifyPendingPrewarmBeatsProxyRetry(file);
     await verifySlowPrewarmDoesNotBlockDirectRecovery(file);
+    await verifyPrewarmCanBeatSlowPrimaryResolve(file);
+    await verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file);
   }
 })().catch((error) => {
   console.error(error);
