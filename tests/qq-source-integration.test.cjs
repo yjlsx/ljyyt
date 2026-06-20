@@ -139,3 +139,12 @@ for (const [name, source] of [['server.js', server], ['cloudflare-worker/worker.
     if (!source.includes(marker)) throw new Error(name + ' is missing QQ source marker: ' + marker);
   }
 }
+
+for (const [name, source] of [['server.js', server], ['cloudflare-worker/worker.js', worker]]) {
+  const body = pickFunction(source, 'resolveQqMusicUrl');
+  const lxIndex = body.indexOf("resolveLxUrl('tx'");
+  const officialIndex = body.indexOf('resolveQqOfficialUrl');
+  if (lxIndex < 0 || officialIndex < 0 || lxIndex > officialIndex) {
+    throw new Error(name + ' should prefer the LX tx playback route before QQ official vkey URLs');
+  }
+}

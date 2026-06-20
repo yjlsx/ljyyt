@@ -146,7 +146,9 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
     pickFunction(script, 'rememberPlaybackFailure'),
     pickFunction(script, 'cloneTrackForFallback'),
     pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
     pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
     pickFunction(script, 'applyFallbackRecovery'),
     pickFunction(script, 'switchToFallbackSource')
   ].join('\n'), sandbox);
@@ -266,7 +268,9 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
     pickFunction(script, 'rememberPlaybackFailure'),
     pickFunction(script, 'cloneTrackForFallback'),
     pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
     pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
     pickFunction(script, 'applyFallbackRecovery'),
     pickFunction(script, 'switchToFallbackSource')
   ].join('\n'), sandbox);
@@ -349,6 +353,7 @@ async function verifyConcurrentSelectedSourceRecovery(file) {
     pickFunction(script, 'resolveFallbackTrackFromSource'),
     pickFunction(script, 'normalizeExternalTrack'),
     pickFunction(script, 'fetchGdMusicJson'),
+    pickFunction(script, 'searchGdMusicSourceTracks'),
     pickFunction(script, 'fetchExternalSourceTracks'),
     pickFunction(script, 'recoverPlayableTrackUrl')
   ].join('\n'), sandbox);

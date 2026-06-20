@@ -76,4 +76,14 @@ for (const source of [server, worker]) {
   if (!source.includes('Cache-Control')) {
     throw new Error('NetEase account proxy responses should be explicitly uncacheable');
   }
+  for (const marker of [
+    'fetchOtterNeteasePlaylistDetail',
+    'fetchOfficialNeteasePlaylistDetail',
+    "OTTER_NETEASE_API_BASE + '/playlist'",
+    'normalizeNeteasePlaylistPayload'
+  ]) {
+    if (!source.includes(marker)) {
+      throw new Error(name + ' should fall back to the Otter NetEase playlist proxy when the official playlist endpoint fails: ' + marker);
+    }
+  }
 }

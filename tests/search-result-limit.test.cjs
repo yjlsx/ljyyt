@@ -67,6 +67,7 @@ vm.runInContext([
   pickFunction('parseTrackDuration'),
   pickFunction('normalizeExternalTrack'),
   pickFunction('resolveExternalCover'),
+  pickFunction('searchGdMusicSourceTracks'),
   pickFunction('fetchExternalSourceTracks'),
   pickFunction('searchExternalSource')
 ].join('\n'), sandbox);

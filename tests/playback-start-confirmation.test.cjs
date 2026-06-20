@@ -19,8 +19,24 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' does not use the faster primary playback timeout before source fallback');
   }
 
-  if (!html.includes('playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS)')) {
+  if (!html.includes('playAudioWithTimeout(PRIMARY_PLAYBACK_TIMEOUT_MS')) {
     throw new Error(file + ' does not apply the faster primary playback timeout to failed source detection');
+  }
+
+  if (!html.includes('const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900')) {
+    throw new Error(file + ' does not give prewarmed fallback sources a fast primary-source takeover window');
+  }
+
+  if (!html.includes('function waitForPrewarmFallbackDuringPrimary')) {
+    throw new Error(file + ' does not race primary playback against a ready prewarmed fallback source');
+  }
+
+  if (!html.includes('PREWARM_FALLBACK_READY')) {
+    throw new Error(file + ' does not signal ready prewarmed fallback while the primary source is stuck');
+  }
+
+  if (!html.includes('prewarmFallbackTrack: currentTrack')) {
+    throw new Error(file + ' does not enable prewarmed fallback takeover during primary playback attempts');
   }
 
   if (html.includes('if (!audioPlayer.src) setCurrentTrack(currentTrack)')) {
