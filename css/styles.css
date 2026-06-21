@@ -177,9 +177,9 @@
       min-width: 238px; padding: 7px; border-radius: 16px;
       background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow);
     }
-    .source-menu.open { display: block; }
+    .source-menu.open { display: flex; flex-direction: column; }
     .source-option {
-      width: 100%; min-height: 45px; padding: 7px 9px;
+      width: 100%; min-height: 42px; padding: 7px 9px;
       border-radius: 12px; text-align: left; font-size: 12px; cursor: pointer;
       display: grid; grid-template-columns: 30px minmax(0,1fr) 18px;
       align-items: center; gap: 9px; color: var(--foreground);

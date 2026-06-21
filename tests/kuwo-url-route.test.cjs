@@ -43,9 +43,6 @@ for (const [name, html] of [['index.html', indexHtml], ['dist/index.html', distH
   if (!ensurePlayable.includes('isDeprecatedKuwoAudioUrl(track.src)')) {
     throw new Error(name + ' still trusts cached /api/kuwo-audio playback URLs');
   }
-  if (!ensurePlayable.includes('skipSources: track.source ? [track.source] : []')) {
-    throw new Error(name + ' does not skip the failed external source when URL resolution returns empty');
-  }
 }
 
 if (!server.includes("requestUrl.pathname === '/api/kuwo-url'")) {

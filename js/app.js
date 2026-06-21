@@ -632,27 +632,94 @@
         return b.score - a.score || a.index - b.index;
       }).map(function(entry) { return entry.item; });
     }
+
+    // ===== 音源切换性能优化：缓存层 =====
+    var _fallbackSearchCache = new Map(); // key: title|artist|source -> { tracks, expireAt }
+    var _fallbackUrlCache = new Map(); // key: source|urlId -> { url, expireAt }
+    var SEARCH_CACHE_TTL = 5 * 60 * 1000; // 5分钟
+    var URL_CACHE_TTL = 30 * 60 * 1000; // 30分钟
+    var FALLBACK_CACHE_MAX = 200;
+
+    function _getFallbackCacheKey(track, source) {
+      var title = String(track && track.title || '').trim().toLowerCase();
+      var artist = String(track && track.artist || '').trim().toLowerCase();
+      return source + '|' + title + '|' + artist;
+    }
+
+    function _getCachedFallbackSearch(track, source) {
+      var key = _getFallbackCacheKey(track, source);
+      var entry = _fallbackSearchCache.get(key);
+      if (!entry) return null;
+      if (Date.now() > entry.expireAt) {
+        _fallbackSearchCache.delete(key);
+        return null;
+      }
+      return entry.tracks;
+    }
+
+    function _setCachedFallbackSearch(track, source, tracks) {
+      if (_fallbackSearchCache.size >= FALLBACK_CACHE_MAX) {
+        var firstKey = _fallbackSearchCache.keys().next().value;
+        if (firstKey) _fallbackSearchCache.delete(firstKey);
+      }
+      var key = _getFallbackCacheKey(track, source);
+      _fallbackSearchCache.set(key, { tracks: tracks, expireAt: Date.now() + SEARCH_CACHE_TTL });
+    }
+
+    function _getCachedUrl(match) {
+      if (!match || !match.source || !match.urlId) return null;
+      var key = match.source + '|' + match.urlId;
+      var entry = _fallbackUrlCache.get(key);
+      if (!entry) return null;
+      if (Date.now() > entry.expireAt) {
+        _fallbackUrlCache.delete(key);
+        return null;
+      }
+      return entry.url;
+    }
+
+    function _setCachedUrl(match, url) {
+      if (!match || !match.source || !match.urlId || !url) return;
+      if (_fallbackUrlCache.size >= FALLBACK_CACHE_MAX) {
+        var firstKey = _fallbackUrlCache.keys().next().value;
+        if (firstKey) _fallbackUrlCache.delete(firstKey);
+      }
+      var key = match.source + '|' + match.urlId;
+      _fallbackUrlCache.set(key, { url: url, expireAt: Date.now() + URL_CACHE_TTL });
+    }
+    // ===== 缓存层结束 =====
+
     async function resolvePlayableFallbackCandidate(track, source, match, skipUrls) {
+      var cachedUrl = typeof _getCachedUrl === 'function' ? _getCachedUrl(match) : null;
+      if (cachedUrl) {
+        if (skipUrls.indexOf(String(cachedUrl).trim()) >= 0) throw new Error('cached url skipped');
+        return { source: source, match: match, url: cachedUrl };
+      }
       var url = match && match.src ? match.src : await resolveExternalTrackUrl(match);
       if (!url || skipUrls.indexOf(String(url).trim()) >= 0) throw new Error('unplayable fallback candidate');
+      if (typeof _setCachedUrl === 'function') _setCachedUrl(match, url);
       return { source: source, match: match, url: url };
     }
     async function resolveFallbackTrackFromSource(track, source, skipUrls, limit) {
       var fallbackArtistTokens = getNormalizedArtistTokens(track && track.artist);
       var fallbackQuery = fallbackArtistTokens.length ? track.title + ' ' + fallbackArtistTokens[0] : track.title;
       var searchLimit = Math.max(1, Number(limit) || SEARCH_RESULT_LIMIT);
-      var matches = await fetchExternalSourceTracks(fallbackQuery, source, searchLimit);
-      if (!matches.length && fallbackArtistTokens.length) {
-        matches = await fetchExternalSourceTracks(track.title, source, searchLimit);
+      var matches = typeof _getCachedFallbackSearch === 'function' ? _getCachedFallbackSearch(track, source) : null;
+      if (!matches) {
+        matches = await fetchExternalSourceTracks(fallbackQuery, source, searchLimit);
+        if (!matches.length && fallbackArtistTokens.length) {
+          matches = await fetchExternalSourceTracks(track.title, source, searchLimit);
+        }
+        if (typeof _setCachedFallbackSearch === 'function') _setCachedFallbackSearch(track, source, matches);
       }
       var candidates = getFallbackTrackMatches(track, matches);
       if (!candidates.length) return null;
       try {
-        return await Promise.any(candidates.slice(0, Math.min(6, searchLimit)).map(function(match) {
+        return await Promise.any(candidates.slice(0, Math.min(3, searchLimit)).map(function(match) {
           return resolvePlayableFallbackCandidate(track, source, match, skipUrls);
         }));
       } catch (error) {
-        for (var i = 6; i < candidates.length; i++) {
+        for (var i = 3; i < candidates.length; i++) {
           try {
             return await resolvePlayableFallbackCandidate(track, source, candidates[i], skipUrls);
           } catch (candidateError) {}
@@ -663,59 +730,49 @@
     async function recoverPlayableTrackUrl(track, options) {
       if (!track || !track.title) return '';
       options = options || {};
+      var silent = !!options.silent;
       var skipSources = (options.skipSources || []).map(function(source) { return String(source || '').trim(); }).filter(Boolean);
       var skipUrls = (options.skipUrls || []).map(function(url) { return String(url || '').trim(); }).filter(Boolean);
       var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
       if (!sources.length) return '';
-      try {
-        var quickLimit = Math.min(12, SEARCH_RESULT_LIMIT);
-        var result = await Promise.any(sources.map(function(source) {
-          return resolveFallbackTrackFromSource(track, source, skipUrls, quickLimit).then(function(found) {
-            if (!found) throw new Error('no fallback match from ' + source);
-            return found;
-          }).catch(function(error) {
-            console.warn('recoverPlayableTrackUrl: source ' + source + ' failed', error);
-            throw error;
-          });
-        }));
-        var match = result.match;
-        var url = result.url;
-        var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
-        Object.assign(track, match, {
-          title: origTitle || match.title,
-          artist: origArtist || match.artist,
-          cover: origCover || match.cover || DEFAULT_COVER,
-          source: match.source || result.source,
-          sourceLabel: match.sourceLabel || getSourceLabel(match.source || result.source),
-          urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
-          src: url
+      var searchLimit = options.quickOnly ? Math.min(12, SEARCH_RESULT_LIMIT) : SEARCH_RESULT_LIMIT;
+      var SOURCE_ORDER_GRACE_MS = 45;
+      var pendingSources = new Array(sources.length);
+      sources.forEach(function(source, index) {
+        pendingSources[index] = Promise.resolve().then(function() {
+          return resolveFallbackTrackFromSource(track, source, skipUrls, searchLimit);
+        }).catch(function(error) {
+          if (!silent) console.warn('recoverPlayableTrackUrl: source ' + source + ' failed', error);
+          return null;
         });
-        return url;
-      }
-      catch (error) {}
-      if (options.quickOnly) return '';
-      if (SEARCH_RESULT_LIMIT > 12) {
+      });
+      for (var i = 0; i < pendingSources.length; i++) {
+        var result = await Promise.race([
+          pendingSources[i],
+          new Promise(function(resolve) { setTimeout(function() { resolve(null); }, SOURCE_ORDER_GRACE_MS); })
+        ]);
+        if (!result) {
+          result = await Promise.race([
+            pendingSources[i],
+            Promise.resolve(null)
+          ]);
+        }
+        if (!result) continue;
         try {
-          var deepResult = await Promise.any(sources.map(function(source) {
-            return resolveFallbackTrackFromSource(track, source, skipUrls, SEARCH_RESULT_LIMIT).then(function(found) {
-              if (!found) throw new Error('no deep fallback match from ' + source);
-              return found;
-            });
-          }));
-          var deepMatch = deepResult.match;
-          var deepUrl = deepResult.url;
-          var deepOrigTitle = track.title, deepOrigArtist = track.artist, deepOrigCover = track.cover;
-          Object.assign(track, deepMatch, {
-            title: deepOrigTitle || deepMatch.title,
-            artist: deepOrigArtist || deepMatch.artist,
-            cover: deepOrigCover || deepMatch.cover || DEFAULT_COVER,
-            source: deepMatch.source || deepResult.source,
-            sourceLabel: deepMatch.sourceLabel || getSourceLabel(deepMatch.source || deepResult.source),
-            urlId: deepMatch.urlId || deepMatch.url_id || deepMatch.id || track.urlId || track.url_id || track.id || '',
-            src: deepUrl
+          var match = result.match;
+          var url = result.url;
+          var origTitle = track.title, origArtist = track.artist, origCover = track.cover;
+          Object.assign(track, match, {
+            title: origTitle || match.title,
+            artist: origArtist || match.artist,
+            cover: origCover || match.cover || DEFAULT_COVER,
+            source: match.source || result.source,
+            sourceLabel: match.sourceLabel || getSourceLabel(match.source || result.source),
+            urlId: match.urlId || match.url_id || match.id || track.urlId || track.url_id || track.id || '',
+            src: url
           });
-          return deepUrl;
-        } catch (deepError) {}
+          return url;
+        } catch (error) {}
       }
       return '';
     }
@@ -1267,16 +1324,7 @@
       }
       if (track.source && track.source !== 'local') {
         track.src = await resolveExternalTrackUrl(track);
-        if (!track.src && isSmartSourceEnabled()) {
-          track.src = await recoverPlayableTrackUrl(track, {
-            skipSources: track.source ? [track.source] : []
-          });
-        }
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
-      }
-      if (!track.src && isSmartSourceEnabled()) {
-        track.src = await recoverPlayableTrackUrl(track);
-        if (currentTrack && isSameTrack(track, currentTrack)) Object.assign(currentTrack, track);
       }
       return track.src || '';
     }
@@ -1430,9 +1478,14 @@
       return String(url || '') === SILENT_AUDIO_DATA_URI;
     }
     async function tryProxyPlaybackLine(rawUrl, requestId) {
+      var lifecycle = typeof _proxyPlaybackAttemptLifecycle !== 'undefined' ? _proxyPlaybackAttemptLifecycle : null;
+      function isAttemptActive() {
+        return !lifecycle || lifecycle.active !== false;
+      }
       rawUrl = normalizeAudioUrl(rawUrl);
       if (!/^https?:\/\//i.test(rawUrl) || isAudioProxyUrl(rawUrl)) return false;
       if (requestId && requestId !== _playRequestId) return false;
+      if (!isAttemptActive()) return false;
       var proxyUrl = getAudioProxyUrl(rawUrl);
       var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
       try {
@@ -1443,7 +1496,9 @@
         _isResolvingUrl = false;
         await playAudioWithTimeout(PROXY_LINE_PLAYBACK_TIMEOUT_MS);
         if (requestId && requestId !== _playRequestId) return false;
+        if (!isAttemptActive()) return false;
         if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio proxy line did not start playback');
+        if (!isAttemptActive()) return false;
         _playRetryCount = 0;
         reconcileCurrentTrackInQueue(previousTrack);
         addHistory(currentTrack);
@@ -1453,6 +1508,7 @@
       } catch (error) {
         _isResolvingUrl = false;
         if (requestId && requestId !== _playRequestId) return false;
+        if (!isAttemptActive()) return false;
         if (isAutoplayPolicyBlocked(error)) return false;
         rememberPlaybackFailure(currentTrack, proxyUrl, currentTrack && currentTrack.source);
         console.warn('tryProxyPlaybackLine failed', error);
@@ -1472,10 +1528,34 @@
         ? await waitForFallbackPrewarmResult(currentTrack, initialState, fallbackKey, prewarmGraceMs)
         : null;
       if (requestId && requestId !== _playRequestId) return false;
+      var proxyAttemptControl = null;
+      if (!fastPrewarmed) {
+        proxyAttemptControl = { active: true };
+        _proxyPlaybackAttemptLifecycle = proxyAttemptControl;
+        var proxyAttempt = Promise.resolve().then(function() {
+          return tryProxyPlaybackLine(failedUrl, requestId);
+        }).catch(function() { return false; });
+        var proxyFirstResult = '';
+        if (typeof setTimeout === 'function') {
+          proxyFirstResult = await Promise.race([
+            proxyAttempt.then(function(switched) { return switched ? 'proxy' : ''; }),
+            new Promise(function(resolve) { setTimeout(function() { resolve(''); }, 35); })
+          ]);
+        } else {
+          proxyFirstResult = await proxyAttempt.then(function(switched) { return switched ? 'proxy' : ''; });
+        }
+        if (proxyFirstResult === 'proxy') {
+          _proxyPlaybackAttemptLifecycle = null;
+          return true;
+        }
+        proxyAttemptControl.active = false;
+        _proxyPlaybackAttemptLifecycle = null;
+      }
       var candidateSources = inferTrackSourceCandidates(currentTrack);
       var hasAlternativeSource = candidateSources.some(function(source) {
         return initialState.sources.indexOf(source) < 0;
       });
+      if (requestId && requestId !== _playRequestId) return false;
       var attemptLimit = Math.max(1, candidateSources.length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
@@ -1539,7 +1619,6 @@
           console.warn('switchToFallbackSource failed', error);
         }
       }
-      if (!hasAlternativeSource && await tryProxyPlaybackLine(failedUrl, requestId)) return true;
       return false;
     }
     function unlockAudioContext(useSilentPrimer) {
@@ -4517,14 +4596,26 @@
       document.querySelectorAll('.source-option').forEach(function(item) {
         var provider = item.dataset.provider || '';
         var source = providerSourceMap[provider];
+        if (!source || source === 'all') {
+          item.hidden = false;
+          item.disabled = false;
+          item.style.order = '-1';
+          return;
+        }
         var config = getSourceConfig(source);
-        var hidden = source && source !== 'all' && config && config.showInPicker === false;
+        var index = sourceConfigs.findIndex(function(entry) { return entry.source === source; });
+        var hiddenInPicker = config && config.showInPicker === false;
+        var notSelected = config ? config.enabled === false : false;
+        var hidden = hiddenInPicker || notSelected;
         item.hidden = !!hidden;
         item.disabled = !!hidden;
+        item.style.order = index >= 0 ? String(index) : '99';
       });
       var activeSource = providerSourceMap[activeProvider];
       var activeConfig = getSourceConfig(activeSource);
-      if (activeSource && activeSource !== 'all' && activeConfig && activeConfig.showInPicker === false) {
+      var activeHidden = activeSource && activeSource !== 'all' && activeConfig &&
+        (activeConfig.showInPicker === false || activeConfig.enabled === false);
+      if (activeHidden) {
         syncProviderSelection('聚合搜索');
       }
     }
