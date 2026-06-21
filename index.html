@@ -3267,16 +3267,18 @@
       }
       var candidates = getFallbackTrackMatches(track, matches);
       if (!candidates.length) return null;
-      try {
-        return await Promise.any(candidates.slice(0, Math.min(3, searchLimit)).map(function(match) {
-          return resolvePlayableFallbackCandidate(track, source, match, skipUrls);
-        }));
-      } catch (error) {
-        for (var i = 3; i < candidates.length; i++) {
-          try {
-            return await resolvePlayableFallbackCandidate(track, source, candidates[i], skipUrls);
-          } catch (candidateError) {}
+      var resolved = null;
+      var batchSize = searchLimit <= 12 ? Math.min(3, searchLimit) : Math.min(8, searchLimit);
+      for (var start = 0; start < candidates.length; start += batchSize) {
+        var batch = candidates.slice(start, Math.min(candidates.length, start + batchSize));
+        try {
+          resolved = await Promise.any(batch.map(function(match) {
+            return resolvePlayableFallbackCandidate(track, source, match, skipUrls);
+          }));
+        } catch (error) {
+          resolved = null;
         }
+        if (resolved) return resolved;
       }
       return null;
     }
@@ -3325,7 +3327,11 @@
           if (!silent) console.warn('recoverPlayableTrackUrl: variant source ' + variantCandidates[variantIndex].source + ' failed', error);
         }
       }
-      var searchLimit = options.quickOnly ? Math.min(12, SEARCH_RESULT_LIMIT) : SEARCH_RESULT_LIMIT;
+      var requestedLimit = Number(options.searchLimit);
+      if (!(requestedLimit > 0)) requestedLimit = 0;
+      var searchLimit = requestedLimit
+        ? Math.min(SEARCH_RESULT_LIMIT, requestedLimit)
+        : (options.quickOnly ? Math.min(12, SEARCH_RESULT_LIMIT) : SEARCH_RESULT_LIMIT);
       var SOURCE_ORDER_GRACE_MS = 45;
       var pendingSources = new Array(sources.length);
       sources.forEach(function(source, index) {
@@ -3337,16 +3343,16 @@
         });
       });
       for (var i = 0; i < pendingSources.length; i++) {
+        var timedOut = false;
         var result = await Promise.race([
           pendingSources[i],
-          new Promise(function(resolve) { setTimeout(function() { resolve(null); }, SOURCE_ORDER_GRACE_MS); })
+          new Promise(function(resolve) {
+            setTimeout(function() {
+              timedOut = true;
+              resolve(null);
+            }, SOURCE_ORDER_GRACE_MS);
+          })
         ]);
-        if (!result) {
-          result = await Promise.race([
-            pendingSources[i],
-            Promise.resolve(null)
-          ]);
-        }
         if (!result) continue;
         try {
           var match = result.match;
@@ -3363,6 +3369,27 @@
           });
           return url;
         } catch (error) {}
+      }
+      if (!options.quickOnly) {
+        for (var j = 0; j < pendingSources.length; j++) {
+          var lateResult = await pendingSources[j];
+          if (!lateResult) continue;
+          try {
+            var lateMatch = lateResult.match;
+            var lateUrl = lateResult.url;
+            var lateOrigTitle = track.title, lateOrigArtist = track.artist, lateOrigCover = track.cover;
+            Object.assign(track, lateMatch, {
+              title: lateOrigTitle || lateMatch.title,
+              artist: lateOrigArtist || lateMatch.artist,
+              cover: lateOrigCover || lateMatch.cover || DEFAULT_COVER,
+              source: lateMatch.source || lateResult.source,
+              sourceLabel: lateMatch.sourceLabel || getSourceLabel(lateMatch.source || lateResult.source),
+              urlId: lateMatch.urlId || lateMatch.url_id || lateMatch.id || track.urlId || track.url_id || track.id || '',
+              src: lateUrl
+            });
+            return lateUrl;
+          } catch (error) {}
+        }
       }
       return '';
     }
@@ -4179,6 +4206,19 @@
               skipUrls: state.urls.slice(),
               quickOnly: true
             });
+            if (!fallbackUrl) {
+              var normalizedFallbackTitle = typeof normalizeTrackText === 'function'
+                ? normalizeTrackText(currentTrack && currentTrack.title)
+                : String(currentTrack && currentTrack.title || '').trim().toLowerCase();
+              if (normalizedFallbackTitle && normalizedFallbackTitle.length <= 4) {
+                fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
+                  skipSources: state.sources.slice(),
+                  skipUrls: state.urls.slice(),
+                  searchLimit: Math.min(30, SEARCH_RESULT_LIMIT),
+                  silent: true
+                });
+              }
+            }
           }
           _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
