@@ -3288,6 +3288,43 @@
       var skipUrls = (options.skipUrls || []).map(function(url) { return String(url || '').trim(); }).filter(Boolean);
       var sources = inferTrackSourceCandidates(track).filter(function(source) { return skipSources.indexOf(source) < 0; });
       if (!sources.length) return '';
+      var variantCandidates = [];
+      var variants = Array.isArray(track && track.variants) ? track.variants.slice() : [];
+      if (variants.length && sources.length) {
+        sources.forEach(function(source) {
+          if (skipSources.indexOf(source) >= 0) return;
+          variants.forEach(function(item, index) {
+            if (!item || item.source !== source) return;
+            if (skipUrls.indexOf(String(item.src || '').trim()) >= 0) return;
+            variantCandidates.push({
+              source: source,
+              index: index,
+              item: Object.assign({}, item)
+            });
+          });
+        });
+      }
+      for (var variantIndex = 0; variantIndex < variantCandidates.length; variantIndex++) {
+        try {
+          var variantResult = await resolvePlayableFallbackCandidate(track, variantCandidates[variantIndex].source, variantCandidates[variantIndex].item, skipUrls);
+          if (!variantResult) continue;
+          var variantMatch = variantResult.match;
+          var variantUrl = variantResult.url;
+          var variantOrigTitle = track.title, variantOrigArtist = track.artist, variantOrigCover = track.cover;
+          Object.assign(track, variantMatch, {
+            title: variantOrigTitle || variantMatch.title,
+            artist: variantOrigArtist || variantMatch.artist,
+            cover: variantOrigCover || variantMatch.cover || DEFAULT_COVER,
+            source: variantMatch.source || variantResult.source,
+            sourceLabel: variantMatch.sourceLabel || getSourceLabel(variantMatch.source || variantResult.source),
+            urlId: variantMatch.urlId || variantMatch.url_id || variantMatch.id || track.urlId || track.url_id || track.id || '',
+            src: variantUrl
+          });
+          return variantUrl;
+        } catch (error) {
+          if (!silent) console.warn('recoverPlayableTrackUrl: variant source ' + variantCandidates[variantIndex].source + ' failed', error);
+        }
+      }
       var searchLimit = options.quickOnly ? Math.min(12, SEARCH_RESULT_LIMIT) : SEARCH_RESULT_LIMIT;
       var SOURCE_ORDER_GRACE_MS = 45;
       var pendingSources = new Array(sources.length);
@@ -3819,6 +3856,7 @@
         duration: parseTrackDuration(track.duration) || parseTrackDuration(existingDuration),
         source: track.source || 'local',
         sourceLabel: track.sourceLabel || getSourceLabel(track.source || 'local'),
+        variants: Array.isArray(track.variants) ? track.variants.map(function(item) { return Object.assign({}, item); }) : [],
         urlId: track.urlId || track.url_id || track.id || '',
         lyric_id: track.lyric_id || track.id || '',
         id: track.id || track.urlId || track.url_id || track.src || track.title
