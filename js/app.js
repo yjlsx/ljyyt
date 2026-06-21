@@ -576,7 +576,12 @@
       var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
       if (!bilibiliMatch && !isLooseTitleMatchCandidate(target, candidate) && !isTrackMatchCandidate(target, candidate)) return -1;
       var strictTargetArtist = normalizeTrackText(target && target.artist);
-      if (strictTargetArtist && !bilibiliMatch) {
+      var targetSource = String(target && target.source || '').trim();
+      var relaxedCrossSourceTitleMatch = !bilibiliMatch &&
+        (targetSource === 'kuwo' || targetSource === 'lx_kuwo') &&
+        String(candidate && candidate.source || '').trim() !== targetSource &&
+        isLooseTitleMatchCandidate(target, candidate);
+      if (strictTargetArtist && !bilibiliMatch && !relaxedCrossSourceTitleMatch) {
         var strictCandidateArtist = normalizeTrackText(candidate && candidate.artist);
         if (!strictCandidateArtist || strictCandidateArtist === normalizeTrackText('未知歌手')) return -1;
         if (strictCandidateArtist !== strictTargetArtist) {

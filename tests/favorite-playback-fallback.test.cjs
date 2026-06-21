@@ -228,6 +228,20 @@ vm.runInContext([
   )) {
     throw new Error('Expected loose title fallback to accept exact title with different artist metadata');
   }
+  if (sandbox.getFallbackMatchScore(
+    { title: '香港', artist: '酷我歌手字段', source: 'kuwo' },
+    { title: '香港', artist: '不同歌手字段', source: 'joox' },
+    0
+  ) < 0) {
+    throw new Error('Expected failed Kuwo playback to accept exact-title cross-source fallback despite unreliable artist fields');
+  }
+  if (sandbox.getFallbackMatchScore(
+    { title: '香港', artist: '酷我歌手字段', source: 'netease' },
+    { title: '香港', artist: '不同歌手字段', source: 'joox' },
+    0
+  ) >= 0) {
+    throw new Error('Expected strict artist matching to remain enabled for non-Kuwo source fallback');
+  }
   const favorite = { title: 'My Soul', artist: 'July', sourceLabel: 'Joox', src: '' };
   const url = await sandbox.recoverPlayableTrackUrl(favorite);
   if (url !== 'https://cdn.example.com/my-soul.mp3') {
