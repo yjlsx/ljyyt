@@ -286,6 +286,131 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
   }
 }
 
+async function verifySwitchUsesDeepFallbackForLongTitles(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const failedUrl = 'https://cdn.example.test/failed-kuwo-jacky.mp3';
+  const fallbackUrl = 'https://cdn.example.test/netease-jacky.mp3';
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    Math,
+    Set,
+    SEARCH_RESULT_LIMIT: 100,
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    currentTrack: {
+      title: '等你等到我心痛',
+      artist: '酷我歌手字段',
+      source: 'kuwo',
+      sourceLabel: '酷我',
+      urlId: 'kuwo-jacky',
+      src: failedUrl
+    },
+    audioPlayer: {
+      _src: failedUrl,
+      readyState: 0,
+      duration: 0,
+      getAttribute(name) {
+        return name === 'src' ? this._src : '';
+      },
+      removeAttribute(name) {
+        if (name === 'src') this._src = '';
+      },
+      load() {},
+      set src(value) {
+        this._src = value;
+      },
+      get src() {
+        return this._src;
+      }
+    },
+    _playRequestId: 29,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    restoredPlaybackTime: 0,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    recoverCalls: [],
+    isSmartSourceEnabled() {
+      return true;
+    },
+    tryProxyPlaybackLine() {
+      return Promise.resolve(false);
+    },
+    inferTrackSourceCandidates() {
+      return ['kuwo', 'netease', 'joox'];
+    },
+    setPlayIcons() {},
+    showToast() {},
+    async recoverPlayableTrackUrl(track, options) {
+      sandbox.recoverCalls.push({
+        quickOnly: !!options.quickOnly,
+        searchLimit: options.searchLimit || 0,
+        skipSources: options.skipSources.slice(),
+        skipUrls: options.skipUrls.slice()
+      });
+      if (options.quickOnly) return '';
+      if (Number(options.searchLimit) >= 30) {
+        Object.assign(track, {
+          source: 'netease',
+          sourceLabel: '网易云音乐',
+          urlId: 'netease-jacky',
+          src: fallbackUrl
+        });
+        return fallbackUrl;
+      }
+      return '';
+    },
+    playAudioWithTimeout() {
+      return Promise.resolve();
+    },
+    confirmPlaybackStarted() {
+      return Promise.resolve(true);
+    },
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) {
+      return track.sourceLabel || track.source;
+    },
+    isAutoplayPolicyBlocked() {
+      return false;
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource')
+  ].join('\n'), sandbox);
+
+  const switched = await sandbox.switchToFallbackSource('audio-error', 29, failedUrl);
+
+  if (!switched || sandbox.currentTrack.source !== 'netease') {
+    throw new Error(file + ' should deep-search long Kuwo titles and switch to NetEase');
+  }
+  if (!sandbox.recoverCalls.some((call) => call.quickOnly)) {
+    throw new Error(file + ' should still try fast fallback first');
+  }
+  if (!sandbox.recoverCalls.some((call) => call.searchLimit === 30)) {
+    throw new Error(file + ' should retry long titles with a 30-result fallback search');
+  }
+}
+
 async function verifyConcurrentSelectedSourceRecovery(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
@@ -592,6 +717,7 @@ function verifyFallbackTimeoutIsResponsive(file) {
     verifyFallbackTimeoutIsResponsive(file);
     await verifyFallbackStateKeepsOriginalFailures(file);
     await verifyFallbackStateSurvivesCandidateMetadataChanges(file);
+    await verifySwitchUsesDeepFallbackForLongTitles(file);
     await verifyConcurrentSelectedSourceRecovery(file);
     await verifyRecoverySkipsSlowUnplayableCandidate(file);
     await verifyQuickOnlyRecoveryDoesNotDeepSearch(file);

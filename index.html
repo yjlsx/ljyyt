@@ -3192,7 +3192,7 @@
       }).map(function(entry) { return entry.item; });
     }
     // ===== 音源切换性能优化：缓存层 =====
-    var _fallbackSearchCache = new Map(); // key: title|artist|source -> { tracks, expireAt }
+    var _fallbackSearchCache = new Map(); // key: title|artist|source -> { tracks, limit, expireAt }
     var _fallbackUrlCache = new Map(); // key: source|urlId -> { url, expireAt }
     var SEARCH_CACHE_TTL = 5 * 60 * 1000; // 5分钟
     var URL_CACHE_TTL = 30 * 60 * 1000; // 30分钟
@@ -3204,7 +3204,7 @@
       return source + '|' + title + '|' + artist;
     }
 
-    function _getCachedFallbackSearch(track, source) {
+    function _getCachedFallbackSearch(track, source, limit) {
       var key = _getFallbackCacheKey(track, source);
       var entry = _fallbackSearchCache.get(key);
       if (!entry) return null;
@@ -3212,16 +3212,17 @@
         _fallbackSearchCache.delete(key);
         return null;
       }
+      if ((Number(entry.limit) || 0) < (Number(limit) || 0)) return null;
       return entry.tracks;
     }
 
-    function _setCachedFallbackSearch(track, source, tracks) {
+    function _setCachedFallbackSearch(track, source, tracks, limit) {
       if (_fallbackSearchCache.size >= FALLBACK_CACHE_MAX) {
         var firstKey = _fallbackSearchCache.keys().next().value;
         if (firstKey) _fallbackSearchCache.delete(firstKey);
       }
       var key = _getFallbackCacheKey(track, source);
-      _fallbackSearchCache.set(key, { tracks: tracks, expireAt: Date.now() + SEARCH_CACHE_TTL });
+      _fallbackSearchCache.set(key, { tracks: tracks, limit: Number(limit) || 0, expireAt: Date.now() + SEARCH_CACHE_TTL });
     }
 
     function _getCachedUrl(match) {
@@ -3262,13 +3263,13 @@
       var fallbackArtistTokens = getNormalizedArtistTokens(track && track.artist);
       var fallbackQuery = fallbackArtistTokens.length ? track.title + ' ' + fallbackArtistTokens[0] : track.title;
       var searchLimit = Math.max(1, Number(limit) || SEARCH_RESULT_LIMIT);
-      var matches = typeof _getCachedFallbackSearch === 'function' ? _getCachedFallbackSearch(track, source) : null;
+      var matches = typeof _getCachedFallbackSearch === 'function' ? _getCachedFallbackSearch(track, source, searchLimit) : null;
       if (!matches) {
         matches = await fetchExternalSourceTracks(fallbackQuery, source, searchLimit);
         if (!matches.length && fallbackArtistTokens.length) {
           matches = await fetchExternalSourceTracks(track.title, source, searchLimit);
         }
-        if (typeof _setCachedFallbackSearch === 'function') _setCachedFallbackSearch(track, source, matches);
+        if (typeof _setCachedFallbackSearch === 'function') _setCachedFallbackSearch(track, source, matches, searchLimit);
       }
       var candidates = getFallbackTrackMatches(track, matches);
       if (!candidates.length) return null;
@@ -4014,7 +4015,7 @@
       var promise = recoverPlayableTrackUrl(snapshot, {
         skipSources: skipSources,
         skipUrls: skipUrls,
-        quickOnly: true,
+        searchLimit: Math.min(30, SEARCH_RESULT_LIMIT),
         silent: true
       }).then(function(url) {
         if (!url) return null;
@@ -4212,17 +4213,12 @@
               quickOnly: true
             });
             if (!fallbackUrl) {
-              var normalizedFallbackTitle = typeof normalizeTrackText === 'function'
-                ? normalizeTrackText(currentTrack && currentTrack.title)
-                : String(currentTrack && currentTrack.title || '').trim().toLowerCase();
-              if (normalizedFallbackTitle && normalizedFallbackTitle.length <= 4) {
-                fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
-                  skipSources: state.sources.slice(),
-                  skipUrls: state.urls.slice(),
-                  searchLimit: Math.min(30, SEARCH_RESULT_LIMIT),
-                  silent: true
-                });
-              }
+              fallbackUrl = await recoverPlayableTrackUrl(currentTrack, {
+                skipSources: state.sources.slice(),
+                skipUrls: state.urls.slice(),
+                searchLimit: Math.min(30, SEARCH_RESULT_LIMIT),
+                silent: true
+              });
             }
           }
           _isResolvingUrl = false;

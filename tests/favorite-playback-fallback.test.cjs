@@ -64,8 +64,15 @@ const pickConstObject = (name) => {
 
 const sandbox = {
   console: { warn: function() {}, log: function() {}, error: function() {} },
+  Date,
+  Map,
   DEFAULT_COVER: 'cover.jpg',
   SEARCH_RESULT_LIMIT: 100,
+  SEARCH_CACHE_TTL: 5 * 60 * 1000,
+  URL_CACHE_TTL: 30 * 60 * 1000,
+  FALLBACK_CACHE_MAX: 200,
+  _fallbackSearchCache: new Map(),
+  _fallbackUrlCache: new Map(),
   gdMusicApiBase: '/api/gd-music',
   gdMusicFallbackBases: ['https://music-api.example.test/api.php'],
   _isLocalDev: true,
@@ -106,7 +113,8 @@ const sandbox = {
     const parsed = new URL(url);
     const source = parsed.searchParams.get('source');
     const query = parsed.searchParams.get('name');
-    sandbox.calls.push({ query, source });
+    const count = parsed.searchParams.get('count');
+    sandbox.calls.push({ query, source, count });
     return {
       ok: true,
       async json() {
@@ -148,6 +156,26 @@ const sandbox = {
             url_id: 'joox-hong-kong'
           }]);
         }
+        if (source === 'netease' && /等你等到我心痛/.test(query)) {
+          const total = Number(count || 0);
+          const filler = Array.from({ length: Math.min(12, total) }, (_, index) => ({
+            id: 'netease-filler-' + index,
+            name: '等你等到心痛' + index,
+            artist: ['其它歌手' + index],
+            album: '网易合集',
+            source: 'netease',
+            url_id: 'netease-filler-' + index
+          }));
+          if (total <= 12) return filler;
+          return filler.concat([{
+            id: 'netease-jacky',
+            name: '等你等到我心痛',
+            artist: ['张学友'],
+            album: '这个冬天不太冷',
+            source: 'netease',
+            url_id: 'netease-jacky'
+          }]);
+        }
         if (source !== 'joox') return [];
         return [{
           id: '123',
@@ -165,6 +193,7 @@ const sandbox = {
     if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
     if (track && track.urlId === 'joox-traditional') return 'https://cdn.example.com/wo-hui-deng.mp3';
     if (track && track.urlId === 'joox-hong-kong') return 'https://cdn.example.com/hong-kong.mp3';
+    if (track && track.urlId === 'netease-jacky') return 'https://cdn.example.com/jacky-netease.mp3';
     return track && track.urlId === '123' ? 'https://cdn.example.com/my-soul.mp3' : '';
   },
   calls: []
@@ -184,6 +213,11 @@ vm.runInContext([
   pickFunction('getFallbackMatchScore'),
   pickFunction('pickFallbackTrackMatch'),
   pickFunction('getFallbackTrackMatches'),
+  pickFunction('_getFallbackCacheKey'),
+  pickFunction('_getCachedFallbackSearch'),
+  pickFunction('_setCachedFallbackSearch'),
+  pickFunction('_getCachedUrl'),
+  pickFunction('_setCachedUrl'),
   pickFunction('resolvePlayableFallbackCandidate'),
   pickFunction('resolveFallbackTrackFromSource'),
   pickFunction('normalizeNeteaseApiSong'),
@@ -336,6 +370,35 @@ vm.runInContext([
   }
   if (!sandbox.calls.some((call) => call.source === 'joox')) {
     throw new Error('Expected failed Kuwo track to search selected Joox source');
+  }
+
+  sandbox.aggregatedSources = ['local', 'netease', 'kuwo'];
+  sandbox.calls = [];
+  const longTitleDeepFallback = {
+    title: '等你等到我心痛',
+    artist: '酷我歌手字段',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const quickLongTitleUrl = await sandbox.recoverPlayableTrackUrl(longTitleDeepFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3'],
+    quickOnly: true
+  });
+  if (quickLongTitleUrl) {
+    throw new Error('Expected quick fallback to miss long-title NetEase result beyond the first 12 results');
+  }
+  const deepLongTitleUrl = await sandbox.recoverPlayableTrackUrl(longTitleDeepFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3'],
+    searchLimit: 30
+  });
+  if (deepLongTitleUrl !== 'https://cdn.example.com/jacky-netease.mp3') {
+    throw new Error('Expected deep fallback to bypass shallow cache and use NetEase for 等你等到我心痛, got ' + deepLongTitleUrl);
+  }
+  if (!sandbox.calls.some((call) => call.source === 'netease' && /等你等到我心痛/.test(call.query) && call.count === '30')) {
+    throw new Error('Expected deep fallback to re-query NetEase with a larger limit after shallow prewarm');
   }
 
   sandbox.aggregatedSources = ['local', 'netease', 'kuwo'];

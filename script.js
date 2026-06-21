@@ -3,8 +3,18 @@ console.log('🚀 script_fixed.js 开始加载');
 
 // 音乐数据
 const musicData = [
+
   {
     id: 1,
+    "title": "天上人间 白水台",
+    "artist": "墨尚七",
+    "album": "纳西音乐精选",
+    "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk4OTk=",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/jXiaTRzsmA7P5hWcX3ngiaibt4KBSwOdHhrA4nVMG9xPLLkmyXeN7icwlGFyrWIThRQuJeFtYNibRPAzkKYAuQsjg6Vgm3tck82ibZxYzMOaicN2pw/640?wx_fmt=webp&from=appmsg",
+    "duration": 252
+  },
+  {
+    id: 2,
     "title": "快乐人生",
     "artist": "和月圆",
     "album": "纳西音乐精选",
@@ -13,7 +23,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 2,
+    id: 3,
     "title": "拉市斗牛之歌",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -22,7 +32,16 @@ const musicData = [
     "duration": 225
   },
   {
-    id: 3,
+    id: 4,
+    "title": "西余花花色.",
+    "artist": "涵蜜金组合",
+    "album": "纳西音乐精选",
+    "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk5MDE=",
+    "cover": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/tfpibRIwbCVib505OXlIOk8a7RIUO6XibiasyOXmPL0dJQrLYicMeaf2VZh1gEWUD3iaRgBwJMa6vpuE5YxH6uMeyC4w/0?wx_fmt=jpeg",
+    "duration": 213
+  },
+  {
+    id: 5,
     "title": "故乡谣",
     "artist": "赵郑芝",
     "album": "纳西音乐精选",
@@ -31,7 +50,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 4,
+    id: 6,
     "title": "无名的歌",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -40,7 +59,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 5,
+    id: 7,
     "title": "五台之歌",
     "artist": "和圣福 和丽龙 和丽霞 和雪芹",
     "album": "纳西音乐精选",
@@ -49,7 +68,7 @@ const musicData = [
     "duration": 220
   },
   {
-    id: 6,
+    id: 8,
     "title": "达瓦纳西努2026",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -58,7 +77,7 @@ const musicData = [
     "duration": 224
   },
   {
-    id: 7,
+    id: 9,
     "title": "塔城纳西民歌",
     "artist": "金顺、和秀山",
     "album": "纳西音乐精选",
@@ -67,7 +86,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 8,
+    id: 10,
     "title": "三月百花开",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -76,7 +95,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 9,
+    id: 11,
     "title": "悄然前行",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -85,7 +104,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 10,
+    id: 12,
     "title": "回到我身边",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -94,7 +113,7 @@ const musicData = [
     "duration": 172
   },
   {
-    id: 11,
+    id: 13,
     "title": "红叶傲霜",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -103,7 +122,7 @@ const musicData = [
     "duration": 329
   },
   {
-    id: 12,
+    id: 14,
     "title": "打跳联唱",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -112,7 +131,7 @@ const musicData = [
     "duration": 415
   },
   {
-    id: 13,
+    id: 15,
     "title": "次里次姆",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -121,7 +140,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 14,
+    id: 16,
     "title": "沧桑的诺言",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -130,7 +149,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 15,
+    id: 17,
     "title": "游子的心",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -139,7 +158,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 16,
+    id: 18,
     "title": "兴余花华色",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -148,7 +167,7 @@ const musicData = [
     "duration": 278
   },
   {
-    id: 17,
+    id: 19,
     "title": "劝世歌",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -157,7 +176,7 @@ const musicData = [
     "duration": 172
   },
   {
-    id: 18,
+    id: 20,
     "title": "勒巴舞唱腔",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -166,7 +185,7 @@ const musicData = [
     "duration": 321
   },
   {
-    id: 19,
+    id: 21,
     "title": "鱼水相会",
     "artist": "和善武、金顺",
     "album": "纳西音乐精选",
@@ -175,7 +194,7 @@ const musicData = [
     "duration": 180
   },
   {
-    id: 20,
+    id: 22,
     "title": "吉祥的日子",
     "artist": "和雪兰",
     "album": "纳西音乐精选",
@@ -184,7 +203,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 21,
+    id: 23,
     "title": "白水台",
     "artist": "",
     "album": "纳西音乐精选",
@@ -193,7 +212,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 22,
+    id: 24,
     "title": "白水台",
     "artist": "习东梅",
     "album": "纳西音乐精选",
@@ -202,7 +221,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 23,
+    id: 25,
     "title": "我的父亲母亲",
     "artist": "和顺东",
     "album": "纳西音乐精选",
@@ -211,7 +230,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 24,
+    id: 26,
     "title": "纳西若",
     "artist": "和丽霞",
     "album": "纳西音乐精选",
@@ -220,7 +239,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 25,
+    id: 27,
     "title": "纳西族音乐史",
     "artist": "",
     "album": "纳西音乐精选",
@@ -229,7 +248,7 @@ const musicData = [
     "duration": 4001
   },
   {
-    id: 26,
+    id: 28,
     "title": "欢聚",
     "artist": "阿花蜜、纳西蕾蕾",
     "album": "纳西音乐精选",
@@ -238,7 +257,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 27,
+    id: 29,
     "title": "我爱纳西丽江坝",
     "artist": "",
     "album": "纳西音乐精选",
@@ -247,7 +266,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 28,
+    id: 30,
     "title": "迎客欢歌",
     "artist": "和春艳",
     "album": "纳西音乐精选",
@@ -256,7 +275,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 29,
+    id: 31,
     "title": "玉龙山组合、金沙姑娘组合-梦想成真",
     "artist": "",
     "album": "纳西音乐精选",
@@ -265,7 +284,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 30,
+    id: 32,
     "title": "欢天喜地",
     "artist": "陈四才",
     "album": "纳西音乐精选",
@@ -274,7 +293,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 31,
+    id: 33,
     "title": "孝敬父母",
     "artist": "彩菊",
     "album": "纳西音乐精选",
@@ -283,7 +302,7 @@ const musicData = [
     "duration": 298
   },
   {
-    id: 32,
+    id: 34,
     "title": "纳西欢歌",
     "artist": "天龙",
     "album": "纳西音乐精选",
@@ -292,7 +311,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 33,
+    id: 35,
     "title": "耆老新歌",
     "artist": "和集虎",
     "album": "纳西音乐精选",
@@ -301,7 +320,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 34,
+    id: 36,
     "title": "兄弟情",
     "artist": "天龙",
     "album": "纳西音乐精选",
@@ -310,7 +329,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 35,
+    id: 37,
     "title": "欢乐的阿哩哩",
     "artist": "和艳",
     "album": "纳西音乐精选",
@@ -319,7 +338,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 36,
+    id: 38,
     "title": "纳西姑娘美",
     "artist": "丽江福铃组合",
     "album": "纳西音乐精选",
@@ -328,7 +347,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 37,
+    id: 39,
     "title": "祈望",
     "artist": "啊秋",
     "album": "纳西音乐精选",
@@ -337,7 +356,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 38,
+    id: 40,
     "title": "党情冷么密",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -346,7 +365,7 @@ const musicData = [
     "duration": 321
   },
   {
-    id: 39,
+    id: 41,
     "title": "努美罗格姿呗",
     "artist": "陈四才",
     "album": "纳西音乐精选",
@@ -355,7 +374,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 40,
+    id: 42,
     "title": "人生",
     "artist": "天龙",
     "album": "纳西音乐精选",
@@ -364,7 +383,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 41,
+    id: 43,
     "title": "相伴调",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -373,7 +392,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 42,
+    id: 44,
     "title": "心里的家",
     "artist": "和雪芹",
     "album": "纳西音乐精选",
@@ -382,7 +401,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 43,
+    id: 45,
     "title": "莫忘恩情",
     "artist": "阿夏丽",
     "album": "纳西音乐精选",
@@ -391,7 +410,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 44,
+    id: 46,
     "title": "歌唱长水",
     "artist": "和生辉",
     "album": "纳西音乐精选",
@@ -400,7 +419,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 45,
+    id: 47,
     "title": "达瓦纳西努2025",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -409,7 +428,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 46,
+    id: 48,
     "title": "盛世欢歌",
     "artist": "庭松",
     "album": "纳西音乐精选",
@@ -418,7 +437,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 47,
+    id: 49,
     "title": "百草飘香的地方",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -427,7 +446,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 48,
+    id: 50,
     "title": "塔城姑娘美",
     "artist": "金锁丽泉",
     "album": "纳西音乐精选",
@@ -436,7 +455,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 49,
+    id: 51,
     "title": "玉龙神韵",
     "artist": "和瑞智",
     "album": "纳西音乐精选",
@@ -445,7 +464,7 @@ const musicData = [
     "duration": 428
   },
   {
-    id: 50,
+    id: 52,
     "title": "姿姿好时获",
     "artist": "树润花",
     "album": "纳西音乐精选",
@@ -454,7 +473,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 51,
+    id: 53,
     "title": "我愿",
     "artist": "纳西蕾蕾",
     "album": "纳西音乐精选",
@@ -463,7 +482,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 52,
+    id: 54,
     "title": "桃园送别调",
     "artist": "和慧琼、和燕、李九铭、马涛",
     "album": "纳西音乐精选",
@@ -472,7 +491,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 53,
+    id: 55,
     "title": "阿莎蜜",
     "artist": "李佳",
     "album": "纳西音乐精选",
@@ -481,7 +500,7 @@ const musicData = [
     "duration": 315
   },
   {
-    id: 54,
+    id: 56,
     "title": "纳西新劝世歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -490,7 +509,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 55,
+    id: 57,
     "title": "相依相守",
     "artist": "阿花蜜",
     "album": "纳西音乐精选",
@@ -499,7 +518,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 56,
+    id: 58,
     "title": "愿",
     "artist": "木贵花",
     "album": "纳西音乐精选",
@@ -508,7 +527,7 @@ const musicData = [
     "duration": 307
   },
   {
-    id: 57,
+    id: 59,
     "title": "满子周固男",
     "artist": "纳浫阿福",
     "album": "纳西音乐精选",
@@ -517,7 +536,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 58,
+    id: 60,
     "title": "爸美汝实贺",
     "artist": "和善武",
     "album": "纳西音乐精选",
@@ -526,7 +545,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 59,
+    id: 61,
     "title": "相逢三杯酒",
     "artist": "丽江阿黑哥",
     "album": "纳西音乐精选",
@@ -535,7 +554,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 60,
+    id: 62,
     "title": "幸福生活唱不完",
     "artist": "",
     "album": "纳西音乐精选",
@@ -544,7 +563,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 61,
+    id: 63,
     "title": "纳西火把节",
     "artist": "阿泉",
     "album": "纳西音乐精选",
@@ -553,7 +572,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 62,
+    id: 64,
     "title": "绿色出行歌.",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -562,7 +581,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 63,
+    id: 65,
     "title": "摩梭山歌",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -571,7 +590,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 64,
+    id: 66,
     "title": "阿哩哩花花色",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -580,7 +599,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 65,
+    id: 67,
     "title": "呀哈哩",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -589,7 +608,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 66,
+    id: 68,
     "title": "喜庆歌",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -598,7 +617,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 67,
+    id: 69,
     "title": "白云曲",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -607,7 +626,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 68,
+    id: 70,
     "title": "归期",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -616,7 +635,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 69,
+    id: 71,
     "title": "花落流年",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -625,7 +644,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 70,
+    id: 72,
     "title": "纳西潘金妹",
     "artist": "郑旭先",
     "album": "纳西音乐精选",
@@ -634,7 +653,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 71,
+    id: 73,
     "title": "冬之歌",
     "artist": "郑旭先",
     "album": "纳西音乐精选",
@@ -643,7 +662,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 72,
+    id: 74,
     "title": "秋之歌",
     "artist": "杨耀兰",
     "album": "纳西音乐精选",
@@ -652,7 +671,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 73,
+    id: 75,
     "title": "夏之歌",
     "artist": "李丽芳",
     "album": "纳西音乐精选",
@@ -661,7 +680,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 74,
+    id: 76,
     "title": "春之歌",
     "artist": "王瑞香",
     "album": "纳西音乐精选",
@@ -670,7 +689,7 @@ const musicData = [
     "duration": 287
   },
   {
-    id: 75,
+    id: 77,
     "title": "恩难忘",
     "artist": "李丽芳",
     "album": "纳西音乐精选",
@@ -679,7 +698,7 @@ const musicData = [
     "duration": 307
   },
   {
-    id: 76,
+    id: 78,
     "title": "故乡太安",
     "artist": "",
     "album": "纳西音乐精选",
@@ -688,7 +707,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 77,
+    id: 79,
     "title": "歌颂党情",
     "artist": "阿福",
     "album": "纳西音乐精选",
@@ -697,7 +716,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 78,
+    id: 80,
     "title": "依恋的家园",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -706,7 +725,7 @@ const musicData = [
     "duration": 320
   },
   {
-    id: 79,
+    id: 81,
     "title": "拉伯谷气",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -715,7 +734,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 80,
+    id: 82,
     "title": "花季情思",
     "artist": "涵依玛吉",
     "album": "纳西音乐精选",
@@ -724,7 +743,7 @@ const musicData = [
     "duration": 271
   },
   {
-    id: 81,
+    id: 83,
     "title": "孝行颂",
     "artist": "和君梅",
     "album": "纳西音乐精选",
@@ -733,7 +752,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 82,
+    id: 84,
     "title": "缘定今生",
     "artist": "和丽刚、金顺",
     "album": "纳西音乐精选",
@@ -742,7 +761,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 83,
+    id: 85,
     "title": "丽江好在",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -751,7 +770,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 84,
+    id: 86,
     "title": "塔拉久初",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -760,7 +779,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 85,
+    id: 87,
     "title": "菩捞阿姆",
     "artist": "和丽刚",
     "album": "纳西音乐精选",
@@ -769,7 +788,7 @@ const musicData = [
     "duration": 307
   },
   {
-    id: 86,
+    id: 88,
     "title": "欢聚白水台",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -778,7 +797,7 @@ const musicData = [
     "duration": 230
   },
   {
-    id: 87,
+    id: 89,
     "title": "舞动丽江",
     "artist": "丽江小龙",
     "album": "纳西音乐精选",
@@ -787,7 +806,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 88,
+    id: 90,
     "title": "心中的神山",
     "artist": "雄纳独知",
     "album": "纳西音乐精选",
@@ -796,7 +815,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 89,
+    id: 91,
     "title": "隔山隔水不隔心",
     "artist": "和华",
     "album": "纳西音乐精选",
@@ -805,7 +824,7 @@ const musicData = [
     "duration": 181
   },
   {
-    id: 90,
+    id: 92,
     "title": "达瓦纳西努2024",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -814,7 +833,7 @@ const musicData = [
     "duration": 206
   },
   {
-    id: 91,
+    id: 93,
     "title": "心中的丽江",
     "artist": "小靓",
     "album": "纳西音乐精选",
@@ -823,7 +842,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 92,
+    id: 94,
     "title": "欢声笑语",
     "artist": "和笑",
     "album": "纳西音乐精选",
@@ -832,7 +851,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 93,
+    id: 95,
     "title": "四时吉祥",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -841,7 +860,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 94,
+    id: 96,
     "title": "情缘天地",
     "artist": "涵密金",
     "album": "纳西音乐精选",
@@ -850,7 +869,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 95,
+    id: 97,
     "title": "拉市足球之歌",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -859,7 +878,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 96,
+    id: 98,
     "title": "血肉相依",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -868,7 +887,7 @@ const musicData = [
     "duration": 323
   },
   {
-    id: 97,
+    id: 99,
     "title": "心上人",
     "artist": "纳西晓霞",
     "album": "纳西音乐精选",
@@ -877,7 +896,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 98,
+    id: 100,
     "title": "不变的誓言",
     "artist": "和丽刚",
     "album": "纳西音乐精选",
@@ -886,7 +905,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 99,
+    id: 101,
     "title": "思恋",
     "artist": "和文珠",
     "album": "纳西音乐精选",
@@ -895,7 +914,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 100,
+    id: 102,
     "title": "草原上的女人",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -904,7 +923,7 @@ const musicData = [
     "duration": 269
   },
   {
-    id: 101,
+    id: 103,
     "title": "尼西情",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -913,7 +932,7 @@ const musicData = [
     "duration": 336
   },
   {
-    id: 102,
+    id: 104,
     "title": "呀阁雄高么",
     "artist": "纳西蕾蕾",
     "album": "纳西音乐精选",
@@ -922,7 +941,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 103,
+    id: 105,
     "title": "不放手",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -931,7 +950,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 104,
+    id: 106,
     "title": "《农村人居环境》快板(和群星 和善武)",
     "artist": "和群星 和善武",
     "album": "纳西音乐精选",
@@ -940,7 +959,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 105,
+    id: 107,
     "title": "阿卡巴拉",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -949,7 +968,7 @@ const musicData = [
     "duration": 356
   },
   {
-    id: 106,
+    id: 108,
     "title": "纳西依古堆",
     "artist": "",
     "album": "纳西音乐精选",
@@ -958,7 +977,7 @@ const musicData = [
     "duration": 148
   },
   {
-    id: 107,
+    id: 109,
     "title": "绿色家园",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -967,7 +986,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 108,
+    id: 110,
     "title": "寓言",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -976,7 +995,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 109,
+    id: 111,
     "title": "么彪腾辟",
     "artist": "丽江小龙",
     "album": "纳西音乐精选",
@@ -985,7 +1004,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 110,
+    id: 112,
     "title": "天雨流芳",
     "artist": "纳西少爷",
     "album": "纳西音乐精选",
@@ -994,7 +1013,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 111,
+    id: 113,
     "title": "茸余敢莫标",
     "artist": "阿强",
     "album": "纳西音乐精选",
@@ -1003,7 +1022,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 112,
+    id: 114,
     "title": "高山开杜鹃",
     "artist": "和善武",
     "album": "纳西音乐精选",
@@ -1012,7 +1031,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 113,
+    id: 115,
     "title": "纳西欢歌",
     "artist": "阿强",
     "album": "纳西音乐精选",
@@ -1021,7 +1040,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 114,
+    id: 116,
     "title": "苦尽甘来",
     "artist": "和永昌",
     "album": "纳西音乐精选",
@@ -1030,7 +1049,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 115,
+    id: 117,
     "title": "今夜独我",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -1039,7 +1058,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 116,
+    id: 118,
     "title": "心里话",
     "artist": "福音音",
     "album": "纳西音乐精选",
@@ -1048,7 +1067,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 117,
+    id: 119,
     "title": "雷鬼酒歌",
     "artist": "纳西阿贵",
     "album": "纳西音乐精选",
@@ -1057,7 +1076,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 118,
+    id: 120,
     "title": "云天情歌",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -1066,7 +1085,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 119,
+    id: 121,
     "title": "莫让人生一场空",
     "artist": "和丽刚",
     "album": "纳西音乐精选",
@@ -1075,7 +1094,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 120,
+    id: 122,
     "title": "梦中的额吉",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -1084,7 +1103,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 121,
+    id: 123,
     "title": "和丽霞 - 纳西美",
     "artist": "和丽霞",
     "album": "纳西音乐精选",
@@ -1093,7 +1112,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 122,
+    id: 124,
     "title": "喝酒人",
     "artist": "山人行组合 纳子若西",
     "album": "纳西音乐精选",
@@ -1102,7 +1121,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 123,
+    id: 125,
     "title": "梦想成真",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1111,7 +1130,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 124,
+    id: 126,
     "title": "梦想成真",
     "artist": "金沙姑娘组合",
     "album": "纳西音乐精选",
@@ -1120,7 +1139,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 125,
+    id: 127,
     "title": "大山情",
     "artist": "塔嘎阿秋、和丽刚",
     "album": "纳西音乐精选",
@@ -1129,7 +1148,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 126,
+    id: 128,
     "title": "爱在玉隆拉措",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1138,7 +1157,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 127,
+    id: 129,
     "title": "高高的拉措",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1147,7 +1166,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 128,
+    id: 130,
     "title": "去马尼干戈的路上",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1156,7 +1175,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 129,
+    id: 131,
     "title": "霞光中的翅膀",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1165,7 +1184,7 @@ const musicData = [
     "duration": 269
   },
   {
-    id: 130,
+    id: 132,
     "title": "雪域名城",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1174,7 +1193,7 @@ const musicData = [
     "duration": 206
   },
   {
-    id: 131,
+    id: 133,
     "title": "英雄部落",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -1183,7 +1202,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 132,
+    id: 134,
     "title": "新年祝福",
     "artist": "纳西谷气",
     "album": "纳西音乐精选",
@@ -1192,7 +1211,7 @@ const musicData = [
     "duration": 167
   },
   {
-    id: 133,
+    id: 135,
     "title": "喜庆歌",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -1201,7 +1220,7 @@ const musicData = [
     "duration": 195
   },
   {
-    id: 134,
+    id: 136,
     "title": "革囊渡欢迎您",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -1210,7 +1229,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 135,
+    id: 137,
     "title": "归来",
     "artist": "天龙",
     "album": "纳西音乐精选",
@@ -1219,7 +1238,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 136,
+    id: 138,
     "title": "纳西姐弟歌曲联唱",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -1228,7 +1247,7 @@ const musicData = [
     "duration": 564
   },
   {
-    id: 137,
+    id: 139,
     "title": "从头再来",
     "artist": "和永昌",
     "album": "纳西音乐精选",
@@ -1237,7 +1256,7 @@ const musicData = [
     "duration": 166
   },
   {
-    id: 138,
+    id: 140,
     "title": "刷古刷巴巴",
     "artist": "和善武",
     "album": "纳西音乐精选",
@@ -1246,7 +1265,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 139,
+    id: 141,
     "title": "幕布热美",
     "artist": "和丽元 和慧琼",
     "album": "纳西音乐精选",
@@ -1255,7 +1274,7 @@ const musicData = [
     "duration": 357
   },
   {
-    id: 140,
+    id: 142,
     "title": "姆达蹉",
     "artist": "和月圆 和国江",
     "album": "纳西音乐精选",
@@ -1264,7 +1283,7 @@ const musicData = [
     "duration": 278
   },
   {
-    id: 141,
+    id: 143,
     "title": "相守到永久",
     "artist": "周萍、甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -1273,7 +1292,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 142,
+    id: 144,
     "title": "阿贵 - 纳西舞韵",
     "artist": "阿贵",
     "album": "纳西音乐精选",
@@ -1282,7 +1301,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 143,
+    id: 145,
     "title": "唠喂调.mp3",
     "artist": "和善武、和慧琼",
     "album": "纳西音乐精选",
@@ -1291,7 +1310,7 @@ const musicData = [
     "duration": 180
   },
   {
-    id: 144,
+    id: 146,
     "title": "相念三生",
     "artist": "雪莲君",
     "album": "纳西音乐精选",
@@ -1300,7 +1319,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 145,
+    id: 147,
     "title": "阿贵  纳西英子 - 中秋的约定",
     "artist": "阿贵  纳西英子",
     "album": "纳西音乐精选",
@@ -1309,7 +1328,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 146,
+    id: 148,
     "title": "劝善咒.",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -1318,7 +1337,7 @@ const musicData = [
     "duration": 206
   },
   {
-    id: 147,
+    id: 149,
     "title": "纳西口弦 子谷气",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1327,7 +1346,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 148,
+    id: 150,
     "title": "水风永相伴",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1336,7 +1355,7 @@ const musicData = [
     "duration": 276
   },
   {
-    id: 149,
+    id: 151,
     "title": "请喝一碗纳西酒 喂唻喂唻",
     "artist": "杨润琴、瑞鸣音乐",
     "album": "纳西音乐精选",
@@ -1345,7 +1364,7 @@ const musicData = [
     "duration": 137
   },
   {
-    id: 150,
+    id: 152,
     "title": "生肖歌",
     "artist": "陈四才",
     "album": "纳西音乐精选",
@@ -1354,7 +1373,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 151,
+    id: 153,
     "title": "色卡飘季几",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -1363,7 +1382,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 152,
+    id: 154,
     "title": "姿磋",
     "artist": "和丽刚",
     "album": "纳西音乐精选",
@@ -1372,7 +1391,7 @@ const musicData = [
     "duration": 319
   },
   {
-    id: 153,
+    id: 155,
     "title": "【王朝信】忆苦思甜（喂默达调）",
     "artist": "王朝信",
     "album": "纳西音乐精选",
@@ -1381,7 +1400,7 @@ const musicData = [
     "duration": 1518
   },
   {
-    id: 154,
+    id: 156,
     "title": "人生如梦",
     "artist": "和杨",
     "album": "纳西音乐精选",
@@ -1390,7 +1409,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 155,
+    id: 157,
     "title": "可可托海的牧羊人",
     "artist": "阿尼布鲁鲁",
     "album": "纳西音乐精选",
@@ -1399,7 +1418,7 @@ const musicData = [
     "duration": 340
   },
   {
-    id: 156,
+    id: 158,
     "title": "美好的时光",
     "artist": "和馨怡",
     "album": "纳西音乐精选",
@@ -1408,7 +1427,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 157,
+    id: 159,
     "title": "建设美丽丽江（纳西快板）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1417,7 +1436,7 @@ const musicData = [
     "duration": 1133
   },
   {
-    id: 158,
+    id: 160,
     "title": "美丽的神话.",
     "artist": "阿尼布鲁鲁、纳西英子",
     "album": "纳西音乐精选",
@@ -1426,7 +1445,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 159,
+    id: 161,
     "title": "请喝一碗纳西酒 喂唻喂唻",
     "artist": "杨润琴",
     "album": "纳西音乐精选",
@@ -1435,7 +1454,7 @@ const musicData = [
     "duration": 137
   },
   {
-    id: 160,
+    id: 162,
     "title": "父亲",
     "artist": "和世奇（四爷）",
     "album": "纳西音乐精选",
@@ -1444,7 +1463,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 161,
+    id: 163,
     "title": "布谷传佳信",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -1453,7 +1472,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 162,
+    id: 164,
     "title": "生死约定",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -1462,7 +1481,7 @@ const musicData = [
     "duration": 326
   },
   {
-    id: 163,
+    id: 165,
     "title": "恩情",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -1471,7 +1490,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 164,
+    id: 166,
     "title": "黑乳名",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -1480,7 +1499,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 165,
+    id: 167,
     "title": "薄荷酒",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1489,7 +1508,7 @@ const musicData = [
     "duration": 191
   },
   {
-    id: 166,
+    id: 168,
     "title": "玉龙恋歌（纳西族）李艳婷 李映昀",
     "artist": "李艳婷 李映昀",
     "album": "纳西音乐精选",
@@ -1498,7 +1517,7 @@ const musicData = [
     "duration": 371
   },
   {
-    id: 167,
+    id: 169,
     "title": "都是一家人",
     "artist": "阿贵",
     "album": "纳西音乐精选",
@@ -1507,7 +1526,7 @@ const musicData = [
     "duration": 422
   },
   {
-    id: 168,
+    id: 170,
     "title": "纳西酒歌（李艳婷演唱）",
     "artist": "李艳婷",
     "album": "纳西音乐精选",
@@ -1516,7 +1535,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 169,
+    id: 171,
     "title": "冬去春来（李艳婷作品）",
     "artist": "李艳婷",
     "album": "纳西音乐精选",
@@ -1525,7 +1544,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 170,
+    id: 172,
     "title": "二月八的祝福",
     "artist": "和雪凤",
     "album": "纳西音乐精选",
@@ -1534,7 +1553,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 171,
+    id: 173,
     "title": "纳西嘎妩蹉",
     "artist": "杨永爱",
     "album": "纳西音乐精选",
@@ -1543,7 +1562,7 @@ const musicData = [
     "duration": 373
   },
   {
-    id: 172,
+    id: 174,
     "title": "绸土词",
     "artist": "和占强  张桂华  和漩  和文军 和丽琼  姚熙",
     "album": "纳西音乐精选",
@@ -1552,7 +1571,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 173,
+    id: 175,
     "title": "孝道",
     "artist": "荒田野",
     "album": "纳西音乐精选",
@@ -1561,7 +1580,7 @@ const musicData = [
     "duration": 334
   },
   {
-    id: 174,
+    id: 176,
     "title": "丽江涅槃序曲童谣",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1570,7 +1589,7 @@ const musicData = [
     "duration": 85
   },
   {
-    id: 175,
+    id: 177,
     "title": "布谷传佳信",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -1579,7 +1598,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 176,
+    id: 178,
     "title": "勇往直前",
     "artist": "阿贵",
     "album": "纳西音乐精选",
@@ -1588,7 +1607,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 177,
+    id: 179,
     "title": "月亮姆",
     "artist": "纳西童谣",
     "album": "纳西音乐精选",
@@ -1597,7 +1616,7 @@ const musicData = [
     "duration": 75
   },
   {
-    id: 178,
+    id: 180,
     "title": "人生莫愁",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -1606,7 +1625,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 179,
+    id: 181,
     "title": "人生莫愁",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -1615,7 +1634,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 180,
+    id: 182,
     "title": "日纳黑帅《天籁笛乐》",
     "artist": "日纳黑帅",
     "album": "纳西音乐精选",
@@ -1624,7 +1643,7 @@ const musicData = [
     "duration": 898
   },
   {
-    id: 181,
+    id: 183,
     "title": "茶花开",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -1633,7 +1652,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 182,
+    id: 184,
     "title": "幸福拉萨",
     "artist": "次仁桑珠",
     "album": "纳西音乐精选",
@@ -1642,7 +1661,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 183,
+    id: 185,
     "title": "纳西童谣——屋后喀嚓嚓",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1651,7 +1670,7 @@ const musicData = [
     "duration": 123
   },
   {
-    id: 184,
+    id: 186,
     "title": "幸福醉歌",
     "artist": "陈四才",
     "album": "纳西音乐精选",
@@ -1660,7 +1679,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 185,
+    id: 187,
     "title": "丽江情",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -1669,7 +1688,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 186,
+    id: 188,
     "title": "万物情",
     "artist": "和毅贵",
     "album": "纳西音乐精选",
@@ -1678,7 +1697,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 187,
+    id: 189,
     "title": "相会歌",
     "artist": "阿贵",
     "album": "纳西音乐精选",
@@ -1687,7 +1706,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 188,
+    id: 190,
     "title": "心里话",
     "artist": "和君梅",
     "album": "纳西音乐精选",
@@ -1696,7 +1715,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 189,
+    id: 191,
     "title": "相守今生",
     "artist": "和丽刚",
     "album": "纳西音乐精选",
@@ -1705,7 +1724,7 @@ const musicData = [
     "duration": 333
   },
   {
-    id: 190,
+    id: 192,
     "title": "古老的歌",
     "artist": "李秀香",
     "album": "纳西音乐精选",
@@ -1714,7 +1733,7 @@ const musicData = [
     "duration": 581
   },
   {
-    id: 191,
+    id: 193,
     "title": "故乡丽江",
     "artist": "刘璇",
     "album": "纳西音乐精选",
@@ -1723,7 +1742,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 192,
+    id: 194,
     "title": "受栽蒙套",
     "artist": "李铭九",
     "album": "纳西音乐精选",
@@ -1732,7 +1751,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 193,
+    id: 195,
     "title": "金沙情歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1741,7 +1760,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 194,
+    id: 196,
     "title": "格桑阿佳",
     "artist": "阿佳组合",
     "album": "纳西音乐精选",
@@ -1750,7 +1769,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 195,
+    id: 197,
     "title": "曹怀瑾、曹文杨-一滴水经过丽江",
     "artist": "曹怀瑾、曹文杨",
     "album": "纳西音乐精选",
@@ -1759,7 +1778,7 @@ const musicData = [
     "duration": 107
   },
   {
-    id: 196,
+    id: 198,
     "title": "万物情",
     "artist": "阿贵",
     "album": "纳西音乐精选",
@@ -1768,7 +1787,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 197,
+    id: 199,
     "title": "建设美丽丽江（纳西快板）",
     "artist": "和继元  和志秋",
     "album": "纳西音乐精选",
@@ -1777,7 +1796,7 @@ const musicData = [
     "duration": 1133
   },
   {
-    id: 198,
+    id: 200,
     "title": "密码丽江",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -1786,7 +1805,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 199,
+    id: 201,
     "title": "起新房",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -1795,7 +1814,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 200,
+    id: 202,
     "title": "吾日吾几",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -1804,7 +1823,7 @@ const musicData = [
     "duration": 261
   },
   {
-    id: 201,
+    id: 203,
     "title": "故乡",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -1813,7 +1832,7 @@ const musicData = [
     "duration": 206
   },
   {
-    id: 202,
+    id: 204,
     "title": "阿里里花花色",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1822,7 +1841,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 203,
+    id: 205,
     "title": "和述明",
     "artist": "时代颂",
     "album": "纳西音乐精选",
@@ -1831,7 +1850,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 204,
+    id: 206,
     "title": "爱不需要什么",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -1840,7 +1859,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 205,
+    id: 207,
     "title": "神仙在哪里",
     "artist": "金顺",
     "album": "纳西音乐精选",
@@ -1849,7 +1868,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 206,
+    id: 208,
     "title": "《真的爱你》纳西语版",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1858,7 +1877,7 @@ const musicData = [
     "duration": 166
   },
   {
-    id: 207,
+    id: 209,
     "title": "泸沽湖最新甲搓舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1867,7 +1886,7 @@ const musicData = [
     "duration": 1065
   },
   {
-    id: 208,
+    id: 210,
     "title": "幸福万年长",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -1876,7 +1895,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 209,
+    id: 211,
     "title": "最美人间",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -1885,7 +1904,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 210,
+    id: 212,
     "title": "呼唤",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -1894,7 +1913,7 @@ const musicData = [
     "duration": 302
   },
   {
-    id: 211,
+    id: 213,
     "title": "回家的小路",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -1903,7 +1922,7 @@ const musicData = [
     "duration": 313
   },
   {
-    id: 212,
+    id: 214,
     "title": "天龙",
     "artist": "梦在路上",
     "album": "纳西音乐精选",
@@ -1912,7 +1931,7 @@ const musicData = [
     "duration": 225
   },
   {
-    id: 213,
+    id: 215,
     "title": "石鼓响天下",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -1921,7 +1940,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 214,
+    id: 216,
     "title": "丽江真美好",
     "artist": "丽江迪高",
     "album": "纳西音乐精选",
@@ -1930,7 +1949,7 @@ const musicData = [
     "duration": 442
   },
   {
-    id: 215,
+    id: 217,
     "title": "敬奉三大神",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1939,7 +1958,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 216,
+    id: 218,
     "title": "玉龙山下纳西娃",
     "artist": "张曦尹",
     "album": "纳西音乐精选",
@@ -1948,7 +1967,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 217,
+    id: 219,
     "title": "纳西吉祥",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -1957,7 +1976,7 @@ const musicData = [
     "duration": 224
   },
   {
-    id: 218,
+    id: 220,
     "title": "我要抱着你 (纳西语)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -1966,7 +1985,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 219,
+    id: 221,
     "title": "牵挂",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -1975,7 +1994,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 220,
+    id: 222,
     "title": "摩梭谣",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -1984,7 +2003,7 @@ const musicData = [
     "duration": 262
   },
   {
-    id: 221,
+    id: 223,
     "title": "净土",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -1993,7 +2012,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 222,
+    id: 224,
     "title": "阿哩哩格吉拍",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2002,7 +2021,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 223,
+    id: 225,
     "title": "和合劳",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -2011,7 +2030,7 @@ const musicData = [
     "duration": 381
   },
   {
-    id: 224,
+    id: 226,
     "title": "嫁女调",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -2020,7 +2039,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 225,
+    id: 227,
     "title": "冬天的约定",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -2029,7 +2048,7 @@ const musicData = [
     "duration": 304
   },
   {
-    id: 226,
+    id: 228,
     "title": "王瑞香",
     "artist": "遇见你",
     "album": "纳西音乐精选",
@@ -2038,7 +2057,7 @@ const musicData = [
     "duration": 304
   },
   {
-    id: 227,
+    id: 229,
     "title": "睡在我上铺的兄弟",
     "artist": "和翠刚",
     "album": "纳西音乐精选",
@@ -2047,7 +2066,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 228,
+    id: 230,
     "title": "唠喂调",
     "artist": "纳西古歌",
     "album": "纳西音乐精选",
@@ -2056,7 +2075,7 @@ const musicData = [
     "duration": 180
   },
   {
-    id: 229,
+    id: 231,
     "title": "吟酒歌",
     "artist": "和金花、达坡玛吉",
     "album": "纳西音乐精选",
@@ -2065,7 +2084,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 230,
+    id: 232,
     "title": "丽江风暴（二）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2074,7 +2093,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 231,
+    id: 233,
     "title": "阿卡巴拉",
     "artist": "纳西田野之声",
     "album": "纳西音乐精选",
@@ -2083,7 +2102,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 232,
+    id: 234,
     "title": "纳西仁美蹉",
     "artist": "纳西田野之声",
     "album": "纳西音乐精选",
@@ -2092,7 +2111,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 233,
+    id: 235,
     "title": "纳西山歌",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -2101,7 +2120,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 234,
+    id: 236,
     "title": "打跳联唱",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2110,7 +2129,7 @@ const musicData = [
     "duration": 367
   },
   {
-    id: 235,
+    id: 237,
     "title": "泸沽湖民间甲搓舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2119,7 +2138,7 @@ const musicData = [
     "duration": 1189
   },
   {
-    id: 236,
+    id: 238,
     "title": "舞动傈僳寨",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -2128,7 +2147,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 237,
+    id: 239,
     "title": "当爱情来过",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -2137,7 +2156,7 @@ const musicData = [
     "duration": 303
   },
   {
-    id: 238,
+    id: 240,
     "title": "背兰花",
     "artist": "维西阿娜",
     "album": "纳西音乐精选",
@@ -2146,7 +2165,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 239,
+    id: 241,
     "title": "三多颂",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -2155,7 +2174,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 240,
+    id: 242,
     "title": "思乡曲",
     "artist": "山人行组合",
     "album": "纳西音乐精选",
@@ -2164,7 +2183,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 241,
+    id: 243,
     "title": "子本子缘化",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2173,7 +2192,7 @@ const musicData = [
     "duration": 195
   },
   {
-    id: 242,
+    id: 244,
     "title": "劳动歌联唱",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2182,7 +2201,7 @@ const musicData = [
     "duration": 372
   },
   {
-    id: 243,
+    id: 245,
     "title": "纳西纵歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2191,7 +2210,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 244,
+    id: 246,
     "title": "洛玛底组合",
     "artist": "干酒醉dj",
     "album": "纳西音乐精选",
@@ -2200,7 +2219,7 @@ const musicData = [
     "duration": 178
   },
   {
-    id: 245,
+    id: 247,
     "title": "黑帅",
     "artist": "傈僳族打跳",
     "album": "傈僳音乐精选",
@@ -2209,7 +2228,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 246,
+    id: 248,
     "title": "云南",
     "artist": "吉萨莎玛",
     "album": "纳西音乐精选",
@@ -2218,7 +2237,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 247,
+    id: 249,
     "title": "纳藏白西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2227,7 +2246,7 @@ const musicData = [
     "duration": 330
   },
   {
-    id: 248,
+    id: 250,
     "title": "问",
     "artist": "和霞芬",
     "album": "纳西音乐精选",
@@ -2236,7 +2255,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 249,
+    id: 251,
     "title": "玉龙之子",
     "artist": "东巴石子",
     "album": "纳西音乐精选",
@@ -2245,7 +2264,7 @@ const musicData = [
     "duration": 343
   },
   {
-    id: 250,
+    id: 252,
     "title": "纳西西余花花色",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -2254,7 +2273,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 251,
+    id: 253,
     "title": "玉龙酒歌",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -2263,7 +2282,7 @@ const musicData = [
     "duration": 270
   },
   {
-    id: 252,
+    id: 254,
     "title": "丽江足球之歌",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2272,7 +2291,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 253,
+    id: 255,
     "title": "纳西族母语《童谣》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2281,7 +2300,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 254,
+    id: 256,
     "title": "纳西谷气",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2290,7 +2309,7 @@ const musicData = [
     "duration": 154
   },
   {
-    id: 255,
+    id: 257,
     "title": "纳西打跳（18）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2299,7 +2318,7 @@ const musicData = [
     "duration": 389
   },
   {
-    id: 256,
+    id: 258,
     "title": "牧羊的傈僳姑娘",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -2308,7 +2327,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 257,
+    id: 259,
     "title": "时授么哒婆",
     "artist": "和丽元",
     "album": "纳西音乐精选",
@@ -2317,7 +2336,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 258,
+    id: 260,
     "title": "阿卡巴拉麻达咪",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2326,7 +2345,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 259,
+    id: 261,
     "title": "风和花",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -2335,7 +2354,7 @@ const musicData = [
     "duration": 292
   },
   {
-    id: 260,
+    id: 262,
     "title": "声音的篇章",
     "artist": "纳西英子",
     "album": "纳西音乐精选",
@@ -2344,7 +2363,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 261,
+    id: 263,
     "title": "嘛呢颂",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2353,7 +2372,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 262,
+    id: 264,
     "title": "喜庆歌",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -2362,7 +2381,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 263,
+    id: 265,
     "title": "犁牛调",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2371,7 +2390,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 264,
+    id: 266,
     "title": "月亮姑娘",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2380,7 +2399,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 265,
+    id: 267,
     "title": "热美姿蹉-原生态组合.mp3",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2389,7 +2408,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 266,
+    id: 268,
     "title": "呀哈哩",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2398,7 +2417,7 @@ const musicData = [
     "duration": 146
   },
   {
-    id: 267,
+    id: 269,
     "title": "纳西纵歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2407,7 +2426,7 @@ const musicData = [
     "duration": 164
   },
   {
-    id: 268,
+    id: 270,
     "title": "纳西民歌《党的的恩情永不忘》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2416,7 +2435,7 @@ const musicData = [
     "duration": 484
   },
   {
-    id: 269,
+    id: 271,
     "title": "纳西姑娘",
     "artist": "阿夏组合",
     "album": "纳西音乐精选",
@@ -2425,7 +2444,7 @@ const musicData = [
     "duration": 167
   },
   {
-    id: 270,
+    id: 272,
     "title": "唱戏人生",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2434,7 +2453,7 @@ const musicData = [
     "duration": 72
   },
   {
-    id: 271,
+    id: 273,
     "title": "纳西天籁",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -2443,7 +2462,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 272,
+    id: 274,
     "title": "十里送壮丁",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2452,7 +2471,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 273,
+    id: 275,
     "title": "送丧跺脚跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2461,7 +2480,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 274,
+    id: 276,
     "title": "栽秧歌",
     "artist": "和金花、达坡玛吉",
     "album": "纳西音乐精选",
@@ -2470,7 +2489,7 @@ const musicData = [
     "duration": 176
   },
   {
-    id: 275,
+    id: 277,
     "title": "心上人",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2479,7 +2498,7 @@ const musicData = [
     "duration": 159
   },
   {
-    id: 276,
+    id: 278,
     "title": "放牛娃娃调",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -2488,7 +2507,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 277,
+    id: 279,
     "title": "阔流巴蕊",
     "artist": "喂默达调",
     "album": "纳西音乐精选",
@@ -2497,7 +2516,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 278,
+    id: 280,
     "title": "丽江小龙",
     "artist": "美丽的古城",
     "album": "纳西音乐精选",
@@ -2506,7 +2525,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 279,
+    id: 281,
     "title": "踏歌丽江.mp3",
     "artist": "张继心",
     "album": "纳西音乐精选",
@@ -2515,7 +2534,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 280,
+    id: 282,
     "title": "咱撮鲁啦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2524,7 +2543,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 281,
+    id: 283,
     "title": "子啦来",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -2533,7 +2552,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 282,
+    id: 284,
     "title": "纳西民歌《天女织锦缎》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2542,7 +2561,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 283,
+    id: 285,
     "title": "丽江在哪里",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2551,7 +2570,7 @@ const musicData = [
     "duration": 304
   },
   {
-    id: 284,
+    id: 286,
     "title": "呀哩拉哩",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2560,7 +2579,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 285,
+    id: 287,
     "title": "纳西谷气调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2569,7 +2588,7 @@ const musicData = [
     "duration": 150
   },
   {
-    id: 286,
+    id: 288,
     "title": "纳西古歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2578,7 +2597,7 @@ const musicData = [
     "duration": 320
   },
   {
-    id: 287,
+    id: 289,
     "title": "喜鹤",
     "artist": "李承翰、和慧琼",
     "album": "纳西音乐精选",
@@ -2587,7 +2606,7 @@ const musicData = [
     "duration": 336
   },
   {
-    id: 288,
+    id: 290,
     "title": "快乐纳西人",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -2596,7 +2615,7 @@ const musicData = [
     "duration": 361
   },
   {
-    id: 289,
+    id: 291,
     "title": "恋您我的家",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -2605,7 +2624,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 290,
+    id: 292,
     "title": "舞动玉龙",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -2614,7 +2633,7 @@ const musicData = [
     "duration": 337
   },
   {
-    id: 291,
+    id: 293,
     "title": "美丽的丽江",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -2623,7 +2642,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 292,
+    id: 294,
     "title": "不怕",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -2632,7 +2651,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 293,
+    id: 295,
     "title": "飞花",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2641,7 +2660,7 @@ const musicData = [
     "duration": 387
   },
   {
-    id: 294,
+    id: 296,
     "title": "纳西小情歌",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -2650,7 +2669,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 295,
+    id: 297,
     "title": "革囊渡",
     "artist": "纳西喔么达",
     "album": "纳西音乐精选",
@@ -2659,7 +2678,7 @@ const musicData = [
     "duration": 299
   },
   {
-    id: 296,
+    id: 298,
     "title": "纳西花哗磋",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2668,7 +2687,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 297,
+    id: 299,
     "title": "我的阿妈",
     "artist": "和丽生",
     "album": "纳西音乐精选",
@@ -2677,7 +2696,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 298,
+    id: 300,
     "title": "哦噜唠，敖噜唠",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -2686,7 +2705,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 299,
+    id: 301,
     "title": "老人",
     "artist": "纳西英子",
     "album": "纳西音乐精选",
@@ -2695,7 +2714,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 300,
+    id: 302,
     "title": "【纳西歌曲】神爱世人",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2704,7 +2723,7 @@ const musicData = [
     "duration": 278
   },
   {
-    id: 301,
+    id: 303,
     "title": "阿丽丽金拍",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2713,7 +2732,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 302,
+    id: 304,
     "title": "阿哩哩",
     "artist": "和金花、达坡玛吉",
     "album": "纳西音乐精选",
@@ -2722,7 +2741,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 303,
+    id: 305,
     "title": "三月百花开",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -2731,7 +2750,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 304,
+    id: 306,
     "title": "纳西谷气《南兴调》",
     "artist": "纳西谷气",
     "album": "纳西音乐精选",
@@ -2740,7 +2759,7 @@ const musicData = [
     "duration": 94
   },
   {
-    id: 305,
+    id: 307,
     "title": "嘿美玻",
     "artist": "纳西族童谣",
     "album": "纳西音乐精选",
@@ -2749,7 +2768,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 306,
+    id: 308,
     "title": "大理三月好风光",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2758,7 +2777,7 @@ const musicData = [
     "duration": 305
   },
   {
-    id: 307,
+    id: 309,
     "title": "相伴调",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2767,7 +2786,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 308,
+    id: 310,
     "title": "数鸡蛋",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -2776,7 +2795,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 309,
+    id: 311,
     "title": "纳西喂么达《黄鹰与耕牛》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2785,7 +2804,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 310,
+    id: 312,
     "title": "摩梭夜歌",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -2794,7 +2813,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 311,
+    id: 313,
     "title": "打谷调",
     "artist": "和金花、达坡玛吉",
     "album": "纳西音乐精选",
@@ -2803,7 +2822,7 @@ const musicData = [
     "duration": 196
   },
   {
-    id: 312,
+    id: 314,
     "title": "心上人住江对岸",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2812,7 +2831,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 313,
+    id: 315,
     "title": "三多保佑",
     "artist": "马涛",
     "album": "纳西音乐精选",
@@ -2821,7 +2840,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 314,
+    id: 316,
     "title": "喜庆歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -2830,7 +2849,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 315,
+    id: 317,
     "title": "玉龙王国",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -2839,7 +2858,7 @@ const musicData = [
     "duration": 220
   },
   {
-    id: 316,
+    id: 318,
     "title": "哦噜唠 敖噜唠",
     "artist": "张桂华",
     "album": "纳西音乐精选",
@@ -2848,7 +2867,7 @@ const musicData = [
     "duration": 370
   },
   {
-    id: 317,
+    id: 319,
     "title": "不要忧虑",
     "artist": "甲姆沽·阿平、阿花",
     "album": "纳西音乐精选",
@@ -2857,7 +2876,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 318,
+    id: 320,
     "title": "阿勒邱 -黄颖星",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2866,7 +2885,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 319,
+    id: 321,
     "title": "玉龙雪山的故事",
     "artist": "和上钧&amp;阿诛",
     "album": "纳西音乐精选",
@@ -2875,7 +2894,7 @@ const musicData = [
     "duration": 350
   },
   {
-    id: 320,
+    id: 322,
     "title": "情调",
     "artist": "李铭九",
     "album": "纳西音乐精选",
@@ -2884,7 +2903,7 @@ const musicData = [
     "duration": 230
   },
   {
-    id: 321,
+    id: 323,
     "title": "牵手",
     "artist": "和朝花 和会花",
     "album": "纳西音乐精选",
@@ -2893,7 +2912,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 322,
+    id: 324,
     "title": "娥姆达",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -2902,7 +2921,7 @@ const musicData = [
     "duration": 196
   },
   {
-    id: 323,
+    id: 325,
     "title": "雨中偶遇",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -2911,7 +2930,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 324,
+    id: 326,
     "title": "美丽的古城",
     "artist": "和漩",
     "album": "纳西音乐精选",
@@ -2920,7 +2939,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 325,
+    id: 327,
     "title": "丽江风暴（三）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2929,7 +2948,7 @@ const musicData = [
     "duration": 972
   },
   {
-    id: 326,
+    id: 328,
     "title": "玉龙誓约",
     "artist": "和学文",
     "album": "纳西音乐精选",
@@ -2938,7 +2957,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 327,
+    id: 329,
     "title": "序",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -2947,7 +2966,7 @@ const musicData = [
     "duration": 174
   },
   {
-    id: 328,
+    id: 330,
     "title": "九月（纳西语）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2956,7 +2975,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 329,
+    id: 331,
     "title": "万物生（纳西语）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2965,7 +2984,7 @@ const musicData = [
     "duration": 270
   },
   {
-    id: 330,
+    id: 332,
     "title": "嫁女情",
     "artist": "",
     "album": "纳西音乐精选",
@@ -2974,7 +2993,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 331,
+    id: 333,
     "title": "牧羊歌",
     "artist": "和月圆、和国江",
     "album": "纳西音乐精选",
@@ -2983,7 +3002,7 @@ const musicData = [
     "duration": 355
   },
   {
-    id: 332,
+    id: 334,
     "title": "远古的叮嘱",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -2992,7 +3011,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 333,
+    id: 335,
     "title": "纳西恋歌",
     "artist": "吉日古丽 达坡玛吉",
     "album": "纳西音乐精选",
@@ -3001,7 +3020,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 334,
+    id: 336,
     "title": "三月花开时",
     "artist": "山人行组合",
     "album": "纳西音乐精选",
@@ -3010,7 +3029,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 335,
+    id: 337,
     "title": "纳西讲聚营",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -3019,7 +3038,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 336,
+    id: 338,
     "title": "纳西恋人",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -3028,7 +3047,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 337,
+    id: 339,
     "title": "山娃子",
     "artist": "山娃子新歌",
     "album": "纳西音乐精选",
@@ -3037,7 +3056,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 338,
+    id: 340,
     "title": "瓜迟迟",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -3046,7 +3065,7 @@ const musicData = [
     "duration": 397
   },
   {
-    id: 339,
+    id: 341,
     "title": "大山女儿",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -3055,7 +3074,7 @@ const musicData = [
     "duration": 224
   },
   {
-    id: 340,
+    id: 342,
     "title": "仙女织布",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -3064,7 +3083,7 @@ const musicData = [
     "duration": 224
   },
   {
-    id: 341,
+    id: 343,
     "title": "玉龙雪山的牧童",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3073,7 +3092,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 342,
+    id: 344,
     "title": "欢迎到太安来",
     "artist": "段婷婷",
     "album": "纳西音乐精选",
@@ -3082,7 +3101,7 @@ const musicData = [
     "duration": 122
   },
   {
-    id: 343,
+    id: 345,
     "title": "纳西酒歌",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -3091,7 +3110,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 344,
+    id: 346,
     "title": "丽江小龙",
     "artist": "好兄弟",
     "album": "纳西音乐精选",
@@ -3100,7 +3119,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 345,
+    id: 347,
     "title": "阿卡巴拉嘛达咪",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -3109,7 +3128,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 346,
+    id: 348,
     "title": "阿哥",
     "artist": "和锦、和文军",
     "album": "纳西音乐精选",
@@ -3118,7 +3137,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 347,
+    id: 349,
     "title": "劝牛调",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -3127,7 +3146,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 348,
+    id: 350,
     "title": "的库册尼嘿",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -3136,7 +3155,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 349,
+    id: 351,
     "title": "欢乐纳西年",
     "artist": "和永昌",
     "album": "纳西音乐精选",
@@ -3145,7 +3164,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 350,
+    id: 352,
     "title": "新年颂",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -3154,7 +3173,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 351,
+    id: 353,
     "title": "欢迎来到傈僳寨",
     "artist": "和杰华",
     "album": "傈僳音乐精选",
@@ -3163,7 +3182,7 @@ const musicData = [
     "duration": 127
   },
   {
-    id: 352,
+    id: 354,
     "title": "酒韵永胜",
     "artist": "傈僳朗玛组合",
     "album": "傈僳音乐精选",
@@ -3172,7 +3191,7 @@ const musicData = [
     "duration": 459
   },
   {
-    id: 353,
+    id: 355,
     "title": "纳西阿妹",
     "artist": "丽江小龙",
     "album": "纳西音乐精选",
@@ -3181,7 +3200,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 354,
+    id: 356,
     "title": "爱的翅膀",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -3190,7 +3209,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 355,
+    id: 357,
     "title": "溜达（高拉）",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -3199,7 +3218,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 356,
+    id: 358,
     "title": "血脉",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -3208,7 +3227,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 357,
+    id: 359,
     "title": "祝婚歌",
     "artist": "乡音组合",
     "album": "纳西音乐精选",
@@ -3217,7 +3236,7 @@ const musicData = [
     "duration": 145
   },
   {
-    id: 358,
+    id: 360,
     "title": "雪山情歌",
     "artist": "和世奇（四爷)",
     "album": "纳西音乐精选",
@@ -3226,7 +3245,7 @@ const musicData = [
     "duration": 319
   },
   {
-    id: 359,
+    id: 361,
     "title": "丽水纵歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -3235,7 +3254,7 @@ const musicData = [
     "duration": 306
   },
   {
-    id: 360,
+    id: 362,
     "title": "牧牛姑娘",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -3244,7 +3263,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 361,
+    id: 363,
     "title": "欢爱",
     "artist": "和朝花 和会花 和文明",
     "album": "纳西音乐精选",
@@ -3253,7 +3272,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 362,
+    id: 364,
     "title": "让我们一起干酒醉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3262,7 +3281,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 363,
+    id: 365,
     "title": "桑瓦贡不勒",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -3271,7 +3290,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 364,
+    id: 366,
     "title": "相伴调",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -3280,7 +3299,7 @@ const musicData = [
     "duration": 175
   },
   {
-    id: 365,
+    id: 367,
     "title": "玉龙恋歌",
     "artist": "和春秀、和文军",
     "album": "纳西音乐精选",
@@ -3289,7 +3308,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 366,
+    id: 368,
     "title": "纳西栽秧调",
     "artist": "娄丽珍",
     "album": "纳西音乐精选",
@@ -3298,7 +3317,7 @@ const musicData = [
     "duration": 143
   },
   {
-    id: 367,
+    id: 369,
     "title": "彩云之南",
     "artist": "和晓霞",
     "album": "纳西音乐精选",
@@ -3307,7 +3326,7 @@ const musicData = [
     "duration": 172
   },
   {
-    id: 368,
+    id: 370,
     "title": "纳西姑娘",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -3316,7 +3335,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 369,
+    id: 371,
     "title": "唯一",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -3325,7 +3344,7 @@ const musicData = [
     "duration": 276
   },
   {
-    id: 370,
+    id: 372,
     "title": "和德华 -《西库揍》抓小偷",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -3334,7 +3353,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 371,
+    id: 373,
     "title": "纳西酒歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -3343,7 +3362,7 @@ const musicData = [
     "duration": 107
   },
   {
-    id: 372,
+    id: 374,
     "title": "纳西阿里里",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3352,7 +3371,7 @@ const musicData = [
     "duration": 738
   },
   {
-    id: 373,
+    id: 375,
     "title": "革囊渡",
     "artist": "阿哩哩芦笙调",
     "album": "纳西音乐精选",
@@ -3361,7 +3380,7 @@ const musicData = [
     "duration": 118
   },
   {
-    id: 374,
+    id: 376,
     "title": "闪脚跳（傈僳族锅庄）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -3370,7 +3389,7 @@ const musicData = [
     "duration": 262
   },
   {
-    id: 375,
+    id: 377,
     "title": "呀哈哩",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -3379,7 +3398,7 @@ const musicData = [
     "duration": 360
   },
   {
-    id: 376,
+    id: 378,
     "title": "山那边的放猪娃",
     "artist": "张曦尹",
     "album": "纳西音乐精选",
@@ -3388,7 +3407,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 377,
+    id: 379,
     "title": "纳西西于花花神",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3397,7 +3416,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 378,
+    id: 380,
     "title": "去哪里",
     "artist": "丽江群星",
     "album": "纳西音乐精选",
@@ -3406,7 +3425,7 @@ const musicData = [
     "duration": 302
   },
   {
-    id: 379,
+    id: 381,
     "title": "博开崩莫赌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3415,7 +3434,7 @@ const musicData = [
     "duration": 345
   },
   {
-    id: 380,
+    id: 382,
     "title": "哦热热",
     "artist": "纳西田野之声",
     "album": "纳西音乐精选",
@@ -3424,7 +3443,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 381,
+    id: 383,
     "title": "二由三由的一天",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -3433,7 +3452,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 382,
+    id: 384,
     "title": "三朵花",
     "artist": "三江组合",
     "album": "纳西音乐精选",
@@ -3442,7 +3461,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 383,
+    id: 385,
     "title": "木江子组合 酒歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3451,7 +3470,7 @@ const musicData = [
     "duration": 119
   },
   {
-    id: 384,
+    id: 386,
     "title": "玉龙雪山放光芒",
     "artist": "纳西谷气",
     "album": "纳西音乐精选",
@@ -3460,7 +3479,7 @@ const musicData = [
     "duration": 77
   },
   {
-    id: 385,
+    id: 387,
     "title": "阔吐蒙套",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -3469,7 +3488,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 386,
+    id: 388,
     "title": "那年花开-玉龙女组合",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3478,7 +3497,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 387,
+    id: 389,
     "title": "村村寨寨来打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3487,7 +3506,7 @@ const musicData = [
     "duration": 437
   },
   {
-    id: 388,
+    id: 390,
     "title": "喜欢你（纳西语）",
     "artist": "阿智",
     "album": "纳西音乐精选",
@@ -3496,7 +3515,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 389,
+    id: 391,
     "title": "天雨流芳",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -3505,7 +3524,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 390,
+    id: 392,
     "title": "丽江神曲",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -3514,7 +3533,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 391,
+    id: 393,
     "title": "纳西花花搓",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3523,7 +3542,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 392,
+    id: 394,
     "title": "超越葫芦笙 (dj)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3532,7 +3551,7 @@ const musicData = [
     "duration": 650
   },
   {
-    id: 393,
+    id: 395,
     "title": "啊啧啧 啊啵啵",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -3541,7 +3560,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 394,
+    id: 396,
     "title": "纳西仁美磋",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3550,7 +3569,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 395,
+    id: 397,
     "title": "哦噜唠，敖噜唠",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3559,7 +3578,7 @@ const musicData = [
     "duration": 336
   },
   {
-    id: 396,
+    id: 398,
     "title": "道诺谷纳西田野之声 -阿卡巴拉",
     "artist": "纳西田野之声",
     "album": "纳西音乐精选",
@@ -3568,7 +3587,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 397,
+    id: 399,
     "title": "玉龙欢歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -3577,7 +3596,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 398,
+    id: 400,
     "title": "请到傈僳山寨来",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -3586,7 +3605,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 399,
+    id: 401,
     "title": "纳西时本授",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3595,7 +3614,7 @@ const musicData = [
     "duration": 108
   },
   {
-    id: 400,
+    id: 402,
     "title": "纳西三脚打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3604,7 +3623,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 401,
+    id: 403,
     "title": "谷气调",
     "artist": "和金花 达坡玛吉",
     "album": "纳西音乐精选",
@@ -3613,7 +3632,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 402,
+    id: 404,
     "title": "纳西情歌",
     "artist": "纳西阿刚",
     "album": "纳西音乐精选",
@@ -3622,7 +3641,7 @@ const musicData = [
     "duration": 158
   },
   {
-    id: 403,
+    id: 405,
     "title": "纳西瑞瑞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3631,7 +3650,7 @@ const musicData = [
     "duration": 328
   },
   {
-    id: 404,
+    id: 406,
     "title": "傈僳族打跳：小毛调",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -3640,7 +3659,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 405,
+    id: 407,
     "title": "三代女人的歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3649,7 +3668,7 @@ const musicData = [
     "duration": 175
   },
   {
-    id: 406,
+    id: 408,
     "title": "玉龙欢歌",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -3658,7 +3677,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 407,
+    id: 409,
     "title": "纳西语朗诵《纳西家国情》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3667,7 +3686,7 @@ const musicData = [
     "duration": 487
   },
   {
-    id: 408,
+    id: 410,
     "title": "高原风暴",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3676,7 +3695,7 @@ const musicData = [
     "duration": 439
   },
   {
-    id: 409,
+    id: 411,
     "title": "西余索-张桂华",
     "artist": "张桂华",
     "album": "纳西音乐精选",
@@ -3685,7 +3704,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 410,
+    id: 412,
     "title": "快乐的打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3694,7 +3713,7 @@ const musicData = [
     "duration": 307
   },
   {
-    id: 411,
+    id: 413,
     "title": "朱丽凡－大美永胜",
     "artist": "朱丽凡",
     "album": "纳西音乐精选",
@@ -3703,7 +3722,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 412,
+    id: 414,
     "title": "芦笙欢跳好日子",
     "artist": "朱丽凡",
     "album": "纳西音乐精选",
@@ -3712,7 +3731,7 @@ const musicData = [
     "duration": 710
   },
   {
-    id: 413,
+    id: 415,
     "title": "纳西新劝世歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -3721,7 +3740,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 414,
+    id: 416,
     "title": "赔麦子",
     "artist": "纳西故事",
     "album": "纳西音乐精选",
@@ -3730,7 +3749,7 @@ const musicData = [
     "duration": 199
   },
   {
-    id: 415,
+    id: 417,
     "title": "美丽的白云",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -3739,7 +3758,7 @@ const musicData = [
     "duration": 140
   },
   {
-    id: 416,
+    id: 418,
     "title": "健康歌",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -3748,7 +3767,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 417,
+    id: 419,
     "title": "丽江风暴 1",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3757,7 +3776,7 @@ const musicData = [
     "duration": 970
   },
   {
-    id: 418,
+    id: 420,
     "title": "三月百花开",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -3766,7 +3785,7 @@ const musicData = [
     "duration": 85
   },
   {
-    id: 419,
+    id: 421,
     "title": "纳西情歌",
     "artist": "人狼格",
     "album": "纳西音乐精选",
@@ -3775,7 +3794,7 @@ const musicData = [
     "duration": 162
   },
   {
-    id: 420,
+    id: 422,
     "title": "嘎迟妥洛目",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3784,7 +3803,7 @@ const musicData = [
     "duration": 169
   },
   {
-    id: 421,
+    id: 423,
     "title": "阿卡巴拉",
     "artist": "和议财(纳西族)",
     "album": "纳西音乐精选",
@@ -3793,7 +3812,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 422,
+    id: 424,
     "title": "吉祥",
     "artist": "肖煜光、和慧琼",
     "album": "纳西音乐精选",
@@ -3802,7 +3821,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 423,
+    id: 425,
     "title": "呀哩拉勒",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3811,7 +3830,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 424,
+    id: 426,
     "title": "嘿美孜卜（月光下）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3820,7 +3839,7 @@ const musicData = [
     "duration": 514
   },
   {
-    id: 425,
+    id: 427,
     "title": "三江组合 -彩云家乡",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3829,7 +3848,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 426,
+    id: 428,
     "title": "三朵花",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -3838,7 +3857,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 427,
+    id: 429,
     "title": "纳西情歌",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -3847,7 +3866,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 428,
+    id: 430,
     "title": "阿一旦",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -3856,7 +3875,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 429,
+    id: 431,
     "title": "纳西族打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3865,7 +3884,7 @@ const musicData = [
     "duration": 2720
   },
   {
-    id: 430,
+    id: 432,
     "title": "纳西古乐《清河老人》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3874,7 +3893,7 @@ const musicData = [
     "duration": 389
   },
   {
-    id: 431,
+    id: 433,
     "title": "",
     "artist": "云之恋",
     "album": "纳西音乐精选",
@@ -3883,7 +3902,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 432,
+    id: 434,
     "title": "白族情歌",
     "artist": "张贵元、李宝妹",
     "album": "白族音乐精选",
@@ -3892,7 +3911,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 433,
+    id: 435,
     "title": "酒歌",
     "artist": "阿巴桑",
     "album": "纳西音乐精选",
@@ -3901,7 +3920,7 @@ const musicData = [
     "duration": 177
   },
   {
-    id: 434,
+    id: 436,
     "title": "纳西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3910,7 +3929,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 435,
+    id: 437,
     "title": "如花的阿妹dj-傈僳乡音",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -3919,7 +3938,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 436,
+    id: 438,
     "title": "白族童谣",
     "artist": "李福元",
     "album": "白族音乐精选",
@@ -3928,7 +3947,7 @@ const musicData = [
     "duration": 80
   },
   {
-    id: 437,
+    id: 439,
     "title": "傈僳族打跳舞曲1",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -3937,7 +3956,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 438,
+    id: 440,
     "title": "窝热热（纳西族）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3946,7 +3965,7 @@ const musicData = [
     "duration": 108
   },
   {
-    id: 439,
+    id: 441,
     "title": "嘎美厄美倒背喃",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -3955,7 +3974,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 440,
+    id: 442,
     "title": "朋友",
     "artist": "向阳花合唱团",
     "album": "纳西音乐精选",
@@ -3964,7 +3983,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 441,
+    id: 443,
     "title": "神仙",
     "artist": "纳西族童谣",
     "album": "纳西音乐精选",
@@ -3973,7 +3992,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 442,
+    id: 444,
     "title": "阿瓦人民唱新歌（葫芦笙版）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -3982,7 +4001,7 @@ const musicData = [
     "duration": 126
   },
   {
-    id: 443,
+    id: 445,
     "title": "傈僳族葫芦笙打跳（DJ）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -3991,7 +4010,7 @@ const musicData = [
     "duration": 156
   },
   {
-    id: 444,
+    id: 446,
     "title": "丽江小调",
     "artist": "百慕三石",
     "album": "纳西音乐精选",
@@ -4000,7 +4019,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 445,
+    id: 447,
     "title": "兴跳",
     "artist": "傈僳族葫芦笙打跳曲",
     "album": "傈僳音乐精选",
@@ -4009,7 +4028,7 @@ const musicData = [
     "duration": 156
   },
   {
-    id: 446,
+    id: 448,
     "title": "小时候",
     "artist": "和永昌",
     "album": "纳西音乐精选",
@@ -4018,7 +4037,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 447,
+    id: 449,
     "title": "玉龙雪山我的家乡",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4027,7 +4046,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 448,
+    id: 450,
     "title": "玉龙欢歌",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4036,7 +4055,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 449,
+    id: 451,
     "title": "思乡",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4045,7 +4064,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 450,
+    id: 452,
     "title": "等待",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -4054,7 +4073,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 451,
+    id: 453,
     "title": "降央卓玛-弦子",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4063,7 +4082,7 @@ const musicData = [
     "duration": 310
   },
   {
-    id: 452,
+    id: 454,
     "title": "阿佳组合-丹巴之花",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4072,7 +4091,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 453,
+    id: 455,
     "title": "玉龙女",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4081,7 +4100,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 454,
+    id: 456,
     "title": "高美漫纽金",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4090,7 +4109,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 455,
+    id: 457,
     "title": "玉龙之约",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -4099,7 +4118,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 456,
+    id: 458,
     "title": "阿哥",
     "artist": "和锦、和文军",
     "album": "纳西音乐精选",
@@ -4108,7 +4127,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 457,
+    id: 459,
     "title": "达坡阿玻",
     "artist": "那一天",
     "album": "纳西音乐精选",
@@ -4117,7 +4136,7 @@ const musicData = [
     "duration": 323
   },
   {
-    id: 458,
+    id: 460,
     "title": "阿木宇梅",
     "artist": "彼岸",
     "album": "纳西音乐精选",
@@ -4126,7 +4145,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 459,
+    id: 461,
     "title": "吉萨莎玛",
     "artist": "风誓",
     "album": "纳西音乐精选",
@@ -4135,7 +4154,7 @@ const musicData = [
     "duration": 141
   },
   {
-    id: 460,
+    id: 462,
     "title": "阿腊古金歌",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -4144,7 +4163,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 461,
+    id: 463,
     "title": "祝福你，祖国",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -4153,7 +4172,7 @@ const musicData = [
     "duration": 295
   },
   {
-    id: 462,
+    id: 464,
     "title": "脱贫攻坚之歌.",
     "artist": "丽江小龙",
     "album": "纳西音乐精选",
@@ -4162,7 +4181,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 463,
+    id: 465,
     "title": "彩云家乡",
     "artist": "和春秀",
     "album": "纳西音乐精选",
@@ -4171,7 +4190,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 464,
+    id: 466,
     "title": "喔热热（纳西族民歌集）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4180,7 +4199,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 465,
+    id: 467,
     "title": "古老的歌",
     "artist": "李秀香",
     "album": "纳西音乐精选",
@@ -4189,7 +4208,7 @@ const musicData = [
     "duration": 581
   },
   {
-    id: 466,
+    id: 468,
     "title": "新年颂",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -4198,7 +4217,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 467,
+    id: 469,
     "title": "朋友 Zzee Sso Zzee Mil",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4207,7 +4226,7 @@ const musicData = [
     "duration": 57
   },
   {
-    id: 468,
+    id: 470,
     "title": "李宝妹-哥妹难分舍",
     "artist": "李宝妹",
     "album": "纳西音乐精选",
@@ -4216,7 +4235,7 @@ const musicData = [
     "duration": 305
   },
   {
-    id: 469,
+    id: 471,
     "title": "傈僳语版《小河淌水》",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4225,7 +4244,7 @@ const musicData = [
     "duration": 153
   },
   {
-    id: 470,
+    id: 472,
     "title": "纳西民歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4234,7 +4253,7 @@ const musicData = [
     "duration": 3446
   },
   {
-    id: 471,
+    id: 473,
     "title": "傈僳族（葫芦笙）dj舞曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4243,7 +4262,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 472,
+    id: 474,
     "title": "纳西口弦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4252,7 +4271,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 473,
+    id: 475,
     "title": "热美磋",
     "artist": "纳西族歌曲",
     "album": "纳西音乐精选",
@@ -4261,7 +4280,7 @@ const musicData = [
     "duration": 152
   },
   {
-    id: 474,
+    id: 476,
     "title": "欢歌傈僳情",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4270,7 +4289,7 @@ const musicData = [
     "duration": 282
   },
   {
-    id: 475,
+    id: 477,
     "title": "愿",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -4279,7 +4298,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 476,
+    id: 478,
     "title": "垃圾分类 记得喽",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4288,7 +4307,7 @@ const musicData = [
     "duration": 144
   },
   {
-    id: 477,
+    id: 479,
     "title": "最美人间",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -4297,7 +4316,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 478,
+    id: 480,
     "title": "傈僳打跳：傈僳葫芦笙风暴",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4306,7 +4325,7 @@ const musicData = [
     "duration": 316
   },
   {
-    id: 479,
+    id: 481,
     "title": "呀哩哩",
     "artist": "和议财",
     "album": "纳西音乐精选",
@@ -4315,7 +4334,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 480,
+    id: 482,
     "title": "吉日经",
     "artist": "纳西族演唱组合",
     "album": "纳西音乐精选",
@@ -4324,7 +4343,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 481,
+    id: 483,
     "title": "石钟山的宝石山",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4333,7 +4352,7 @@ const musicData = [
     "duration": 980
   },
   {
-    id: 482,
+    id: 484,
     "title": "纳西语快板：环境保护要搞好.",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4342,7 +4361,7 @@ const musicData = [
     "duration": 755
   },
   {
-    id: 483,
+    id: 485,
     "title": "纳西语版《我和我的祖国》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4351,7 +4370,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 484,
+    id: 486,
     "title": "陈四才《幸福醉歌》",
     "artist": "陈四才",
     "album": "纳西音乐精选",
@@ -4360,7 +4379,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 485,
+    id: 487,
     "title": "阿若康巴",
     "artist": "白玉扎西",
     "album": "藏族音乐精选",
@@ -4369,7 +4388,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 486,
+    id: 488,
     "title": "白族调——李繁昌、张五妹",
     "artist": "李繁昌、张五妹",
     "album": "白族音乐精选",
@@ -4378,7 +4397,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 487,
+    id: 489,
     "title": "万爱千恩(纳西语版）",
     "artist": "和翠刚",
     "album": "纳西音乐精选",
@@ -4387,7 +4406,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 488,
+    id: 490,
     "title": "白族调——花配柳（无情曲）",
     "artist": "",
     "album": "白族音乐精选",
@@ -4396,7 +4415,7 @@ const musicData = [
     "duration": 512
   },
   {
-    id: 489,
+    id: 491,
     "title": "祝酒歌DJ（傈僳族）",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4405,7 +4424,7 @@ const musicData = [
     "duration": 220
   },
   {
-    id: 490,
+    id: 492,
     "title": "子啦来",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4414,7 +4433,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 491,
+    id: 493,
     "title": "《三弦伴奏》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4423,7 +4442,7 @@ const musicData = [
     "duration": 1292
   },
   {
-    id: 492,
+    id: 494,
     "title": "欢迎您到傈僳山寨来",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4432,7 +4451,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 493,
+    id: 495,
     "title": "（广播）纳西民歌 上",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4441,7 +4460,7 @@ const musicData = [
     "duration": 1337
   },
   {
-    id: 494,
+    id: 496,
     "title": "（广播）纳西民歌 下",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4450,7 +4469,7 @@ const musicData = [
     "duration": 1572
   },
   {
-    id: 495,
+    id: 497,
     "title": "安睡",
     "artist": "时光印迹",
     "album": "纳西音乐精选",
@@ -4459,7 +4478,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 496,
+    id: 498,
     "title": "母亲",
     "artist": "余明辉",
     "album": "纳西音乐精选",
@@ -4468,7 +4487,7 @@ const musicData = [
     "duration": 224
   },
   {
-    id: 497,
+    id: 499,
     "title": "笙动三江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4477,7 +4496,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 498,
+    id: 500,
     "title": "血脉",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -4486,7 +4505,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 499,
+    id: 501,
     "title": "纳西山歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4495,7 +4514,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 500,
+    id: 502,
     "title": "可怜天下父母亲",
     "artist": "白族调",
     "album": "白族音乐精选",
@@ -4504,7 +4523,7 @@ const musicData = [
     "duration": 925
   },
   {
-    id: 501,
+    id: 503,
     "title": "党的光辉照傈僳",
     "artist": "朗玛组合",
     "album": "傈僳音乐精选",
@@ -4513,7 +4532,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 502,
+    id: 504,
     "title": "白族调——李宝妹逛洱源",
     "artist": "",
     "album": "白族音乐精选",
@@ -4522,7 +4541,7 @@ const musicData = [
     "duration": 367
   },
   {
-    id: 503,
+    id: 505,
     "title": "山人行组合",
     "artist": "纳西人",
     "album": "纳西音乐精选",
@@ -4531,7 +4550,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 504,
+    id: 506,
     "title": "白族调—过眼云烟",
     "artist": "",
     "album": "白族音乐精选",
@@ -4540,7 +4559,7 @@ const musicData = [
     "duration": 328
   },
   {
-    id: 505,
+    id: 507,
     "title": "阿石才原生态葫芦笙打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4549,7 +4568,7 @@ const musicData = [
     "duration": 362
   },
   {
-    id: 506,
+    id: 508,
     "title": "纳西大调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4558,7 +4577,7 @@ const musicData = [
     "duration": 455
   },
   {
-    id: 507,
+    id: 509,
     "title": "纳西恋人",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4567,7 +4586,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 508,
+    id: 510,
     "title": "放鹞曲",
     "artist": "白族调",
     "album": "白族音乐精选",
@@ -4576,7 +4595,7 @@ const musicData = [
     "duration": 646
   },
   {
-    id: 509,
+    id: 511,
     "title": "",
     "artist": "阿里里花花色",
     "album": "纳西音乐精选",
@@ -4585,7 +4604,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 510,
+    id: 512,
     "title": "金太阳",
     "artist": "杨新华_庄晓湳等",
     "album": "纳西音乐精选",
@@ -4594,7 +4613,7 @@ const musicData = [
     "duration": 157
   },
   {
-    id: 511,
+    id: 513,
     "title": "浩之心|玉白雪 - 纳西绝恋",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4603,7 +4622,7 @@ const musicData = [
     "duration": 336
   },
   {
-    id: 512,
+    id: 514,
     "title": "艰苦奋斗奔小康",
     "artist": "和则刚",
     "album": "纳西音乐精选",
@@ -4612,7 +4631,7 @@ const musicData = [
     "duration": 470
   },
   {
-    id: 513,
+    id: 515,
     "title": "雪山恋",
     "artist": "金甲劲松、和晓霞",
     "album": "纳西音乐精选",
@@ -4621,7 +4640,7 @@ const musicData = [
     "duration": 156
   },
   {
-    id: 514,
+    id: 516,
     "title": "回归",
     "artist": "和朝花 和会花 和文明",
     "album": "纳西音乐精选",
@@ -4630,7 +4649,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 515,
+    id: 517,
     "title": "纳西魂",
     "artist": "元林",
     "album": "纳西音乐精选",
@@ -4639,7 +4658,7 @@ const musicData = [
     "duration": 270
   },
   {
-    id: 516,
+    id: 518,
     "title": "青春和爱情的国度",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -4648,7 +4667,7 @@ const musicData = [
     "duration": 358
   },
   {
-    id: 517,
+    id: 519,
     "title": "遇见你就爱上你",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4657,7 +4676,7 @@ const musicData = [
     "duration": 157
   },
   {
-    id: 518,
+    id: 520,
     "title": "合唱 -《高美漫纽金》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4666,7 +4685,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 519,
+    id: 521,
     "title": "《爱的香格里拉》之起因（纳西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4675,7 +4694,7 @@ const musicData = [
     "duration": 321
   },
   {
-    id: 520,
+    id: 522,
     "title": "《爱的香格里拉》之婚礼",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4684,7 +4703,7 @@ const musicData = [
     "duration": 665
   },
   {
-    id: 521,
+    id: 523,
     "title": "送客歌",
     "artist": "和集虎、和金花",
     "album": "纳西音乐精选",
@@ -4693,7 +4712,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 522,
+    id: 524,
     "title": "《爱的香格里拉》之约定殉情",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4702,7 +4721,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 523,
+    id: 525,
     "title": "忧伤（纳西族）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4711,7 +4730,7 @@ const musicData = [
     "duration": 437
   },
   {
-    id: 524,
+    id: 526,
     "title": "祈 福",
     "artist": "和集虎",
     "album": "纳西音乐精选",
@@ -4720,7 +4739,7 @@ const musicData = [
     "duration": 333
   },
   {
-    id: 525,
+    id: 527,
     "title": "纳西语版《叹》",
     "artist": "元林",
     "album": "纳西音乐精选",
@@ -4729,7 +4748,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 526,
+    id: 528,
     "title": "纳西语版《流浪歌》",
     "artist": "元林",
     "album": "纳西音乐精选",
@@ -4738,7 +4757,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 527,
+    id: 529,
     "title": "妈妈我想你 纳西语版",
     "artist": "元林",
     "album": "纳西音乐精选",
@@ -4747,7 +4766,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 528,
+    id: 530,
     "title": "元林 -家乡的父母（纳西语版）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4756,7 +4775,7 @@ const musicData = [
     "duration": 247
   },
   {
-    id: 529,
+    id: 531,
     "title": "Bhumo Dolma",
     "artist": "白玉扎西",
     "album": "藏族音乐精选",
@@ -4765,7 +4784,7 @@ const musicData = [
     "duration": 177
   },
   {
-    id: 530,
+    id: 532,
     "title": "纳西 火塘调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4774,7 +4793,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 531,
+    id: 533,
     "title": "姆妮蓝蓝",
     "artist": "普米组合",
     "album": "纳西音乐精选",
@@ -4783,7 +4802,7 @@ const musicData = [
     "duration": 1332
   },
   {
-    id: 532,
+    id: 534,
     "title": "纳西纵歌+的库册呢嘿",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4792,7 +4811,7 @@ const musicData = [
     "duration": 333
   },
   {
-    id: 533,
+    id: 535,
     "title": "黎明情歌",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -4801,7 +4820,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 534,
+    id: 536,
     "title": "傈僳部落",
     "artist": "傈僳三杯酒",
     "album": "傈僳音乐精选",
@@ -4810,7 +4829,7 @@ const musicData = [
     "duration": 214
   },
   {
-    id: 535,
+    id: 537,
     "title": "泸沽湖摩梭甲搓舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4819,7 +4838,7 @@ const musicData = [
     "duration": 938
   },
   {
-    id: 536,
+    id: 538,
     "title": "傈僳葫芦打跳云贵川通用打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -4828,7 +4847,7 @@ const musicData = [
     "duration": 380
   },
   {
-    id: 537,
+    id: 539,
     "title": "古城区幼儿民族操音乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4837,7 +4856,7 @@ const musicData = [
     "duration": 309
   },
   {
-    id: 538,
+    id: 540,
     "title": "泸沽湖情歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4846,7 +4865,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 539,
+    id: 541,
     "title": "纳西谷气",
     "artist": "和学先",
     "album": "纳西音乐精选",
@@ -4855,7 +4874,7 @@ const musicData = [
     "duration": 176
   },
   {
-    id: 540,
+    id: 542,
     "title": "嘎克拉-来跳舞 (dj)",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4864,7 +4883,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 541,
+    id: 543,
     "title": "笙动三江（日纳黑帅）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4873,7 +4892,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 542,
+    id: 544,
     "title": "金雪莲风暴（吉）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4882,7 +4901,7 @@ const musicData = [
     "duration": 869
   },
   {
-    id: 543,
+    id: 545,
     "title": "阿花",
     "artist": "圣诞歌",
     "album": "纳西音乐精选",
@@ -4891,7 +4910,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 544,
+    id: 546,
     "title": "女儿国组合",
     "artist": "若嘿嘿",
     "album": "纳西音乐精选",
@@ -4900,7 +4919,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 545,
+    id: 547,
     "title": "贺顺才",
     "artist": "金色芒果歌曲串烧dj",
     "album": "傈僳音乐精选",
@@ -4909,7 +4928,7 @@ const musicData = [
     "duration": 389
   },
   {
-    id: 546,
+    id: 548,
     "title": "和杰华",
     "artist": "欢迎来到傈僳寨",
     "album": "傈僳音乐精选",
@@ -4918,7 +4937,7 @@ const musicData = [
     "duration": 127
   },
   {
-    id: 547,
+    id: 549,
     "title": "织布谣",
     "artist": "纳西民歌",
     "album": "纳西音乐精选",
@@ -4927,7 +4946,7 @@ const musicData = [
     "duration": 101
   },
   {
-    id: 548,
+    id: 550,
     "title": "踏歌丽江",
     "artist": "张继心",
     "album": "纳西音乐精选",
@@ -4936,7 +4955,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 549,
+    id: 551,
     "title": "阿石才",
     "artist": "欢乐的芦笙调",
     "album": "傈僳音乐精选",
@@ -4945,7 +4964,7 @@ const musicData = [
     "duration": 384
   },
   {
-    id: 550,
+    id: 552,
     "title": "美丽姑娘",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -4954,7 +4973,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 551,
+    id: 553,
     "title": "那年花开",
     "artist": "玉龙女组合",
     "album": "纳西音乐精选",
@@ -4963,7 +4982,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 552,
+    id: 554,
     "title": "叮咛",
     "artist": "和婷",
     "album": "纳西音乐精选",
@@ -4972,7 +4991,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 553,
+    id: 555,
     "title": "傈僳吉祥谣",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -4981,7 +5000,7 @@ const musicData = [
     "duration": 142
   },
   {
-    id: 554,
+    id: 556,
     "title": "劲爆打跳：丽江风暴（二）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -4990,7 +5009,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 555,
+    id: 557,
     "title": "罗岚、和恂墨 -纳西幸福说不完",
     "artist": "罗岚、和恂墨",
     "album": "纳西音乐精选",
@@ -4999,7 +5018,7 @@ const musicData = [
     "duration": 109
   },
   {
-    id: 556,
+    id: 558,
     "title": "丽江蓝",
     "artist": "和 燕",
     "album": "纳西音乐精选",
@@ -5008,7 +5027,7 @@ const musicData = [
     "duration": 295
   },
   {
-    id: 557,
+    id: 559,
     "title": "阿衣莫翻版",
     "artist": "段婷婷 和翠刚",
     "album": "纳西音乐精选",
@@ -5017,7 +5036,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 558,
+    id: 560,
     "title": "殊基黄",
     "artist": "纳西欢歌",
     "album": "纳西音乐精选",
@@ -5026,7 +5045,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 559,
+    id: 561,
     "title": "彩云归处",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -5035,7 +5054,7 @@ const musicData = [
     "duration": 287
   },
   {
-    id: 560,
+    id: 562,
     "title": "最炫民族风串烧dj（lisu贺顺才",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5044,7 +5063,7 @@ const musicData = [
     "duration": 308
   },
   {
-    id: 561,
+    id: 563,
     "title": "",
     "artist": "劳动之歌",
     "album": "纳西音乐精选",
@@ -5053,7 +5072,7 @@ const musicData = [
     "duration": 374
   },
   {
-    id: 562,
+    id: 564,
     "title": "好兄弟 纳西语",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -5062,7 +5081,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 563,
+    id: 565,
     "title": "三多保佑",
     "artist": "马涛",
     "album": "纳西音乐精选",
@@ -5071,7 +5090,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 564,
+    id: 566,
     "title": "宁蒗摩梭族广场民族舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5080,7 +5099,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 565,
+    id: 567,
     "title": "净地",
     "artist": "东巴石子",
     "album": "纳西音乐精选",
@@ -5089,7 +5108,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 566,
+    id: 568,
     "title": "dj银开 丽江打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5098,7 +5117,7 @@ const musicData = [
     "duration": 90
   },
   {
-    id: 567,
+    id: 569,
     "title": "华坪傈僳打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5107,7 +5126,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 568,
+    id: 570,
     "title": "和燕~纳西打跳（3D环绕）",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -5116,7 +5135,7 @@ const musicData = [
     "duration": 339
   },
   {
-    id: 569,
+    id: 571,
     "title": "二月八",
     "artist": "东巴石子 古玛林子",
     "album": "纳西音乐精选",
@@ -5125,7 +5144,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 570,
+    id: 572,
     "title": "瓜来厄",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -5134,7 +5153,7 @@ const musicData = [
     "duration": 423
   },
   {
-    id: 571,
+    id: 573,
     "title": "纳西版《传奇》",
     "artist": "丽江阿智",
     "album": "纳西音乐精选",
@@ -5143,7 +5162,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 572,
+    id: 574,
     "title": "纳西摇篮曲",
     "artist": "东巴石子",
     "album": "纳西音乐精选",
@@ -5152,7 +5171,7 @@ const musicData = [
     "duration": 61
   },
   {
-    id: 573,
+    id: 575,
     "title": "哭嫁 纳西族",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5161,7 +5180,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 574,
+    id: 576,
     "title": "葫芦笙打跳",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -5170,7 +5189,7 @@ const musicData = [
     "duration": 398
   },
   {
-    id: 575,
+    id: 577,
     "title": "葫芦笙DJ打跳舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5179,7 +5198,7 @@ const musicData = [
     "duration": 664
   },
   {
-    id: 576,
+    id: 578,
     "title": "月思乡",
     "artist": "东巴石子",
     "album": "纳西音乐精选",
@@ -5188,7 +5207,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 577,
+    id: 579,
     "title": "dj贺军 纳西打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5197,7 +5216,7 @@ const musicData = [
     "duration": 276
   },
   {
-    id: 578,
+    id: 580,
     "title": "纳西版 老鼠爱大米",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5206,7 +5225,7 @@ const musicData = [
     "duration": 315
   },
   {
-    id: 579,
+    id: 581,
     "title": "心中的昌都",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -5215,7 +5234,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 580,
+    id: 582,
     "title": "贺顺才",
     "artist": "《汁哆》dj版",
     "album": "傈僳音乐精选",
@@ -5224,7 +5243,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 581,
+    id: 583,
     "title": "尺拉哇dj（傅国英）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5233,7 +5252,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 582,
+    id: 584,
     "title": "纳西原生态牧歌.",
     "artist": "欢庆",
     "album": "纳西音乐精选",
@@ -5242,7 +5261,7 @@ const musicData = [
     "duration": 66
   },
   {
-    id: 583,
+    id: 585,
     "title": "思乡曲【纳西语",
     "artist": "山人行组合",
     "album": "纳西音乐精选",
@@ -5251,7 +5270,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 584,
+    id: 586,
     "title": "因为有爱",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5260,7 +5279,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 585,
+    id: 587,
     "title": "纳西舞动大团结",
     "artist": "黑帅 和爱兰",
     "album": "纳西音乐精选",
@@ -5269,7 +5288,7 @@ const musicData = [
     "duration": 321
   },
   {
-    id: 586,
+    id: 588,
     "title": "云南丽江摩梭民间甲搓舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5278,7 +5297,7 @@ const musicData = [
     "duration": 1057
   },
   {
-    id: 587,
+    id: 589,
     "title": "新阿里里",
     "artist": "和凤海",
     "album": "纳西音乐精选",
@@ -5287,7 +5306,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 588,
+    id: 590,
     "title": "九河白族调",
     "artist": "",
     "album": "白族音乐精选",
@@ -5296,7 +5315,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 589,
+    id: 591,
     "title": "黎明情歌",
     "artist": "阿香 阿石才",
     "album": "傈僳音乐精选",
@@ -5305,7 +5324,7 @@ const musicData = [
     "duration": 309
   },
   {
-    id: 590,
+    id: 592,
     "title": "欢迎您到白玉来",
     "artist": "白玉扎西",
     "album": "藏族音乐精选",
@@ -5314,7 +5333,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 591,
+    id: 593,
     "title": "纳西文字",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5323,7 +5342,7 @@ const musicData = [
     "duration": 493
   },
   {
-    id: 592,
+    id: 594,
     "title": "朱丽凡－芦笙欢跳好日子重低音",
     "artist": "朱丽凡",
     "album": "纳西音乐精选",
@@ -5332,7 +5351,7 @@ const musicData = [
     "duration": 710
   },
   {
-    id: 593,
+    id: 595,
     "title": "福乐之城",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -5341,7 +5360,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 594,
+    id: 596,
     "title": "再相见",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -5350,7 +5369,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 595,
+    id: 597,
     "title": "二月八",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -5359,7 +5378,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 596,
+    id: 598,
     "title": "劳动歌《耕牛调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5368,7 +5387,7 @@ const musicData = [
     "duration": 25
   },
   {
-    id: 597,
+    id: 599,
     "title": "口弦调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5377,7 +5396,7 @@ const musicData = [
     "duration": 87
   },
   {
-    id: 598,
+    id: 600,
     "title": "牧羊歌",
     "artist": "和月圆和国江",
     "album": "纳西音乐精选",
@@ -5386,7 +5405,7 @@ const musicData = [
     "duration": 355
   },
   {
-    id: 599,
+    id: 601,
     "title": "葫芦笙串烧",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5395,7 +5414,7 @@ const musicData = [
     "duration": 544
   },
   {
-    id: 600,
+    id: 602,
     "title": "汁哆腊哆《酒歌》",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -5404,7 +5423,7 @@ const musicData = [
     "duration": 174
   },
   {
-    id: 601,
+    id: 603,
     "title": "若梦",
     "artist": "丹巴旺姆",
     "album": "纳西音乐精选",
@@ -5413,7 +5432,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 602,
+    id: 604,
     "title": "劲爆葫芦笙dj加快-和福英",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5422,7 +5441,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 603,
+    id: 605,
     "title": "纳西语版 十二月",
     "artist": "纳西英子",
     "album": "纳西音乐精选",
@@ -5431,7 +5450,7 @@ const musicData = [
     "duration": 326
   },
   {
-    id: 604,
+    id: 606,
     "title": "纳西语版《离家五百里》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5440,7 +5459,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 605,
+    id: 607,
     "title": "哈达献给新时",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -5449,7 +5468,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 606,
+    id: 608,
     "title": "十九大精神学用干在先",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5458,7 +5477,7 @@ const musicData = [
     "duration": 495
   },
   {
-    id: 607,
+    id: 609,
     "title": "新年好",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -5467,7 +5486,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 608,
+    id: 610,
     "title": "和永昌 欢乐纳西年",
     "artist": "和永昌",
     "album": "纳西音乐精选",
@@ -5476,7 +5495,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 609,
+    id: 611,
     "title": "达瓦纳西努2019",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -5485,7 +5504,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 610,
+    id: 612,
     "title": "傈僳情",
     "artist": "艾玛龙杰",
     "album": "傈僳音乐精选",
@@ -5494,7 +5513,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 611,
+    id: 613,
     "title": "阿石才·子拉勒",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -5503,7 +5522,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 612,
+    id: 614,
     "title": "张曦尹《玉龙山下纳西娃》",
     "artist": "张曦尹",
     "album": "纳西音乐精选",
@@ -5512,7 +5531,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 613,
+    id: 615,
     "title": "酒歌",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -5521,7 +5540,7 @@ const musicData = [
     "duration": 174
   },
   {
-    id: 614,
+    id: 616,
     "title": "纳西情歌对唱《南兴调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5530,7 +5549,7 @@ const musicData = [
     "duration": 94
   },
   {
-    id: 615,
+    id: 617,
     "title": "纳西情歌对唱《箫筝篾合》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5539,7 +5558,7 @@ const musicData = [
     "duration": 32
   },
   {
-    id: 616,
+    id: 618,
     "title": "傈僳欢歌dj",
     "artist": "阿石才 蜂跃宏",
     "album": "傈僳音乐精选",
@@ -5548,7 +5567,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 617,
+    id: 619,
     "title": "嘎嘎尺尺刮器来",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5557,7 +5576,7 @@ const musicData = [
     "duration": 180
   },
   {
-    id: 618,
+    id: 620,
     "title": "上午 一封书",
     "artist": "白沙细乐",
     "album": "纳西音乐精选",
@@ -5566,7 +5585,7 @@ const musicData = [
     "duration": 553
   },
   {
-    id: 619,
+    id: 621,
     "title": "纳西快板 ：美丽古城 幸福家园",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5575,7 +5594,7 @@ const musicData = [
     "duration": 389
   },
   {
-    id: 620,
+    id: 622,
     "title": "有缘千里路",
     "artist": "次仁桑珠",
     "album": "纳西音乐精选",
@@ -5584,7 +5603,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 621,
+    id: 623,
     "title": "婆媳风波",
     "artist": "白族调 剑川李宝妹",
     "album": "白族音乐精选",
@@ -5593,7 +5612,7 @@ const musicData = [
     "duration": 1316
   },
   {
-    id: 622,
+    id: 624,
     "title": "纳西东巴调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5602,7 +5621,7 @@ const musicData = [
     "duration": 121
   },
   {
-    id: 623,
+    id: 625,
     "title": "傈僳舞步曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5611,7 +5630,7 @@ const musicData = [
     "duration": 269
   },
   {
-    id: 624,
+    id: 626,
     "title": "朱丽凡－花开花谢痴痴的等",
     "artist": "朱丽凡",
     "album": "纳西音乐精选",
@@ -5620,7 +5639,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 625,
+    id: 627,
     "title": "丽江美妞",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -5629,7 +5648,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 626,
+    id: 628,
     "title": "丽江圆舞曲-李艳婷",
     "artist": "李艳婷",
     "album": "纳西音乐精选",
@@ -5638,7 +5657,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 627,
+    id: 629,
     "title": "白沙细乐《冢拾》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5647,7 +5666,7 @@ const musicData = [
     "duration": 337
   },
   {
-    id: 628,
+    id: 630,
     "title": "守住一片天",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -5656,7 +5675,7 @@ const musicData = [
     "duration": 393
   },
   {
-    id: 629,
+    id: 631,
     "title": "",
     "artist": "秧歌",
     "album": "纳西音乐精选",
@@ -5665,7 +5684,7 @@ const musicData = [
     "duration": 292
   },
   {
-    id: 630,
+    id: 632,
     "title": "笙动丽江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5674,7 +5693,7 @@ const musicData = [
     "duration": 599
   },
   {
-    id: 631,
+    id: 633,
     "title": "心肝票 (Live)_张银耀",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5683,7 +5702,7 @@ const musicData = [
     "duration": 164
   },
   {
-    id: 632,
+    id: 634,
     "title": "傈僳Dj",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5692,7 +5711,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 633,
+    id: 635,
     "title": "美在怒江",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -5701,7 +5720,7 @@ const musicData = [
     "duration": 282
   },
   {
-    id: 634,
+    id: 636,
     "title": "喂么达《塔城调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5710,7 +5729,7 @@ const musicData = [
     "duration": 96
   },
   {
-    id: 635,
+    id: 637,
     "title": "纳西谷气《箫筝篾合》.mp3",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5719,7 +5738,7 @@ const musicData = [
     "duration": 32
   },
   {
-    id: 636,
+    id: 638,
     "title": "傈僳（如花的阿妹）dj",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5728,7 +5747,7 @@ const musicData = [
     "duration": 334
   },
   {
-    id: 637,
+    id: 639,
     "title": "山神之恋",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -5737,7 +5756,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 638,
+    id: 640,
     "title": "热美搓",
     "artist": "和红亮、和玉秀",
     "album": "纳西音乐精选",
@@ -5746,7 +5765,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 639,
+    id: 641,
     "title": "梦中的额吉纳西语",
     "artist": "段婷婷",
     "album": "纳西音乐精选",
@@ -5755,7 +5774,7 @@ const musicData = [
     "duration": 209
   },
   {
-    id: 640,
+    id: 642,
     "title": "吉日经",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -5764,7 +5783,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 641,
+    id: 643,
     "title": "纳西打跳dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5773,7 +5792,7 @@ const musicData = [
     "duration": 276
   },
   {
-    id: 642,
+    id: 644,
     "title": "纳西幸福万年长",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -5782,7 +5801,7 @@ const musicData = [
     "duration": 117
   },
   {
-    id: 643,
+    id: 645,
     "title": "净土（纳西语）",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -5791,7 +5810,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 644,
+    id: 646,
     "title": "傈僳大蛮调",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -5800,7 +5819,7 @@ const musicData = [
     "duration": 317
   },
   {
-    id: 645,
+    id: 647,
     "title": "热美姿蹉-原生态组合",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5809,7 +5828,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 646,
+    id: 648,
     "title": "美丽的白云",
     "artist": "阿木宇梅",
     "album": "纳西音乐精选",
@@ -5818,7 +5837,7 @@ const musicData = [
     "duration": 198
   },
   {
-    id: 647,
+    id: 649,
     "title": "美丽的丽江《纳西族》篝火打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5827,7 +5846,7 @@ const musicData = [
     "duration": 1022
   },
   {
-    id: 648,
+    id: 650,
     "title": "东巴唱腔《鲁般鲁绕》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5836,7 +5855,7 @@ const musicData = [
     "duration": 135
   },
   {
-    id: 649,
+    id: 651,
     "title": "口弦悠悠",
     "artist": "和文光",
     "album": "纳西音乐精选",
@@ -5845,7 +5864,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 650,
+    id: 652,
     "title": "纳西儿歌《老爷找叶子》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5854,7 +5873,7 @@ const musicData = [
     "duration": 43
   },
   {
-    id: 651,
+    id: 653,
     "title": "东巴唱腔《斑米知》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5863,7 +5882,7 @@ const musicData = [
     "duration": 143
   },
   {
-    id: 652,
+    id: 654,
     "title": "谷气",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5872,7 +5891,7 @@ const musicData = [
     "duration": 70
   },
   {
-    id: 653,
+    id: 655,
     "title": "白桂花香",
     "artist": "李宝妹",
     "album": "纳西音乐精选",
@@ -5881,7 +5900,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 654,
+    id: 656,
     "title": "纳西调 古凄",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5890,7 +5909,7 @@ const musicData = [
     "duration": 154
   },
   {
-    id: 655,
+    id: 657,
     "title": "血流成河",
     "artist": "晴天",
     "album": "纳西音乐精选",
@@ -5899,7 +5918,7 @@ const musicData = [
     "duration": 209
   },
   {
-    id: 656,
+    id: 658,
     "title": "妈妈",
     "artist": "人狼格",
     "album": "纳西音乐精选",
@@ -5908,7 +5927,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 657,
+    id: 659,
     "title": "阿什阿克吉",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -5917,7 +5936,7 @@ const musicData = [
     "duration": 165
   },
   {
-    id: 658,
+    id: 660,
     "title": "姚熙",
     "artist": "纳西西于花花神",
     "album": "纳西音乐精选",
@@ -5926,7 +5945,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 659,
+    id: 661,
     "title": "阿勒邱",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -5935,7 +5954,7 @@ const musicData = [
     "duration": 177
   },
   {
-    id: 660,
+    id: 662,
     "title": "印象丽江 回家",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5944,7 +5963,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 661,
+    id: 663,
     "title": "同唱心肝票",
     "artist": "李宝妹 姜中德",
     "album": "纳西音乐精选",
@@ -5953,7 +5972,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 662,
+    id: 664,
     "title": "《相见难》亚哈巴组合",
     "artist": "亚哈巴组合",
     "album": "纳西音乐精选",
@@ -5962,7 +5981,7 @@ const musicData = [
     "duration": 326
   },
   {
-    id: 663,
+    id: 665,
     "title": "纳西超级打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5971,7 +5990,7 @@ const musicData = [
     "duration": 389
   },
   {
-    id: 664,
+    id: 666,
     "title": "欢乐和谐苑",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -5980,7 +5999,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 665,
+    id: 667,
     "title": "东巴唱腔杨万勋《幕布幕地》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -5989,7 +6008,7 @@ const musicData = [
     "duration": 58
   },
   {
-    id: 666,
+    id: 668,
     "title": "李宝妹 - 牵心绳",
     "artist": "李宝妹",
     "album": "白族音乐精选",
@@ -5998,7 +6017,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 667,
+    id: 669,
     "title": "欢聚在一起",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -6007,7 +6026,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 668,
+    id: 670,
     "title": "纳西喂么达《塔城调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6016,7 +6035,7 @@ const musicData = [
     "duration": 96
   },
   {
-    id: 669,
+    id: 671,
     "title": "纳西 山神之恋",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6025,7 +6044,7 @@ const musicData = [
     "duration": 305
   },
   {
-    id: 670,
+    id: 672,
     "title": "母鸡抱鸭",
     "artist": "李宝妹",
     "album": "纳西音乐精选",
@@ -6034,7 +6053,7 @@ const musicData = [
     "duration": 320
   },
   {
-    id: 671,
+    id: 673,
     "title": "风吹十里桂花香",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6043,7 +6062,7 @@ const musicData = [
     "duration": 341
   },
   {
-    id: 672,
+    id: 674,
     "title": "傈僳族摇篮曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6052,7 +6071,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 673,
+    id: 675,
     "title": "阿八根与金葫芦片尾曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6061,7 +6080,7 @@ const musicData = [
     "duration": 70
   },
   {
-    id: 674,
+    id: 676,
     "title": "革囊渡",
     "artist": "芦笙调",
     "album": "纳西音乐精选",
@@ -6070,7 +6089,7 @@ const musicData = [
     "duration": 140
   },
   {
-    id: 675,
+    id: 677,
     "title": "我要抱着你  纳西语",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6079,7 +6098,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 676,
+    id: 678,
     "title": "手拉手跳起来",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -6088,7 +6107,7 @@ const musicData = [
     "duration": 360
   },
   {
-    id: 677,
+    id: 679,
     "title": "纳西酒歌",
     "artist": "和兴凤",
     "album": "纳西音乐精选",
@@ -6097,7 +6116,7 @@ const musicData = [
     "duration": 178
   },
   {
-    id: 678,
+    id: 680,
     "title": "小心肝",
     "artist": "白族歌曲",
     "album": "白族音乐精选",
@@ -6106,7 +6125,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 679,
+    id: 681,
     "title": "纳西情歌(纳西语版)",
     "artist": "和群星",
     "album": "纳西音乐精选",
@@ -6115,7 +6134,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 680,
+    id: 682,
     "title": "傈僳崽崽",
     "artist": "傈僳三杯酒",
     "album": "傈僳音乐精选",
@@ -6124,7 +6143,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 681,
+    id: 683,
     "title": "白乡情歌第四部",
     "artist": "白族调",
     "album": "白族音乐精选",
@@ -6133,7 +6152,7 @@ const musicData = [
     "duration": 405
   },
   {
-    id: 682,
+    id: 684,
     "title": "格桑尼玛",
     "artist": "我在香格里拉等你",
     "album": "纳西音乐精选",
@@ -6142,7 +6161,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 683,
+    id: 685,
     "title": "纳西恋歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6151,7 +6170,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 684,
+    id: 686,
     "title": "走失在纳西文字中 天一配乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6160,7 +6179,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 685,
+    id: 687,
     "title": "请到傈僳山寨来-阿石才",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6169,7 +6188,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 686,
+    id: 688,
     "title": "瓦器器的故乡",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -6178,7 +6197,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 687,
+    id: 689,
     "title": "恰吾色丁",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -6187,7 +6206,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 688,
+    id: 690,
     "title": "傈僳族葫芦笙大演奏",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6196,7 +6215,7 @@ const musicData = [
     "duration": 749
   },
   {
-    id: 689,
+    id: 691,
     "title": "傈僳阿依（流行音乐）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6205,7 +6224,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 690,
+    id: 692,
     "title": "傈僳娃娃组合",
     "artist": "祝酒歌",
     "album": "傈僳音乐精选",
@@ -6214,7 +6233,7 @@ const musicData = [
     "duration": 220
   },
   {
-    id: 691,
+    id: 693,
     "title": "啊 永胜 永胜",
     "artist": "陈元绍",
     "album": "纳西音乐精选",
@@ -6223,7 +6242,7 @@ const musicData = [
     "duration": 132
   },
   {
-    id: 692,
+    id: 694,
     "title": "相遇",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6232,7 +6251,7 @@ const musicData = [
     "duration": 271
   },
   {
-    id: 693,
+    id: 695,
     "title": "纳西快板 中国梦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6241,7 +6260,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 694,
+    id: 696,
     "title": "心灵的坐标-习振东",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6250,7 +6269,7 @@ const musicData = [
     "duration": 199
   },
   {
-    id: 695,
+    id: 697,
     "title": "依恋",
     "artist": "和丽龙",
     "album": "纳西音乐精选",
@@ -6259,7 +6278,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 696,
+    id: 698,
     "title": "纳西打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6268,7 +6287,7 @@ const musicData = [
     "duration": 139
   },
   {
-    id: 697,
+    id: 699,
     "title": "纳西歌《兄弟姐妹》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6277,7 +6296,7 @@ const musicData = [
     "duration": 57
   },
   {
-    id: 699,
+    id: 700,
     "title": "一滴水经过丽江纳西语版",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6286,7 +6305,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 700,
+    id: 701,
     "title": "阿六奶",
     "artist": "丽江群星",
     "album": "纳西音乐精选",
@@ -6295,7 +6314,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 701,
+    id: 702,
     "title": "《咒章》洞经音乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6304,7 +6323,7 @@ const musicData = [
     "duration": 449
   },
   {
-    id: 702,
+    id: 703,
     "title": "《丽江风暴》舞曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6313,7 +6332,7 @@ const musicData = [
     "duration": 989
   },
   {
-    id: 703,
+    id: 704,
     "title": "拉伯热美",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6322,7 +6341,7 @@ const musicData = [
     "duration": 152
   },
   {
-    id: 704,
+    id: 705,
     "title": "天籁之爱",
     "artist": "降央卓玛 扎西尼玛",
     "album": "纳西音乐精选",
@@ -6331,7 +6350,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 705,
+    id: 706,
     "title": "摇篮曲",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -6340,7 +6359,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 706,
+    id: 707,
     "title": "哦热热（纳西传统歌舞）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6349,7 +6368,7 @@ const musicData = [
     "duration": 90
   },
   {
-    id: 707,
+    id: 708,
     "title": "快来罗 纳西热美蹉拔秧调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6358,7 +6377,7 @@ const musicData = [
     "duration": 98
   },
   {
-    id: 708,
+    id: 709,
     "title": "我们在一起",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -6367,7 +6386,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 709,
+    id: 710,
     "title": "哦蒙达",
     "artist": "李秀仙 和民达 和金花",
     "album": "纳西音乐精选",
@@ -6376,7 +6395,7 @@ const musicData = [
     "duration": 56
   },
   {
-    id: 710,
+    id: 711,
     "title": "古道情歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6385,7 +6404,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 711,
+    id: 712,
     "title": "三江天籁-阿乌嚷阿妮梅",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6394,7 +6413,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 712,
+    id: 713,
     "title": "无悔人生—花体若依",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6403,7 +6422,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 713,
+    id: 714,
     "title": "打跳",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -6412,7 +6431,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 714,
+    id: 715,
     "title": "阿哩哩",
     "artist": "阿依金卓",
     "album": "纳西音乐精选",
@@ -6421,7 +6440,7 @@ const musicData = [
     "duration": 174
   },
   {
-    id: 715,
+    id: 716,
     "title": "白子白女敬酒歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6430,7 +6449,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 716,
+    id: 717,
     "title": "傈僳族打跳",
     "artist": "贺顺才",
     "album": "傈僳音乐精选",
@@ -6439,7 +6458,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 717,
+    id: 718,
     "title": "纳西姑娘好",
     "artist": "纳西狼组合",
     "album": "纳西音乐精选",
@@ -6448,7 +6467,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 718,
+    id: 719,
     "title": "丽江姑娘",
     "artist": "伍腾宇",
     "album": "纳西音乐精选",
@@ -6457,7 +6476,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 719,
+    id: 720,
     "title": "欢乐香巴拉 纳西纵歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6466,7 +6485,7 @@ const musicData = [
     "duration": 472
   },
   {
-    id: 720,
+    id: 721,
     "title": "走进西藏",
     "artist": "扎西尼玛",
     "album": "纳西音乐精选",
@@ -6475,7 +6494,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 721,
+    id: 722,
     "title": "月亮姆",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6484,7 +6503,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 722,
+    id: 723,
     "title": "丽江云飞",
     "artist": "靳松",
     "album": "纳西音乐精选",
@@ -6493,7 +6512,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 723,
+    id: 724,
     "title": "栽秧调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6502,7 +6521,7 @@ const musicData = [
     "duration": 290
   },
   {
-    id: 724,
+    id: 725,
     "title": "《上午 一封书》白沙细乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6511,7 +6530,7 @@ const musicData = [
     "duration": 553
   },
   {
-    id: 725,
+    id: 726,
     "title": "理塘赞",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -6520,7 +6539,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 726,
+    id: 727,
     "title": "呀哈哩",
     "artist": "墨尚七",
     "album": "纳西音乐精选",
@@ -6529,7 +6548,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 727,
+    id: 728,
     "title": "好玩好耍来打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6538,7 +6557,7 @@ const musicData = [
     "duration": 372
   },
   {
-    id: 728,
+    id: 729,
     "title": "傈僳族鬼步葫芦笙舞曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6547,7 +6566,7 @@ const musicData = [
     "duration": 161
   },
   {
-    id: 729,
+    id: 730,
     "title": "阿石才，阿荣 -从月亮走向太阳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -6556,7 +6575,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 730,
+    id: 731,
     "title": "姚熙",
     "artist": "哎呀 妈妈",
     "album": "纳西音乐精选",
@@ -6565,7 +6584,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 731,
+    id: 732,
     "title": "鱼水相会",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -6574,7 +6593,7 @@ const musicData = [
     "duration": 155
   },
   {
-    id: 732,
+    id: 733,
     "title": "恋",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -6583,7 +6602,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 733,
+    id: 734,
     "title": "密瀑纳西美",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -6592,7 +6611,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 734,
+    id: 735,
     "title": "朋友",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -6601,7 +6620,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 735,
+    id: 736,
     "title": "五千年",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -6610,7 +6629,7 @@ const musicData = [
     "duration": 298
   },
   {
-    id: 736,
+    id: 737,
     "title": "热美姿蹉",
     "artist": "和民达",
     "album": "纳西音乐精选",
@@ -6619,7 +6638,7 @@ const musicData = [
     "duration": 295
   },
   {
-    id: 737,
+    id: 738,
     "title": "唱起来 跳起来",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6628,7 +6647,7 @@ const musicData = [
     "duration": 180
   },
   {
-    id: 738,
+    id: 739,
     "title": "纳西原生态谷气",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6637,7 +6656,7 @@ const musicData = [
     "duration": 177
   },
   {
-    id: 739,
+    id: 740,
     "title": "纳西酒歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -6646,7 +6665,7 @@ const musicData = [
     "duration": 160
   },
   {
-    id: 740,
+    id: 741,
     "title": "下雪那天",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -6655,7 +6674,7 @@ const musicData = [
     "duration": 291
   },
   {
-    id: 741,
+    id: 742,
     "title": "纳西喂么达",
     "artist": "和占强,杨友爱",
     "album": "纳西音乐精选",
@@ -6664,7 +6683,7 @@ const musicData = [
     "duration": 169
   },
   {
-    id: 742,
+    id: 743,
     "title": "纳西喂么达",
     "artist": "金甲劲松,杨友爱",
     "album": "纳西音乐精选",
@@ -6673,7 +6692,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 743,
+    id: 744,
     "title": "做好人.",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -6682,7 +6701,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 744,
+    id: 745,
     "title": "西余索（学)",
     "artist": "和文军,和漾水",
     "album": "纳西音乐精选",
@@ -6691,7 +6710,7 @@ const musicData = [
     "duration": 163
   },
   {
-    id: 745,
+    id: 746,
     "title": "天蓝蓝dj",
     "artist": "斯密沃然-玛依",
     "album": "纳西音乐精选",
@@ -6700,7 +6719,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 746,
+    id: 747,
     "title": "",
     "artist": "地球村",
     "album": "纳西音乐精选",
@@ -6709,7 +6728,7 @@ const musicData = [
     "duration": 331
   },
   {
-    id: 747,
+    id: 748,
     "title": "",
     "artist": "纳西姑娘",
     "album": "纳西音乐精选",
@@ -6718,7 +6737,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 748,
+    id: 749,
     "title": "纳木错神话（旺姆）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6727,7 +6746,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 749,
+    id: 750,
     "title": "纳西打跳组曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6736,7 +6755,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 750,
+    id: 751,
     "title": "十女十歌",
     "artist": "纳西民歌",
     "album": "纳西音乐精选",
@@ -6745,7 +6764,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 751,
+    id: 752,
     "title": "步步娇(曲牌)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6754,7 +6773,7 @@ const musicData = [
     "duration": 390
   },
   {
-    id: 752,
+    id: 753,
     "title": "来世",
     "artist": "纳西",
     "album": "纳西音乐精选",
@@ -6763,7 +6782,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 753,
+    id: 754,
     "title": "姚熙",
     "artist": "美丽的白云",
     "album": "纳西音乐精选",
@@ -6772,7 +6791,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 754,
+    id: 755,
     "title": "纳西情歌",
     "artist": "和文军 达坡玛吉",
     "album": "纳西音乐精选",
@@ -6781,7 +6800,7 @@ const musicData = [
     "duration": 168
   },
   {
-    id: 755,
+    id: 756,
     "title": "山朵岗打跳",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -6790,7 +6809,7 @@ const musicData = [
     "duration": 457
   },
   {
-    id: 756,
+    id: 757,
     "title": "嘎美厄美倒背喃（行善积德做)",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -6799,7 +6818,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 757,
+    id: 758,
     "title": "浪漫民族风",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6808,7 +6827,7 @@ const musicData = [
     "duration": 198
   },
   {
-    id: 758,
+    id: 759,
     "title": "沉默是金",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -6817,7 +6836,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 759,
+    id: 760,
     "title": "一起跳起来―吉米阿哈",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6826,7 +6845,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 760,
+    id: 761,
     "title": "索玛花开",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -6835,7 +6854,7 @@ const musicData = [
     "duration": 270
   },
   {
-    id: 761,
+    id: 762,
     "title": "时代颂—和述明",
     "artist": "和述明",
     "album": "纳西音乐精选",
@@ -6844,7 +6863,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 762,
+    id: 763,
     "title": "远方的客人请你留下来",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6853,7 +6872,7 @@ const musicData = [
     "duration": 261
   },
   {
-    id: 763,
+    id: 764,
     "title": "婚誓",
     "artist": "月亮姆组合",
     "album": "纳西音乐精选",
@@ -6862,7 +6881,7 @@ const musicData = [
     "duration": 150
   },
   {
-    id: 764,
+    id: 765,
     "title": "嫁女调",
     "artist": "灯思克",
     "album": "纳西音乐精选",
@@ -6871,7 +6890,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 765,
+    id: 766,
     "title": "回家 印象丽江主题曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6880,7 +6899,7 @@ const musicData = [
     "duration": 292
   },
   {
-    id: 766,
+    id: 767,
     "title": "麦乌来其玛",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6889,7 +6908,7 @@ const musicData = [
     "duration": 349
   },
   {
-    id: 767,
+    id: 768,
     "title": "丽江风暴",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6898,7 +6917,7 @@ const musicData = [
     "duration": 989
   },
   {
-    id: 768,
+    id: 769,
     "title": "纳西打捞利",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6907,7 +6926,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 769,
+    id: 770,
     "title": "节日狂想曲",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -6916,7 +6935,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 770,
+    id: 771,
     "title": "纳西飞歌",
     "artist": "李艾雯",
     "album": "纳西音乐精选",
@@ -6925,7 +6944,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 771,
+    id: 772,
     "title": "的库册尼黑（纳西族歌舞）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6934,7 +6953,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 772,
+    id: 773,
     "title": "公特目光阿克吉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6943,7 +6962,7 @@ const musicData = [
     "duration": 339
   },
   {
-    id: 773,
+    id: 774,
     "title": "丽江风暴dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6952,7 +6971,7 @@ const musicData = [
     "duration": 970
   },
   {
-    id: 774,
+    id: 775,
     "title": "三思吉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6961,7 +6980,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 775,
+    id: 776,
     "title": "纳西小调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6970,7 +6989,7 @@ const musicData = [
     "duration": 78
   },
   {
-    id: 776,
+    id: 777,
     "title": "迎宾酒歌",
     "artist": "阿多组合",
     "album": "纳西音乐精选",
@@ -6979,7 +6998,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 777,
+    id: 778,
     "title": "纳西哦姆达",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6988,7 +7007,7 @@ const musicData = [
     "duration": 827
   },
   {
-    id: 778,
+    id: 779,
     "title": "纳西原生态民歌《 哦姆达》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -6997,7 +7016,7 @@ const musicData = [
     "duration": 353
   },
   {
-    id: 779,
+    id: 780,
     "title": "普米芦笙调",
     "artist": "革囊渡",
     "album": "纳西音乐精选",
@@ -7006,7 +7025,7 @@ const musicData = [
     "duration": 164
   },
   {
-    id: 780,
+    id: 781,
     "title": "喔热热",
     "artist": "革囊渡",
     "album": "纳西音乐精选",
@@ -7015,7 +7034,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 781,
+    id: 782,
     "title": "傈僳娃娃组合 -月亮还没升起来",
     "artist": "傈僳娃娃组合",
     "album": "傈僳音乐精选",
@@ -7024,7 +7043,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 782,
+    id: 783,
     "title": "大石桥",
     "artist": "周昀刚",
     "album": "纳西音乐精选",
@@ -7033,7 +7052,7 @@ const musicData = [
     "duration": 183
   },
   {
-    id: 783,
+    id: 784,
     "title": "爱在泸沽湖  胡光叁影",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7042,7 +7061,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 784,
+    id: 785,
     "title": "栽秧调",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7051,7 +7070,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 785,
+    id: 786,
     "title": "康定溜溜调",
     "artist": "和兴凤",
     "album": "纳西音乐精选",
@@ -7060,7 +7079,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 786,
+    id: 787,
     "title": "超越葫芦笙dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7069,7 +7088,7 @@ const musicData = [
     "duration": 650
   },
   {
-    id: 787,
+    id: 788,
     "title": "丽江华坪花傈僳打跳之三门合脚",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7078,7 +7097,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 788,
+    id: 789,
     "title": "丽江华坪花傈僳打跳之挖生地",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7087,7 +7106,7 @@ const musicData = [
     "duration": 378
   },
   {
-    id: 789,
+    id: 790,
     "title": "花傈僳打跳之一道竹子一道尖",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7096,7 +7115,7 @@ const musicData = [
     "duration": 382
   },
   {
-    id: 790,
+    id: 791,
     "title": "欢迎到太安来",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7105,7 +7124,7 @@ const musicData = [
     "duration": 122
   },
   {
-    id: 791,
+    id: 792,
     "title": "拉伯热美",
     "artist": "纳西民歌",
     "album": "纳西音乐精选",
@@ -7114,7 +7133,7 @@ const musicData = [
     "duration": 152
   },
   {
-    id: 792,
+    id: 793,
     "title": "崇德之恋",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -7123,7 +7142,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 793,
+    id: 794,
     "title": "我的阿妈",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7132,7 +7151,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 794,
+    id: 795,
     "title": "梅里的呼唤",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -7141,7 +7160,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 795,
+    id: 796,
     "title": "万物源",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7150,7 +7169,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 796,
+    id: 797,
     "title": "玉龙山情歌（时本古庆）",
     "artist": "和冬月",
     "album": "纳西音乐精选",
@@ -7159,7 +7178,7 @@ const musicData = [
     "duration": 129
   },
   {
-    id: 797,
+    id: 798,
     "title": "阳光天堂",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -7168,7 +7187,7 @@ const musicData = [
     "duration": 159
   },
   {
-    id: 798,
+    id: 799,
     "title": "傈僳族-舞动三江dj",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7177,7 +7196,7 @@ const musicData = [
     "duration": 530
   },
   {
-    id: 799,
+    id: 800,
     "title": "心有千千结_贺树兵",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7186,7 +7205,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 800,
+    id: 801,
     "title": "同住一座城",
     "artist": "和曙洪、和燕",
     "album": "纳西音乐精选",
@@ -7195,7 +7214,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 801,
+    id: 802,
     "title": "纳西族歌曲－咱撮鲁啦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7204,7 +7223,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 802,
+    id: 803,
     "title": "美丽的九河",
     "artist": "纳西歌曲",
     "album": "纳西音乐精选",
@@ -7213,7 +7232,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 803,
+    id: 804,
     "title": "云上西藏",
     "artist": "齐旦布",
     "album": "纳西音乐精选",
@@ -7222,7 +7241,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 804,
+    id: 805,
     "title": "蝶儿飞",
     "artist": "张曦尹",
     "album": "纳西音乐精选",
@@ -7231,7 +7250,7 @@ const musicData = [
     "duration": 202
   },
   {
-    id: 805,
+    id: 806,
     "title": "呀哈哩",
     "artist": "阿七",
     "album": "纳西音乐精选",
@@ -7240,7 +7259,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 806,
+    id: 807,
     "title": "纳西民歌联唱",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -7249,7 +7268,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 807,
+    id: 808,
     "title": "纳西打劳丽",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7258,7 +7277,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 808,
+    id: 809,
     "title": "相约阔时节dj-阿多组合",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7267,7 +7286,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 809,
+    id: 810,
     "title": "幸福啦（斥神）",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -7276,7 +7295,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 810,
+    id: 811,
     "title": "民族打跳曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7285,7 +7304,7 @@ const musicData = [
     "duration": 173
   },
   {
-    id: 811,
+    id: 812,
     "title": "西库揍",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -7294,7 +7313,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 812,
+    id: 813,
     "title": "哦蒙达",
     "artist": "和民达 和金花 和集虎",
     "album": "纳西音乐精选",
@@ -7303,7 +7322,7 @@ const musicData = [
     "duration": 56
   },
   {
-    id: 813,
+    id: 814,
     "title": "好兄弟 纳西语",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7312,7 +7331,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 814,
+    id: 815,
     "title": "纳西火乐锅",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -7321,7 +7340,7 @@ const musicData = [
     "duration": 149
   },
   {
-    id: 815,
+    id: 816,
     "title": "摩梭打跳曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7330,7 +7349,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 816,
+    id: 817,
     "title": "走进骷髅墙",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -7339,7 +7358,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 817,
+    id: 818,
     "title": "金沙谣",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -7348,7 +7367,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 818,
+    id: 819,
     "title": "丽江三十二步",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7357,7 +7376,7 @@ const musicData = [
     "duration": 989
   },
   {
-    id: 819,
+    id: 820,
     "title": "山里娃",
     "artist": "李茜姝",
     "album": "纳西音乐精选",
@@ -7366,7 +7385,7 @@ const musicData = [
     "duration": 129
   },
   {
-    id: 820,
+    id: 821,
     "title": "摩梭打跳曲III",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7375,7 +7394,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 821,
+    id: 822,
     "title": "摩梭夜歌",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -7384,7 +7403,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 822,
+    id: 823,
     "title": "新编犁牛调",
     "artist": "和占强",
     "album": "纳西音乐精选",
@@ -7393,7 +7412,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 823,
+    id: 824,
     "title": "称谢耶稣",
     "artist": "甲姆沽-阿平",
     "album": "纳西音乐精选",
@@ -7402,7 +7421,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 824,
+    id: 825,
     "title": "甲姆沽-阿平",
     "artist": "打跳组曲",
     "album": "纳西音乐精选",
@@ -7411,7 +7430,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 825,
+    id: 826,
     "title": "一起跳",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -7420,7 +7439,7 @@ const musicData = [
     "duration": 311
   },
   {
-    id: 826,
+    id: 827,
     "title": "神爱世人",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7429,7 +7448,7 @@ const musicData = [
     "duration": 278
   },
   {
-    id: 827,
+    id: 828,
     "title": "迷局",
     "artist": "金丽婷",
     "album": "纳西音乐精选",
@@ -7438,7 +7457,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 828,
+    id: 829,
     "title": "受载某套",
     "artist": "李铭九",
     "album": "纳西音乐精选",
@@ -7447,7 +7466,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 829,
+    id: 830,
     "title": "三朵花",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -7456,7 +7475,7 @@ const musicData = [
     "duration": 246
   },
   {
-    id: 830,
+    id: 831,
     "title": "轮回之恋",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -7465,7 +7484,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 831,
+    id: 832,
     "title": "肖汝莲《谷气》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7474,7 +7493,7 @@ const musicData = [
     "duration": 90
   },
   {
-    id: 832,
+    id: 833,
     "title": "《云上石头城》片头曲《吉祥》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7483,7 +7502,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 833,
+    id: 834,
     "title": "傈僳打跳舞曲傈僳魅音超嗨舞曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7492,7 +7511,7 @@ const musicData = [
     "duration": 214
   },
   {
-    id: 834,
+    id: 835,
     "title": "数字歌",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -7501,7 +7520,7 @@ const musicData = [
     "duration": 230
   },
   {
-    id: 835,
+    id: 836,
     "title": "傈僳魅音打跳舞曲AAA",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7510,7 +7529,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 836,
+    id: 837,
     "title": "守候",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -7519,7 +7538,7 @@ const musicData = [
     "duration": 284
   },
   {
-    id: 837,
+    id: 838,
     "title": "纳西打跳广场舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7528,7 +7547,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 838,
+    id: 839,
     "title": "青华海等着你",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7537,7 +7556,7 @@ const musicData = [
     "duration": 220
   },
   {
-    id: 839,
+    id: 840,
     "title": "傈僳打跳曲8",
     "artist": "刚仔",
     "album": "傈僳音乐精选",
@@ -7546,7 +7565,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 840,
+    id: 841,
     "title": "纳西小情歌",
     "artist": "和锦",
     "album": "纳西音乐精选",
@@ -7555,7 +7574,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 841,
+    id: 842,
     "title": "丽江花花神",
     "artist": "花花神组合",
     "album": "纳西音乐精选",
@@ -7564,7 +7583,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 842,
+    id: 843,
     "title": "腾飞吧，丽江",
     "artist": "张桂华和占强",
     "album": "纳西音乐精选",
@@ -7573,7 +7592,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 843,
+    id: 844,
     "title": "回到我身边",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -7582,7 +7601,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 844,
+    id: 845,
     "title": "酒曲(纳西语)",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7591,7 +7610,7 @@ const musicData = [
     "duration": 261
   },
   {
-    id: 845,
+    id: 846,
     "title": "葫芦笙串烧丽江DJ纳若咪",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7600,7 +7619,7 @@ const musicData = [
     "duration": 315
   },
   {
-    id: 846,
+    id: 847,
     "title": "心上人",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7609,7 +7628,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 847,
+    id: 848,
     "title": "傈僳新酒歌",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7618,7 +7637,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 848,
+    id: 849,
     "title": "中文唐古拉风暴民族",
     "artist": "DJ",
     "album": "纳西音乐精选",
@@ -7627,7 +7646,7 @@ const musicData = [
     "duration": 651
   },
   {
-    id: 849,
+    id: 850,
     "title": "福音",
     "artist": "甲姆沽阿平-爱花",
     "album": "纳西音乐精选",
@@ -7636,7 +7655,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 850,
+    id: 851,
     "title": "到夏来 (曲牌)",
     "artist": "纳西古乐",
     "album": "纳西音乐精选",
@@ -7645,7 +7664,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 851,
+    id: 852,
     "title": "天赐我爱",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -7654,7 +7673,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 852,
+    id: 853,
     "title": "提过啦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7663,7 +7682,7 @@ const musicData = [
     "duration": 146
   },
   {
-    id: 853,
+    id: 854,
     "title": "美酒醉三天",
     "artist": "华坪艺人",
     "album": "纳西音乐精选",
@@ -7672,7 +7691,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 854,
+    id: 855,
     "title": "心雨",
     "artist": "烧包谷",
     "album": "纳西音乐精选",
@@ -7681,7 +7700,7 @@ const musicData = [
     "duration": 169
   },
   {
-    id: 855,
+    id: 856,
     "title": "弥渡山歌",
     "artist": "杨坚(土土哥哥)",
     "album": "纳西音乐精选",
@@ -7690,7 +7709,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 856,
+    id: 857,
     "title": "泸沽湖打跳纳西歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7699,7 +7718,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 857,
+    id: 858,
     "title": "Ddee jjiq lei wel we",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7708,7 +7727,7 @@ const musicData = [
     "duration": 433
   },
   {
-    id: 858,
+    id: 859,
     "title": "藏语歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7717,7 +7736,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 859,
+    id: 860,
     "title": "玉龙情歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7726,7 +7745,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 860,
+    id: 861,
     "title": "民族打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7735,7 +7754,7 @@ const musicData = [
     "duration": 313
   },
   {
-    id: 861,
+    id: 862,
     "title": "我比太阳更能温暖你的心",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7744,7 +7763,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 862,
+    id: 863,
     "title": "木天王",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -7753,7 +7772,7 @@ const musicData = [
     "duration": 372
   },
   {
-    id: 863,
+    id: 864,
     "title": "大家一起来(舞曲)",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -7762,7 +7781,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 864,
+    id: 865,
     "title": "大东纳西古歌(热美磋)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7771,7 +7790,7 @@ const musicData = [
     "duration": 154
   },
   {
-    id: 865,
+    id: 866,
     "title": "赶马调_摩梭语版",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -7780,7 +7799,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 866,
+    id: 867,
     "title": "傈僳阿依爬阿依玛嘎起啦",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7789,7 +7808,7 @@ const musicData = [
     "duration": 476
   },
   {
-    id: 867,
+    id: 868,
     "title": "呀哈哩",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7798,7 +7817,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 868,
+    id: 869,
     "title": "夕阳下的大石桥",
     "artist": "丽江群星",
     "album": "纳西音乐精选",
@@ -7807,7 +7826,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 869,
+    id: 870,
     "title": "玉龙山上开红花",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7816,7 +7835,7 @@ const musicData = [
     "duration": 92
   },
   {
-    id: 870,
+    id: 871,
     "title": "童声合唱队合唱-野蜂飞舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7825,7 +7844,7 @@ const musicData = [
     "duration": 78
   },
   {
-    id: 871,
+    id: 872,
     "title": "纳西族酒歌",
     "artist": "纳金坤",
     "album": "纳西音乐精选",
@@ -7834,7 +7853,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 872,
+    id: 873,
     "title": "纳西快板+纳西迎宾曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7843,7 +7862,7 @@ const musicData = [
     "duration": 199
   },
   {
-    id: 873,
+    id: 874,
     "title": "你在哪里",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -7852,7 +7871,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 874,
+    id: 875,
     "title": "纳西传统乐舞《窝热热》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7861,7 +7880,7 @@ const musicData = [
     "duration": 90
   },
   {
-    id: 875,
+    id: 876,
     "title": "哦噜唠，敖噜唠",
     "artist": "纳西歌曲",
     "album": "纳西音乐精选",
@@ -7870,7 +7889,7 @@ const musicData = [
     "duration": 336
   },
   {
-    id: 876,
+    id: 877,
     "title": "伤心酒歌",
     "artist": "阿石才",
     "album": "傈僳音乐精选",
@@ -7879,7 +7898,7 @@ const musicData = [
     "duration": 341
   },
   {
-    id: 877,
+    id: 878,
     "title": "丽江打跳 彝族打跳舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7888,7 +7907,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 878,
+    id: 879,
     "title": "阿石才欢快舞曲 = 子啦来",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7897,7 +7916,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 879,
+    id: 880,
     "title": "彝族健身操",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7906,7 +7925,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 880,
+    id: 881,
     "title": "白族酒歌",
     "artist": "李宝妹 张贵元",
     "album": "白族音乐精选",
@@ -7915,7 +7934,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 881,
+    id: 882,
     "title": "白族酒歌",
     "artist": "白族歌曲",
     "album": "白族音乐精选",
@@ -7924,7 +7943,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 882,
+    id: 883,
     "title": "北方高原",
     "artist": "齐旦布",
     "album": "纳西音乐精选",
@@ -7933,7 +7952,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 883,
+    id: 884,
     "title": "华坪花傈僳打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -7942,7 +7961,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 884,
+    id: 885,
     "title": "看两眼来对一脚",
     "artist": "丽江打跳",
     "album": "纳西音乐精选",
@@ -7951,7 +7970,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 885,
+    id: 886,
     "title": "依呀妹",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7960,7 +7979,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 886,
+    id: 887,
     "title": "阿拉鼓吉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7969,7 +7988,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 887,
+    id: 888,
     "title": "敬老新歌",
     "artist": "纳西族",
     "album": "纳西音乐精选",
@@ -7978,7 +7997,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 888,
+    id: 889,
     "title": "旧货",
     "artist": "和青峰",
     "album": "纳西音乐精选",
@@ -7987,7 +8006,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 889,
+    id: 890,
     "title": "相守今生-和丽刚&amp;和趼研",
     "artist": "",
     "album": "纳西音乐精选",
@@ -7996,7 +8015,7 @@ const musicData = [
     "duration": 332
   },
   {
-    id: 890,
+    id: 891,
     "title": "云中丽江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8005,7 +8024,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 891,
+    id: 892,
     "title": "丽江的四天",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -8014,7 +8033,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 892,
+    id: 893,
     "title": "纳西姑娘",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -8023,7 +8042,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 893,
+    id: 894,
     "title": "云南三部曲",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -8032,7 +8051,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 894,
+    id: 895,
     "title": "乡遇",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -8041,7 +8060,7 @@ const musicData = [
     "duration": 198
   },
   {
-    id: 895,
+    id: 896,
     "title": "丽江的夜",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -8050,7 +8069,7 @@ const musicData = [
     "duration": 299
   },
   {
-    id: 896,
+    id: 897,
     "title": "爱跳舞的小姑娘",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -8059,7 +8078,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 897,
+    id: 898,
     "title": "笛子独奏 奚绍善",
     "artist": "丽江群星",
     "album": "纳西音乐精选",
@@ -8068,7 +8087,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 898,
+    id: 899,
     "title": "九河打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8077,7 +8096,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 899,
+    id: 900,
     "title": "枯萎",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8086,7 +8105,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 900,
+    id: 901,
     "title": "生肖谣",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -8095,7 +8114,7 @@ const musicData = [
     "duration": 163
   },
   {
-    id: 901,
+    id: 902,
     "title": "丽江",
     "artist": "不可撤销乐队",
     "album": "纳西音乐精选",
@@ -8104,7 +8123,7 @@ const musicData = [
     "duration": 370
   },
   {
-    id: 902,
+    id: 903,
     "title": "找朋友",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -8113,7 +8132,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 903,
+    id: 904,
     "title": "靠近梦想",
     "artist": "金甲劲松 柯燕",
     "album": "纳西音乐精选",
@@ -8122,7 +8141,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 904,
+    id: 905,
     "title": "《慢五言》洞经音乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8131,7 +8150,7 @@ const musicData = [
     "duration": 315
   },
   {
-    id: 905,
+    id: 906,
     "title": "情醉阿哩哩",
     "artist": "刘青青",
     "album": "纳西音乐精选",
@@ -8140,7 +8159,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 906,
+    id: 907,
     "title": "慈祥的母亲",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -8149,7 +8168,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 907,
+    id: 908,
     "title": "纳西阿妈",
     "artist": "沙马果果",
     "album": "纳西音乐精选",
@@ -8158,7 +8177,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 908,
+    id: 909,
     "title": "玉龙雪山的故事",
     "artist": "和上钧阿诛",
     "album": "纳西音乐精选",
@@ -8167,7 +8186,7 @@ const musicData = [
     "duration": 350
   },
   {
-    id: 909,
+    id: 910,
     "title": "远山",
     "artist": "和慧琼",
     "album": "纳西音乐精选",
@@ -8176,7 +8195,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 910,
+    id: 911,
     "title": "傈僳欢乐歌",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8185,7 +8204,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 911,
+    id: 912,
     "title": "丽江傈僳 让我们一起干酒醉",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8194,7 +8213,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 912,
+    id: 913,
     "title": "傈僳敬酒歌",
     "artist": "彝族歌手-阿果",
     "album": "傈僳音乐精选",
@@ -8203,7 +8222,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 913,
+    id: 914,
     "title": "阿一旦",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -8212,7 +8231,7 @@ const musicData = [
     "duration": 192
   },
   {
-    id: 914,
+    id: 915,
     "title": "阿一旦，阿一旦",
     "artist": "李茜姝",
     "album": "纳西音乐精选",
@@ -8221,7 +8240,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 915,
+    id: 916,
     "title": "云南丽江傈僳歌曲 酒杯.女人",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8230,7 +8249,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 916,
+    id: 917,
     "title": "纳西打跳“蹉噜了”",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8239,7 +8258,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 917,
+    id: 918,
     "title": "丽江纳西特色《三部曲》打拉丽",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8248,7 +8267,7 @@ const musicData = [
     "duration": 1022
   },
   {
-    id: 918,
+    id: 919,
     "title": "月亮快出来",
     "artist": "和万莲",
     "album": "纳西音乐精选",
@@ -8257,7 +8276,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 919,
+    id: 920,
     "title": "牵着你的手",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -8266,7 +8285,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 920,
+    id: 921,
     "title": "阿妈的酥油茶",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -8275,7 +8294,7 @@ const musicData = [
     "duration": 300
   },
   {
-    id: 921,
+    id: 922,
     "title": "我们齐欢笑",
     "artist": "摩梭大调",
     "album": "纳西音乐精选",
@@ -8284,7 +8303,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 922,
+    id: 923,
     "title": "茶马古道",
     "artist": "电视剧",
     "album": "纳西音乐精选",
@@ -8293,7 +8312,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 923,
+    id: 924,
     "title": "丽江真美丽《打跳丽江》打拉丽",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8302,7 +8321,7 @@ const musicData = [
     "duration": 967
   },
   {
-    id: 924,
+    id: 925,
     "title": "打谷调",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -8311,7 +8330,7 @@ const musicData = [
     "duration": 196
   },
   {
-    id: 925,
+    id: 926,
     "title": "娃娃的天空",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -8320,7 +8339,7 @@ const musicData = [
     "duration": 169
   },
   {
-    id: 926,
+    id: 927,
     "title": "十八怪_丽江腔",
     "artist": "土土哥哥",
     "album": "纳西音乐精选",
@@ -8329,7 +8348,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 927,
+    id: 928,
     "title": "乐土·家园",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -8338,7 +8357,7 @@ const musicData = [
     "duration": 297
   },
   {
-    id: 928,
+    id: 929,
     "title": "摩梭小夜曲",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -8347,7 +8366,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 929,
+    id: 930,
     "title": "丽江小镇",
     "artist": "黄颖星",
     "album": "纳西音乐精选",
@@ -8356,7 +8375,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 930,
+    id: 931,
     "title": "小巴郎，童年的太阳",
     "artist": "李茜姝",
     "album": "纳西音乐精选",
@@ -8365,7 +8384,7 @@ const musicData = [
     "duration": 120
   },
   {
-    id: 931,
+    id: 932,
     "title": "你丽江了吗",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -8374,7 +8393,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 932,
+    id: 933,
     "title": "回到拉市海",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -8383,7 +8402,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 933,
+    id: 934,
     "title": "我的丽江",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -8392,7 +8411,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 934,
+    id: 935,
     "title": "难道",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -8401,7 +8420,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 935,
+    id: 936,
     "title": "雪地阳光",
     "artist": "蜂凌、蜂跃宏",
     "album": "纳西音乐精选",
@@ -8410,7 +8429,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 936,
+    id: 937,
     "title": "阿表也劲爆 丽江DJ",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8419,7 +8438,7 @@ const musicData = [
     "duration": 463
   },
   {
-    id: 937,
+    id: 938,
     "title": "云南丽江密普纳西美 打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8428,7 +8447,7 @@ const musicData = [
     "duration": 352
   },
   {
-    id: 938,
+    id: 939,
     "title": "丽江真美好 纳西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8437,7 +8456,7 @@ const musicData = [
     "duration": 441
   },
   {
-    id: 939,
+    id: 940,
     "title": "油茶罐装不下的梦想",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -8446,7 +8465,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 940,
+    id: 941,
     "title": "孤独的人",
     "artist": "和军",
     "album": "纳西音乐精选",
@@ -8455,7 +8474,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 941,
+    id: 942,
     "title": "纳西祝酒歌",
     "artist": "和文光",
     "album": "纳西音乐精选",
@@ -8464,7 +8483,7 @@ const musicData = [
     "duration": 163
   },
   {
-    id: 942,
+    id: 943,
     "title": "数数调",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -8473,7 +8492,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 943,
+    id: 944,
     "title": "腾飞的比如",
     "artist": "根呷 阿佳组合",
     "album": "藏族音乐精选",
@@ -8482,7 +8501,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 944,
+    id: 945,
     "title": "《月亮姆》纳西族童谣",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8491,7 +8510,7 @@ const musicData = [
     "duration": 104
   },
   {
-    id: 945,
+    id: 946,
     "title": "打的调",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -8500,7 +8519,7 @@ const musicData = [
     "duration": 169
   },
   {
-    id: 946,
+    id: 947,
     "title": "神奇的玉龙山",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -8509,7 +8528,7 @@ const musicData = [
     "duration": 150
   },
   {
-    id: 947,
+    id: 948,
     "title": "点唇",
     "artist": "丽江群星",
     "album": "纳西音乐精选",
@@ -8518,7 +8537,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 948,
+    id: 949,
     "title": "纳西酒歌",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -8527,7 +8546,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 949,
+    id: 950,
     "title": "我是玉龙山的牧童",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8536,7 +8555,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 950,
+    id: 951,
     "title": "纳西飞歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8545,7 +8564,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 951,
+    id: 952,
     "title": "时授 葬歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8554,7 +8573,7 @@ const musicData = [
     "duration": 87
   },
   {
-    id: 952,
+    id: 953,
     "title": "我的灰姑娘",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8563,7 +8582,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 953,
+    id: 954,
     "title": "调弦曲",
     "artist": "纳西古乐",
     "album": "纳西音乐精选",
@@ -8572,7 +8591,7 @@ const musicData = [
     "duration": 76
   },
   {
-    id: 954,
+    id: 955,
     "title": "我的束河我的爱",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -8581,7 +8600,7 @@ const musicData = [
     "duration": 166
   },
   {
-    id: 955,
+    id: 956,
     "title": "笃(丽江白沙细乐之一)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8590,7 +8609,7 @@ const musicData = [
     "duration": 213
   },
   {
-    id: 956,
+    id: 957,
     "title": "净土（纳西语版）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8599,7 +8618,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 957,
+    id: 958,
     "title": "纳西恋歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8608,7 +8627,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 958,
+    id: 959,
     "title": "纳西乐 纳若咪 纳西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8617,7 +8636,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 959,
+    id: 960,
     "title": "葫芦笙 背靠背",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8626,7 +8645,7 @@ const musicData = [
     "duration": 343
   },
   {
-    id: 960,
+    id: 961,
     "title": "纳西酒歌 劝世歌 情歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8635,7 +8654,7 @@ const musicData = [
     "duration": 392
   },
   {
-    id: 961,
+    id: 962,
     "title": "傈僳民歌五连唱",
     "artist": "三江组合",
     "album": "傈僳音乐精选",
@@ -8644,7 +8663,7 @@ const musicData = [
     "duration": 332
   },
   {
-    id: 962,
+    id: 963,
     "title": "对歌调、玉龙山下的纳西娃",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8653,7 +8672,7 @@ const musicData = [
     "duration": 1430
   },
   {
-    id: 963,
+    id: 964,
     "title": "丽江黎明打跳 ★欢乐调 丽江DJ",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8662,7 +8681,7 @@ const musicData = [
     "duration": 162
   },
   {
-    id: 964,
+    id: 965,
     "title": "丽江黎明打跳 ★提个老 丽江DJ",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8671,7 +8690,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 965,
+    id: 966,
     "title": "纳西 吉呐尼助助（鱼水相会）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8680,7 +8699,7 @@ const musicData = [
     "duration": 161
   },
   {
-    id: 966,
+    id: 967,
     "title": "摩梭谣丽江DJ纳若咪",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8689,7 +8708,7 @@ const musicData = [
     "duration": 209
   },
   {
-    id: 967,
+    id: 968,
     "title": "丽江傈僳打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8698,7 +8717,7 @@ const musicData = [
     "duration": 357
   },
   {
-    id: 968,
+    id: 969,
     "title": "玉龙第三国",
     "artist": "车文光",
     "album": "纳西音乐精选",
@@ -8707,7 +8726,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 969,
+    id: 970,
     "title": "南高寨打跳",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -8716,7 +8735,7 @@ const musicData = [
     "duration": 420
   },
   {
-    id: 970,
+    id: 971,
     "title": "幸福生活好",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -8725,7 +8744,7 @@ const musicData = [
     "duration": 136
   },
   {
-    id: 971,
+    id: 972,
     "title": "傈僳打跳调（葫芦）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8734,7 +8753,7 @@ const musicData = [
     "duration": 432
   },
   {
-    id: 972,
+    id: 973,
     "title": "拥抱丽江",
     "artist": "徐洋",
     "album": "纳西音乐精选",
@@ -8743,7 +8762,7 @@ const musicData = [
     "duration": 247
   },
   {
-    id: 973,
+    id: 974,
     "title": "纳西快板：中国梦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8752,7 +8771,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 974,
+    id: 975,
     "title": "傈僳新版打跳胡芦笙dj",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8761,7 +8780,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 975,
+    id: 976,
     "title": "丽江神曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8770,7 +8789,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 976,
+    id: 977,
     "title": "纳西族音乐史 情歌《南兴调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8779,7 +8798,7 @@ const musicData = [
     "duration": 94
   },
   {
-    id: 977,
+    id: 978,
     "title": "傈僳舞蹈-阔时拉",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8788,7 +8807,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 978,
+    id: 979,
     "title": "傈僳舞蹈_四方朋友来打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8797,7 +8816,7 @@ const musicData = [
     "duration": 282
   },
   {
-    id: 979,
+    id: 980,
     "title": "纳西田野之声 哦热热",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8806,7 +8825,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 980,
+    id: 981,
     "title": "百花开来打跳",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -8815,7 +8834,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 981,
+    id: 982,
     "title": "魅力丽江",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -8824,7 +8843,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 982,
+    id: 983,
     "title": "新民乐_纳西古乐(纯音乐)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8833,7 +8852,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 983,
+    id: 984,
     "title": "格萨拉—纳西平跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8842,7 +8861,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 984,
+    id: 985,
     "title": "我俩永远在一起 阿石才",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -8851,7 +8870,7 @@ const musicData = [
     "duration": 230
   },
   {
-    id: 985,
+    id: 986,
     "title": "阿勒邱",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8860,7 +8879,7 @@ const musicData = [
     "duration": 214
   },
   {
-    id: 986,
+    id: 987,
     "title": "梨花又开放",
     "artist": "和兴凤",
     "album": "纳西音乐精选",
@@ -8869,7 +8888,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 987,
+    id: 988,
     "title": "纳若 -不怕",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8878,7 +8897,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 988,
+    id: 989,
     "title": "丽江滴答",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8887,7 +8906,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 989,
+    id: 990,
     "title": "忘不了的阿哥",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8896,7 +8915,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 990,
+    id: 991,
     "title": "祖先的声音",
     "artist": "山人行组合",
     "album": "纳西音乐精选",
@@ -8905,7 +8924,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 991,
+    id: 992,
     "title": "幸福万年长",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8914,7 +8933,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 992,
+    id: 993,
     "title": "",
     "artist": "吉祥的日子",
     "album": "纳西音乐精选",
@@ -8923,7 +8942,7 @@ const musicData = [
     "duration": 90
   },
   {
-    id: 993,
+    id: 994,
     "title": "东巴唱腔《冲把颂》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8932,7 +8951,7 @@ const musicData = [
     "duration": 93
   },
   {
-    id: 994,
+    id: 995,
     "title": "阿里里 细针挑丝线",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8941,7 +8960,7 @@ const musicData = [
     "duration": 147
   },
   {
-    id: 995,
+    id: 996,
     "title": "纳西人",
     "artist": "山人行组合",
     "album": "纳西音乐精选",
@@ -8950,7 +8969,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 996,
+    id: 997,
     "title": "天边边",
     "artist": "李茜姝",
     "album": "纳西音乐精选",
@@ -8959,7 +8978,7 @@ const musicData = [
     "duration": 171
   },
   {
-    id: 997,
+    id: 998,
     "title": "天蓝蓝",
     "artist": "傈僳娃娃组合",
     "album": "傈僳音乐精选",
@@ -8968,7 +8987,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 998,
+    id: 999,
     "title": "云鹤吟",
     "artist": "和美兰",
     "album": "纳西音乐精选",
@@ -8977,7 +8996,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 999,
+    id: 1000,
     "title": "犁牛调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -8986,7 +9005,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 1000,
+    id: 1001,
     "title": "",
     "artist": "回到彝乡",
     "album": "纳西音乐精选",
@@ -8995,7 +9014,7 @@ const musicData = [
     "duration": 284
   },
   {
-    id: 1001,
+    id: 1002,
     "title": "劝世歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9004,7 +9023,7 @@ const musicData = [
     "duration": 132
   },
   {
-    id: 1002,
+    id: 1003,
     "title": "抓小偷",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -9013,7 +9032,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 1003,
+    id: 1004,
     "title": "你是我的丽江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9022,7 +9041,7 @@ const musicData = [
     "duration": 298
   },
   {
-    id: 1004,
+    id: 1005,
     "title": "三思吉",
     "artist": "和晓霞",
     "album": "纳西音乐精选",
@@ -9031,7 +9050,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 1005,
+    id: 1006,
     "title": "想起家乡",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -9040,7 +9059,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 1006,
+    id: 1007,
     "title": "纳西古乐",
     "artist": "浪淘沙(曲牌)",
     "album": "纳西音乐精选",
@@ -9049,7 +9068,7 @@ const musicData = [
     "duration": 291
   },
   {
-    id: 1007,
+    id: 1008,
     "title": "情歌对唱",
     "artist": "和金花 李瑞山",
     "album": "纳西音乐精选",
@@ -9058,7 +9077,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1008,
+    id: 1009,
     "title": "相守今生",
     "artist": "和丽刚&amp;和趼研",
     "album": "纳西音乐精选",
@@ -9067,7 +9086,7 @@ const musicData = [
     "duration": 332
   },
   {
-    id: 1009,
+    id: 1010,
     "title": "丽江老家",
     "artist": "刘青青",
     "album": "纳西音乐精选",
@@ -9076,7 +9095,7 @@ const musicData = [
     "duration": 168
   },
   {
-    id: 1010,
+    id: 1011,
     "title": "丽江纳西歌手",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9085,7 +9104,7 @@ const musicData = [
     "duration": 88
   },
   {
-    id: 1011,
+    id: 1012,
     "title": "来搓哟，来夸哟",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9094,7 +9113,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 1012,
+    id: 1013,
     "title": "傈僳酒歌",
     "artist": "和燕",
     "album": "傈僳音乐精选",
@@ -9103,7 +9122,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 1013,
+    id: 1014,
     "title": "三月百花开",
     "artist": "林天然",
     "album": "纳西音乐精选",
@@ -9112,7 +9131,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 1014,
+    id: 1015,
     "title": "喔噜啦",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -9121,7 +9140,7 @@ const musicData = [
     "duration": 379
   },
   {
-    id: 1015,
+    id: 1016,
     "title": "刘青青 -纳西打跳“蹉噜了”",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9130,7 +9149,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 1016,
+    id: 1017,
     "title": "呀撒赛(云南白族舞曲)",
     "artist": "",
     "album": "白族音乐精选",
@@ -9139,7 +9158,7 @@ const musicData = [
     "duration": 311
   },
   {
-    id: 1017,
+    id: 1018,
     "title": "净地",
     "artist": "黄颖星.和燕",
     "album": "纳西音乐精选",
@@ -9148,7 +9167,7 @@ const musicData = [
     "duration": 206
   },
   {
-    id: 1018,
+    id: 1019,
     "title": "心想唱就唱",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9157,7 +9176,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 1019,
+    id: 1020,
     "title": "欢乐的阿里里",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9166,7 +9185,7 @@ const musicData = [
     "duration": 142
   },
   {
-    id: 1020,
+    id: 1021,
     "title": "犁牛调",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -9175,7 +9194,7 @@ const musicData = [
     "duration": 115
   },
   {
-    id: 1021,
+    id: 1022,
     "title": "拉伯热美：六项禁令要记牢",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9184,7 +9203,7 @@ const musicData = [
     "duration": 244
   },
   {
-    id: 1022,
+    id: 1023,
     "title": "舞动三江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9193,7 +9212,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 1023,
+    id: 1024,
     "title": "欢乐酒歌",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -9202,7 +9221,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 1024,
+    id: 1025,
     "title": "爱上女儿国",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9211,7 +9230,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 1025,
+    id: 1026,
     "title": "请喝一杯祝福的酒",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -9220,7 +9239,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1026,
+    id: 1027,
     "title": "泸沽湖我向往的地方",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9229,7 +9248,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 1027,
+    id: 1028,
     "title": "康定情人",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9238,7 +9257,7 @@ const musicData = [
     "duration": 333
   },
   {
-    id: 1028,
+    id: 1029,
     "title": "独龙好",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9247,7 +9266,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1029,
+    id: 1030,
     "title": "吟酒歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9256,7 +9275,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 1030,
+    id: 1031,
     "title": "放牛娃娃调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9265,7 +9284,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 1031,
+    id: 1032,
     "title": "澜沧江水深爱的地方",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9274,7 +9293,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 1032,
+    id: 1033,
     "title": "纳西魂(波伯、巴乌、小闷笛)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9283,7 +9302,7 @@ const musicData = [
     "duration": 292
   },
   {
-    id: 1033,
+    id: 1034,
     "title": "醉了丽江",
     "artist": "达坡玛吉、土土",
     "album": "纳西音乐精选",
@@ -9292,7 +9311,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 1034,
+    id: 1035,
     "title": "阿丽丽金拍",
     "artist": "和金花达坡玛吉",
     "album": "纳西音乐精选",
@@ -9301,7 +9320,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 1035,
+    id: 1036,
     "title": "小河淌水",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9310,7 +9329,7 @@ const musicData = [
     "duration": 202
   },
   {
-    id: 1036,
+    id: 1037,
     "title": "两朵云(纳西语+汉语)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9319,7 +9338,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 1037,
+    id: 1038,
     "title": "成都(古城丽江版)",
     "artist": "赵雷",
     "album": "纳西音乐精选",
@@ -9328,7 +9347,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 1038,
+    id: 1039,
     "title": "向阳花+石头在歌唱",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9337,7 +9356,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 1039,
+    id: 1040,
     "title": "朋友来了——喝酒",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9346,7 +9365,7 @@ const musicData = [
     "duration": 86
   },
   {
-    id: 1040,
+    id: 1041,
     "title": "十女十歌",
     "artist": "印象丽江，雪山篇",
     "album": "纳西音乐精选",
@@ -9355,7 +9374,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 1041,
+    id: 1042,
     "title": "十供养(唱经)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9364,7 +9383,7 @@ const musicData = [
     "duration": 551
   },
   {
-    id: 1042,
+    id: 1043,
     "title": "纳西阿勒瓦器",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9373,7 +9392,7 @@ const musicData = [
     "duration": 326
   },
   {
-    id: 1043,
+    id: 1044,
     "title": "多彩民族之纳西族",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9382,7 +9401,7 @@ const musicData = [
     "duration": 1205
   },
   {
-    id: 1044,
+    id: 1045,
     "title": "不要怕",
     "artist": "阿鲁阿卓 、山风组合",
     "album": "纳西音乐精选",
@@ -9391,7 +9410,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 1045,
+    id: 1046,
     "title": "纳西娃娃合唱团—嘿美啵",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9400,7 +9419,7 @@ const musicData = [
     "duration": 191
   },
   {
-    id: 1046,
+    id: 1047,
     "title": "传奇",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9409,7 +9428,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 1047,
+    id: 1048,
     "title": "纳西语版《真的爱你》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9418,7 +9437,7 @@ const musicData = [
     "duration": 166
   },
   {
-    id: 1048,
+    id: 1049,
     "title": "剑川白族调 心肝票",
     "artist": "",
     "album": "白族音乐精选",
@@ -9427,7 +9446,7 @@ const musicData = [
     "duration": 308
   },
   {
-    id: 1049,
+    id: 1050,
     "title": "好梦在丽江",
     "artist": "向丽",
     "album": "纳西音乐精选",
@@ -9436,7 +9455,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1050,
+    id: 1051,
     "title": "请到纳西村寨来",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9445,7 +9464,7 @@ const musicData = [
     "duration": 156
   },
   {
-    id: 1051,
+    id: 1052,
     "title": "达坡阿玻",
     "artist": "我的好姑娘",
     "album": "纳西音乐精选",
@@ -9454,7 +9473,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 1052,
+    id: 1053,
     "title": "感恩丽江原唱",
     "artist": "李茜姝",
     "album": "纳西音乐精选",
@@ -9463,7 +9482,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 1053,
+    id: 1054,
     "title": "丽江恰恰恰",
     "artist": "土土哥哥",
     "album": "纳西音乐精选",
@@ -9472,7 +9491,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 1054,
+    id: 1055,
     "title": "丽江恰恰恰",
     "artist": "土土哥哥)",
     "album": "纳西音乐精选",
@@ -9481,7 +9500,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 1055,
+    id: 1056,
     "title": "嘎洒洒",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9490,7 +9509,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1056,
+    id: 1057,
     "title": "喂默达",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9499,7 +9518,7 @@ const musicData = [
     "duration": 391
   },
   {
-    id: 1057,
+    id: 1058,
     "title": "齐旦布达娃卓玛-梅里爱的见证",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9508,7 +9527,7 @@ const musicData = [
     "duration": 261
   },
   {
-    id: 1058,
+    id: 1059,
     "title": "欢乐纳西人",
     "artist": "和春秀",
     "album": "纳西音乐精选",
@@ -9517,7 +9536,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 1059,
+    id: 1060,
     "title": "玉龙雪山的一米阳光(长音频)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9526,7 +9545,7 @@ const musicData = [
     "duration": 1049
   },
   {
-    id: 1060,
+    id: 1061,
     "title": "大山汉子傈僳族民歌",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -9535,7 +9554,7 @@ const musicData = [
     "duration": 269
   },
   {
-    id: 1061,
+    id: 1062,
     "title": "玉龙雪山 欢乐的金沙江纳西族",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9544,7 +9563,7 @@ const musicData = [
     "duration": 161
   },
   {
-    id: 1062,
+    id: 1063,
     "title": "阿哩哩格吉拍美丽的白云",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9553,7 +9572,7 @@ const musicData = [
     "duration": 335
   },
   {
-    id: 1063,
+    id: 1064,
     "title": "呀哩哩",
     "artist": "和议财(纳西族)",
     "album": "纳西音乐精选",
@@ -9562,7 +9581,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 1064,
+    id: 1065,
     "title": "玉龙雪山传说(纳西族)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9571,7 +9590,7 @@ const musicData = [
     "duration": 340
   },
   {
-    id: 1065,
+    id: 1066,
     "title": "纳西民歌《沃孟达·新婚调》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9580,7 +9599,7 @@ const musicData = [
     "duration": 1340
   },
   {
-    id: 1066,
+    id: 1067,
     "title": "过年好DJ",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9589,7 +9608,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 1067,
+    id: 1068,
     "title": "张曦尹《星光闪烁》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9598,7 +9617,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 1068,
+    id: 1069,
     "title": "张曦尹《山那边的放猪娃》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9607,7 +9626,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 1069,
+    id: 1070,
     "title": "美丽的白云--纳西族歌手姚熙",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9616,7 +9635,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 1070,
+    id: 1071,
     "title": "纳西音乐 张曦尹-故乡 丽江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9625,7 +9644,7 @@ const musicData = [
     "duration": 233
   },
   {
-    id: 1071,
+    id: 1072,
     "title": "大石桥之恋--纳西族歌手姚熙",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9634,7 +9653,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 1072,
+    id: 1073,
     "title": "张曦尹《蝶儿飞》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9643,7 +9662,7 @@ const musicData = [
     "duration": 202
   },
   {
-    id: 1073,
+    id: 1074,
     "title": "纳西民族舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9652,7 +9671,7 @@ const musicData = [
     "duration": 304
   },
   {
-    id: 1074,
+    id: 1075,
     "title": "向阳花合唱团 朋友",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9661,7 +9680,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 1075,
+    id: 1076,
     "title": "和丽元 杨永爱 -纳西喂么哒",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9670,7 +9689,7 @@ const musicData = [
     "duration": 460
   },
   {
-    id: 1076,
+    id: 1077,
     "title": "纳西族歌手姚熙",
     "artist": "纳西西于花花神",
     "album": "纳西音乐精选",
@@ -9679,7 +9698,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 1077,
+    id: 1078,
     "title": "纳西族歌手姚熙－咱撮鲁啦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9688,7 +9707,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 1078,
+    id: 1079,
     "title": "丽江纳西族歌手",
     "artist": "篝火之夜",
     "album": "纳西音乐精选",
@@ -9697,7 +9716,7 @@ const musicData = [
     "duration": 202
   },
   {
-    id: 1079,
+    id: 1080,
     "title": "无标题",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9706,7 +9725,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 1080,
+    id: 1081,
     "title": "我的家",
     "artist": "纳西音乐 张曦尹",
     "album": "纳西音乐精选",
@@ -9715,7 +9734,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 1081,
+    id: 1082,
     "title": "卓玛",
     "artist": "亚东",
     "album": "纳西音乐精选",
@@ -9724,7 +9743,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 1082,
+    id: 1083,
     "title": "小毛调-葫芦笙",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9733,7 +9752,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 1083,
+    id: 1084,
     "title": "纳西三部曲dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9742,7 +9761,7 @@ const musicData = [
     "duration": 359
   },
   {
-    id: 1084,
+    id: 1085,
     "title": "阿里里献给毛主席",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9751,7 +9770,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 1085,
+    id: 1086,
     "title": "心的港湾",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -9760,7 +9779,7 @@ const musicData = [
     "duration": 214
   },
   {
-    id: 1086,
+    id: 1087,
     "title": "丽江华坪花傈僳打跳之傈僳阔时",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -9769,7 +9788,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 1087,
+    id: 1088,
     "title": "玉龙恋歌",
     "artist": "李承翰&amp;和慧琼",
     "album": "纳西音乐精选",
@@ -9778,7 +9797,7 @@ const musicData = [
     "duration": 393
   },
   {
-    id: 1088,
+    id: 1089,
     "title": "捞松毛",
     "artist": "丽江民族打跳",
     "album": "纳西音乐精选",
@@ -9787,7 +9806,7 @@ const musicData = [
     "duration": 338
   },
   {
-    id: 1089,
+    id: 1090,
     "title": "古城的夜",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -9796,7 +9815,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 1090,
+    id: 1091,
     "title": "古西塘 俏水乡",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9805,7 +9824,7 @@ const musicData = [
     "duration": 209
   },
   {
-    id: 1091,
+    id: 1092,
     "title": "秋天的祝福",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9814,7 +9833,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 1092,
+    id: 1093,
     "title": "茶马情",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -9823,7 +9842,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 1093,
+    id: 1094,
     "title": "纳西古乐 情漫金沙江",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9832,7 +9851,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 1094,
+    id: 1095,
     "title": "浪漫丽江",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -9841,7 +9860,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 1095,
+    id: 1096,
     "title": "阿尺瓦器",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9850,7 +9869,7 @@ const musicData = [
     "duration": 194
   },
   {
-    id: 1096,
+    id: 1097,
     "title": "",
     "artist": "相遇",
     "album": "纳西音乐精选",
@@ -9859,7 +9878,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1097,
+    id: 1098,
     "title": "跳舞姑娘",
     "artist": "阿木宇梅",
     "album": "纳西音乐精选",
@@ -9868,7 +9887,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 1098,
+    id: 1099,
     "title": "春",
     "artist": "阿木宇梅",
     "album": "纳西音乐精选",
@@ -9877,7 +9896,7 @@ const musicData = [
     "duration": 254
   },
   {
-    id: 1099,
+    id: 1100,
     "title": "点神灯（东巴祭司和玉才唱腔）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9886,7 +9905,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 1100,
+    id: 1101,
     "title": "鲁般鲁饶（和开祥）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9895,7 +9914,7 @@ const musicData = [
     "duration": 134
   },
   {
-    id: 1101,
+    id: 1102,
     "title": "拉伯谷气",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -9904,7 +9923,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 1102,
+    id: 1103,
     "title": "拉古拉古",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9913,7 +9932,7 @@ const musicData = [
     "duration": 117
   },
   {
-    id: 1103,
+    id: 1104,
     "title": "阿佤新歌",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9922,7 +9941,7 @@ const musicData = [
     "duration": 91
   },
   {
-    id: 1104,
+    id: 1105,
     "title": "石鼓谣",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -9931,7 +9950,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 1105,
+    id: 1106,
     "title": "欢乐酒歌",
     "artist": "和漾水",
     "album": "纳西音乐精选",
@@ -9940,7 +9959,7 @@ const musicData = [
     "duration": 201
   },
   {
-    id: 1106,
+    id: 1107,
     "title": "四方街之夜",
     "artist": "和漩",
     "album": "纳西音乐精选",
@@ -9949,7 +9968,7 @@ const musicData = [
     "duration": 50
   },
   {
-    id: 1107,
+    id: 1108,
     "title": "依古纳西",
     "artist": "",
     "album": "纳西音乐精选",
@@ -9958,7 +9977,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 1108,
+    id: 1109,
     "title": "纳西热美磋",
     "artist": "纳西群舞",
     "album": "纳西音乐精选",
@@ -9967,7 +9986,7 @@ const musicData = [
     "duration": 282
   },
   {
-    id: 1109,
+    id: 1110,
     "title": "石头城",
     "artist": "拉伯阿新",
     "album": "纳西音乐精选",
@@ -9976,7 +9995,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1110,
+    id: 1111,
     "title": "蝴蝶小鱼",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -9985,7 +10004,7 @@ const musicData = [
     "duration": 143
   },
   {
-    id: 1111,
+    id: 1112,
     "title": "山神恋",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -9994,7 +10013,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 1112,
+    id: 1113,
     "title": "归来",
     "artist": "齐旦布",
     "album": "纳西音乐精选",
@@ -10003,7 +10022,7 @@ const musicData = [
     "duration": 311
   },
   {
-    id: 1113,
+    id: 1114,
     "title": "不痛",
     "artist": "吉萨莎玛",
     "album": "纳西音乐精选",
@@ -10012,7 +10031,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 1114,
+    id: 1115,
     "title": "净地",
     "artist": "吉萨莎玛",
     "album": "纳西音乐精选",
@@ -10021,7 +10040,7 @@ const musicData = [
     "duration": 135
   },
   {
-    id: 1115,
+    id: 1116,
     "title": "怀念",
     "artist": "吉萨莎玛",
     "album": "纳西音乐精选",
@@ -10030,7 +10049,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 1116,
+    id: 1117,
     "title": "猜猜谣",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -10039,7 +10058,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1117,
+    id: 1118,
     "title": "阿里里",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10048,7 +10067,7 @@ const musicData = [
     "duration": 738
   },
   {
-    id: 1118,
+    id: 1119,
     "title": "与白鹤共舞",
     "artist": "德金卓玛",
     "album": "纳西音乐精选",
@@ -10057,7 +10076,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 1119,
+    id: 1120,
     "title": "召唤",
     "artist": "和仕军 杨志勇",
     "album": "纳西音乐精选",
@@ -10066,7 +10085,7 @@ const musicData = [
     "duration": 149
   },
   {
-    id: 1120,
+    id: 1121,
     "title": "说散就散",
     "artist": "和晓霞",
     "album": "纳西音乐精选",
@@ -10075,7 +10094,7 @@ const musicData = [
     "duration": 161
   },
   {
-    id: 1121,
+    id: 1122,
     "title": "时间煮雨",
     "artist": "和晓霞",
     "album": "纳西音乐精选",
@@ -10084,7 +10103,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 1122,
+    id: 1123,
     "title": "七彩飞扬",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -10093,7 +10112,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 1123,
+    id: 1124,
     "title": "歪脖子树下",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -10102,7 +10121,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 1124,
+    id: 1125,
     "title": "美域巴拉格宗",
     "artist": "央金次卓",
     "album": "纳西音乐精选",
@@ -10111,7 +10130,7 @@ const musicData = [
     "duration": 275
   },
   {
-    id: 1125,
+    id: 1126,
     "title": "嘿美孜卜（月光下）纳西原生态",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10120,7 +10139,7 @@ const musicData = [
     "duration": 536
   },
   {
-    id: 1126,
+    id: 1127,
     "title": "心中的雪山",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -10129,7 +10148,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 1127,
+    id: 1128,
     "title": "许媛",
     "artist": "玛吉谁不夸",
     "album": "纳西音乐精选",
@@ -10138,7 +10157,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 1128,
+    id: 1129,
     "title": "甜蜜蜜",
     "artist": "达坡玛吉、和文光",
     "album": "纳西音乐精选",
@@ -10147,7 +10166,7 @@ const musicData = [
     "duration": 222
   },
   {
-    id: 1129,
+    id: 1130,
     "title": "拉乌绿韵",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -10156,7 +10175,7 @@ const musicData = [
     "duration": 387
   },
   {
-    id: 1130,
+    id: 1131,
     "title": "纳西语(梦中的香格里拉)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10165,7 +10184,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 1131,
+    id: 1132,
     "title": "纳西语Naq sso mil",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10174,7 +10193,7 @@ const musicData = [
     "duration": 183
   },
   {
-    id: 1132,
+    id: 1133,
     "title": "",
     "artist": "唱给太阳的歌",
     "album": "纳西音乐精选",
@@ -10183,7 +10202,7 @@ const musicData = [
     "duration": 270
   },
   {
-    id: 1133,
+    id: 1134,
     "title": "我是纳西的后代",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10192,7 +10211,7 @@ const musicData = [
     "duration": 334
   },
   {
-    id: 1134,
+    id: 1135,
     "title": "夏夜篝火(纳西族)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10201,7 +10220,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 1135,
+    id: 1136,
     "title": "不丹 格桑啦",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10210,7 +10229,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 1136,
+    id: 1137,
     "title": "《阿叔杨七三》",
     "artist": "啊嚒嘀喂",
     "album": "纳西音乐精选",
@@ -10219,7 +10238,7 @@ const musicData = [
     "duration": 85
   },
   {
-    id: 1137,
+    id: 1138,
     "title": "雨露滋润依古堆（喂么达）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10228,7 +10247,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 1138,
+    id: 1139,
     "title": "丽江原生态打歌.大蛮调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10237,7 +10256,7 @@ const musicData = [
     "duration": 627
   },
   {
-    id: 1139,
+    id: 1140,
     "title": "一起来打跳",
     "artist": "普米族原生态",
     "album": "纳西音乐精选",
@@ -10246,7 +10265,7 @@ const musicData = [
     "duration": 440
   },
   {
-    id: 1140,
+    id: 1141,
     "title": "和兴凤",
     "artist": "说散就散",
     "album": "纳西音乐精选",
@@ -10255,7 +10274,7 @@ const musicData = [
     "duration": 116
   },
   {
-    id: 1141,
+    id: 1142,
     "title": "",
     "artist": "达哇纳西努",
     "album": "纳西音乐精选",
@@ -10264,7 +10283,7 @@ const musicData = [
     "duration": 144
   },
   {
-    id: 1142,
+    id: 1143,
     "title": "解脱",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -10273,7 +10292,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 1143,
+    id: 1144,
     "title": "新的天地",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -10282,7 +10301,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 1144,
+    id: 1145,
     "title": "荷花香",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -10291,7 +10310,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 1145,
+    id: 1146,
     "title": "陈四才-《幸福醉歌》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10300,7 +10319,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 1146,
+    id: 1147,
     "title": "回归",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10309,7 +10328,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 1147,
+    id: 1148,
     "title": "爱无悔",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10318,7 +10337,7 @@ const musicData = [
     "duration": 262
   },
   {
-    id: 1148,
+    id: 1149,
     "title": "星空谣",
     "artist": "达瓦央珍 陈华龙",
     "album": "纳西音乐精选",
@@ -10327,7 +10346,7 @@ const musicData = [
     "duration": 158
   },
   {
-    id: 1149,
+    id: 1150,
     "title": "你不知道的事",
     "artist": "和兴凤",
     "album": "纳西音乐精选",
@@ -10336,7 +10355,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1150,
+    id: 1151,
     "title": "婚誓",
     "artist": "和兴凤、塔斯肯",
     "album": "纳西音乐精选",
@@ -10345,7 +10364,7 @@ const musicData = [
     "duration": 175
   },
   {
-    id: 1151,
+    id: 1152,
     "title": "《不要怕》和兴凤",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10354,7 +10373,7 @@ const musicData = [
     "duration": 81
   },
   {
-    id: 1152,
+    id: 1153,
     "title": "香巴拉佛塔",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -10363,7 +10382,7 @@ const musicData = [
     "duration": 268
   },
   {
-    id: 1153,
+    id: 1154,
     "title": "纳西仁美蹉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10372,7 +10391,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 1154,
+    id: 1155,
     "title": "阿卡巴拉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10381,7 +10400,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 1155,
+    id: 1156,
     "title": "哦蒙达",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10390,7 +10409,7 @@ const musicData = [
     "duration": 56
   },
   {
-    id: 1156,
+    id: 1157,
     "title": "沙玛学锋-花腰姑娘",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10399,7 +10418,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 1157,
+    id: 1158,
     "title": "花楼恋歌",
     "artist": "女儿国组合",
     "album": "纳西音乐精选",
@@ -10408,7 +10427,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 1158,
+    id: 1159,
     "title": "走婚夜歌（阿注喂）",
     "artist": "女儿国组合",
     "album": "纳西音乐精选",
@@ -10417,7 +10436,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 1159,
+    id: 1160,
     "title": "心灵的坐标",
     "artist": "习振东",
     "album": "纳西音乐精选",
@@ -10426,7 +10445,7 @@ const musicData = [
     "duration": 92
   },
   {
-    id: 1160,
+    id: 1161,
     "title": "玉龙情歌",
     "artist": "和春秀",
     "album": "纳西音乐精选",
@@ -10435,7 +10454,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 1161,
+    id: 1162,
     "title": "怒江情歌 纳若咪",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10444,7 +10463,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 1162,
+    id: 1163,
     "title": "丽江华坪花傈僳打跳之闯箩篼",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -10453,7 +10472,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 1163,
+    id: 1164,
     "title": "丽江风暴1dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10462,7 +10481,7 @@ const musicData = [
     "duration": 970
   },
   {
-    id: 1164,
+    id: 1165,
     "title": "祝婚歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10471,7 +10490,7 @@ const musicData = [
     "duration": 147
   },
   {
-    id: 1165,
+    id: 1166,
     "title": "大山走出的孩子",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10480,7 +10499,7 @@ const musicData = [
     "duration": 287
   },
   {
-    id: 1166,
+    id: 1167,
     "title": "纳西情歌（纳西语版）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10489,7 +10508,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 1167,
+    id: 1168,
     "title": "唐古拉风暴金雪莲风暴精选",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10498,7 +10517,7 @@ const musicData = [
     "duration": 861
   },
   {
-    id: 1168,
+    id: 1169,
     "title": "样怪样嘻",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -10507,7 +10526,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 1169,
+    id: 1170,
     "title": "唐古拉风暴 (DJ版)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10516,7 +10535,7 @@ const musicData = [
     "duration": 482
   },
   {
-    id: 1170,
+    id: 1171,
     "title": "星愿亮晶晶",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -10525,7 +10544,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 1171,
+    id: 1172,
     "title": "月亮快出来",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10534,7 +10553,7 @@ const musicData = [
     "duration": 217
   },
   {
-    id: 1172,
+    id: 1173,
     "title": "玉龙雪山",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -10543,7 +10562,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 1173,
+    id: 1174,
     "title": "拉市海我的爱人",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -10552,7 +10571,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 1174,
+    id: 1175,
     "title": "玉龙梦",
     "artist": "纳西民歌",
     "album": "纳西音乐精选",
@@ -10561,7 +10580,7 @@ const musicData = [
     "duration": 84
   },
   {
-    id: 1175,
+    id: 1176,
     "title": "归来吧",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -10570,7 +10589,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 1176,
+    id: 1177,
     "title": "纳西啦嘿歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10579,7 +10598,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 1177,
+    id: 1178,
     "title": "纳西族民歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10588,7 +10607,7 @@ const musicData = [
     "duration": 185
   },
   {
-    id: 1178,
+    id: 1179,
     "title": "天边的浪漫",
     "artist": "央金兰泽",
     "album": "纳西音乐精选",
@@ -10597,7 +10616,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 1179,
+    id: 1180,
     "title": "纳西西余花花色",
     "artist": "涵格佩吉",
     "album": "纳西音乐精选",
@@ -10606,7 +10625,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 1180,
+    id: 1181,
     "title": "四季歌",
     "artist": "和德华",
     "album": "纳西音乐精选",
@@ -10615,7 +10634,7 @@ const musicData = [
     "duration": 190
   },
   {
-    id: 1181,
+    id: 1182,
     "title": "亚拉咧",
     "artist": "三坝七步",
     "album": "纳西音乐精选",
@@ -10624,7 +10643,7 @@ const musicData = [
     "duration": 129
   },
   {
-    id: 1182,
+    id: 1183,
     "title": "想是想玩呢,就是害羞羞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10633,7 +10652,7 @@ const musicData = [
     "duration": 184
   },
   {
-    id: 1183,
+    id: 1184,
     "title": "打跳歌",
     "artist": "丽江组合",
     "album": "纳西音乐精选",
@@ -10642,7 +10661,7 @@ const musicData = [
     "duration": 1472
   },
   {
-    id: 1184,
+    id: 1185,
     "title": "大家一起来",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -10651,7 +10670,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 1185,
+    id: 1186,
     "title": "雪域桃抱松",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -10660,7 +10679,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 1186,
+    id: 1187,
     "title": "超越dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10669,7 +10688,7 @@ const musicData = [
     "duration": 390
   },
   {
-    id: 1187,
+    id: 1188,
     "title": "赶街跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10678,7 +10697,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 1188,
+    id: 1189,
     "title": "美丽姑娘",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -10687,7 +10706,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 1189,
+    id: 1190,
     "title": "绿色出行歌",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
@@ -10696,7 +10715,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 1190,
+    id: 1191,
     "title": "维西纳西古歌(打谷调)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10705,7 +10724,7 @@ const musicData = [
     "duration": 240
   },
   {
-    id: 1191,
+    id: 1192,
     "title": "丽江纳西古乐(阿丽丽金排)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10714,7 +10733,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 1192,
+    id: 1193,
     "title": "丽江纳西古歌(娥姆达)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10723,7 +10742,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 1193,
+    id: 1194,
     "title": "故乡丽江",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -10732,7 +10751,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 1194,
+    id: 1195,
     "title": "魅力丽江 男声独唱",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -10741,7 +10760,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 1195,
+    id: 1196,
     "title": "大懂纳西古歌(热美磋)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10750,7 +10769,7 @@ const musicData = [
     "duration": 154
   },
   {
-    id: 1196,
+    id: 1197,
     "title": "三坝纳西古歌谷气调",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10759,7 +10778,7 @@ const musicData = [
     "duration": 178
   },
   {
-    id: 1197,
+    id: 1198,
     "title": "雪山恋",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10768,7 +10787,7 @@ const musicData = [
     "duration": 156
   },
   {
-    id: 1198,
+    id: 1199,
     "title": "栽秧调(古老民歌)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10777,7 +10796,7 @@ const musicData = [
     "duration": 163
   },
   {
-    id: 1199,
+    id: 1200,
     "title": "阿普三朵请您来",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -10786,7 +10805,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 1200,
+    id: 1201,
     "title": "傈僳打桥舞",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -10795,7 +10814,7 @@ const musicData = [
     "duration": 348
   },
   {
-    id: 1201,
+    id: 1202,
     "title": "傈僳酒歌dj",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -10804,7 +10823,7 @@ const musicData = [
     "duration": 174
   },
   {
-    id: 1202,
+    id: 1203,
     "title": "相守到永久",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10813,7 +10832,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 1203,
+    id: 1204,
     "title": "纳西摇篮曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10822,7 +10841,7 @@ const musicData = [
     "duration": 134
   },
   {
-    id: 1204,
+    id: 1205,
     "title": "唯有你",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -10831,7 +10850,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 1205,
+    id: 1206,
     "title": "齐来欢喜",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -10840,7 +10859,7 @@ const musicData = [
     "duration": 82
   },
   {
-    id: 1206,
+    id: 1207,
     "title": "甲姆沽·阿平、阿花-爱的福音",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10849,7 +10868,7 @@ const musicData = [
     "duration": 259
   },
   {
-    id: 1207,
+    id: 1208,
     "title": "欢乐纳西打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10858,7 +10877,7 @@ const musicData = [
     "duration": 183
   },
   {
-    id: 1208,
+    id: 1209,
     "title": "注目看耶稣 Yisu Juq Lei Liuq",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10867,7 +10886,7 @@ const musicData = [
     "duration": 221
   },
   {
-    id: 1209,
+    id: 1210,
     "title": "智慧之源",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -10876,7 +10895,7 @@ const musicData = [
     "duration": 200
   },
   {
-    id: 1210,
+    id: 1211,
     "title": "善与恶",
     "artist": "甲姆沽·阿平",
     "album": "纳西音乐精选",
@@ -10885,7 +10904,7 @@ const musicData = [
     "duration": 226
   },
   {
-    id: 1211,
+    id: 1212,
     "title": "勤劳之歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -10894,7 +10913,7 @@ const musicData = [
     "duration": 377
   },
   {
-    id: 1212,
+    id: 1213,
     "title": "我是玉龙山上的牧童",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10903,7 +10922,7 @@ const musicData = [
     "duration": 208
   },
   {
-    id: 1213,
+    id: 1214,
     "title": "丽江千古情",
     "artist": "蔡隽妮",
     "album": "纳西音乐精选",
@@ -10912,7 +10931,7 @@ const musicData = [
     "duration": 199
   },
   {
-    id: 1214,
+    id: 1215,
     "title": "云中的村庄",
     "artist": "马涛",
     "album": "纳西音乐精选",
@@ -10921,7 +10940,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 1215,
+    id: 1216,
     "title": "纳西-随想",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10930,7 +10949,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 1216,
+    id: 1217,
     "title": "玉龙山上开红花.",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10939,7 +10958,7 @@ const musicData = [
     "duration": 92
   },
   {
-    id: 1217,
+    id: 1218,
     "title": "纳西乐",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -10948,7 +10967,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 1218,
+    id: 1219,
     "title": "吖咪倘",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -10957,7 +10976,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 1219,
+    id: 1220,
     "title": "葫芦笙（王永刚）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10966,7 +10985,7 @@ const musicData = [
     "duration": 154
   },
   {
-    id: 1220,
+    id: 1221,
     "title": "彝人制造",
     "artist": "妈妈",
     "album": "纳西音乐精选",
@@ -10975,7 +10994,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 1221,
+    id: 1222,
     "title": "三江谣",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10984,7 +11003,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 1222,
+    id: 1223,
     "title": "沙玛学锋《云中村庄》现场版",
     "artist": "",
     "album": "纳西音乐精选",
@@ -10993,7 +11012,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 1223,
+    id: 1224,
     "title": "纳西魂（和文光音乐）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11002,7 +11021,7 @@ const musicData = [
     "duration": 215
   },
   {
-    id: 1224,
+    id: 1225,
     "title": "耳环姑娘",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -11011,7 +11030,7 @@ const musicData = [
     "duration": 188
   },
   {
-    id: 1225,
+    id: 1226,
     "title": "摩梭打跳曲II",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11020,7 +11039,7 @@ const musicData = [
     "duration": 276
   },
   {
-    id: 1226,
+    id: 1227,
     "title": "与白鹤共舞",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11029,7 +11048,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 1227,
+    id: 1228,
     "title": "姑娘小伙来打跳",
     "artist": "纯音乐",
     "album": "纳西音乐精选",
@@ -11038,7 +11057,7 @@ const musicData = [
     "duration": 487
   },
   {
-    id: 1228,
+    id: 1229,
     "title": "彝族舞曲I",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11047,7 +11066,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 1229,
+    id: 1230,
     "title": "傈僳芦笙",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11056,7 +11075,7 @@ const musicData = [
     "duration": 320
   },
   {
-    id: 1230,
+    id: 1231,
     "title": "回家 印象丽江主题曲 西若如",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11065,7 +11084,7 @@ const musicData = [
     "duration": 292
   },
   {
-    id: 1231,
+    id: 1232,
     "title": "傈僳打跳-乌鸦喝水",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11074,7 +11093,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 1232,
+    id: 1233,
     "title": "群星演唱《牦牛之歌》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11083,7 +11102,7 @@ const musicData = [
     "duration": 316
   },
   {
-    id: 1233,
+    id: 1234,
     "title": "回家",
     "artist": "西若如",
     "album": "纳西音乐精选",
@@ -11092,7 +11111,7 @@ const musicData = [
     "duration": 288
   },
   {
-    id: 1234,
+    id: 1235,
     "title": "纳西资搓鲁",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11101,7 +11120,7 @@ const musicData = [
     "duration": 441
   },
   {
-    id: 1235,
+    id: 1236,
     "title": "丽江华坪跳之傈僳阔时",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11110,7 +11129,7 @@ const musicData = [
     "duration": 314
   },
   {
-    id: 1236,
+    id: 1237,
     "title": "笑一笑对脚歌曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11119,7 +11138,7 @@ const musicData = [
     "duration": 160
   },
   {
-    id: 1237,
+    id: 1238,
     "title": "蹉噜了",
     "artist": "刘青青",
     "album": "纳西音乐精选",
@@ -11128,7 +11147,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 1238,
+    id: 1239,
     "title": "好玩好耍来打跳",
     "artist": "纳西打跳",
     "album": "纳西音乐精选",
@@ -11137,7 +11156,7 @@ const musicData = [
     "duration": 372
   },
   {
-    id: 1239,
+    id: 1240,
     "title": "傈僳打跳调（葫芦声）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11146,7 +11165,7 @@ const musicData = [
     "duration": 432
   },
   {
-    id: 1240,
+    id: 1241,
     "title": "丽江黎明",
     "artist": "僳家山歌",
     "album": "纳西音乐精选",
@@ -11155,7 +11174,7 @@ const musicData = [
     "duration": 334
   },
   {
-    id: 1241,
+    id: 1242,
     "title": "三十年",
     "artist": "山人乐队",
     "album": "纳西音乐精选",
@@ -11164,7 +11183,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 1242,
+    id: 1243,
     "title": "大山走出的孩子",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -11173,7 +11192,7 @@ const musicData = [
     "duration": 282
   },
   {
-    id: 1243,
+    id: 1244,
     "title": "随我所爱",
     "artist": "摇滚藏獒纳西语版",
     "album": "纳西音乐精选",
@@ -11182,7 +11201,7 @@ const musicData = [
     "duration": 212
   },
   {
-    id: 1244,
+    id: 1245,
     "title": "习振东 -唱一首属于自己的歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11191,7 +11210,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 1245,
+    id: 1246,
     "title": "丽江纳西打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11200,7 +11219,7 @@ const musicData = [
     "duration": 138
   },
   {
-    id: 1246,
+    id: 1247,
     "title": "why---纳金坤",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11209,7 +11228,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 1247,
+    id: 1248,
     "title": "玉龙山组合表演纳西族民歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11218,7 +11237,7 @@ const musicData = [
     "duration": 56
   },
   {
-    id: 1248,
+    id: 1249,
     "title": "阿哩哩",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11227,7 +11246,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 1249,
+    id: 1250,
     "title": "云上石头城插曲-《云中村庄》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11236,7 +11255,7 @@ const musicData = [
     "duration": 247
   },
   {
-    id: 1250,
+    id: 1251,
     "title": "《太久》",
     "artist": "夏天播放",
     "album": "纳西音乐精选",
@@ -11245,7 +11264,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 1251,
+    id: 1252,
     "title": "阿依呢玛（傈僳dj舞曲）",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11254,7 +11273,7 @@ const musicData = [
     "duration": 893
   },
   {
-    id: 1252,
+    id: 1253,
     "title": "傈僳魅音超嗨傈僳打跳舞曲DJ版",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11263,7 +11282,7 @@ const musicData = [
     "duration": 316
   },
   {
-    id: 1253,
+    id: 1254,
     "title": "走吧回家",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -11272,7 +11291,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 1254,
+    id: 1255,
     "title": "《云上石头城》当爱情来过",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11281,7 +11300,7 @@ const musicData = [
     "duration": 299
   },
   {
-    id: 1255,
+    id: 1256,
     "title": "嘎迟迟呐撒哇",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11290,7 +11309,7 @@ const musicData = [
     "duration": 189
   },
   {
-    id: 1256,
+    id: 1257,
     "title": "久违的哥们",
     "artist": "阿刚",
     "album": "纳西音乐精选",
@@ -11299,7 +11318,7 @@ const musicData = [
     "duration": 277
   },
   {
-    id: 1257,
+    id: 1258,
     "title": "烧天香（纳西东巴）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11308,7 +11327,7 @@ const musicData = [
     "duration": 109
   },
   {
-    id: 1258,
+    id: 1259,
     "title": "度王经（纳西东巴）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11317,7 +11336,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 1259,
+    id: 1260,
     "title": "啊依然",
     "artist": "傈僳族",
     "album": "傈僳音乐精选",
@@ -11326,7 +11345,7 @@ const musicData = [
     "duration": 191
   },
   {
-    id: 1260,
+    id: 1261,
     "title": "傈僳调",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11335,7 +11354,7 @@ const musicData = [
     "duration": 263
   },
   {
-    id: 1261,
+    id: 1262,
     "title": "洛克的家",
     "artist": "我是土土",
     "album": "纳西音乐精选",
@@ -11344,7 +11363,7 @@ const musicData = [
     "duration": 279
   },
   {
-    id: 1262,
+    id: 1263,
     "title": "彝族dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11353,7 +11372,7 @@ const musicData = [
     "duration": 251
   },
   {
-    id: 1263,
+    id: 1264,
     "title": "索玛花盛开",
     "artist": "小凉山彝族舞曲",
     "album": "纳西音乐精选",
@@ -11362,7 +11381,7 @@ const musicData = [
     "duration": 347
   },
   {
-    id: 1264,
+    id: 1265,
     "title": "欢乐香巴拉.mp3",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -11371,7 +11390,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 1265,
+    id: 1266,
     "title": "超越葫芦笙dj-超越葫芦笙dj",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11380,7 +11399,7 @@ const musicData = [
     "duration": 650
   },
   {
-    id: 1266,
+    id: 1267,
     "title": "纳西语版《一生所爱》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11389,7 +11408,7 @@ const musicData = [
     "duration": 289
   },
   {
-    id: 1267,
+    id: 1268,
     "title": "傈僳族七步曲",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -11398,7 +11417,7 @@ const musicData = [
     "duration": 326
   },
   {
-    id: 1268,
+    id: 1269,
     "title": "羊年大吉来打跳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11407,7 +11426,7 @@ const musicData = [
     "duration": 531
   },
   {
-    id: 1269,
+    id: 1270,
     "title": "丽江梦",
     "artist": "钰涵",
     "album": "纳西音乐精选",
@@ -11416,7 +11435,7 @@ const musicData = [
     "duration": 257
   },
   {
-    id: 1270,
+    id: 1271,
     "title": "纳西狼组合-新年好",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11425,7 +11444,7 @@ const musicData = [
     "duration": 183
   },
   {
-    id: 1271,
+    id: 1272,
     "title": "梦回云南--纳金坤",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11434,7 +11453,7 @@ const musicData = [
     "duration": 293
   },
   {
-    id: 1272,
+    id: 1273,
     "title": "香格里拉的约定",
     "artist": "兰卡措",
     "album": "纳西音乐精选",
@@ -11443,7 +11462,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 1273,
+    id: 1274,
     "title": "山那边的纳西娃.mp3",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -11452,7 +11471,7 @@ const musicData = [
     "duration": 232
   },
   {
-    id: 1274,
+    id: 1275,
     "title": "芦笙邀舞（Li-Su）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11461,7 +11480,7 @@ const musicData = [
     "duration": 223
   },
   {
-    id: 1275,
+    id: 1276,
     "title": "口弦悠悠（欣赏版）",
     "artist": "和文光",
     "album": "纳西音乐精选",
@@ -11470,7 +11489,7 @@ const musicData = [
     "duration": 219
   },
   {
-    id: 1276,
+    id: 1277,
     "title": "福慧路",
     "artist": "寒雨",
     "album": "纳西音乐精选",
@@ -11479,7 +11498,7 @@ const musicData = [
     "duration": 168
   },
   {
-    id: 1277,
+    id: 1278,
     "title": "思乡曲【纳西语】",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11488,7 +11507,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1278,
+    id: 1279,
     "title": "丽江傈僳打跳",
     "artist": "傈音创宣室",
     "album": "傈僳音乐精选",
@@ -11497,7 +11516,7 @@ const musicData = [
     "duration": 357
   },
   {
-    id: 1279,
+    id: 1280,
     "title": "醉了丽江",
     "artist": "土鸡蛋组合",
     "album": "纳西音乐精选",
@@ -11506,7 +11525,7 @@ const musicData = [
     "duration": 237
   },
   {
-    id: 1280,
+    id: 1281,
     "title": "七个月亮",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11515,7 +11534,7 @@ const musicData = [
     "duration": 164
   },
   {
-    id: 1281,
+    id: 1282,
     "title": "喔吉阿丽哩",
     "artist": "和丽元",
     "album": "纳西音乐精选",
@@ -11524,7 +11543,7 @@ const musicData = [
     "duration": 261
   },
   {
-    id: 1282,
+    id: 1283,
     "title": "恋您我的家.mp3",
     "artist": "纳若",
     "album": "纳西音乐精选",
@@ -11533,7 +11552,7 @@ const musicData = [
     "duration": 243
   },
   {
-    id: 1283,
+    id: 1284,
     "title": "脑筋急转弯",
     "artist": "张慧珺",
     "album": "纳西音乐精选",
@@ -11542,7 +11561,7 @@ const musicData = [
     "duration": 236
   },
   {
-    id: 1284,
+    id: 1285,
     "title": "相见难（傈僳乡音）",
     "artist": "灯思克",
     "album": "傈僳音乐精选",
@@ -11551,7 +11570,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 1285,
+    id: 1286,
     "title": "天下傈僳一家人",
     "artist": "灯思克",
     "album": "傈僳音乐精选",
@@ -11560,7 +11579,7 @@ const musicData = [
     "duration": 142
   },
   {
-    id: 1286,
+    id: 1287,
     "title": "《丽江美》",
     "artist": "阎维文",
     "album": "纳西音乐精选",
@@ -11569,7 +11588,7 @@ const musicData = [
     "duration": 340
   },
   {
-    id: 1287,
+    id: 1288,
     "title": "丽江三部曲",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -11578,7 +11597,7 @@ const musicData = [
     "duration": 367
   },
   {
-    id: 1288,
+    id: 1289,
     "title": "文笔神山",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -11587,7 +11606,7 @@ const musicData = [
     "duration": 264
   },
   {
-    id: 1289,
+    id: 1290,
     "title": "纳西人的歌",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -11596,7 +11615,7 @@ const musicData = [
     "duration": 284
   },
   {
-    id: 1290,
+    id: 1291,
     "title": "纳西姑娘-乌云嘎",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11605,7 +11624,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 1291,
+    id: 1292,
     "title": "女声小组唱 含蜜金组合",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11614,7 +11633,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 1292,
+    id: 1293,
     "title": "美丽傈家欢迎你来",
     "artist": "和顺才",
     "album": "纳西音乐精选",
@@ -11623,7 +11642,7 @@ const musicData = [
     "duration": 273
   },
   {
-    id: 1293,
+    id: 1294,
     "title": "回家",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -11632,7 +11651,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 1294,
+    id: 1295,
     "title": "祝福小凉山_单曲",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11641,7 +11660,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 1295,
+    id: 1296,
     "title": "认识你真好",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -11650,7 +11669,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 1296,
+    id: 1297,
     "title": "傈寨神话",
     "artist": "三江组合",
     "album": "纳西音乐精选",
@@ -11659,7 +11678,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 1297,
+    id: 1298,
     "title": "丽江谣",
     "artist": "和燕",
     "album": "纳西音乐精选",
@@ -11668,7 +11687,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 1298,
+    id: 1299,
     "title": "卓玛格桑花",
     "artist": "木作为",
     "album": "纳西音乐精选",
@@ -11677,7 +11696,7 @@ const musicData = [
     "duration": 256
   },
   {
-    id: 1299,
+    id: 1300,
     "title": "阿智《喜欢你》纳西语",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11686,7 +11705,7 @@ const musicData = [
     "duration": 250
   },
   {
-    id: 1300,
+    id: 1301,
     "title": "草原风",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -11695,7 +11714,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 1301,
+    id: 1302,
     "title": "怒江情歌",
     "artist": "纳若咪",
     "album": "纳西音乐精选",
@@ -11704,7 +11723,7 @@ const musicData = [
     "duration": 324
   },
   {
-    id: 1302,
+    id: 1303,
     "title": "同住一座城",
     "artist": "和曙洪.和燕",
     "album": "纳西音乐精选",
@@ -11713,7 +11732,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 1303,
+    id: 1304,
     "title": "迪庆，我慈祥的阿妈",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11722,7 +11741,7 @@ const musicData = [
     "duration": 304
   },
   {
-    id: 1304,
+    id: 1305,
     "title": "打劳丽",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11731,7 +11750,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 1305,
+    id: 1306,
     "title": "和合劳",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11740,7 +11759,7 @@ const musicData = [
     "duration": 381
   },
   {
-    id: 1306,
+    id: 1307,
     "title": "牵挂",
     "artist": "寒雨",
     "album": "纳西音乐精选",
@@ -11749,7 +11768,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 1307,
+    id: 1308,
     "title": "净土（达坡阿玻演唱）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11758,7 +11777,7 @@ const musicData = [
     "duration": 234
   },
   {
-    id: 1308,
+    id: 1309,
     "title": "纳西欢歌",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -11767,7 +11786,7 @@ const musicData = [
     "duration": 197
   },
   {
-    id: 1309,
+    id: 1310,
     "title": "丽江王铁生.",
     "artist": "纳西酒歌",
     "album": "纳西音乐精选",
@@ -11776,7 +11795,7 @@ const musicData = [
     "duration": 128
   },
   {
-    id: 1310,
+    id: 1311,
     "title": "传奇（纳西语版）阿尼布鲁鲁",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11785,7 +11804,7 @@ const musicData = [
     "duration": 187
   },
   {
-    id: 1311,
+    id: 1312,
     "title": "回家",
     "artist": "《印象丽江》主题曲",
     "album": "纳西音乐精选",
@@ -11794,7 +11813,7 @@ const musicData = [
     "duration": 193
   },
   {
-    id: 1312,
+    id: 1313,
     "title": "美丽的古城",
     "artist": "和旋",
     "album": "纳西音乐精选",
@@ -11803,7 +11822,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 1313,
+    id: 1314,
     "title": "月亮落进山谷里",
     "artist": "达坡玛吉",
     "album": "纳西音乐精选",
@@ -11812,7 +11831,7 @@ const musicData = [
     "duration": 210
   },
   {
-    id: 1314,
+    id: 1315,
     "title": "摩梭夜歌",
     "artist": "和国军",
     "album": "纳西音乐精选",
@@ -11821,7 +11840,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 1315,
+    id: 1316,
     "title": "回归",
     "artist": "香格里拉组合 傈僳娃娃",
     "album": "傈僳音乐精选",
@@ -11830,7 +11849,7 @@ const musicData = [
     "duration": 327
   },
   {
-    id: 1316,
+    id: 1317,
     "title": "潘金妹",
     "artist": "达坡阿玻",
     "album": "纳西音乐精选",
@@ -11839,7 +11858,7 @@ const musicData = [
     "duration": 303
   },
   {
-    id: 1317,
+    id: 1318,
     "title": "纳西农家乐",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11848,7 +11867,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 1318,
+    id: 1319,
     "title": "玉龙欢歌",
     "artist": "和文光作品集",
     "album": "纳西音乐精选",
@@ -11857,7 +11876,7 @@ const musicData = [
     "duration": 205
   },
   {
-    id: 1319,
+    id: 1320,
     "title": "想起家乡",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -11866,7 +11885,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 1320,
+    id: 1321,
     "title": "欢聚在一起",
     "artist": "玉龙山组合",
     "album": "纳西音乐精选",
@@ -11875,7 +11894,7 @@ const musicData = [
     "duration": 203
   },
   {
-    id: 1321,
+    id: 1322,
     "title": "纳西谷气.mp3",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11884,7 +11903,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1322,
+    id: 1323,
     "title": "阿卡巴拉麻达咪.mp3",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -11893,7 +11912,7 @@ const musicData = [
     "duration": 170
   },
   {
-    id: 1323,
+    id: 1324,
     "title": "我们好好爱",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -11902,7 +11921,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 1324,
+    id: 1325,
     "title": "纳西足球啦啦歌",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -11911,7 +11930,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 1325,
+    id: 1326,
     "title": "群星",
     "artist": "美丽丽江欢迎你",
     "album": "纳西音乐精选",
@@ -11920,7 +11939,7 @@ const musicData = [
     "duration": 152
   },
   {
-    id: 1326,
+    id: 1327,
     "title": "雪域护身格萨尔王",
     "artist": "根呷新歌",
     "album": "藏族音乐精选",
@@ -11929,7 +11948,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 1327,
+    id: 1328,
     "title": "丽江纳西族打跳",
     "artist": "纯音乐",
     "album": "纳西音乐精选",
@@ -11938,7 +11957,7 @@ const musicData = [
     "duration": 202
   },
   {
-    id: 1328,
+    id: 1329,
     "title": "纳西，阿哩哩",
     "artist": "媛媛",
     "album": "纳西音乐精选",
@@ -11947,7 +11966,7 @@ const musicData = [
     "duration": 182
   },
   {
-    id: 1329,
+    id: 1330,
     "title": "白马山寨",
     "artist": "亚东",
     "album": "纳西音乐精选",
@@ -11956,7 +11975,7 @@ const musicData = [
     "duration": 255
   },
   {
-    id: 1330,
+    id: 1331,
     "title": "纳西特色《三部曲》欢乐和谐苑",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11965,7 +11984,7 @@ const musicData = [
     "duration": 1022
   },
   {
-    id: 1331,
+    id: 1332,
     "title": "纳西净地dj",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -11974,7 +11993,7 @@ const musicData = [
     "duration": 303
   },
   {
-    id: 1332,
+    id: 1333,
     "title": "纳西吉祥",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11983,7 +12002,7 @@ const musicData = [
     "duration": 48
   },
   {
-    id: 1333,
+    id: 1334,
     "title": "和上钧＆阿诛 玉龙雪山的故事",
     "artist": "",
     "album": "纳西音乐精选",
@@ -11992,7 +12011,7 @@ const musicData = [
     "duration": 350
   },
   {
-    id: 1334,
+    id: 1335,
     "title": "木作为《舞动玉龙》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12001,7 +12020,7 @@ const musicData = [
     "duration": 337
   },
   {
-    id: 1335,
+    id: 1336,
     "title": "纳若《不怕》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12010,7 +12029,7 @@ const musicData = [
     "duration": 281
   },
   {
-    id: 1336,
+    id: 1337,
     "title": "茨哩茨姆(古老民歌)",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12019,7 +12038,7 @@ const musicData = [
     "duration": 151
   },
   {
-    id: 1337,
+    id: 1338,
     "title": "串烧",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -12028,7 +12047,7 @@ const musicData = [
     "duration": 473
   },
   {
-    id: 1338,
+    id: 1339,
     "title": "纳西希余花花色-涵格佩吉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12037,7 +12056,7 @@ const musicData = [
     "duration": 266
   },
   {
-    id: 1339,
+    id: 1340,
     "title": "七彩家园",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12046,7 +12065,7 @@ const musicData = [
     "duration": 298
   },
   {
-    id: 1340,
+    id: 1341,
     "title": "爱情没有保质期",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12055,7 +12074,7 @@ const musicData = [
     "duration": 235
   },
   {
-    id: 1341,
+    id: 1342,
     "title": "纳西劳动歌《栽秧歌》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12064,7 +12083,7 @@ const musicData = [
     "duration": 85
   },
   {
-    id: 1342,
+    id: 1343,
     "title": "纳西姑娘美",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -12073,7 +12092,7 @@ const musicData = [
     "duration": 238
   },
   {
-    id: 1343,
+    id: 1344,
     "title": "梦中的香格里拉(达坡阿玻）",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12082,7 +12101,7 @@ const musicData = [
     "duration": 274
   },
   {
-    id: 1344,
+    id: 1345,
     "title": "西余索",
     "artist": "和春琴",
     "album": "纳西音乐精选",
@@ -12091,7 +12110,7 @@ const musicData = [
     "duration": 249
   },
   {
-    id: 1345,
+    id: 1346,
     "title": "呀哈哩，跳起来",
     "artist": "和文军",
     "album": "纳西音乐精选",
@@ -12100,7 +12119,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 1346,
+    id: 1347,
     "title": "纳西祝酒歌",
     "artist": "和文光原创歌曲",
     "album": "纳西音乐精选",
@@ -12109,7 +12128,7 @@ const musicData = [
     "duration": 163
   },
   {
-    id: 1347,
+    id: 1348,
     "title": "",
     "artist": "和美兰",
     "album": "纳西音乐精选",
@@ -12118,7 +12137,7 @@ const musicData = [
     "duration": 245
   },
   {
-    id: 1348,
+    id: 1349,
     "title": "纳西劝世歌",
     "artist": "李承翰",
     "album": "纳西音乐精选",
@@ -12127,7 +12146,7 @@ const musicData = [
     "duration": 132
   },
   {
-    id: 1349,
+    id: 1350,
     "title": "纳西恋歌",
     "artist": "达坡玛吉、和文光",
     "album": "纳西音乐精选",
@@ -12136,7 +12155,7 @@ const musicData = [
     "duration": 242
   },
   {
-    id: 1350,
+    id: 1351,
     "title": "扎西尼玛-相约巴拉",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12145,7 +12164,7 @@ const musicData = [
     "duration": 248
   },
   {
-    id: 1351,
+    id: 1352,
     "title": "纳西族音乐史 小调三月百花开",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12154,7 +12173,7 @@ const musicData = [
     "duration": 37
   },
   {
-    id: 1352,
+    id: 1353,
     "title": "要爱就爱你全部",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12163,7 +12182,7 @@ const musicData = [
     "duration": 278
   },
   {
-    id: 1353,
+    id: 1354,
     "title": "天边的天边",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12172,7 +12191,7 @@ const musicData = [
     "duration": 285
   },
   {
-    id: 1354,
+    id: 1355,
     "title": "藏地光芒",
     "artist": "齐旦布",
     "album": "纳西音乐精选",
@@ -12181,7 +12200,7 @@ const musicData = [
     "duration": 228
   },
   {
-    id: 1355,
+    id: 1356,
     "title": "毛主席派人来",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -12190,7 +12209,7 @@ const musicData = [
     "duration": 260
   },
   {
-    id: 1356,
+    id: 1357,
     "title": "吉祥传奇",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -12199,7 +12218,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 1357,
+    id: 1358,
     "title": "卓玛央金",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12208,7 +12227,7 @@ const musicData = [
     "duration": 231
   },
   {
-    id: 1358,
+    id: 1359,
     "title": "走向远方",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12217,7 +12236,7 @@ const musicData = [
     "duration": 211
   },
   {
-    id: 1359,
+    id: 1360,
     "title": "白沙细乐《三思汲》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12226,7 +12245,7 @@ const musicData = [
     "duration": 130
   },
   {
-    id: 1360,
+    id: 1361,
     "title": "阿里里《细针挑丝线》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12235,7 +12254,7 @@ const musicData = [
     "duration": 147
   },
   {
-    id: 1361,
+    id: 1362,
     "title": "劳动歌《栽秧歌》",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12244,7 +12263,7 @@ const musicData = [
     "duration": 85
   },
   {
-    id: 1362,
+    id: 1363,
     "title": "《嫁女调》纳西",
     "artist": "和金花",
     "album": "纳西音乐精选",
@@ -12253,7 +12272,7 @@ const musicData = [
     "duration": 109
   },
   {
-    id: 1363,
+    id: 1364,
     "title": "阿妈",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12262,7 +12281,7 @@ const musicData = [
     "duration": 296
   },
   {
-    id: 1364,
+    id: 1365,
     "title": "吉祥欢聚锅庄",
     "artist": "索朗扎西",
     "album": "纳西音乐精选",
@@ -12271,7 +12290,7 @@ const musicData = [
     "duration": 443
   },
   {
-    id: 1365,
+    id: 1366,
     "title": "七月火把节",
     "artist": "山鹰组合",
     "album": "纳西音乐精选",
@@ -12280,7 +12299,7 @@ const musicData = [
     "duration": 272
   },
   {
-    id: 1366,
+    id: 1367,
     "title": "走进尼汝",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -12289,7 +12308,7 @@ const musicData = [
     "duration": 258
   },
   {
-    id: 1367,
+    id: 1368,
     "title": "和我去转山",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12298,7 +12317,7 @@ const musicData = [
     "duration": 286
   },
   {
-    id: 1368,
+    id: 1369,
     "title": "茶马古道歌",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12307,7 +12326,7 @@ const musicData = [
     "duration": 186
   },
   {
-    id: 1369,
+    id: 1370,
     "title": "披星戴月纳西女",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -12316,7 +12335,7 @@ const musicData = [
     "duration": 265
   },
   {
-    id: 1370,
+    id: 1371,
     "title": "战友兄弟",
     "artist": "汤潮",
     "album": "纳西音乐精选",
@@ -12325,7 +12344,7 @@ const musicData = [
     "duration": 247
   },
   {
-    id: 1371,
+    id: 1372,
     "title": "爱的部落",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12334,7 +12353,7 @@ const musicData = [
     "duration": 280
   },
   {
-    id: 1372,
+    id: 1373,
     "title": "傈僳族打跳_升华工作室",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -12343,7 +12362,7 @@ const musicData = [
     "duration": 139
   },
   {
-    id: 1373,
+    id: 1374,
     "title": "善心宝",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12352,7 +12371,7 @@ const musicData = [
     "duration": 253
   },
   {
-    id: 1374,
+    id: 1375,
     "title": "次真拉姆",
     "artist": "扎西尼玛",
     "album": "纳西音乐精选",
@@ -12361,7 +12380,7 @@ const musicData = [
     "duration": 294
   },
   {
-    id: 1375,
+    id: 1376,
     "title": "我的思念只给你唱",
     "artist": "曲尔甲",
     "album": "纳西音乐精选",
@@ -12370,7 +12389,7 @@ const musicData = [
     "duration": 214
   },
   {
-    id: 1376,
+    id: 1377,
     "title": "净地",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -12379,7 +12398,7 @@ const musicData = [
     "duration": 239
   },
   {
-    id: 1377,
+    id: 1378,
     "title": "傈僳酒歌",
     "artist": "三江组合",
     "album": "傈僳音乐精选",
@@ -12388,7 +12407,7 @@ const musicData = [
     "duration": 218
   },
   {
-    id: 1378,
+    id: 1379,
     "title": "纳西净地2",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -12397,7 +12416,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 1379,
+    id: 1380,
     "title": "月亮花",
     "artist": "金甲劲松",
     "album": "纳西音乐精选",
@@ -12406,7 +12425,7 @@ const musicData = [
     "duration": 252
   },
   {
-    id: 1380,
+    id: 1381,
     "title": "舞动三江——阿石才",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -12415,7 +12434,7 @@ const musicData = [
     "duration": 894
   },
   {
-    id: 1381,
+    id: 1382,
     "title": "傈僳闪脚跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -12424,7 +12443,7 @@ const musicData = [
     "duration": 262
   },
   {
-    id: 1382,
+    id: 1383,
     "title": "二月八——革囊度组合",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12433,7 +12452,7 @@ const musicData = [
     "duration": 267
   },
   {
-    id: 1383,
+    id: 1384,
     "title": "等你归来",
     "artist": "三江组合",
     "album": "纳西音乐精选",
@@ -12442,7 +12461,7 @@ const musicData = [
     "duration": 207
   },
   {
-    id: 1384,
+    id: 1385,
     "title": "爱过你卓玛---嘉央",
     "artist": "",
     "album": "纳西音乐精选",
@@ -12451,7 +12470,7 @@ const musicData = [
     "duration": 204
   },
   {
-    id: 1385,
+    id: 1386,
     "title": "王者归来",
     "artist": "嘉央",
     "album": "纳西音乐精选",
@@ -12460,7 +12479,7 @@ const musicData = [
     "duration": 198
   },
   {
-    id: 1386,
+    id: 1387,
     "title": "净地Ⅱ",
     "artist": "肖煜光",
     "album": "纳西音乐精选",
@@ -12469,7 +12488,7 @@ const musicData = [
     "duration": 227
   },
   {
-    id: 1387,
+    id: 1388,
     "title": "大山走出的孩子",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12478,7 +12497,7 @@ const musicData = [
     "duration": 283
   },
   {
-    id: 1388,
+    id: 1389,
     "title": "芒果香",
     "artist": "谢军",
     "album": "纳西音乐精选",
@@ -12487,7 +12506,7 @@ const musicData = [
     "duration": 301
   },
   {
-    id: 1389,
+    id: 1390,
     "title": "阿哥阿妹",
     "artist": "谢军",
     "album": "纳西音乐精选",
@@ -12496,7 +12515,7 @@ const musicData = [
     "duration": 295
   },
   {
-    id: 1390,
+    id: 1391,
     "title": "一瞬间",
     "artist": "丽江小倩",
     "album": "纳西音乐精选",
@@ -12505,7 +12524,7 @@ const musicData = [
     "duration": 176
   },
   {
-    id: 1391,
+    id: 1392,
     "title": "傈僳族打跳",
     "artist": "",
     "album": "傈僳音乐精选",
@@ -12514,7 +12533,7 @@ const musicData = [
     "duration": 139
   },
   {
-    id: 1392,
+    id: 1393,
     "title": "山水画",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -12523,7 +12542,7 @@ const musicData = [
     "duration": 216
   },
   {
-    id: 1393,
+    id: 1394,
     "title": "爱的家园",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12532,7 +12551,7 @@ const musicData = [
     "duration": 153
   },
   {
-    id: 1394,
+    id: 1395,
     "title": "春天里",
     "artist": "根呷",
     "album": "藏族音乐精选",
@@ -12541,7 +12560,7 @@ const musicData = [
     "duration": 241
   },
   {
-    id: 1395,
+    id: 1396,
     "title": "飞旋的香巴拉",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
@@ -12550,7 +12569,7 @@ const musicData = [
     "duration": 229
   },
   {
-    id: 1396,
+    id: 1397,
     "title": "与你同在",
     "artist": "香格里拉组合",
     "album": "藏族音乐精选",
