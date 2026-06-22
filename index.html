@@ -4523,12 +4523,16 @@
       }
       return true;
     }
+    // 连续自动跳台的硬上限：最多连跳 2 首拿不到音源就停下，避免“停不下来”的连环跳台。
+    const MAX_CONSECUTIVE_AUTO_SKIPS = 2;
     async function autoPlayNextAfterFailure(requestId) {
       if (requestId && requestId !== _playRequestId) return false;
       const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
       if (requestId && requestId !== _playRequestId) return false;
       if (!tracks.length || tracks.length <= 1) return false;
-      if (_autoSkipFailureCount >= tracks.length - 1) return false;
+      // 取队列长度与硬上限中较小值：队列很长时也只连跳 MAX_CONSECUTIVE_AUTO_SKIPS 次。
+      var skipLimit = Math.min(MAX_CONSECUTIVE_AUTO_SKIPS, tracks.length - 1);
+      if (_autoSkipFailureCount >= skipLimit) return false;
       _autoSkipFailureCount++;
       await playTrackAt(queueIndex + 1, { autoSkip: true });
       return true;
@@ -4540,7 +4544,11 @@
         showToast('未找到可用音源，播放下一首', 2000);
         return true;
       }
-      showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');
+      // 已达连续跳台上限或没有下一首可跳：停下来并保持暂停，不再连环跳。
+      resetAutoSkipFailureCount();
+      audioPlayer.pause();
+      setPlayIcons(false);
+      showToast(isSmartSourceEnabled() ? '连续多首都没有可用音源，已暂停播放' : '当前音源暂时无法播放', 2600);
       return false;
     }
     async function playCurrentTrack() {
