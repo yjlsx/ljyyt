@@ -31,6 +31,7 @@ function pickFunction(script, name) {
     vm.createContext(sandbox);
     vm.runInContext([
       pickFunction(script, 'setQueue'),
+      pickFunction(script, 'resetAutoSkipFailureCount'),
       pickFunction(script, 'playTrackAt')
     ].join('\n') + `
       currentTrack = { title: '队列里的单曲', artist: '歌手', src: 'queue.mp3' };

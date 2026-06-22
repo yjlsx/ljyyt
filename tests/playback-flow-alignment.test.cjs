@@ -30,15 +30,30 @@ for (const file of ['index.html', 'dist/index.html']) {
     "if (audioPlayer.getAttribute('src') !== currentTrack.src)",
     "if (requestId !== _playRequestId) return;",
     "switchToFallbackSource('resolve-empty', requestId)",
-    "showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');",
-    "showToast('播放失败，请重试或切换歌曲');"
+    "handleNoPlayableSource('resolve-empty', requestId);",
+    "handleNoPlayableSource('play-failed', requestId);"
   ]) {
     if (!body.includes(marker)) {
       throw new Error(file + ' playCurrentTrack is missing marker: ' + marker);
     }
   }
 
-  if (body.includes('正在尝试下一首') || body.includes('nextTrack();')) {
-    throw new Error(file + ' playCurrentTrack still auto-skips after a playback failure');
+  const autoSkip = pickFunction(script, 'autoPlayNextAfterFailure');
+  if (!autoSkip.includes('playTrackAt(queueIndex + 1, { autoSkip: true })')) {
+    throw new Error(file + ' autoPlayNextAfterFailure does not move to the next queue item');
+  }
+  if (!autoSkip.includes('if (!tracks.length || tracks.length <= 1) return false;')) {
+    throw new Error(file + ' autoPlayNextAfterFailure may loop a single-song queue');
+  }
+  if (!autoSkip.includes('_autoSkipFailureCount >= tracks.length - 1')) {
+    throw new Error(file + ' autoPlayNextAfterFailure is missing a queue wrap guard');
+  }
+
+  const noPlayable = pickFunction(script, 'handleNoPlayableSource');
+  if (!noPlayable.includes("showToast('未找到可用音源，播放下一首'")) {
+    throw new Error(file + ' handleNoPlayableSource does not notify before auto-skipping');
+  }
+  if (!noPlayable.includes('await autoPlayNextAfterFailure(requestId)')) {
+    throw new Error(file + ' handleNoPlayableSource does not invoke automatic next-track playback');
   }
 }

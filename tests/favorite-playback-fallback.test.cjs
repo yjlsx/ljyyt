@@ -359,6 +359,8 @@ vm.runInContext([
   }
 
   sandbox.aggregatedSources = ['local', 'kuwo'];
+  sandbox._fallbackSearchCache.clear();
+  sandbox._fallbackUrlCache.clear();
   sandbox.calls = [];
   const noSelectedAlternative = {
     title: 'My Soul',
@@ -371,11 +373,11 @@ vm.runInContext([
     skipSources: ['kuwo'],
     skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
   });
-  if (noSelectedAlternativeUrl) {
-    throw new Error('Expected no fallback when no other aggregate source is selected');
+  if (noSelectedAlternativeUrl !== 'https://cdn.example.com/my-soul.mp3') {
+    throw new Error('Expected Otter-style global fallback when the current Kuwo source has no selected alternative, got ' + noSelectedAlternativeUrl);
   }
-  if (sandbox.calls.length) {
-    throw new Error('Expected fallback not to query unselected default sources');
+  if (!sandbox.calls.some((call) => call.source === 'joox')) {
+    throw new Error('Expected fallback to query global match-capable sources when selected alternatives are empty');
   }
 
   sandbox.aggregatedSources = ['local', 'joox', 'netease', 'kuwo'];
@@ -484,11 +486,19 @@ vm.runInContext([
     skipUrls: ['https://cdn.example.com/bad-kuwo.mp3'],
     quickOnly: true
   });
-  if (quickLongTitleUrl) {
-    throw new Error('Expected quick fallback to miss long-title NetEase result beyond the first 12 results');
+  if (quickLongTitleUrl !== 'https://cdn.example.com/jacky-joox.mp3') {
+    throw new Error('Expected quick global fallback to use Joox for 等你等到我心痛, got ' + quickLongTitleUrl);
   }
-  const deepLongTitleUrl = await sandbox.recoverPlayableTrackUrl(longTitleDeepFallback, {
-    skipSources: ['kuwo'],
+  sandbox.calls = [];
+  const neteaseDeepFallback = {
+    title: '等你等到我心痛',
+    artist: '张学友',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const deepLongTitleUrl = await sandbox.recoverPlayableTrackUrl(neteaseDeepFallback, {
+    skipSources: ['kuwo', 'joox', 'qq', 'lx_qq', 'lx_kuwo', 'bilibili', '_netease', 'migu'],
     skipUrls: ['https://cdn.example.com/bad-kuwo.mp3'],
     searchLimit: 30
   });

@@ -486,8 +486,31 @@
           return source && source !== 'local' && source !== 'all' && list.indexOf(source) === index;
         });
     }
+    function getGlobalFallbackPlaybackSources() {
+      var preferred = typeof getEnabledSourceOrder === 'function'
+        ? getEnabledSourceOrder()
+        : (Array.isArray(aggregatedSources) ? aggregatedSources : []);
+      var builtInFallbackSources = ['joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'bilibili', '_netease', 'migu'];
+      var defaults = typeof defaultEnabledSources !== 'undefined' && Array.isArray(defaultEnabledSources) ? defaultEnabledSources : builtInFallbackSources;
+      var allSources = typeof sourceDisplayOrder !== 'undefined' && Array.isArray(sourceDisplayOrder) ? sourceDisplayOrder : builtInFallbackSources;
+      return preferred.concat(defaults, allSources)
+        .map(function(source) { return String(source || '').trim(); })
+        .filter(function(source, index, list) {
+          return source && source !== 'local' && source !== 'all' && list.indexOf(source) === index;
+        });
+    }
     function getFallbackSearchSources(track) {
-      var sources = getSelectedPlaybackSources();
+      var preferred = typeof getEnabledSourceOrder === 'function'
+        ? getEnabledSourceOrder()
+        : (Array.isArray(aggregatedSources) ? aggregatedSources : []);
+      var builtInFallbackSources = ['joox', 'qq', 'lx_qq', 'netease', 'kuwo', 'lx_kuwo', 'bilibili', '_netease', 'migu'];
+      var defaults = typeof defaultEnabledSources !== 'undefined' && Array.isArray(defaultEnabledSources) ? defaultEnabledSources : builtInFallbackSources;
+      var allSources = typeof sourceDisplayOrder !== 'undefined' && Array.isArray(sourceDisplayOrder) ? sourceDisplayOrder : builtInFallbackSources;
+      var sources = preferred.concat(defaults, allSources)
+        .map(function(source) { return String(source || '').trim(); })
+        .filter(function(source, index, list) {
+          return source && source !== 'local' && source !== 'all' && list.indexOf(source) === index;
+        });
       var source = String(track && track.source || '').trim();
       if (source === 'netease') {
         var neteaseIndex = sources.indexOf('netease');
@@ -1355,6 +1378,20 @@
       updateControlIcons();
       renderQueue();
     }
+    function setPlaybackResolving(resolving) {
+      var miniPlay = document.getElementById('mini-play');
+      var fullPlay = document.getElementById('full-play');
+      var isResolving = !!resolving;
+      [miniPlay, fullPlay].forEach(function(button) {
+        if (!button) return;
+        button.classList.toggle('is-buffering', isResolving);
+        button.setAttribute('aria-busy', isResolving ? 'true' : 'false');
+      });
+    }
+    function setResolvingUrlState(resolving) {
+      _isResolvingUrl = !!resolving;
+      if (typeof setPlaybackResolving === 'function') setPlaybackResolving(_isResolvingUrl);
+    }
     const PAUSE_CONFIRM_DELAY_MS = 200;
     var pauseConfirmTimer = null;
     function clearPauseConfirmTimer() {
@@ -1411,11 +1448,11 @@
         id: track.id || track.urlId || track.url_id || track.src || track.title
       };
       if (!currentTrack.src && prevSrc) {
-        _isResolvingUrl = true;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(true); else _isResolvingUrl = true;
         audioPlayer.pause();
         audioPlayer.removeAttribute('src');
         audioPlayer.load();
-        _isResolvingUrl = false;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
       }
       if (!playQueue.length) setQueue([currentTrack], 0);
       updateTrackUi(currentTrack);
@@ -1478,6 +1515,7 @@
     var _isResolvingUrl = false;
     var _playRequestId = 0;
     var _audioUnlocked = false;
+    var _autoSkipFailureCount = 0;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     var _fallbackPrewarmState = { key: '', promise: null, result: null };
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
@@ -1503,6 +1541,9 @@
     }
     function resetFallbackState(track, fallbackKey) {
       _fallbackAttemptState = { key: fallbackKey || getTrackFallbackKey(track), sources: [], urls: [] };
+    }
+    function resetAutoSkipFailureCount() {
+      _autoSkipFailureCount = 0;
     }
     function isSmartSourceEnabled() {
       return !appSettings || appSettings.smartSource !== false;
@@ -1642,11 +1683,11 @@
       var proxyUrl = getAudioProxyUrl(rawUrl);
       var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
       try {
-        _isResolvingUrl = true;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(true); else _isResolvingUrl = true;
         currentTrack.src = proxyUrl;
         audioPlayer.src = proxyUrl;
         audioPlayer.load();
-        _isResolvingUrl = false;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
         await playAudioWithTimeout(PROXY_LINE_PLAYBACK_TIMEOUT_MS);
         if (requestId && requestId !== _playRequestId) return false;
         if (!isAttemptActive()) return false;
@@ -1659,7 +1700,7 @@
         savePlaybackState(true);
         return true;
       } catch (error) {
-        _isResolvingUrl = false;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
         if (requestId && requestId !== _playRequestId) return false;
         if (!isAttemptActive()) return false;
         if (isAutoplayPolicyBlocked(error)) return false;
@@ -1717,7 +1758,7 @@
         var previousFailedUrls = state.urls.slice();
         var previousTrack = currentTrack ? Object.assign({}, currentTrack) : null;
         try {
-          _isResolvingUrl = true;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(true); else _isResolvingUrl = true;
           setPlayIcons(true);
           var prewarmed = fastPrewarmed || await consumeFallbackPrewarm(currentTrack, state, fallbackKey);
           fastPrewarmed = null;
@@ -1740,7 +1781,7 @@
               });
             }
           }
-          _isResolvingUrl = false;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           if (!fallbackUrl) return false;
           if (audioPlayer.getAttribute('src') !== fallbackUrl) {
@@ -1766,7 +1807,7 @@
           showToast('已自动切换至: ' + getTrackSourceDisplayName(currentTrack), 2200);
           return true;
         } catch (error) {
-          _isResolvingUrl = false;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           if (isAutoplayPolicyBlocked(error)) return false;
           var activeState = ensureFallbackState(currentTrack, fallbackKey);
@@ -1904,6 +1945,26 @@
       }
       return true;
     }
+    async function autoPlayNextAfterFailure(requestId) {
+      if (requestId && requestId !== _playRequestId) return false;
+      const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
+      if (requestId && requestId !== _playRequestId) return false;
+      if (!tracks.length || tracks.length <= 1) return false;
+      if (_autoSkipFailureCount >= tracks.length - 1) return false;
+      _autoSkipFailureCount++;
+      await playTrackAt(queueIndex + 1, { autoSkip: true });
+      return true;
+    }
+    async function handleNoPlayableSource(reason, requestId) {
+      if (requestId && requestId !== _playRequestId) return false;
+      setPlayIcons(false);
+      if (await autoPlayNextAfterFailure(requestId)) {
+        showToast('未找到可用音源，播放下一首', 2000);
+        return true;
+      }
+      showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');
+      return false;
+    }
     async function playCurrentTrack() {
       pausePreviewVideo();
       if (!currentTrack) return;
@@ -1931,6 +1992,7 @@
           if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
+          resetAutoSkipFailureCount();
           addHistory(currentTrack);
           setPlayIcons(true);
           savePlaybackState(true);
@@ -1941,7 +2003,7 @@
           if (await switchToFallbackSource('play-failed', requestId)) return;
         }
       }
-      _isResolvingUrl = true;
+      if (typeof setResolvingUrlState === 'function') setResolvingUrlState(true); else _isResolvingUrl = true;
       setPlayIcons(true);
       var trackToPlay = currentTrack;
       var playableUrl = '';
@@ -1953,13 +2015,13 @@
         playableUrl = resolvePrewarmRace ? await Promise.race([resolvePromise, resolvePrewarmRace]) : await resolvePromise;
       } catch (error) {
         if (isPrewarmFallbackReadySignal(error)) {
-          _isResolvingUrl = false;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
           if (await switchToFallbackSource('prewarm-ready', requestId)) return;
         } else {
           console.warn('ensurePlayableTrackUrl failed', error);
         }
       } finally {
-        _isResolvingUrl = false;
+        if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
       }
       if (requestId !== _playRequestId) return;
       if (playableUrl) {
@@ -1972,8 +2034,7 @@
       }
       if (!playableUrl) {
         if (isSmartSourceEnabled() && await switchToFallbackSource('resolve-empty', requestId)) return;
-        setPlayIcons(false);
-        showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');
+        await handleNoPlayableSource('resolve-empty', requestId);
         return;
       }
       try {
@@ -1985,6 +2046,7 @@
         if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
+        resetAutoSkipFailureCount();
         addHistory(currentTrack);
         setPlayIcons(true);
         savePlaybackState(true);
@@ -2001,15 +2063,14 @@
         if (_playRetryCount < 1 && currentTrack && currentTrack.source && currentTrack.source !== 'local') {
           _playRetryCount++;
           currentTrack.src = '';
-          _isResolvingUrl = true;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(true); else _isResolvingUrl = true;
           audioPlayer.removeAttribute('src');
           audioPlayer.load();
-          _isResolvingUrl = false;
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
           return playCurrentTrack();
         }
         _playRetryCount = 0;
-        setPlayIcons(false);
-        showToast('播放失败，请重试或切换歌曲');
+        await handleNoPlayableSource('play-failed', requestId);
       }
     }
     function pauseCurrentTrack() {
@@ -2021,7 +2082,9 @@
       if (audioPlayer.paused) playCurrentTrack();
       else pauseCurrentTrack();
     }
-    async function playTrackAt(index) {
+    async function playTrackAt(index, options) {
+      options = options || {};
+      if (!options.autoSkip) resetAutoSkipFailureCount();
       const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
       if (!tracks.length) return;
       queueIndex = (index + tracks.length) % tracks.length;
@@ -5189,11 +5252,7 @@
       switchToFallbackSource('audio-error', requestId, failedSrc).then(function(switched) {
         if (requestId !== _playRequestId || failedSrc !== audioPlayer.getAttribute('src')) return;
         if (switched) return;
-        setPlayIcons(false);
-        showToast('未找到可用音源，播放下一首', 2000);
-        setTimeout(function() {
-          nextTrack();
-        }, 500);
+        handleNoPlayableSource('audio-error', requestId);
       });
     });
     document.querySelectorAll('img').forEach((image) => {

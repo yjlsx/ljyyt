@@ -31,7 +31,7 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!block.includes('reconcileCurrentTrackInQueue(trackToPlay);')) {
     throw new Error(file + ' does not sync the queue after resolving a playable URL');
   }
-  if (!/finally\s*{\s*_isResolvingUrl\s*=\s*false;\s*}/.test(block)) {
+  if (!/finally\s*{\s*if \(typeof setResolvingUrlState === 'function'\) setResolvingUrlState\(false\); else _isResolvingUrl = false;\s*}/.test(block)) {
     throw new Error(file + ' can leave _isResolvingUrl stuck after URL resolution errors');
   }
 }

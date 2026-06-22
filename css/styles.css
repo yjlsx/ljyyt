@@ -1143,6 +1143,10 @@
       content: ""; position: absolute; inset: 0; border-radius: 50%;
       background: conic-gradient(var(--primary) var(--mini-progress), var(--border) 0);
     }
+    .progress.is-buffering::before {
+      background: conic-gradient(var(--primary) 0 72deg, color-mix(in srgb, var(--primary) 18%, transparent) 72deg 360deg);
+      animation: spin .8s linear infinite;
+    }
     .progress::after {
       content: ""; position: absolute; inset: 3px; border-radius: 50%;
       background: color-mix(in srgb, var(--card) 96%, transparent);
@@ -1299,6 +1303,16 @@
       height: 64px; width: 64px; border-radius: 50%; background: white; color: #101415;
       display: grid; place-items: center; font-size: 25px; box-shadow: 0 10px 24px rgba(0,0,0,.22);
       touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+    .controls .main-play.is-buffering::before {
+      content: ""; position: absolute; inset: 9px; border-radius: 50%;
+      border: 3px solid rgba(16,20,21,.16); border-top-color: #101415;
+      animation: spin .8s linear infinite;
+    }
+    .controls .main-play.is-buffering svg,
+    .controls .main-play.is-buffering .line-icon {
+      opacity: 0;
     }
     .controls .main-play svg, .controls .main-play .line-icon { width: 28px; height: 28px; color: #101415; }
     .controls .main-play,
