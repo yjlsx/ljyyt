@@ -96,6 +96,7 @@ async function verifyFrontend(file) {
     pickFunction(script, 'searchQqApiTracks'),
     pickFunction(script, 'mapLxQuality'),
     pickFunction(script, 'fetchQqTrackUrlPayload'),
+    pickFunction(script, 'isBlockedAudioUrl'),
     pickFunction(script, 'resolveExternalTrackUrl')
   ].join('\n'), sandbox);
   const tracks = await sandbox.searchQqApiTracks('晴天', 1);

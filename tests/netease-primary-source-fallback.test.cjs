@@ -87,6 +87,7 @@ async function verify(file) {
     pickFunction(script, 'normalizeExternalTrack'),
     pickFunction(script, 'fetchGdMusicJson'),
     pickFunction(script, 'fetchExternalSourceTracks'),
+    pickFunction(script, 'isBlockedAudioUrl'),
     pickFunction(script, 'resolveExternalTrackUrl')
   ].join('\n'), sandbox);
 

@@ -138,6 +138,16 @@ const sandbox = {
             url_id: 'joox-traditional'
           }];
         }
+        if (source === 'joox' && /等你等到我心痛/.test(query)) {
+          return [{
+            id: 'joox-jacky',
+            name: '等你等到我心痛',
+            artist: ['張學友'],
+            album: '等你等到我心痛精选',
+            source: 'joox',
+            url_id: 'joox-jacky'
+          }];
+        }
         if (source === 'joox' && /香港/.test(query)) {
           const filler = Array.from({ length: 12 }, (_, index) => ({
             id: 'filler-' + index,
@@ -193,7 +203,9 @@ const sandbox = {
     if (track && track.urlId === 'bad-kuwo') return 'https://cdn.example.com/bad-kuwo.mp3';
     if (track && track.urlId === 'joox-traditional') return 'https://cdn.example.com/wo-hui-deng.mp3';
     if (track && track.urlId === 'joox-hong-kong') return 'https://cdn.example.com/hong-kong.mp3';
+    if (track && track.urlId === 'joox-jacky') return 'https://cdn.example.com/jacky-joox.mp3';
     if (track && track.urlId === 'netease-jacky') return 'https://cdn.example.com/jacky-netease.mp3';
+    if (track && track.urlId === 'channel-blocked') return 'https://cdn.example.com/current-channel-unavailable.mp3';
     return track && track.urlId === '123' ? 'https://cdn.example.com/my-soul.mp3' : '';
   },
   calls: []
@@ -210,6 +222,9 @@ vm.runInContext([
   pickFunction('isTrackMatchCandidate'),
   pickFunction('isLooseTitleMatchCandidate'),
   pickFunction('getNormalizedArtistTokens'),
+  pickFunction('isUnknownArtistName'),
+  pickFunction('hasArtistMatch'),
+  pickFunction('canRelaxKuwoArtistMatch'),
   pickFunction('getFallbackMatchScore'),
   pickFunction('pickFallbackTrackMatch'),
   pickFunction('getFallbackTrackMatches'),
@@ -218,6 +233,7 @@ vm.runInContext([
   pickFunction('_setCachedFallbackSearch'),
   pickFunction('_getCachedUrl'),
   pickFunction('_setCachedUrl'),
+  pickFunction('isBlockedAudioUrl'),
   pickFunction('resolvePlayableFallbackCandidate'),
   pickFunction('resolveFallbackTrackFromSource'),
   pickFunction('normalizeNeteaseApiSong'),
@@ -266,8 +282,22 @@ vm.runInContext([
     { title: '香港', artist: '酷我歌手字段', source: 'kuwo' },
     { title: '香港', artist: '不同歌手字段', source: 'joox' },
     0
+  ) >= 0) {
+    throw new Error('Expected failed Kuwo playback to reject exact-title cross-source fallback when artists conflict');
+  }
+  if (sandbox.getFallbackMatchScore(
+    { title: '香港', artist: '未知歌手', source: 'kuwo' },
+    { title: '香港', artist: '不同歌手字段', source: 'joox' },
+    0
+  ) >= 0) {
+    throw new Error('Expected failed Kuwo playback to reject short exact-title fallback even when target artist is unknown');
+  }
+  if (sandbox.getFallbackMatchScore(
+    { title: '等你等到我心痛', artist: '未知歌手', source: 'kuwo' },
+    { title: '等你等到我心痛', artist: '张学友', source: 'joox' },
+    0
   ) < 0) {
-    throw new Error('Expected failed Kuwo playback to accept exact-title cross-source fallback despite unreliable artist fields');
+    throw new Error('Expected failed Kuwo playback to allow distinctive exact-title fallback when target artist is unknown');
   }
   if (sandbox.getFallbackMatchScore(
     { title: '香港', artist: '酷我歌手字段', source: 'netease' },
@@ -372,11 +402,64 @@ vm.runInContext([
     throw new Error('Expected failed Kuwo track to search selected Joox source');
   }
 
+  sandbox.aggregatedSources = ['local', 'joox', 'kuwo'];
+  sandbox.calls = [];
+  const realKuwoHongKongFirstFallback = {
+    title: '等你等到我心痛',
+    artist: '张学友',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const realKuwoHongKongFirstUrl = await sandbox.recoverPlayableTrackUrl(realKuwoHongKongFirstFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (realKuwoHongKongFirstUrl !== 'https://cdn.example.com/jacky-joox.mp3') {
+    throw new Error('Expected failed Kuwo 香港 first result to switch to same-song Joox source, got ' + realKuwoHongKongFirstUrl);
+  }
+
+  sandbox.aggregatedSources = ['local', 'joox', 'kuwo'];
+  sandbox.calls = [];
+  const wrongArtistFallback = {
+    title: '香港',
+    artist: '陈百强',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.com/bad-kuwo.mp3'
+  };
+  const wrongArtistUrl = await sandbox.recoverPlayableTrackUrl(wrongArtistFallback, {
+    skipSources: ['kuwo'],
+    skipUrls: ['https://cdn.example.com/bad-kuwo.mp3']
+  });
+  if (wrongArtistUrl) {
+    throw new Error('Expected failed Kuwo playback to avoid switching to a same-title different-artist fallback, got ' + wrongArtistUrl);
+  }
+
+  let rejectedPromptAudio = false;
+  try {
+    await sandbox.resolvePlayableFallbackCandidate({
+      title: '香港',
+      artist: '陈百强',
+      source: 'kuwo'
+    }, 'joox', {
+      title: '香港',
+      artist: '陈百强',
+      source: 'joox',
+      urlId: 'channel-blocked'
+    }, []);
+  } catch (error) {
+    rejectedPromptAudio = true;
+  }
+  if (!rejectedPromptAudio) {
+    throw new Error('Expected channel-unavailable prompt audio URL to be rejected before playback');
+  }
+
   sandbox.aggregatedSources = ['local', 'netease', 'kuwo'];
   sandbox.calls = [];
   const longTitleDeepFallback = {
     title: '等你等到我心痛',
-    artist: '酷我歌手字段',
+    artist: '张学友',
     source: 'kuwo',
     sourceLabel: '酷我音乐',
     src: 'https://cdn.example.com/bad-kuwo.mp3'

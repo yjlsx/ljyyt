@@ -56,6 +56,9 @@ function verifyBilibiliMatch(file) {
     pickFunction(script, 'isLooseTitleMatchCandidate'),
     pickFunction(script, 'isBilibiliTrackMatchCandidate'),
     pickFunction(script, 'getNormalizedArtistTokens'),
+    pickFunction(script, 'isUnknownArtistName'),
+    pickFunction(script, 'hasArtistMatch'),
+    pickFunction(script, 'canRelaxKuwoArtistMatch'),
     pickFunction(script, 'getFallbackMatchScore'),
     pickFunction(script, 'getFallbackTrackMatches')
   ].join('\n'), sandbox);

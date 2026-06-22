@@ -33,7 +33,7 @@ const musicData = [
   },
   {
     id: 4,
-    "title": "西余花花色.",
+    "title": "西余花花色",
     "artist": "涵蜜金组合",
     "album": "纳西音乐精选",
     "src": "https://res.wx.qq.com/voice/getvoice?mediaid=MzI2NzU3NDk4Ml8xMDAwMTk5MDE=",

@@ -140,6 +140,7 @@ async function verifyFrontend(file, script) {
     pickFunction(script, 'mapLxQuality'),
     pickFunction(script, 'fetchLxTrackUrlPayload'),
     pickFunction(script, 'fetchQqTrackUrlPayload'),
+    pickFunction(script, 'isBlockedAudioUrl'),
     pickFunction(script, 'resolveExternalTrackUrl')
   ].join('\n'), sandbox);
 

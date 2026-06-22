@@ -572,24 +572,36 @@
         .map(function(item) { return normalizeTrackText(item); })
         .filter(Boolean);
     }
+    function isUnknownArtistName(value) {
+      var artist = normalizeTrackText(value);
+      return !artist || artist === normalizeTrackText('未知歌手') || artist === 'unknown' || artist === 'unknownartist';
+    }
+    function hasArtistMatch(target, candidate) {
+      var targetArtist = normalizeTrackText(target && target.artist);
+      var candidateArtist = normalizeTrackText(candidate && candidate.artist);
+      if (isUnknownArtistName(targetArtist) || isUnknownArtistName(candidateArtist)) return false;
+      if (targetArtist === candidateArtist) return true;
+      var targetTokens = getNormalizedArtistTokens(target && target.artist);
+      var candidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
+      if (targetTokens.some(function(item) { return candidateTokens.indexOf(item) >= 0; })) return true;
+      return candidateArtist.includes(targetArtist) || targetArtist.includes(candidateArtist);
+    }
+    function canRelaxKuwoArtistMatch(target, candidate) {
+      var targetSource = String(target && target.source || '').trim();
+      if (targetSource !== 'kuwo' && targetSource !== 'lx_kuwo') return false;
+      if (String(candidate && candidate.source || '').trim() === targetSource) return false;
+      if (!isLooseTitleMatchCandidate(target, candidate)) return false;
+      if (!isUnknownArtistName(target && target.artist)) return false;
+      return normalizeTrackText(target && target.title).length >= 6;
+    }
     function getFallbackMatchScore(target, candidate, index) {
       var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
       if (!bilibiliMatch && !isLooseTitleMatchCandidate(target, candidate) && !isTrackMatchCandidate(target, candidate)) return -1;
       var strictTargetArtist = normalizeTrackText(target && target.artist);
-      var targetSource = String(target && target.source || '').trim();
-      var relaxedCrossSourceTitleMatch = !bilibiliMatch &&
-        (targetSource === 'kuwo' || targetSource === 'lx_kuwo') &&
-        String(candidate && candidate.source || '').trim() !== targetSource &&
-        isLooseTitleMatchCandidate(target, candidate);
+      var relaxedCrossSourceTitleMatch = !bilibiliMatch && canRelaxKuwoArtistMatch(target, candidate);
       if (strictTargetArtist && !bilibiliMatch && !relaxedCrossSourceTitleMatch) {
         var strictCandidateArtist = normalizeTrackText(candidate && candidate.artist);
-        if (!strictCandidateArtist || strictCandidateArtist === normalizeTrackText('未知歌手')) return -1;
-        if (strictCandidateArtist !== strictTargetArtist) {
-          var strictTargetTokens = getNormalizedArtistTokens(target && target.artist);
-          var strictCandidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
-          var strictTokenHit = strictTargetTokens.some(function(item) { return strictCandidateTokens.indexOf(item) >= 0; });
-          if (!strictTokenHit) return -1;
-        }
+        if (isUnknownArtistName(strictCandidateArtist) || !hasArtistMatch(target, candidate)) return -1;
       }
       var score = Math.max(0, 40 - index);
       var title = normalizeTrackText(target && target.title);
@@ -599,7 +611,7 @@
       if (bilibiliMatch) score += 95;
       if (title && candidateTitle && title === candidateTitle) score += 120;
       else if (isLooseTitleMatchCandidate(target, candidate)) score += 90;
-      if (!targetArtist || !candidateArtist || candidateArtist === normalizeTrackText('未知歌手')) {
+      if (isUnknownArtistName(targetArtist) || isUnknownArtistName(candidateArtist)) {
         score += 15;
       } else if (targetArtist === candidateArtist) {
         score += 100;
@@ -698,10 +710,12 @@
       var cachedUrl = typeof _getCachedUrl === 'function' ? _getCachedUrl(match) : null;
       if (cachedUrl) {
         if (skipUrls.indexOf(String(cachedUrl).trim()) >= 0) throw new Error('cached url skipped');
+        if (typeof isBlockedAudioUrl === 'function' && isBlockedAudioUrl(cachedUrl)) throw new Error('blocked cached fallback audio');
         return { source: source, match: match, url: cachedUrl };
       }
       var url = match && match.src ? match.src : await resolveExternalTrackUrl(match);
       if (!url || skipUrls.indexOf(String(url).trim()) >= 0) throw new Error('unplayable fallback candidate');
+      if (typeof isBlockedAudioUrl === 'function' && isBlockedAudioUrl(url)) throw new Error('blocked fallback audio');
       if (typeof _setCachedUrl === 'function') _setCachedUrl(match, url);
       return { source: source, match: match, url: url };
     }
@@ -1531,6 +1545,12 @@
       } catch (error) {
         return /\/api\/kuwo-audio(?:\?|$)/i.test(String(url || ''));
       }
+    }
+    function isBlockedAudioUrl(url) {
+      var text = normalizeAudioUrl(url).toLowerCase();
+      if (!text) return false;
+      return /(?:current|channel|source|play|copyright|unavailable|blocked|forbidden|no[-_]?free|cannot|cant|trylisten|audition|prompt|notice)/i.test(text) ||
+        /(?:当前|渠道|音源|版权|无法播放|不可播放|不能播放|暂不支持|暂无版权|试听|提示)/.test(text);
     }
     function normalizeAudioUrl(url) {
       return String(url || '').trim().replace(/&amp;/g, '&');
@@ -3402,6 +3422,7 @@
         var resolved = payload && payload.url ? String(payload.url) : '';
         if (resolved && track.source !== 'kuwo') resolved = resolved.replace(/^http:\/\//i, 'https://');
         resolved = normalizeAudioUrl(resolved);
+        if (isBlockedAudioUrl(resolved)) return '';
         if (resolved) return resolved;
       } catch (error) { /* fallthrough */ }
       return '';
