@@ -10,8 +10,11 @@ for (const name of [
   'getFallbackSearchSources',
   'inferTrackSourceCandidates',
   'isTrackMatchCandidate',
+  'getNormalizedTitleVariants',
   'isLooseTitleMatchCandidate',
   'getNormalizedArtistTokens',
+  'getPrimaryArtistName',
+  'getFallbackSearchQueries',
   'getFallbackMatchScore',
   'pickFallbackTrackMatch',
   'getFallbackTrackMatches',
@@ -139,6 +142,7 @@ const sandbox = {
           }];
         }
         if (source === 'joox' && /等你等到我心痛/.test(query)) {
+          if (query !== '等你等到我心痛 张学友') return [];
           return [{
             id: 'joox-jacky',
             name: '等你等到我心痛',
@@ -219,9 +223,12 @@ vm.runInContext([
   pickFunction('getSelectedPlaybackSources'),
   pickFunction('getFallbackSearchSources'),
   pickFunction('inferTrackSourceCandidates'),
+  pickFunction('getNormalizedTitleVariants'),
   pickFunction('isTrackMatchCandidate'),
   pickFunction('isLooseTitleMatchCandidate'),
   pickFunction('getNormalizedArtistTokens'),
+  pickFunction('getPrimaryArtistName'),
+  pickFunction('getFallbackSearchQueries'),
   pickFunction('isUnknownArtistName'),
   pickFunction('hasArtistMatch'),
   pickFunction('canRelaxKuwoArtistMatch'),
@@ -271,6 +278,14 @@ vm.runInContext([
     { title: '偏偏喜歡你', artist: '陳百強' }
   )) {
     throw new Error('Expected traditional Danny Chan title and artist to match simplified target');
+  }
+  const arrayArtistTokens = sandbox.getNormalizedArtistTokens(['张学友', '陈慧娴']);
+  if (arrayArtistTokens[0] !== '张学友' || arrayArtistTokens[1] !== '陈慧娴') {
+    throw new Error('Expected array artists to stay split into individual normalized tokens, got ' + arrayArtistTokens.join('/'));
+  }
+  const otterStyleQueries = sandbox.getFallbackSearchQueries({ title: '等你等到我心痛', artist: ['张学友', '陈慧娴'] });
+  if (otterStyleQueries[0] !== '等你等到我心痛 张学友') {
+    throw new Error('Expected Otter-style fallback query to use title plus first artist, got ' + otterStyleQueries[0]);
   }
   if (!sandbox.isLooseTitleMatchCandidate(
     { title: '香港', artist: '酷我歌手字段' },
@@ -406,7 +421,7 @@ vm.runInContext([
   sandbox.calls = [];
   const realKuwoHongKongFirstFallback = {
     title: '等你等到我心痛',
-    artist: '张学友',
+    artist: ['张学友', '陈慧娴'],
     source: 'kuwo',
     sourceLabel: '酷我音乐',
     src: 'https://cdn.example.com/bad-kuwo.mp3'

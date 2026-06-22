@@ -3086,10 +3086,13 @@
       var artist = normalizeTrackText(target && target.artist);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
       var candidateArtist = normalizeTrackText(candidate && candidate.artist);
-      var simpleCandidateTitle = normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
+      var targetTitleVariants = getNormalizedTitleVariants(target && target.title);
+      var candidateTitleVariants = getNormalizedTitleVariants(candidate && candidate.title);
+      var simpleCandidateTitle = candidateTitleVariants[1] || normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
       var titleMatches = title && candidateTitle && (
         title === candidateTitle ||
         title === simpleCandidateTitle ||
+        targetTitleVariants.some(function(item) { return candidateTitleVariants.indexOf(item) >= 0; }) ||
         candidateTitle.indexOf(title) === 0 ||
         candidateTitle.indexOf(title + ' ') === 0 ||
         candidateTitle.indexOf(title + '（') === 0 ||
@@ -3099,11 +3102,34 @@
       if (!artist) return true;
       return !candidateArtist || candidateArtist.includes(artist) || artist.includes(candidateArtist);
     }
+    function getNormalizedTitleVariants(value) {
+      var raw = String(value || '').trim();
+      var normalized = normalizeTrackText(raw);
+      var variants = [];
+      function add(item) {
+        item = normalizeTrackText(item);
+        if (item && variants.indexOf(item) < 0) variants.push(item);
+      }
+      add(raw);
+      add(raw.replace(/[（(].*?[）)]/g, ''));
+      add(raw.replace(/[.·・•\-_\s]+/g, ''));
+      add(raw.replace(/[.·・•\-_\s]+/g, '').replace(/上集|下集|上篇|下篇/g, function(text) {
+        return text === '上集' ? '上' : text === '下集' ? '下' : text === '上篇' ? '上' : '下';
+      }));
+      if (normalized) {
+        add(normalized.replace(/上集|上篇/g, '上'));
+        add(normalized.replace(/下集|下篇/g, '下'));
+      }
+      return variants;
+    }
     function isLooseTitleMatchCandidate(target, candidate) {
       var title = normalizeTrackText(target && target.title);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
-      var simpleCandidateTitle = normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
-      return !!(title && candidateTitle && (title === candidateTitle || title === simpleCandidateTitle));
+      var targetTitleVariants = getNormalizedTitleVariants(target && target.title);
+      var candidateTitleVariants = getNormalizedTitleVariants(candidate && candidate.title);
+      return !!(title && candidateTitle && targetTitleVariants.some(function(item) {
+        return candidateTitleVariants.indexOf(item) >= 0;
+      }));
     }
     function isBilibiliTrackMatchCandidate(target, candidate) {
       if (String(candidate && candidate.source || '') !== 'bilibili') return false;
@@ -3121,10 +3147,45 @@
       return keywordHit || !artist || blob.indexOf(artist) >= 0;
     }
     function getNormalizedArtistTokens(value) {
-      return normalizeTrackText(value)
-        .split(/(?:feat|featuring|ft|with|和|与|及|\/|、|,|，|&|\+)+/i)
+      var rawItems = Array.isArray(value) ? value : String(value || '').split(/(?:feat|featuring|ft|with|和|与|及|\/|、|,|，|&|\+)+/i);
+      return rawItems
         .map(function(item) { return normalizeTrackText(item); })
         .filter(Boolean);
+    }
+    function getPrimaryArtistName(value) {
+      var rawItems = Array.isArray(value) ? value : String(value || '').split(/(?:feat|featuring|ft|with|和|与|及|\/|、|,|，|&|\+)+/i);
+      for (var i = 0; i < rawItems.length; i++) {
+        var item = String(rawItems[i] || '').trim();
+        if (item) return item;
+      }
+      return '';
+    }
+    function getFallbackSearchQueries(track) {
+      var title = String(track && track.title || '').trim();
+      if (!title) return [];
+      var primaryArtist = getPrimaryArtistName(track && track.artist);
+      var queries = [];
+      function add(query) {
+        query = String(query || '').replace(/\s+/g, ' ').trim();
+        if (query && queries.indexOf(query) < 0) queries.push(query);
+      }
+      if (primaryArtist && !isUnknownArtistName(primaryArtist)) add(title + ' ' + primaryArtist);
+      add(title);
+      var titleWithoutBrackets = title.replace(/[（(].*?[）)]/g, '').trim();
+      if (titleWithoutBrackets && titleWithoutBrackets !== title) {
+        if (primaryArtist && !isUnknownArtistName(primaryArtist)) add(titleWithoutBrackets + ' ' + primaryArtist);
+        add(titleWithoutBrackets);
+      }
+      var compactTitle = title
+        .replace(/[（(]\s*(上集|下集|上篇|下篇)\s*[）)]/g, ' $1')
+        .replace(/[.·・•\-_]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (compactTitle && compactTitle !== title && compactTitle !== titleWithoutBrackets) {
+        if (primaryArtist && !isUnknownArtistName(primaryArtist)) add(compactTitle + ' ' + primaryArtist);
+        add(compactTitle);
+      }
+      return queries;
     }
     function isUnknownArtistName(value) {
       var artist = normalizeTrackText(value);
@@ -3204,20 +3265,20 @@
       }).map(function(entry) { return entry.item; });
     }
     // ===== 音源切换性能优化：缓存层 =====
-    var _fallbackSearchCache = new Map(); // key: title|artist|source -> { tracks, limit, expireAt }
+    var _fallbackSearchCache = new Map(); // key: title|artist|source|query -> { tracks, limit, expireAt }
     var _fallbackUrlCache = new Map(); // key: source|urlId -> { url, expireAt }
     var SEARCH_CACHE_TTL = 5 * 60 * 1000; // 5分钟
     var URL_CACHE_TTL = 30 * 60 * 1000; // 30分钟
     var FALLBACK_CACHE_MAX = 200;
 
-    function _getFallbackCacheKey(track, source) {
+    function _getFallbackCacheKey(track, source, query) {
       var title = String(track && track.title || '').trim().toLowerCase();
       var artist = String(track && track.artist || '').trim().toLowerCase();
-      return source + '|' + title + '|' + artist;
+      return source + '|' + title + '|' + artist + '|' + String(query || '').trim().toLowerCase();
     }
 
-    function _getCachedFallbackSearch(track, source, limit) {
-      var key = _getFallbackCacheKey(track, source);
+    function _getCachedFallbackSearch(track, source, query, limit) {
+      var key = _getFallbackCacheKey(track, source, query);
       var entry = _fallbackSearchCache.get(key);
       if (!entry) return null;
       if (Date.now() > entry.expireAt) {
@@ -3228,12 +3289,12 @@
       return entry.tracks;
     }
 
-    function _setCachedFallbackSearch(track, source, tracks, limit) {
+    function _setCachedFallbackSearch(track, source, query, tracks, limit) {
       if (_fallbackSearchCache.size >= FALLBACK_CACHE_MAX) {
         var firstKey = _fallbackSearchCache.keys().next().value;
         if (firstKey) _fallbackSearchCache.delete(firstKey);
       }
-      var key = _getFallbackCacheKey(track, source);
+      var key = _getFallbackCacheKey(track, source, query);
       _fallbackSearchCache.set(key, { tracks: tracks, limit: Number(limit) || 0, expireAt: Date.now() + SEARCH_CACHE_TTL });
     }
 
@@ -3274,18 +3335,19 @@
       return { source: source, match: match, url: url };
     }
     async function resolveFallbackTrackFromSource(track, source, skipUrls, limit) {
-      var fallbackArtistTokens = getNormalizedArtistTokens(track && track.artist);
-      var fallbackQuery = fallbackArtistTokens.length ? track.title + ' ' + fallbackArtistTokens[0] : track.title;
       var searchLimit = Math.max(1, Number(limit) || SEARCH_RESULT_LIMIT);
-      var matches = typeof _getCachedFallbackSearch === 'function' ? _getCachedFallbackSearch(track, source, searchLimit) : null;
-      if (!matches) {
-        matches = await fetchExternalSourceTracks(fallbackQuery, source, searchLimit);
-        if (!matches.length && fallbackArtistTokens.length) {
-          matches = await fetchExternalSourceTracks(track.title, source, searchLimit);
+      var queries = getFallbackSearchQueries(track);
+      var candidates = [];
+      for (var queryIndex = 0; queryIndex < queries.length; queryIndex++) {
+        var query = queries[queryIndex];
+        var matches = typeof _getCachedFallbackSearch === 'function' ? _getCachedFallbackSearch(track, source, query, searchLimit) : null;
+        if (!matches) {
+          matches = await fetchExternalSourceTracks(query, source, searchLimit);
+          if (typeof _setCachedFallbackSearch === 'function') _setCachedFallbackSearch(track, source, query, matches, searchLimit);
         }
-        if (typeof _setCachedFallbackSearch === 'function') _setCachedFallbackSearch(track, source, matches, searchLimit);
+        candidates = getFallbackTrackMatches(track, matches);
+        if (candidates.length) break;
       }
-      var candidates = getFallbackTrackMatches(track, matches);
       if (!candidates.length) return null;
       var resolved = null;
       var batchSize = searchLimit <= 12 ? Math.min(3, searchLimit) : Math.min(8, searchLimit);
