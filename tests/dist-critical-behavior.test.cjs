@@ -44,7 +44,7 @@ const criticalMarkers = {
   ],
   handleNoPlayableSource: [
     "showToast('未找到可用音源，播放下一首', 2000)",
-    "showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');",
+    "showToast(isSmartSourceEnabled() ? '连续多首都没有可用音源，已暂停播放' : '当前音源暂时无法播放', 2600);",
     'await autoPlayNextAfterFailure(requestId)'
   ],
   handleTrackAction: [

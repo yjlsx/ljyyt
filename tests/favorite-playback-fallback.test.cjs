@@ -224,6 +224,8 @@ vm.runInContext([
   pickFunction('getFallbackSearchSources'),
   pickFunction('inferTrackSourceCandidates'),
   pickFunction('getNormalizedTitleVariants'),
+  pickFunction('getTitlePartMarker'),
+  pickFunction('hasConflictingTitlePart'),
   pickFunction('isTrackMatchCandidate'),
   pickFunction('isLooseTitleMatchCandidate'),
   pickFunction('getNormalizedArtistTokens'),

@@ -53,6 +53,8 @@ function verifyBilibiliMatch(file) {
     pickFunction(script, 'normalizeTrackText'),
     pickFunction(script, 'getBilibiliMatchKeywords'),
     pickFunction(script, 'isTrackMatchCandidate'),
+    pickFunction(script, 'getTitlePartMarker'),
+    pickFunction(script, 'hasConflictingTitlePart'),
     pickFunction(script, 'getNormalizedTitleVariants'),
     pickFunction(script, 'isLooseTitleMatchCandidate'),
     pickFunction(script, 'isBilibiliTrackMatchCandidate'),

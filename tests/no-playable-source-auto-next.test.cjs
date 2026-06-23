@@ -26,6 +26,7 @@ async function verifyAutoNext(file) {
   const sandbox = {
     _playRequestId: 7,
     _autoSkipFailureCount: 0,
+    MAX_CONSECUTIVE_AUTO_SKIPS: 2,
     playQueue: [
       { title: '坏歌', artist: '歌手', src: '' },
       { title: '下一首', artist: '歌手', src: 'next.mp3' }
@@ -36,6 +37,11 @@ async function verifyAutoNext(file) {
     appSettings: { smartSource: true },
     played: [],
     toasts: [],
+    audioPlayer: {
+      pause() {},
+      removeAttribute() {},
+      load() {}
+    },
     setPlayIcons(value) {
       sandbox.playIconState = value;
     },
@@ -80,6 +86,7 @@ async function verifySingleQueueDoesNotLoop(file) {
   const sandbox = {
     _playRequestId: 3,
     _autoSkipFailureCount: 0,
+    MAX_CONSECUTIVE_AUTO_SKIPS: 2,
     playQueue: [{ title: '唯一坏歌', artist: '歌手', src: '' }],
     queueIndex: 0,
     currentTrackIndex: 0,
@@ -87,6 +94,11 @@ async function verifySingleQueueDoesNotLoop(file) {
     appSettings: { smartSource: true },
     played: [],
     toasts: [],
+    audioPlayer: {
+      pause() {},
+      removeAttribute() {},
+      load() {}
+    },
     setPlayIcons(value) {
       sandbox.playIconState = value;
     },
@@ -122,7 +134,7 @@ async function verifySingleQueueDoesNotLoop(file) {
   if (skipped || sandbox.played.length) {
     throw new Error(file + ' should not loop a single-song active queue after source failure');
   }
-  if (!sandbox.toasts.includes('没有找到可用免费音源')) {
+  if (!sandbox.toasts.includes('连续多首都没有可用音源，已暂停播放')) {
     throw new Error(file + ' should keep the no-source message when there is no next queue item');
   }
 }

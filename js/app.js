@@ -520,7 +520,22 @@
         }
       }
       if (source === '_netease' && sources.indexOf('netease') < 0) sources.push('netease');
-      return sources;
+      var priority = ['joox', 'netease', '_netease'];
+      if (source === 'netease') priority = ['_netease', 'joox', 'netease'];
+      if (source === '_netease') priority = ['netease', 'joox', '_netease'];
+      var slowLookup = new Set(['qq', 'lx_qq', 'lx_kuwo', 'bilibili', 'migu']);
+      var ordered = [];
+      function addOrdered(item) {
+        item = String(item || '').trim();
+        if (!item || ordered.indexOf(item) >= 0 || sources.indexOf(item) < 0) return;
+        ordered.push(item);
+      }
+      priority.forEach(addOrdered);
+      sources.forEach(function(item) {
+        if (!slowLookup.has(item)) addOrdered(item);
+      });
+      sources.forEach(addOrdered);
+      return ordered;
     }
     function inferTrackSourceCandidates(track) {
       var candidates = [];
@@ -557,6 +572,7 @@
       var artist = normalizeTrackText(target && target.artist);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
       var candidateArtist = normalizeTrackText(candidate && candidate.artist);
+      if (hasConflictingTitlePart(target && target.title, candidate && candidate.title)) return false;
       var targetTitleVariants = getNormalizedTitleVariants(target && target.title);
       var candidateTitleVariants = getNormalizedTitleVariants(candidate && candidate.title);
       var simpleCandidateTitle = candidateTitleVariants[1] || normalizeTrackText(String(candidate && candidate.title || '').replace(/[（(].*?[）)]/g, ''));
@@ -572,6 +588,21 @@
       if (!titleMatches) return false;
       if (!artist) return true;
       return !candidateArtist || candidateArtist.includes(artist) || artist.includes(candidateArtist);
+    }
+    function getTitlePartMarker(value) {
+      var title = normalizeTrackText(value);
+      if (!title) return '';
+      if (/没有下集|無下集|沒有下集|无下集/.test(title)) return 'none';
+      if (/上集|上篇|上$/.test(title) || /爱的故事上/.test(title)) return 'upper';
+      if (/下集|下篇|下$/.test(title) || /爱的故事下/.test(title)) return 'lower';
+      return '';
+    }
+    function hasConflictingTitlePart(targetTitle, candidateTitle) {
+      var targetMarker = getTitlePartMarker(targetTitle);
+      if (!targetMarker) return false;
+      var candidateMarker = getTitlePartMarker(candidateTitle);
+      if (!candidateMarker) return true;
+      return candidateMarker !== targetMarker;
     }
     function getNormalizedTitleVariants(value) {
       var raw = String(value || '').trim();
@@ -596,6 +627,7 @@
     function isLooseTitleMatchCandidate(target, candidate) {
       var title = normalizeTrackText(target && target.title);
       var candidateTitle = normalizeTrackText(candidate && candidate.title);
+      if (hasConflictingTitlePart(target && target.title, candidate && candidate.title)) return false;
       var targetTitleVariants = getNormalizedTitleVariants(target && target.title);
       var candidateTitleVariants = getNormalizedTitleVariants(candidate && candidate.title);
       return !!(title && candidateTitle && targetTitleVariants.some(function(item) {
@@ -1518,6 +1550,7 @@
     var _autoSkipFailureCount = 0;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     var _fallbackPrewarmState = { key: '', promise: null, result: null };
+    var _proxyPlaybackAttemptLifecycle = null;
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
@@ -1544,6 +1577,14 @@
     }
     function resetAutoSkipFailureCount() {
       _autoSkipFailureCount = 0;
+    }
+    function cancelPendingPlaybackWork() {
+      _playRequestId++;
+      _playRetryCount = 0;
+      resetAutoSkipFailureCount();
+      if (_proxyPlaybackAttemptLifecycle) _proxyPlaybackAttemptLifecycle.active = false;
+      _proxyPlaybackAttemptLifecycle = null;
+      if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
     }
     function isSmartSourceEnabled() {
       return !appSettings || appSettings.smartSource !== false;
@@ -1652,8 +1693,12 @@
     function isBlockedAudioUrl(url) {
       var text = normalizeAudioUrl(url).toLowerCase();
       if (!text) return false;
-      return /(?:current|channel|source|play|copyright|unavailable|blocked|forbidden|no[-_]?free|cannot|cant|trylisten|audition|prompt|notice)/i.test(text) ||
-        /(?:当前|渠道|音源|版权|无法播放|不可播放|不能播放|暂不支持|暂无版权|试听|提示)/.test(text);
+      var decoded = text;
+      try {
+        decoded = decodeURIComponent(text);
+      } catch (error) {}
+      return /(?:current[-_\s./]*channel[-_\s./]*(?:unavailable|forbidden|blocked|cannot[-_\s./]*play|cant[-_\s./]*play)|(?:cannot|cant)[-_\s./]*play|no[-_\s./]*free|copyright[-_\s./]*(?:notice|unavailable|blocked)|trylisten|audition|prompt[-_\s./]*(?:audio|notice)?)/i.test(decoded) ||
+        /(?:当前.*?(?:渠道|音源).*?(?:无法播放|不可播放|不能播放)|(?:渠道|音源).*?(?:无法播放|不可播放|不能播放)|版权.*?(?:无法播放|不可播放|不能播放|暂无)|暂不支持|暂无版权|试听|提示音)/.test(decoded);
     }
     function normalizeAudioUrl(url) {
       return String(url || '').trim().replace(/&amp;/g, '&');
@@ -1945,12 +1990,14 @@
       }
       return true;
     }
+    const MAX_CONSECUTIVE_AUTO_SKIPS = 2;
     async function autoPlayNextAfterFailure(requestId) {
       if (requestId && requestId !== _playRequestId) return false;
       const tracks = playQueue.length ? playQueue : await ensureLibraryTracks();
       if (requestId && requestId !== _playRequestId) return false;
       if (!tracks.length || tracks.length <= 1) return false;
-      if (_autoSkipFailureCount >= tracks.length - 1) return false;
+      var skipLimit = Math.min(MAX_CONSECUTIVE_AUTO_SKIPS, tracks.length - 1);
+      if (_autoSkipFailureCount >= skipLimit) return false;
       _autoSkipFailureCount++;
       await playTrackAt(queueIndex + 1, { autoSkip: true });
       return true;
@@ -1962,7 +2009,10 @@
         showToast('未找到可用音源，播放下一首', 2000);
         return true;
       }
-      showToast(isSmartSourceEnabled() ? '没有找到可用免费音源' : '当前音源暂时无法播放');
+      resetAutoSkipFailureCount();
+      audioPlayer.pause();
+      setPlayIcons(false);
+      showToast(isSmartSourceEnabled() ? '连续多首都没有可用音源，已暂停播放' : '当前音源暂时无法播放', 2600);
       return false;
     }
     async function playCurrentTrack() {
@@ -2074,6 +2124,7 @@
       }
     }
     function pauseCurrentTrack() {
+      cancelPendingPlaybackWork();
       audioPlayer.pause();
       setPlayIcons(false);
     }
@@ -3447,6 +3498,12 @@
       }
       if (source === 'netease' && typeof searchNeteasePrimaryTracks === 'function') {
         if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        try {
+          var gdNeteaseTracks = await searchGdMusicSourceTracks(query, source, count, signal);
+          if (gdNeteaseTracks.length) return gdNeteaseTracks;
+        } catch (error) {
+          console.warn('searchGdMusicSourceTracks netease failed, using primary fallback', error);
+        }
         try {
           var neteaseTracks = await searchNeteasePrimaryTracks(query, count);
           if (neteaseTracks.length) return neteaseTracks;

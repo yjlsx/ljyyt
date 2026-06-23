@@ -1,6 +1,13 @@
 const fs = require('fs');
 const vm = require('vm');
 
+function getInlineScript(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const match = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i);
+  if (!match) throw new Error(file + ' is missing inline application script');
+  return match[1];
+}
+
 function pickFunction(script, name) {
   let start = script.indexOf('function ' + name);
   if (start > 6 && script.slice(start - 6, start) === 'async ') start -= 6;
@@ -40,9 +47,8 @@ function pickConstObject(script, name) {
   return script.slice(start, end + '\n    };'.length);
 }
 
-async function verifyEmptyCurrentSourceFallback(file) {
-  const html = fs.readFileSync(file, 'utf8');
-  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+async function verifyKuwoHongKongUsesFastPlayableFallbacks(file) {
+  const script = getInlineScript(file);
   const sandbox = {
     console: { warn() {}, log() {}, error() {} },
     DEFAULT_COVER: 'cover.jpg',
@@ -54,42 +60,59 @@ async function verifyEmptyCurrentSourceFallback(file) {
     DOMException,
     setTimeout,
     clearTimeout,
-    aggregatedSources: ['local', 'netease', 'joox', 'kuwo'],
+    aggregatedSources: ['local', 'qq', 'lx_qq', 'joox', 'netease', 'kuwo', 'lx_kuwo', 'bilibili'],
+    defaultEnabledSources: ['local', 'qq', 'lx_qq', 'joox', 'netease', 'kuwo', 'lx_kuwo', 'bilibili'],
+    sourceDisplayOrder: ['local', 'qq', 'lx_qq', 'joox', 'netease', 'kuwo', 'lx_kuwo', 'bilibili', '_netease'],
     calls: [],
-    appSettings: { quality: '320' },
     safeCover(value) {
       return value || 'cover.jpg';
     },
     getSourceLabel(source) {
-      return { netease: '网易云音乐', joox: 'Joox', kuwo: '酷我音乐' }[source] || source;
+      return { joox: 'Joox', netease: '网易云音乐', qq: 'QQ音乐', lx_qq: '小秋音乐', kuwo: '酷我音乐' }[source] || source;
     },
-    async resolveNeteaseApiTrackUrl() {
-      return '';
-    },
-    async fetchQqTrackUrlPayload() {
-      return { url: '' };
-    },
-    async fetchLxTrackUrlPayload() {
-      return { url: '' };
-    },
-    getAudioProxyUrl(url) {
-      return url;
+    getEnabledSourceOrder() {
+      return sandbox.aggregatedSources.slice();
     },
     async fetch(url) {
       const parsed = new URL(url, 'https://example.test');
       const source = parsed.searchParams.get('source');
-      const type = parsed.searchParams.get('types');
-      sandbox.calls.push({ source, type });
-      if (type === 'url') {
-        return { ok: true, async json() { return source === 'joox' ? { url: 'https://cdn.example.test/joox.mp3' } : { url: '' }; } };
+      const query = parsed.searchParams.get('name');
+      sandbox.calls.push({ source, query });
+      if (source === 'qq' || source === 'lx_qq' || source === 'bilibili' || source === 'lx_kuwo') {
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        return {
+          ok: true,
+          async json() {
+            return [{
+              id: source + '-blocked',
+              name: '等你等到我心痛',
+              artist: ['张学友'],
+              source,
+              url_id: source + '-blocked'
+            }];
+          }
+        };
       }
-      if (source === 'netease') {
-        return { ok: true, async json() { return [{ id: 'ne-empty', name: '山海', artist: ['原源歌手'], source: 'netease', url_id: 'ne-empty' }]; } };
-      }
-      if (source === 'joox') {
-        return { ok: true, async json() { return [{ id: 'joox-ok', name: '山海', artist: ['原源歌手'], source: 'joox', url_id: 'joox-ok' }]; } };
+      if (source === 'joox' && /等你等到我心痛 张学友/.test(query)) {
+        return {
+          ok: true,
+          async json() {
+            return [{
+              id: 'joox-jacky',
+              name: '等你等到我心痛',
+              artist: ['張學友'],
+              source: 'joox',
+              url_id: 'joox-jacky'
+            }];
+          }
+        };
       }
       return { ok: true, async json() { return []; } };
+    },
+    async resolveExternalTrackUrl(track) {
+      if (track && track.urlId === 'joox-jacky') return 'https://cdn.example.test/joox-jacky.mp3';
+      if (track && /blocked/.test(String(track.urlId || ''))) return 'https://cdn.example.test/current-channel-unavailable.mp3';
+      return '';
     }
   };
 
@@ -99,6 +122,7 @@ async function verifyEmptyCurrentSourceFallback(file) {
     pickFunction(script, 'parseTrackDuration'),
     pickFunction(script, 'normalizeTrackText'),
     pickFunction(script, 'getSelectedPlaybackSources'),
+    pickFunction(script, 'getGlobalFallbackPlaybackSources'),
     pickFunction(script, 'getFallbackSearchSources'),
     pickFunction(script, 'inferTrackSourceCandidates'),
     pickFunction(script, 'isTrackMatchCandidate'),
@@ -117,7 +141,6 @@ async function verifyEmptyCurrentSourceFallback(file) {
     pickFunction(script, 'getFallbackTrackMatches'),
     pickFunction(script, 'normalizeAudioUrl'),
     pickFunction(script, 'isBlockedAudioUrl'),
-    pickFunction(script, 'resolveExternalTrackUrl'),
     pickFunction(script, 'resolvePlayableFallbackCandidate'),
     pickFunction(script, 'resolveFallbackTrackFromSource'),
     pickFunction(script, 'normalizeExternalTrack'),
@@ -128,31 +151,38 @@ async function verifyEmptyCurrentSourceFallback(file) {
   ].join('\n'), sandbox);
 
   const track = {
-    title: '山海',
-    artist: '原源歌手',
-    source: 'netease',
-    sourceLabel: '网易云音乐',
-    src: '',
-    urlId: 'ne-empty'
+    title: '等你等到我心痛',
+    artist: '张学友',
+    source: 'kuwo',
+    sourceLabel: '酷我音乐',
+    src: 'https://cdn.example.test/failed-kuwo.mp3'
   };
-  const url = await sandbox.recoverPlayableTrackUrl(track, {
-    skipSources: ['netease'],
-    skipUrls: []
-  });
-  if (url !== 'https://cdn.example.test/joox.mp3') {
-    throw new Error(file + ' should recover from another source when current NetEase has no playable URL');
+
+  const recovered = await Promise.race([
+    sandbox.recoverPlayableTrackUrl(track, {
+      skipSources: ['kuwo'],
+      skipUrls: ['https://cdn.example.test/failed-kuwo.mp3'],
+      quickOnly: true
+    }),
+    new Promise((resolve) => setTimeout(() => resolve('__timeout__'), 80))
+  ]);
+
+  if (recovered === '__timeout__') {
+    throw new Error(file + ' waited on slow QQ/LX/Bilibili sources before trying a playable Otter-style fallback');
   }
-  if (track.source !== 'joox') {
-    throw new Error(file + ' should switch the active track to the recovered source');
+  if (recovered !== 'https://cdn.example.test/joox-jacky.mp3' || track.source !== 'joox') {
+    throw new Error(file + ' should quickly switch failed Kuwo 香港 result to the matching Joox source, got ' + recovered + ' from ' + track.source + '; calls=' + JSON.stringify(sandbox.calls));
   }
-  if (!sandbox.calls.some((call) => call.source === 'joox' && call.type === 'search')) {
-    throw new Error(file + ' should search the selected alternate source after current source is empty');
+  const firstSlowCall = sandbox.calls.find((call) => call.source === 'qq' || call.source === 'lx_qq' || call.source === 'bilibili');
+  const jooxCall = sandbox.calls.find((call) => call.source === 'joox');
+  if (firstSlowCall && jooxCall && sandbox.calls.indexOf(firstSlowCall) < sandbox.calls.indexOf(jooxCall)) {
+    throw new Error(file + ' should not prioritize slow/unreliable playback fallback sources before Joox');
   }
 }
 
 (async () => {
   for (const file of ['index.html', 'dist/index.html']) {
-    await verifyEmptyCurrentSourceFallback(file);
+    await verifyKuwoHongKongUsesFastPlayableFallbacks(file);
   }
 })().catch((error) => {
   console.error(error);

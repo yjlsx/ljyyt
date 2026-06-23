@@ -83,6 +83,8 @@ async function verify(file) {
     pickFunction(script, 'getFallbackSearchSources'),
     pickFunction(script, 'inferTrackSourceCandidates'),
     pickFunction(script, 'isTrackMatchCandidate'),
+    pickFunction(script, 'getTitlePartMarker'),
+    pickFunction(script, 'hasConflictingTitlePart'),
     pickFunction(script, 'getNormalizedTitleVariants'),
     pickFunction(script, 'isLooseTitleMatchCandidate'),
     pickFunction(script, 'getNormalizedArtistTokens'),

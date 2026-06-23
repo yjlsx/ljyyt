@@ -45,7 +45,8 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!autoSkip.includes('if (!tracks.length || tracks.length <= 1) return false;')) {
     throw new Error(file + ' autoPlayNextAfterFailure may loop a single-song queue');
   }
-  if (!autoSkip.includes('_autoSkipFailureCount >= tracks.length - 1')) {
+  if (!autoSkip.includes('Math.min(MAX_CONSECUTIVE_AUTO_SKIPS, tracks.length - 1)') ||
+      !autoSkip.includes('_autoSkipFailureCount >= skipLimit')) {
     throw new Error(file + ' autoPlayNextAfterFailure is missing a queue wrap guard');
   }
 
