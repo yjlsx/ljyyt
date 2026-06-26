@@ -2266,6 +2266,7 @@
     <audio id="audio-player" preload="metadata"></audio>
   </div>
   <script src="/fix_wechat_images.js"></script>
+  <script src="js/providers-bridge.js"></script>
   <script>
     const tabs = document.querySelectorAll('.tab[data-target]');
     const views = document.querySelectorAll('.view');
@@ -5399,8 +5400,72 @@
         throw new Error('otter netease api failed');
       }
     }
+    function adaptBridgeNeteaseTrack(bridgeTrack) {
+      if (!bridgeTrack) return null;
+      return {
+        id: String(bridgeTrack.id || ''),
+        title: String(bridgeTrack.name || bridgeTrack.title || ''),
+        artist: String(bridgeTrack.artist || '未知歌手'),
+        album: String(bridgeTrack.album || ''),
+        cover: safeCover(bridgeTrack.cover || DEFAULT_COVER),
+        src: '',
+        source: '_netease',
+        provider: 'netease-api',
+        sourceLabel: 'Netease',
+        urlId: String(bridgeTrack.urlId || bridgeTrack.id || ''),
+        lyric_id: String(bridgeTrack.lyric_id || bridgeTrack.id || ''),
+        duration: parseTrackDuration(bridgeTrack.duration || 0)
+      };
+    }
+
+    // 把 bridge 返回的 track 反射回 normalizeExternalTrack 的形状（QQ / Kuwo / Joox / Migu / Bilibili 等外部源共用）
+    function adaptBridgeExternalTrack(bridgeTrack, sourceCode) {
+      if (!bridgeTrack) return null;
+      var source = String(sourceCode || bridgeTrack.source || '');
+      var picId = String(bridgeTrack.picId || '');
+      var cover = String(bridgeTrack.cover || '');
+      if (!cover && picId) cover = DEFAULT_COVER;
+      var coverApi = '';
+      if (picId && (!cover || cover === DEFAULT_COVER)) {
+        var coverSize = source === 'migu' ? 800 : 300;
+        coverApi = gdMusicApiBase + '?types=pic&source=' + encodeURIComponent(source) + '&id=' + encodeURIComponent(picId) + '&size=' + coverSize;
+      }
+      var urlId = String(bridgeTrack.urlId || bridgeTrack.id || '');
+      return {
+        id: String(bridgeTrack.id || urlId),
+        title: String(bridgeTrack.name || bridgeTrack.title || ''),
+        artist: String(bridgeTrack.artist || '未知歌手'),
+        album: String(bridgeTrack.album || ''),
+        cover: safeCover(cover || DEFAULT_COVER),
+        coverApi: coverApi,
+        src: '',
+        source: source,
+        sourceLabel: getSourceLabel(source),
+        urlId: urlId,
+        lyric_id: String(bridgeTrack.lyric_id || urlId),
+        duration: parseTrackDuration(bridgeTrack.duration || 0)
+      };
+    }
+
     async function searchNeteaseApiTracks(query, count) {
       var limit = Math.max(1, Math.min(100, Number(count) || SEARCH_RESULT_LIMIT));
+      // 灰度：当 LJYYT_USE_PROVIDERS_BRIDGE 打开且 bridge 已注册 _netease provider 时，优先走桥
+      if (typeof window !== 'undefined' && window.LJYYT_USE_PROVIDERS_BRIDGE === true && window.LjyytProviders) {
+        try {
+          var bridgeProvider = window.LjyytProviders.getProvider('_netease');
+          if (bridgeProvider) {
+            var bridgeResult = await bridgeProvider.search(String(query || ''), 1, limit);
+            var adapted = ((bridgeResult && bridgeResult.tracks) || [])
+              .map(adaptBridgeNeteaseTrack)
+              .filter(function(track) { return track && track.title && track.urlId; });
+            if (adapted.length) return adapted;
+          }
+        } catch (error) {
+          if (typeof console !== 'undefined' && console.warn) {
+            console.warn('[providers-bridge] netease search failed, falling back to direct otter call', error);
+          }
+        }
+      }
       var payload = await fetchOtterNetease('/search', {
         keyword: String(query || ''),
         type: 1,
@@ -5997,6 +6062,21 @@
     }
     async function searchQqApiTracks(query, count, signal) {
       var total = Math.max(1, Number(count) || 20);
+      // 灰度：LJYYT_USE_PROVIDERS_BRIDGE 开 + bridge 注册了 qq provider 时走桥
+      if (typeof window !== 'undefined' && window.LJYYT_USE_PROVIDERS_BRIDGE === true && window.LjyytProviders) {
+        try {
+          var qqBridge = window.LjyytProviders.getProvider('qq');
+          if (qqBridge) {
+            var qqRes = await qqBridge.search(String(query || ''), 1, total, signal);
+            var qqAdapted = ((qqRes && qqRes.tracks) || [])
+              .map(function (t) { return adaptBridgeExternalTrack(t, 'qq'); })
+              .filter(function (t) { return t && t.title && t.urlId; });
+            if (qqAdapted.length) return qqAdapted.slice(0, total);
+          }
+        } catch (error) {
+          if (typeof console !== 'undefined' && console.warn) console.warn('[providers-bridge] qq search failed, falling back', error);
+        }
+      }
       var pageSize = Math.min(50, total);
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
       var requests = [];
@@ -6122,6 +6202,21 @@
     }
     async function searchGdMusicSourceTracks(query, source, count, signal) {
       var total = Math.max(1, Number(count) || 20);
+      // 灰度（kuwo 单源）：LJYYT_USE_PROVIDERS_BRIDGE 开 + bridge 注册了 kuwo provider 时走桥
+      if (source === 'kuwo' && typeof window !== 'undefined' && window.LJYYT_USE_PROVIDERS_BRIDGE === true && window.LjyytProviders) {
+        try {
+          var kwBridge = window.LjyytProviders.getProvider('kuwo');
+          if (kwBridge) {
+            var kwRes = await kwBridge.search(String(query || ''), 1, total, signal);
+            var kwAdapted = ((kwRes && kwRes.tracks) || [])
+              .map(function (t) { return adaptBridgeExternalTrack(t, 'kuwo'); })
+              .filter(function (t) { return t && t.title && t.urlId; });
+            if (kwAdapted.length) return kwAdapted.slice(0, total);
+          }
+        } catch (error) {
+          if (typeof console !== 'undefined' && console.warn) console.warn('[providers-bridge] kuwo search failed, falling back', error);
+        }
+      }
       var pageSize = Math.min(50, total);
       var pageCount = Math.max(1, Math.ceil(total / pageSize));
       var requests = [];
@@ -6154,6 +6249,24 @@
         var settingQuality = typeof appSettings !== 'undefined' && appSettings ? String(appSettings.quality || '320') : '320';
         quality = ['128', '192', '320', '999'].includes(settingQuality) ? settingQuality : '320';
       } catch (error) {}
+      // 灰度：LJYYT_USE_PROVIDERS_BRIDGE 开时，先让桥跑 getPlayUrlWithFallback（_netease/qq/kuwo），失败再回退到原路径
+      if (typeof window !== 'undefined' && window.LJYYT_USE_PROVIDERS_BRIDGE === true && window.LjyytProviders &&
+          (track.source === '_netease' || track.source === 'qq' || track.source === 'kuwo')) {
+        try {
+          var bridgeInfo = await window.LjyytProviders.getPlayUrlWithFallback(track, 'auto-switch', quality);
+          var bridgeUrl = normalizeAudioUrl(bridgeInfo && bridgeInfo.url ? String(bridgeInfo.url) : '');
+          if (bridgeUrl) {
+            var finalUrl = bridgeUrl;
+            // kuwo 在 app.js 里允许 http，其余源走 proxy 转 https
+            if (track.source !== 'kuwo' && /^http:\/\//i.test(finalUrl)) {
+              finalUrl = (typeof getAudioProxyUrl === 'function') ? getAudioProxyUrl(finalUrl) : finalUrl.replace(/^http:\/\//i, 'https://');
+            }
+            if (!isBlockedAudioUrl(finalUrl)) return finalUrl;
+          }
+        } catch (error) {
+          if (typeof console !== 'undefined' && console.warn) console.warn('[providers-bridge] getPlayUrlWithFallback failed, falling back', error);
+        }
+      }
       if (track.source === '_netease') {
         try {
           return await resolveNeteaseApiTrackUrl(track);

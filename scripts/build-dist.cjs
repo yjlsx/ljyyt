@@ -104,6 +104,7 @@ const assetFiles = [
   'css/search-app.css',
   'js/icons.js',
   'js/music-data.js',
+  'js/providers-bridge.js',
   'js/search-app.js',
   'js/theme.js',
   'data/lyrics.json',

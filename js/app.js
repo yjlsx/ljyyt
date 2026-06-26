@@ -2818,8 +2818,43 @@
         throw new Error('otter netease api failed');
       }
     }
+    function adaptBridgeNeteaseTrack(bridgeTrack) {
+      if (!bridgeTrack) return null;
+      return {
+        id: String(bridgeTrack.id || ''),
+        title: String(bridgeTrack.name || bridgeTrack.title || ''),
+        artist: String(bridgeTrack.artist || '未知歌手'),
+        album: String(bridgeTrack.album || ''),
+        cover: safeCover(bridgeTrack.cover || DEFAULT_COVER),
+        src: '',
+        source: '_netease',
+        provider: 'netease-api',
+        sourceLabel: 'Netease',
+        urlId: String(bridgeTrack.urlId || bridgeTrack.id || ''),
+        lyric_id: String(bridgeTrack.lyric_id || bridgeTrack.id || ''),
+        duration: parseTrackDuration(bridgeTrack.duration || 0)
+      };
+    }
+
     async function searchNeteaseApiTracks(query, count) {
       var limit = Math.max(1, Math.min(100, Number(count) || SEARCH_RESULT_LIMIT));
+      // 灰度：当 LJYYT_USE_PROVIDERS_BRIDGE 打开且 bridge 已注册 _netease provider 时，优先走桥
+      if (typeof window !== 'undefined' && window.LJYYT_USE_PROVIDERS_BRIDGE === true && window.LjyytProviders) {
+        try {
+          var bridgeProvider = window.LjyytProviders.getProvider('_netease');
+          if (bridgeProvider) {
+            var bridgeResult = await bridgeProvider.search(String(query || ''), 1, limit);
+            var adapted = ((bridgeResult && bridgeResult.tracks) || [])
+              .map(adaptBridgeNeteaseTrack)
+              .filter(function(track) { return track && track.title && track.urlId; });
+            if (adapted.length) return adapted;
+          }
+        } catch (error) {
+          if (typeof console !== 'undefined' && console.warn) {
+            console.warn('[providers-bridge] netease search failed, falling back to direct otter call', error);
+          }
+        }
+      }
       var payload = await fetchOtterNetease('/search', {
         keyword: String(query || ''),
         type: 1,
