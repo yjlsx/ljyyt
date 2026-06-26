@@ -23,7 +23,7 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' does not apply the faster primary playback timeout to failed source detection');
   }
 
-  if (!html.includes('const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900')) {
+  if (!html.includes('const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 3000')) {
     throw new Error(file + ' does not give prewarmed fallback sources a fast primary-source takeover window');
   }
 

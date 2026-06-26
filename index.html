@@ -1860,6 +1860,11 @@
     }
     html.dark .ljyyt-toast { background: #fff; color: #363636; }
     .ljyyt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .ljyyt-toast-spinner {
+      width: 16px; height: 16px; flex: none; border-radius: 50%;
+      border: 2px solid rgba(0,0,0,.15); border-top-color: var(--primary, #31c27c);
+      animation: spin .8s linear infinite;
+    }
     .ljyyt-confirm-overlay {
       position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
       background: rgba(0,0,0,.4); opacity: 0; transition: opacity .2s;
@@ -2340,9 +2345,45 @@
       }
       return text;
     }
+    var _loadingToastEl = null;
+    var _loadingToastSafetyTimer = null;
+    function clearLoadingToastState() {
+      if (_loadingToastSafetyTimer) { clearTimeout(_loadingToastSafetyTimer); _loadingToastSafetyTimer = null; }
+      _loadingToastEl = null;
+    }
+    function showLoadingToast(message) {
+      dismissLoadingToast();
+      var existing = document.querySelector('.ljyyt-toast');
+      if (existing) existing.remove();
+      var el = document.createElement('div');
+      el.className = 'ljyyt-toast ljyyt-toast-loading';
+      var spinner = document.createElement('span');
+      spinner.className = 'ljyyt-toast-spinner';
+      spinner.setAttribute('aria-hidden', 'true');
+      el.appendChild(spinner);
+      var label = document.createElement('span');
+      label.textContent = String(message || '');
+      el.appendChild(label);
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      document.body.appendChild(el);
+      requestAnimationFrame(function() { el.classList.add('show'); });
+      _loadingToastEl = el;
+      _loadingToastSafetyTimer = setTimeout(function() { dismissLoadingToast(); }, 8000);
+      return el;
+    }
+    function dismissLoadingToast() {
+      if (_loadingToastSafetyTimer) { clearTimeout(_loadingToastSafetyTimer); _loadingToastSafetyTimer = null; }
+      if (!_loadingToastEl) return;
+      var el = _loadingToastEl;
+      _loadingToastEl = null;
+      el.classList.remove('show');
+      setTimeout(function() { if (el && el.parentNode) el.remove(); }, 300);
+    }
     function showToast(message, duration) {
       message = normalizeFallbackToastMessage(message);
       if (!message) return;
+      clearLoadingToastState();
       var existing = document.querySelector('.ljyyt-toast');
       if (existing) existing.remove();
       var el = document.createElement('div');
@@ -4133,8 +4174,8 @@
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
-    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
-    const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 900;
+    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 3000;
+    const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 3000;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -4387,6 +4428,7 @@
           fastPrewarmed = null;
           var fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
           if (!fallbackUrl) {
+            if (typeof showLoadingToast === 'function') showLoadingToast('正在搜索免费音源...');
             currentTrack.src = '';
             audioPlayer.removeAttribute('src');
             audioPlayer.load();
@@ -4405,8 +4447,8 @@
             }
           }
           if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
-          if (requestId && requestId !== _playRequestId) return false;
-          if (!fallbackUrl) return false;
+          if (requestId && requestId !== _playRequestId) { if (typeof dismissLoadingToast === 'function') dismissLoadingToast(); return false; }
+          if (!fallbackUrl) { if (typeof dismissLoadingToast === 'function') dismissLoadingToast(); return false; }
           if (audioPlayer.getAttribute('src') !== fallbackUrl) {
             audioPlayer.src = fallbackUrl;
             audioPlayer.load();
@@ -4444,6 +4486,7 @@
           console.warn('switchToFallbackSource failed', error);
         }
       }
+      if (typeof dismissLoadingToast === 'function') dismissLoadingToast();
       return false;
     }
     
