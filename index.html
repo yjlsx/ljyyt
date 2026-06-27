@@ -4174,8 +4174,8 @@
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
-    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 3000;
-    const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 3000;
+    const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
+    const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 900;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -4203,6 +4203,7 @@
       resetAutoSkipFailureCount();
       if (_proxyPlaybackAttemptLifecycle) _proxyPlaybackAttemptLifecycle.active = false;
       _proxyPlaybackAttemptLifecycle = null;
+      if (typeof dismissLoadingToast === 'function') dismissLoadingToast();
       if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
     }
     function isSmartSourceEnabled() {
