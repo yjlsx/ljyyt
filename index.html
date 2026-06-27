@@ -1865,6 +1865,13 @@
       border: 2px solid rgba(0,0,0,.15); border-top-color: var(--primary, #31c27c);
       animation: spin .8s linear infinite;
     }
+    .ljyyt-toast-icon {
+      width: 20px; height: 20px; flex: none; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 700; line-height: 1;
+    }
+    .ljyyt-toast-icon.success { background: #31c27c; }
+    .ljyyt-toast-icon.error { background: #ff4b4b; }
     .ljyyt-confirm-overlay {
       position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
       background: rgba(0,0,0,.4); opacity: 0; transition: opacity .2s;
@@ -2380,20 +2387,51 @@
       el.classList.remove('show');
       setTimeout(function() { if (el && el.parentNode) el.remove(); }, 300);
     }
+    function getToastIconType(message) {
+      if (!message) return '';
+      if (message.indexOf('已自动切换至') === 0 || message.indexOf('音源已就绪') === 0) return 'success';
+      if (/未找到|无法播放|播放失败|已暂停|解析失败|失败/.test(message)) return 'error';
+      return '';
+    }
+    function buildToastIcon(type) {
+      var icon = document.createElement('span');
+      icon.className = 'ljyyt-toast-icon ' + type;
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = type === 'success' ? '\u2713' : '\u2715';
+      return icon;
+    }
+    function renderToastContent(el, type, message) {
+      el.textContent = '';
+      if (type) el.appendChild(buildToastIcon(type));
+      var label = document.createElement('span');
+      label.textContent = message;
+      el.appendChild(label);
+    }
     function showToast(message, duration) {
       message = normalizeFallbackToastMessage(message);
       if (!message) return;
-      clearLoadingToastState();
-      var existing = document.querySelector('.ljyyt-toast');
-      if (existing) existing.remove();
-      var el = document.createElement('div');
-      el.className = 'ljyyt-toast';
-      el.textContent = message;
-      document.body.appendChild(el);
-      requestAnimationFrame(function() { el.classList.add('show'); });
+      var type = getToastIconType(message);
+      var el = _loadingToastEl;
+      if (el) {
+        // 借鉴 otter：loading toast 原地变成功/失败态，避免闪一下重建
+        if (_loadingToastSafetyTimer) { clearTimeout(_loadingToastSafetyTimer); _loadingToastSafetyTimer = null; }
+        _loadingToastEl = null;
+        el.className = 'ljyyt-toast show';
+        renderToastContent(el, type, message);
+      } else {
+        clearLoadingToastState();
+        var existing = document.querySelector('.ljyyt-toast');
+        if (existing) existing.remove();
+        el = document.createElement('div');
+        el.className = 'ljyyt-toast';
+        renderToastContent(el, type, message);
+        document.body.appendChild(el);
+        requestAnimationFrame(function() { el.classList.add('show'); });
+      }
+      var node = el;
       setTimeout(function() {
-        el.classList.remove('show');
-        setTimeout(function() { el.remove(); }, 300);
+        node.classList.remove('show');
+        setTimeout(function() { if (node && node.parentNode) node.remove(); }, 300);
       }, duration || 3000);
     }
     function showConfirm(message, onConfirm) {
@@ -4136,6 +4174,8 @@
       }
       return { title: name, artist, cover, src: currentTrack.src, duration: currentTrack.duration };
     }
+    // 借鉴 otter-music：单源解析层做轻量重试，消化冷启动时上游接口的暂时性空返回/超时，
+    // 避免“第一次找不到、回来又能放”，且比整首歌重跑快得多。
     async function ensurePlayableTrackUrl(track) {
       if (!track) return '';
       var hasUnstableNeteaseUrl = track.source === 'netease' && /music\.126\.net/i.test(track.src || '');
@@ -4157,7 +4197,19 @@
         }
       }
       if (track.source && track.source !== 'local') {
-        track.src = await resolveExternalTrackUrl(track);
+        var resolvedUrl = '';
+        for (var resolveAttempt = 0; resolveAttempt < 2; resolveAttempt++) {
+          try {
+            resolvedUrl = await resolveExternalTrackUrl(track);
+          } catch (resolveError) {
+            resolvedUrl = '';
+          }
+          if (resolvedUrl) break;
+          if (resolveAttempt < 1) {
+            await new Promise(function(r) { setTimeout(r, 700); });
+          }
+        }
+        track.src = resolvedUrl;
         if (currentTrack && isSameTrack(track, currentTrack)) currentTrack.src = track.src || '';
       }
       return track.src || '';

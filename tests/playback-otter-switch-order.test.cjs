@@ -155,6 +155,8 @@ async function verifyEnsurePlayableDoesNotAutoMatch(file) {
   const sandbox = {
     DEFAULT_COVER: 'cover.jpg',
     console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
     recoverCalls: 0,
     async ensureLibraryTracks() {
       return [];
