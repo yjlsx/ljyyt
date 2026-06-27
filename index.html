@@ -3602,8 +3602,21 @@
         } catch (error) {}
       }
       if (!options.quickOnly) {
+        // 第二轮收拢慢源：用最先返回结果者，避免排在前面的源挂起（接口最长 10s 超时）堵死后面早就绪的源。
+        // 第一轮已用 SOURCE_ORDER_GRACE_MS 按配置顺序保证了快源优先级，这一轮只为兜住慢源，取最先完成的即可。
+        var latePending = [];
         for (var j = 0; j < pendingSources.length; j++) {
-          var lateResult = await pendingSources[j];
+          (function(idx) {
+            latePending.push({
+              idx: idx,
+              promise: pendingSources[idx].then(function(res) { return { idx: idx, result: res }; })
+            });
+          })(j);
+        }
+        while (latePending.length) {
+          var settled = await Promise.race(latePending.map(function(entry) { return entry.promise; }));
+          latePending = latePending.filter(function(entry) { return entry.idx !== settled.idx; });
+          var lateResult = settled.result;
           if (!lateResult) continue;
           try {
             var lateMatch = lateResult.match;
