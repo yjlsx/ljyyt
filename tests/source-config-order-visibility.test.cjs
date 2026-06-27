@@ -184,8 +184,8 @@ function verifySourceConfig(file) {
   if (ordersByProvider['B站'] !== '0' || ordersByProvider['QQ音乐'] !== '1' || ordersByProvider['Joox'] !== '2' || ordersByProvider['丽江曲库'] !== '3') {
     throw new Error(file + ' should order search source picker options exactly like sourceConfigs');
   }
-  if (!(Number(ordersByProvider['聚合搜索']) > Number(ordersByProvider['丽江曲库']))) {
-    throw new Error(file + ' should not force aggregate search ahead of configured source order');
+  if (!(Number(ordersByProvider['聚合搜索']) < Number(ordersByProvider['B站']))) {
+    throw new Error(file + ' should keep aggregate search as the first picker option');
   }
 }
 

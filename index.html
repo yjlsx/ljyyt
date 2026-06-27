@@ -7731,7 +7731,7 @@
         if (!source || source === 'all') {
           item.hidden = false;
           item.disabled = false;
-          item.style.order = String(sourceConfigs.length + 1);
+          item.style.order = '-1';
           return;
         }
         var config = getSourceConfig(source);
