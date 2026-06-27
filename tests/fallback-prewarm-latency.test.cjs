@@ -650,6 +650,213 @@ async function verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file) {
   }
 }
 
+async function verifyPendingPrewarmPreventsPrematureNoSource(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const failedUrl = 'https://cdn.example.test/stale-kuwo-prompt.mp3';
+  const fallbackUrl = 'https://cdn.example.test/netease-late-ready.mp3';
+  let prewarmStarted = false;
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
+    Math,
+    Set,
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    appSettings: { smartSource: true },
+    PREWARM_FAST_SWITCH_GRACE_MS: 10,
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    currentTrack: {
+      title: '回头就能播',
+      artist: '测试歌手',
+      source: 'kuwo',
+      sourceLabel: '酷我音乐',
+      urlId: 'kuwo-stale',
+      src: failedUrl
+    },
+    audioPlayer: {
+      _src: failedUrl,
+      readyState: 0,
+      duration: 0,
+      getAttribute(name) { return name === 'src' ? this._src : ''; },
+      removeAttribute(name) { if (name === 'src') this._src = ''; },
+      load() {},
+      set src(value) { this._src = value; },
+      get src() { return this._src; }
+    },
+    _playRequestId: 51,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    restoredPlaybackTime: 0,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    recoverCalls: 0,
+    isSmartSourceEnabled() { return true; },
+    tryProxyPlaybackLine() { return Promise.resolve(false); },
+    inferTrackSourceCandidates() { return ['kuwo', 'netease']; },
+    setPlayIcons() {},
+    showToast() {},
+    recoverPlayableTrackUrl(track) {
+      sandbox.recoverCalls += 1;
+      if (!prewarmStarted) {
+        prewarmStarted = true;
+        return new Promise((resolve) => setTimeout(() => {
+          Object.assign(track, {
+            source: 'netease',
+            sourceLabel: '网易云音乐',
+            urlId: 'netease-late-ready',
+            src: fallbackUrl
+          });
+          resolve(fallbackUrl);
+        }, 120));
+      }
+      return Promise.resolve('');
+    },
+    playAudioWithTimeout() { return Promise.resolve(); },
+    confirmPlaybackStarted() { return Promise.resolve(true); },
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) { return track.sourceLabel || track.source; },
+    getSourceLabel(source) { return source === 'netease' ? '网易云音乐' : source; },
+    isAutoplayPolicyBlocked() { return false; }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'isSmartSourceEnabled'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource')
+  ].join('\n'), sandbox);
+
+  sandbox.startFallbackPrewarm(sandbox.currentTrack);
+  const switched = await Promise.race([
+    sandbox.switchToFallbackSource('play-failed', 51, failedUrl),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 260))
+  ]);
+
+  if (switched === 'blocked') {
+    throw new Error(file + ' waited too long for a pending fallback prewarm result');
+  }
+  if (!switched || sandbox.currentTrack.source !== 'netease' || sandbox.audioPlayer.getAttribute('src') !== fallbackUrl) {
+    throw new Error(file + ' returned no source before the pending prewarm result could be reused');
+  }
+}
+
+async function verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const failedUrl = 'https://cdn.example.test/stale-kuwo-none.mp3';
+  let prewarmStarted = false;
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
+    Math,
+    Set,
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    appSettings: { smartSource: true },
+    PREWARM_FAST_SWITCH_GRACE_MS: 10,
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    currentTrack: {
+      title: '没有免费源',
+      artist: '测试歌手',
+      source: 'kuwo',
+      sourceLabel: '酷我音乐',
+      urlId: 'kuwo-none',
+      src: failedUrl
+    },
+    audioPlayer: {
+      _src: failedUrl,
+      readyState: 0,
+      duration: 0,
+      getAttribute(name) { return name === 'src' ? this._src : ''; },
+      removeAttribute(name) { if (name === 'src') this._src = ''; },
+      load() {},
+      set src(value) { this._src = value; },
+      get src() { return this._src; }
+    },
+    _playRequestId: 61,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    restoredPlaybackTime: 0,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    isSmartSourceEnabled() { return true; },
+    tryProxyPlaybackLine() { return Promise.resolve(false); },
+    inferTrackSourceCandidates() { return ['kuwo', 'netease']; },
+    setPlayIcons() {},
+    showToast() {},
+    recoverPlayableTrackUrl() {
+      if (!prewarmStarted) {
+        prewarmStarted = true;
+        return new Promise((resolve) => setTimeout(() => resolve(''), 900));
+      }
+      return Promise.resolve('');
+    },
+    playAudioWithTimeout() { return Promise.resolve(); },
+    confirmPlaybackStarted() { return Promise.resolve(true); },
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) { return track.sourceLabel || track.source; },
+    getSourceLabel(source) { return source; },
+    isAutoplayPolicyBlocked() { return false; }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'isSmartSourceEnabled'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource')
+  ].join('\n'), sandbox);
+
+  sandbox.startFallbackPrewarm(sandbox.currentTrack);
+  const switched = await Promise.race([
+    sandbox.switchToFallbackSource('play-failed', 61, failedUrl),
+    new Promise((resolve) => setTimeout(() => resolve('blocked'), 450))
+  ]);
+
+  if (switched === 'blocked') {
+    throw new Error(file + ' should not spend a long extra wait when no fallback source is ready');
+  }
+  if (switched !== false) {
+    throw new Error(file + ' should return false when neither search nor short prewarm race finds a source');
+  }
+}
+
 function verifyPlaybackStartsPrewarm(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
@@ -667,6 +874,8 @@ function verifyPlaybackStartsPrewarm(file) {
     await verifySlowPrewarmDoesNotBlockDirectRecovery(file);
     await verifyPrewarmCanBeatSlowPrimaryResolve(file);
     await verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file);
+    await verifyPendingPrewarmPreventsPrematureNoSource(file);
+    await verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file);
   }
 })().catch((error) => {
   console.error(error);

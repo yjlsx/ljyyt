@@ -1557,6 +1557,7 @@
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
     const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
     const PRIMARY_RESOLVE_PREWARM_GRACE_MS = 900;
+    const FALLBACK_PREWARM_LATE_GRACE_MS = 180;
     const SILENT_AUDIO_DATA_URI = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAAAA==';
     function getTrackFallbackKey(track) {
       if (!track) return '';
@@ -1824,6 +1825,11 @@
                 searchLimit: Math.min(30, SEARCH_RESULT_LIMIT),
                 silent: true
               });
+            }
+            if (!fallbackUrl) {
+              var latePrewarmGraceMs = typeof FALLBACK_PREWARM_LATE_GRACE_MS === 'number' ? FALLBACK_PREWARM_LATE_GRACE_MS : 180;
+              prewarmed = await consumeFallbackPrewarm(currentTrack, state, fallbackKey, latePrewarmGraceMs);
+              fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
             }
           }
           if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
@@ -4916,7 +4922,7 @@
         if (!source || source === 'all') {
           item.hidden = false;
           item.disabled = false;
-          item.style.order = '-1';
+          item.style.order = String(sourceConfigs.length + 1);
           return;
         }
         var config = getSourceConfig(source);
