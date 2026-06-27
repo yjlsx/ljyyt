@@ -857,6 +857,114 @@ async function verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file) {
   }
 }
 
+async function verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const failedUrl = 'https://cdn.example.test/failed-kuwo-stack.mp3';
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    setTimeout,
+    clearTimeout,
+    Math,
+    Set,
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    appSettings: { smartSource: true },
+    _fallbackAttemptState: { key: '', sources: [], urls: [] },
+    _fallbackPrewarmState: { key: '', promise: null, result: null },
+    currentTrack: {
+      title: '香港',
+      artist: '测试歌手',
+      source: 'kuwo',
+      sourceLabel: '酷我音乐',
+      urlId: 'kuwo-stack',
+      src: failedUrl
+    },
+    audioPlayer: {
+      _src: failedUrl,
+      readyState: 0,
+      duration: 0,
+      getAttribute(name) { return name === 'src' ? this._src : ''; },
+      removeAttribute(name) { if (name === 'src') this._src = ''; },
+      load() {},
+      set src(value) { this._src = value; },
+      get src() { return this._src; }
+    },
+    _playRequestId: 71,
+    _isResolvingUrl: false,
+    _playRetryCount: 0,
+    restoredPlaybackTime: 0,
+    PREWARM_FAST_SWITCH_GRACE_MS: 1,
+    FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    recoverCalls: 0,
+    playAttempts: 0,
+    isSmartSourceEnabled() { return true; },
+    tryProxyPlaybackLine() { return Promise.resolve(false); },
+    inferTrackSourceCandidates() { return ['kuwo', 'joox', 'netease', 'qq']; },
+    setPlayIcons() {},
+    showToast() {},
+    showLoadingToast() {},
+    dismissLoadingToast() {},
+    async recoverPlayableTrackUrl(track) {
+      sandbox.recoverCalls += 1;
+      const source = sandbox.recoverCalls === 1 ? 'joox' : sandbox.recoverCalls === 2 ? 'netease' : 'qq';
+      Object.assign(track, {
+        source,
+        sourceLabel: source.toUpperCase(),
+        urlId: source + '-stack',
+        src: 'https://cdn.example.test/' + source + '-stack.mp3'
+      });
+      return track.src;
+    },
+    async playAudioWithTimeout() {
+      sandbox.playAttempts += 1;
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      throw new Error('candidate timed out');
+    },
+    confirmPlaybackStarted() { return Promise.resolve(false); },
+    reconcileCurrentTrackInQueue() {},
+    updateTrackUi() {},
+    updateLikeButton() {},
+    loadLyricsForTrack() {},
+    addHistory() {},
+    savePlaybackState() {},
+    getTrackSourceDisplayName(track) { return track.sourceLabel || track.source; },
+    getSourceLabel(source) { return source; },
+    isAutoplayPolicyBlocked() { return false; }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getTrackFallbackKey'),
+    pickFunction(script, 'ensureFallbackState'),
+    pickFunction(script, 'resetFallbackState'),
+    pickFunction(script, 'isSmartSourceEnabled'),
+    pickFunction(script, 'normalizeAudioUrl'),
+    pickFunction(script, 'rememberPlaybackFailure'),
+    pickFunction(script, 'cloneTrackForFallback'),
+    pickFunction(script, 'startFallbackPrewarm'),
+    pickFunction(script, 'isUsableFallbackPrewarmResult'),
+    pickFunction(script, 'consumeFallbackPrewarm'),
+    pickFunction(script, 'waitForFallbackPrewarmResult'),
+    pickFunction(script, 'applyFallbackRecovery'),
+    pickFunction(script, 'switchToFallbackSource')
+  ].join('\n'), sandbox);
+
+  const switched = await sandbox.switchToFallbackSource('play-failed', 71, failedUrl);
+
+  if (switched !== false) {
+    throw new Error(file + ' should not report a completed switch after the matched source fails to start');
+  }
+  if (sandbox.playAttempts !== 1) {
+    throw new Error(file + ' stacked ' + sandbox.playAttempts + ' fallback playback trials in one failure cycle');
+  }
+  if (sandbox.recoverCalls !== 1) {
+    throw new Error(file + ' should search one matched free source per failure cycle, got ' + sandbox.recoverCalls);
+  }
+}
+
 function verifyPlaybackStartsPrewarm(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
@@ -876,6 +984,7 @@ function verifyPlaybackStartsPrewarm(file) {
     await verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file);
     await verifyPendingPrewarmPreventsPrematureNoSource(file);
     await verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file);
+    await verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file);
   }
 })().catch((error) => {
   console.error(error);

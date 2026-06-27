@@ -1796,7 +1796,7 @@
         return initialState.sources.indexOf(source) < 0;
       });
       if (requestId && requestId !== _playRequestId) return false;
-      var attemptLimit = Math.max(1, candidateSources.length);
+      var attemptLimit = 1;
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack, fallbackKey);

@@ -155,12 +155,12 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
 
   await sandbox.switchToFallbackSource('audio-error', 7, failedUrl);
 
-  if (sandbox.recoverCalls.length < 2) {
-    throw new Error(file + ' should retry with the next selected fallback source after a bad candidate fails playback');
+  if (sandbox.recoverCalls.length !== 1) {
+    throw new Error(file + ' should not retry multiple selected fallback sources in one playback failure cycle');
   }
-  const secondSkipSources = sandbox.recoverCalls[1].skipSources;
-  if (!secondSkipSources.includes('kuwo') || !secondSkipSources.includes('joox')) {
-    throw new Error(file + ' lost failed-source history after switching candidates; got ' + secondSkipSources.join(','));
+  const fallbackState = sandbox._fallbackAttemptState;
+  if (!fallbackState.sources.includes('kuwo') || !fallbackState.sources.includes('joox')) {
+    throw new Error(file + ' lost failed-source history after a bad candidate failed playback; got ' + fallbackState.sources.join(','));
   }
 }
 
@@ -277,12 +277,12 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
 
   await sandbox.switchToFallbackSource('audio-error', 19, failedUrl);
 
-  if (sandbox.recoverCalls.length < 2) {
-    throw new Error(file + ' should retry after a matched candidate changes track metadata');
+  if (sandbox.recoverCalls.length !== 1) {
+    throw new Error(file + ' should not retry multiple matched candidates in one playback failure cycle');
   }
-  const secondSkipSources = sandbox.recoverCalls[1].skipSources;
-  if (!secondSkipSources.includes('netease') || !secondSkipSources.includes('qq')) {
-    throw new Error(file + ' reset fallback failures after candidate metadata changed; got ' + secondSkipSources.join(','));
+  const fallbackState = sandbox._fallbackAttemptState;
+  if (!fallbackState.sources.includes('netease') || !fallbackState.sources.includes('qq')) {
+    throw new Error(file + ' reset fallback failures after candidate metadata changed; got ' + fallbackState.sources.join(','));
   }
 }
 
