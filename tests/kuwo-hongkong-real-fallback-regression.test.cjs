@@ -196,6 +196,9 @@ function verifyTitlePartMatching(file) {
     pickFunction(script, 'hasConflictingTitlePart'),
     pickFunction(script, 'getNormalizedTitleVariants'),
     pickFunction(script, 'isLooseTitleMatchCandidate'),
+    pickFunction(script, 'getNormalizedArtistTokens'),
+    pickFunction(script, 'isUnknownArtistName'),
+    pickFunction(script, 'hasArtistMatch'),
     pickFunction(script, 'isTrackMatchCandidate')
   ].join('\n'), sandbox);
 

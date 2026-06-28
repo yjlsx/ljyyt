@@ -586,8 +586,8 @@
         candidateTitle.indexOf(title + '(') === 0
       );
       if (!titleMatches) return false;
-      if (!artist) return true;
-      return !candidateArtist || candidateArtist.includes(artist) || artist.includes(candidateArtist);
+      if (isUnknownArtistName(target && target.artist)) return true;
+      return hasArtistMatch(target, candidate);
     }
     function getTitlePartMarker(value) {
       var title = normalizeTrackText(value);
@@ -700,21 +700,42 @@
       var targetTokens = getNormalizedArtistTokens(target && target.artist);
       var candidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
       if (targetTokens.some(function(item) { return candidateTokens.indexOf(item) >= 0; })) return true;
-      return candidateArtist.includes(targetArtist) || targetArtist.includes(candidateArtist);
+      return false;
     }
     function canRelaxKuwoArtistMatch(target, candidate) {
       var targetSource = String(target && target.source || '').trim();
       if (targetSource !== 'kuwo' && targetSource !== 'lx_kuwo') return false;
       if (String(candidate && candidate.source || '').trim() === targetSource) return false;
-      if (!isLooseTitleMatchCandidate(target, candidate)) return false;
       if (!isUnknownArtistName(target && target.artist)) return false;
-      return normalizeTrackText(target && target.title).length >= 6;
+      var title = normalizeTrackText(target && target.title);
+      var candidateTitle = normalizeTrackText(candidate && candidate.title);
+      if (!title || title !== candidateTitle) return false;
+      return title.length >= 7;
+    }
+    function getFallbackMatchTier(target, candidate) {
+      var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
+      var title = normalizeTrackText(target && target.title);
+      var candidateTitle = normalizeTrackText(candidate && candidate.title);
+      var targetArtist = normalizeTrackText(target && target.artist);
+      var candidateArtist = normalizeTrackText(candidate && candidate.artist);
+      var titleTier = 0;
+      if (bilibiliMatch) titleTier = 1;
+      if (title && candidateTitle && title === candidateTitle) titleTier = 4;
+      else if (!bilibiliMatch && isLooseTitleMatchCandidate(target, candidate)) titleTier = 3;
+      else if (!bilibiliMatch && isTrackMatchCandidate(target, candidate)) titleTier = 2;
+      var artistTier = 0;
+      if (!isUnknownArtistName(targetArtist) && !isUnknownArtistName(candidateArtist)) {
+        if (targetArtist === candidateArtist) artistTier = 3;
+        else if (hasArtistMatch(target, candidate)) artistTier = 2;
+      }
+      return titleTier + ':' + artistTier + ':' + (bilibiliMatch ? 'b' : 'n');
     }
     function getFallbackMatchScore(target, candidate, index) {
       var bilibiliMatch = typeof isBilibiliTrackMatchCandidate === 'function' && isBilibiliTrackMatchCandidate(target, candidate);
       if (!bilibiliMatch && !isLooseTitleMatchCandidate(target, candidate) && !isTrackMatchCandidate(target, candidate)) return -1;
       var strictTargetArtist = normalizeTrackText(target && target.artist);
       var relaxedCrossSourceTitleMatch = !bilibiliMatch && canRelaxKuwoArtistMatch(target, candidate);
+      if (!bilibiliMatch && isUnknownArtistName(strictTargetArtist) && !relaxedCrossSourceTitleMatch) return -1;
       if (strictTargetArtist && !bilibiliMatch && !relaxedCrossSourceTitleMatch) {
         var strictCandidateArtist = normalizeTrackText(candidate && candidate.artist);
         if (isUnknownArtistName(strictCandidateArtist) || !hasArtistMatch(target, candidate)) return -1;
@@ -735,7 +756,6 @@
         var targetTokens = getNormalizedArtistTokens(target && target.artist);
         var candidateTokens = getNormalizedArtistTokens(candidate && candidate.artist);
         if (targetTokens.some(function(item) { return candidateTokens.indexOf(item) >= 0; })) score += 55;
-        else if (candidateArtist.includes(targetArtist) || targetArtist.includes(candidateArtist)) score += 35;
       }
       return score;
     }
@@ -852,8 +872,11 @@
       if (!candidates.length) return null;
       var resolved = null;
       var batchSize = searchLimit <= 12 ? Math.min(3, searchLimit) : Math.min(8, searchLimit);
-      for (var start = 0; start < candidates.length; start += batchSize) {
-        var batch = candidates.slice(start, Math.min(candidates.length, start + batchSize));
+      for (var start = 0; start < candidates.length;) {
+        var tier = typeof getFallbackMatchTier === 'function' ? getFallbackMatchTier(track, candidates[start]) : '';
+        var end = start + 1;
+        while (end < candidates.length && end - start < batchSize && (typeof getFallbackMatchTier === 'function' ? getFallbackMatchTier(track, candidates[end]) : '') === tier) end++;
+        var batch = candidates.slice(start, end);
         try {
           resolved = await Promise.any(batch.map(function(match) {
             return resolvePlayableFallbackCandidate(track, source, match, skipUrls);
@@ -862,6 +885,7 @@
           resolved = null;
         }
         if (resolved) return resolved;
+        start = end;
       }
       return null;
     }
@@ -878,13 +902,22 @@
       if (variants.length && sources.length) {
         sources.forEach(function(source) {
           if (skipSources.indexOf(source) >= 0) return;
+          var sourceVariants = [];
           variants.forEach(function(item, index) {
             if (!item || item.source !== source) return;
             if (skipUrls.indexOf(String(item.src || '').trim()) >= 0) return;
-            variantCandidates.push({
+            sourceVariants.push({
               source: source,
               index: index,
               item: Object.assign({}, item)
+            });
+          });
+          getFallbackTrackMatches(track, sourceVariants.map(function(entry) { return entry.item; })).forEach(function(match) {
+            var original = sourceVariants.find(function(entry) { return entry.item === match; });
+            variantCandidates.push({
+              source: source,
+              index: original ? original.index : 0,
+              item: Object.assign({}, match)
             });
           });
         });
@@ -954,8 +987,21 @@
         } catch (error) {}
       }
       if (!options.quickOnly) {
+        // 第二轮收拢慢源：第一轮已经按配置顺序给了短优先窗口，这里直接取最先返回的可用源，
+        // 避免排在前面的慢接口把后面已经可播的结果拖到十几秒以后。
+        var latePending = [];
         for (var j = 0; j < pendingSources.length; j++) {
-          var lateResult = await pendingSources[j];
+          (function(idx) {
+            latePending.push({
+              idx: idx,
+              promise: pendingSources[idx].then(function(res) { return { idx: idx, result: res }; })
+            });
+          })(j);
+        }
+        while (latePending.length) {
+          var settled = await Promise.race(latePending.map(function(entry) { return entry.promise; }));
+          latePending = latePending.filter(function(entry) { return entry.idx !== settled.idx; });
+          var lateResult = settled.result;
           if (!lateResult) continue;
           try {
             var lateMatch = lateResult.match;
@@ -1440,7 +1486,6 @@
     }
     function confirmAudioPlaying() {
       clearPauseConfirmTimer();
-      if (currentTrack) resetFallbackState(currentTrack);
       setPlayIcons(true);
     }
     function updateMiniProgress(progress) {
@@ -1551,6 +1596,7 @@
     var _autoSkipFailureCount = 0;
     var _fallbackAttemptState = { key: '', sources: [], urls: [] };
     var _fallbackPrewarmState = { key: '', promise: null, result: null };
+    var _truncatedFallbackAttemptKey = '';
     var _proxyPlaybackAttemptLifecycle = null;
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
@@ -1741,6 +1787,8 @@
         if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio proxy line did not start playback');
         if (!isAttemptActive()) return false;
         _playRetryCount = 0;
+        resetFallbackState(currentTrack);
+        resetAutoSkipFailureCount();
         reconcileCurrentTrackInQueue(previousTrack);
         addHistory(currentTrack);
         setPlayIcons(true);
@@ -1833,9 +1881,14 @@
               fallbackUrl = prewarmed ? applyFallbackRecovery(currentTrack, prewarmed) : '';
             }
           }
-          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
-          if (requestId && requestId !== _playRequestId) return false;
-          if (!fallbackUrl) return false;
+          if (requestId && requestId !== _playRequestId) {
+            if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
+            return false;
+          }
+          if (!fallbackUrl) {
+            if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
+            return false;
+          }
           if (audioPlayer.getAttribute('src') !== fallbackUrl) {
             audioPlayer.src = fallbackUrl;
             audioPlayer.load();
@@ -1850,8 +1903,10 @@
               if (!isAutoplayPolicyBlocked(error)) console.warn('fallback audio play deferred', error);
             });
           }
+          if (typeof setResolvingUrlState === 'function') setResolvingUrlState(false); else _isResolvingUrl = false;
           if (requestId && requestId !== _playRequestId) return false;
           _playRetryCount = 0;
+          if (typeof resetAutoSkipFailureCount === 'function') resetAutoSkipFailureCount();
           reconcileCurrentTrackInQueue(previousTrack);
           updateTrackUi(currentTrack);
           updateLikeButton();
@@ -1989,14 +2044,38 @@
       }
       return actualSeconds <= 35;
     }
+    function shouldRejectExternalAudioDuration(track, actualSeconds) {
+      if (!track) return false;
+      var source = String(track.source || '').trim();
+      if (!source || source === 'local') return false;
+      return isTruncatedAudioDuration(actualSeconds, parseTrackDuration(track.duration));
+    }
+    async function handleTruncatedPlaybackIfNeeded(requestId) {
+      if (!currentTrack || _isResolvingUrl) return false;
+      requestId = requestId || _playRequestId;
+      if (requestId && requestId !== _playRequestId) return false;
+      var failedUrl = audioPlayer && typeof audioPlayer.getAttribute === 'function' ? audioPlayer.getAttribute('src') || '' : '';
+      failedUrl = normalizeAudioUrl(failedUrl || currentTrack.src || '');
+      var actualDuration = parseTrackDuration(audioPlayer && audioPlayer.duration);
+      if (!failedUrl || !shouldRejectExternalAudioDuration(currentTrack, actualDuration)) return false;
+      var attemptKey = [requestId, getTrackFallbackKey(currentTrack), failedUrl].join('|');
+      if (_truncatedFallbackAttemptKey === attemptKey) return true;
+      _truncatedFallbackAttemptKey = attemptKey;
+      if (typeof rememberPlaybackFailure === 'function') rememberPlaybackFailure(currentTrack, failedUrl, currentTrack.source);
+      try {
+        if (audioPlayer && typeof audioPlayer.pause === 'function') audioPlayer.pause();
+      } catch (error) {}
+      if (await switchToFallbackSource('truncated-audio', requestId, failedUrl)) return true;
+      await handleNoPlayableSource('truncated-audio', requestId);
+      return true;
+    }
     async function confirmPlaybackStarted(requestId) {
       await new Promise(function(resolve) { setTimeout(resolve, 200); });
       if (requestId && requestId !== _playRequestId) return true;
       if (audioPlayer.paused || audioPlayer.error) return false;
       var trackSource = typeof currentTrack !== 'undefined' && currentTrack ? String(currentTrack.source || '') : '';
       if (trackSource && trackSource !== 'local') {
-        var expectedDuration = typeof parseTrackDuration === 'function' && currentTrack ? parseTrackDuration(currentTrack.duration) : 0;
-        if (isTruncatedAudioDuration(audioPlayer.duration, expectedDuration)) return false;
+        if (shouldRejectExternalAudioDuration(currentTrack, audioPlayer.duration)) return false;
       }
       return true;
     }
@@ -2052,6 +2131,7 @@
           if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
           if (requestId !== _playRequestId) return;
           _playRetryCount = 0;
+          resetFallbackState(currentTrack);
           resetAutoSkipFailureCount();
           addHistory(currentTrack);
           setPlayIcons(true);
@@ -2106,6 +2186,7 @@
         if (!await confirmPlaybackStarted(requestId)) throw new Error('Audio did not start playback');
         if (requestId !== _playRequestId) return;
         _playRetryCount = 0;
+        resetFallbackState(currentTrack);
         resetAutoSkipFailureCount();
         addHistory(currentTrack);
         setPlayIcons(true);
@@ -5312,7 +5393,13 @@
     });
     function updateAudioDurationUi() {
       if (!currentTrack) return;
-      var duration = parseTrackDuration(audioPlayer.duration) || parseTrackDuration(currentTrack.duration);
+      var audioDuration = parseTrackDuration(audioPlayer.duration);
+      if (audioDuration && shouldRejectExternalAudioDuration(currentTrack, audioDuration)) {
+        handleTruncatedPlaybackIfNeeded(_playRequestId);
+        document.getElementById('duration-time').textContent = formatDuration(currentTrack.duration);
+        return;
+      }
+      var duration = audioDuration || parseTrackDuration(currentTrack.duration);
       if (duration) currentTrack.duration = duration;
       document.getElementById('duration-time').textContent = formatDuration(duration);
     }

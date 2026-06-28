@@ -52,8 +52,12 @@ for (const file of ['index.html', 'dist/index.html']) {
 
   // confirmPlaybackStarted must consult the truncation check for non-local sources
   const confirmBody = pickFunction(script, 'confirmPlaybackStarted');
-  if (!confirmBody.includes('isTruncatedAudioDuration')) {
+  if (!confirmBody.includes('shouldRejectExternalAudioDuration')) {
     throw new Error(file + ' confirmPlaybackStarted does not reject truncated preview audio');
+  }
+  const rejectBody = pickFunction(script, 'shouldRejectExternalAudioDuration');
+  if (!rejectBody.includes('isTruncatedAudioDuration')) {
+    throw new Error(file + ' shouldRejectExternalAudioDuration does not use the truncated preview detector');
   }
   if (!confirmBody.includes("'local'")) {
     throw new Error(file + ' confirmPlaybackStarted should exempt local tracks from truncation checks');

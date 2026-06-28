@@ -44,6 +44,14 @@ function pickConstObject(script, name) {
   return script.slice(start, end + '\n    };'.length);
 }
 
+function getApplicationScript(file) {
+  if (file.endsWith('.js')) return fs.readFileSync(file, 'utf8');
+  const html = fs.readFileSync(file, 'utf8');
+  const match = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i);
+  if (!match) throw new Error(file + ' is missing inline application script');
+  return match[1];
+}
+
 async function verifyFallbackStateKeepsOriginalFailures(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
@@ -164,10 +172,13 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
   }
   const fallbackState = sandbox._fallbackAttemptState;
   if (!fallbackState.sources.includes('kuwo')) {
-    throw new Error(file + ' should keep the original failed source until a fallback really starts playing');
+    throw new Error(file + ' should keep the original failed source when committing a fallback candidate');
   }
   if (fallbackState.sources.includes('joox')) {
     throw new Error(file + ' should wait for a real audio error before marking the matched fallback source failed');
+  }
+  if (sandbox.currentTrack.source !== 'joox' || sandbox.currentTrack.src !== 'https://cdn.example.test/failed-joox.mp3') {
+    throw new Error(file + ' should commit the matched fallback candidate to the current track');
   }
 }
 
@@ -234,8 +245,8 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
       });
       if (sandbox.recoverCalls.length === 1) {
         Object.assign(track, {
-          title: '孤勇者 - Live',
-          artist: '陈奕迅 / 群星',
+          title: '孤勇者',
+          artist: '陈奕迅',
           source: 'qq',
           sourceLabel: 'QQ音乐',
           urlId: 'qq-1',
@@ -243,13 +254,30 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
         });
         return track.src;
       }
+      if (sandbox.recoverCalls.length === 2) {
+        if (track.title !== '孤勇者' || track.artist !== '陈奕迅') {
+          throw new Error('fallback retry should keep the original title and artist');
+        }
+        Object.assign(track, {
+          title: '孤勇者',
+          artist: '陈奕迅',
+          source: 'joox',
+          sourceLabel: 'Joox',
+          urlId: 'joox-1',
+          src: 'https://cdn.example.test/good-joox.mp3'
+        });
+        return track.src;
+      }
       return '';
     },
     playAudioWithTimeout() {
-      throw new Error('candidate did not start');
+      if (sandbox.audioPlayer.getAttribute('src') === 'https://cdn.example.test/bad-qq-preview.mp3') {
+        throw new Error('candidate did not start');
+      }
+      return Promise.resolve();
     },
     confirmPlaybackStarted() {
-      return Promise.resolve(false);
+      return Promise.resolve(sandbox.audioPlayer.getAttribute('src') === 'https://cdn.example.test/good-joox.mp3');
     },
     reconcileCurrentTrackInQueue() {},
     updateTrackUi() {},
@@ -297,6 +325,9 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
   }
   if (fallbackState.sources.includes('qq')) {
     throw new Error(file + ' should not mark the matched metadata-changing candidate failed before audio error');
+  }
+  if (sandbox.currentTrack.source !== 'qq' || sandbox.currentTrack.title !== '孤勇者' || sandbox.currentTrack.artist !== '陈奕迅') {
+    throw new Error(file + ' should keep original display metadata while committing the matched fallback candidate');
   }
 }
 
@@ -741,6 +772,110 @@ async function verifyQuickOnlyRecoveryDoesNotDeepSearch(file) {
   }
 }
 
+async function verifyLateFallbackUsesFirstResolvedPlayableSource(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
+  const sandbox = {
+    console: { warn() {}, log() {}, error() {} },
+    DEFAULT_COVER: 'cover.jpg',
+    SEARCH_RESULT_LIMIT: 100,
+    gdMusicApiBase: '/api/gd-music',
+    gdMusicFallbackBases: [],
+    _isLocalDev: true,
+    AbortController,
+    DOMException,
+    setTimeout,
+    clearTimeout,
+    aggregatedSources: ['local', 'joox', 'netease', 'kuwo'],
+    safeCover(value) {
+      return value || 'cover.jpg';
+    },
+    getSourceLabel(source) {
+      return { joox: 'Joox', netease: '网易', kuwo: '酷我' }[source] || source;
+    },
+    async fetch(url) {
+      const parsed = new URL(url, 'https://example.test');
+      const source = parsed.searchParams.get('source');
+      if (source === 'joox') {
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+        return { ok: true, async json() { return []; } };
+      }
+      if (source === 'netease') {
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        return {
+          ok: true,
+          async json() {
+            return [{
+              id: 'netease-late',
+              name: '香港别来无恙',
+              artist: ['王某某'],
+              source: 'netease',
+              url_id: 'netease-late'
+            }];
+          }
+        };
+      }
+      return { ok: true, async json() { return []; } };
+    },
+    async resolveExternalTrackUrl(track) {
+      return track && track.urlId === 'netease-late' ? 'https://cdn.example.test/netease-late.mp3' : '';
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext([
+    pickConstObject(script, 'TRADITIONAL_CHINESE_MAP'),
+    pickFunction(script, 'parseTrackDuration'),
+    pickFunction(script, 'normalizeTrackText'),
+    pickFunction(script, 'getSelectedPlaybackSources'),
+    pickFunction(script, 'getFallbackSearchSources'),
+    pickFunction(script, 'inferTrackSourceCandidates'),
+    pickFunction(script, 'isTrackMatchCandidate'),
+    pickFunction(script, 'getTitlePartMarker'),
+    pickFunction(script, 'hasConflictingTitlePart'),
+    pickFunction(script, 'getNormalizedTitleVariants'),
+    pickFunction(script, 'isLooseTitleMatchCandidate'),
+    pickFunction(script, 'getNormalizedArtistTokens'),
+    pickFunction(script, 'getPrimaryArtistName'),
+    pickFunction(script, 'getFallbackSearchQueries'),
+    pickFunction(script, 'isUnknownArtistName'),
+    pickFunction(script, 'hasArtistMatch'),
+    pickFunction(script, 'canRelaxKuwoArtistMatch'),
+    pickFunction(script, 'getFallbackMatchScore'),
+    pickFunction(script, 'pickFallbackTrackMatch'),
+    pickFunction(script, 'getFallbackTrackMatches'),
+    pickFunction(script, 'resolvePlayableFallbackCandidate'),
+    pickFunction(script, 'resolveFallbackTrackFromSource'),
+    pickFunction(script, 'normalizeExternalTrack'),
+    pickFunction(script, 'fetchGdMusicJson'),
+    pickFunction(script, 'searchGdMusicSourceTracks'),
+    pickFunction(script, 'fetchExternalSourceTracks'),
+    pickFunction(script, 'recoverPlayableTrackUrl')
+  ].join('\n'), sandbox);
+
+  const track = {
+    title: '香港别来无恙',
+    artist: '王某某',
+    source: 'kuwo',
+    sourceLabel: '酷我',
+    src: 'https://cdn.example.test/failed-kuwo.mp3'
+  };
+  const recovered = await Promise.race([
+    sandbox.recoverPlayableTrackUrl(track, {
+      skipSources: ['kuwo'],
+      skipUrls: ['https://cdn.example.test/failed-kuwo.mp3']
+    }),
+    new Promise((resolve) => setTimeout(() => resolve('__timeout__'), 220))
+  ]);
+
+  if (recovered === '__timeout__') {
+    throw new Error(file + ' blocked on an earlier hanging fallback source after a later source had a playable URL');
+  }
+  if (recovered !== 'https://cdn.example.test/netease-late.mp3' || track.source !== 'netease') {
+    throw new Error(file + ' should recover from the first late playable fallback result, got ' + recovered + ' from ' + track.source);
+  }
+}
+
 function verifyFallbackTimeoutIsResponsive(file) {
   const html = fs.readFileSync(file, 'utf8');
   const match = html.match(/const FALLBACK_PLAYBACK_TIMEOUT_MS = (\d+);/);
@@ -751,7 +886,18 @@ function verifyFallbackTimeoutIsResponsive(file) {
   }
 }
 
+function verifyLateFallbackDoesNotAwaitSourcesInOrder(file) {
+  const script = getApplicationScript(file);
+  const body = pickFunction(script, 'recoverPlayableTrackUrl');
+  if (/await\s+pendingSources\[\s*j\s*\]/.test(body)) {
+    throw new Error(file + ' should not wait on earlier slow fallback sources after another source has already found a playable URL');
+  }
+}
+
 (async () => {
+  for (const file of ['index.html', 'js/app.js', 'dist/index.html']) {
+    verifyLateFallbackDoesNotAwaitSourcesInOrder(file);
+  }
   for (const file of ['index.html', 'dist/index.html']) {
     verifyFallbackTimeoutIsResponsive(file);
     await verifyFallbackStateKeepsOriginalFailures(file);
@@ -760,6 +906,7 @@ function verifyFallbackTimeoutIsResponsive(file) {
     await verifyConcurrentSelectedSourceRecovery(file);
     await verifyRecoverySkipsSlowUnplayableCandidate(file);
     await verifyQuickOnlyRecoveryDoesNotDeepSearch(file);
+    await verifyLateFallbackUsesFirstResolvedPlayableSource(file);
   }
 })().catch((error) => {
   console.error(error);
