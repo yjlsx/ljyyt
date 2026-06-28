@@ -1553,6 +1553,7 @@
     var _proxyPlaybackAttemptLifecycle = null;
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
+    const FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS = 1500;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
     const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
@@ -1796,7 +1797,7 @@
         return initialState.sources.indexOf(source) < 0;
       });
       if (requestId && requestId !== _playRequestId) return false;
-      var attemptLimit = 1;
+      var attemptLimit = Math.max(1, candidateSources.length);
       for (var attempt = 0; attempt < attemptLimit; attempt++) {
         if (requestId && requestId !== _playRequestId) return false;
         var state = ensureFallbackState(currentTrack, fallbackKey);
@@ -1843,7 +1844,8 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          await playAudioWithTimeout(FALLBACK_PLAYBACK_TIMEOUT_MS);
+          var trialTimeoutMs = typeof FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS === 'number' ? FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS : FALLBACK_PLAYBACK_TIMEOUT_MS;
+          await playAudioWithTimeout(trialTimeoutMs);
           if (requestId && requestId !== _playRequestId) return false;
           if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;

@@ -857,7 +857,7 @@ async function verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file) {
   }
 }
 
-async function verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file) {
+async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
   const failedUrl = 'https://cdn.example.test/failed-kuwo-stack.mp3';
@@ -896,8 +896,9 @@ async function verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file) {
     restoredPlaybackTime: 0,
     PREWARM_FAST_SWITCH_GRACE_MS: 1,
     FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
+    FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS: 1500,
     recoverCalls: 0,
-    playAttempts: 0,
+    playbackTimeouts: [],
     isSmartSourceEnabled() { return true; },
     tryProxyPlaybackLine() { return Promise.resolve(false); },
     inferTrackSourceCandidates() { return ['kuwo', 'joox', 'netease', 'qq']; },
@@ -916,8 +917,8 @@ async function verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file) {
       });
       return track.src;
     },
-    async playAudioWithTimeout() {
-      sandbox.playAttempts += 1;
+    async playAudioWithTimeout(timeoutMs) {
+      sandbox.playbackTimeouts.push(timeoutMs);
       await new Promise((resolve) => setTimeout(resolve, 30));
       throw new Error('candidate timed out');
     },
@@ -957,11 +958,11 @@ async function verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file) {
   if (switched !== false) {
     throw new Error(file + ' should not report a completed switch after the matched source fails to start');
   }
-  if (sandbox.playAttempts !== 1) {
-    throw new Error(file + ' stacked ' + sandbox.playAttempts + ' fallback playback trials in one failure cycle');
+  if (sandbox.playbackTimeouts.some((timeoutMs) => Number(timeoutMs) > 1800)) {
+    throw new Error(file + ' stacked long fallback playback trials: ' + sandbox.playbackTimeouts.join(','));
   }
-  if (sandbox.recoverCalls !== 1) {
-    throw new Error(file + ' should search one matched free source per failure cycle, got ' + sandbox.recoverCalls);
+  if (sandbox.recoverCalls < 2) {
+    throw new Error(file + ' should still move past a bad fallback candidate without waiting on long trials');
   }
 }
 
@@ -984,7 +985,7 @@ function verifyPlaybackStartsPrewarm(file) {
     await verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file);
     await verifyPendingPrewarmPreventsPrematureNoSource(file);
     await verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file);
-    await verifyFallbackSwitchDoesNotStackTimedPlaybackTrials(file);
+    await verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file);
   }
 })().catch((error) => {
   console.error(error);
