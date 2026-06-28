@@ -1440,6 +1440,7 @@
     }
     function confirmAudioPlaying() {
       clearPauseConfirmTimer();
+      if (currentTrack) resetFallbackState(currentTrack);
       setPlayIcons(true);
     }
     function updateMiniProgress(progress) {
@@ -1553,7 +1554,6 @@
     var _proxyPlaybackAttemptLifecycle = null;
     const PRIMARY_PLAYBACK_TIMEOUT_MS = 3200;
     const FALLBACK_PLAYBACK_TIMEOUT_MS = 4200;
-    const FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS = 1500;
     const PROXY_LINE_PLAYBACK_TIMEOUT_MS = 2500;
     const PREWARM_FAST_SWITCH_GRACE_MS = 180;
     const PRIMARY_PREWARM_FALLBACK_GRACE_MS = 900;
@@ -1844,12 +1844,14 @@
             audioPlayer.currentTime = Math.min(restoredPlaybackTime, audioPlayer.duration || restoredPlaybackTime);
             restoredPlaybackTime = 0;
           }
-          var trialTimeoutMs = typeof FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS === 'number' ? FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS : FALLBACK_PLAYBACK_TIMEOUT_MS;
-          await playAudioWithTimeout(trialTimeoutMs);
+          var fallbackPlayPromise = typeof audioPlayer.play === 'function' ? audioPlayer.play() : null;
+          if (fallbackPlayPromise && typeof fallbackPlayPromise.catch === 'function') {
+            fallbackPlayPromise.catch(function(error) {
+              if (!isAutoplayPolicyBlocked(error)) console.warn('fallback audio play deferred', error);
+            });
+          }
           if (requestId && requestId !== _playRequestId) return false;
-          if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');
           _playRetryCount = 0;
-          resetFallbackState(currentTrack, fallbackKey);
           reconcileCurrentTrackInQueue(previousTrack);
           updateTrackUi(currentTrack);
           updateLikeButton();

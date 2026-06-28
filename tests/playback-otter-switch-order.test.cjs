@@ -70,6 +70,7 @@ async function verifyProxyWinsBeforeAutoMatch(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },

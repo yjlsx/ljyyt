@@ -72,6 +72,7 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },
@@ -153,14 +154,20 @@ async function verifyFallbackStateKeepsOriginalFailures(file) {
     pickFunction(script, 'switchToFallbackSource')
   ].join('\n'), sandbox);
 
-  await sandbox.switchToFallbackSource('audio-error', 7, failedUrl);
+  const switched = await sandbox.switchToFallbackSource('audio-error', 7, failedUrl);
 
-  if (sandbox.recoverCalls.length < 2) {
-    throw new Error(file + ' should retry with the next selected fallback source after a bad candidate fails playback');
+  if (!switched) {
+    throw new Error(file + ' should commit the first matched fallback source immediately');
   }
-  const secondSkipSources = sandbox.recoverCalls[1].skipSources;
-  if (!secondSkipSources.includes('kuwo') || !secondSkipSources.includes('joox')) {
-    throw new Error(file + ' lost failed-source history after switching candidates; got ' + secondSkipSources.join(','));
+  if (sandbox.recoverCalls.length !== 1) {
+    throw new Error(file + ' should not block inside fallback switching to trial multiple sources');
+  }
+  const fallbackState = sandbox._fallbackAttemptState;
+  if (!fallbackState.sources.includes('kuwo')) {
+    throw new Error(file + ' should keep the original failed source until a fallback really starts playing');
+  }
+  if (fallbackState.sources.includes('joox')) {
+    throw new Error(file + ' should wait for a real audio error before marking the matched fallback source failed');
   }
 }
 
@@ -192,6 +199,7 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },
@@ -275,14 +283,20 @@ async function verifyFallbackStateSurvivesCandidateMetadataChanges(file) {
     pickFunction(script, 'switchToFallbackSource')
   ].join('\n'), sandbox);
 
-  await sandbox.switchToFallbackSource('audio-error', 19, failedUrl);
+  const switched = await sandbox.switchToFallbackSource('audio-error', 19, failedUrl);
 
-  if (sandbox.recoverCalls.length < 2) {
-    throw new Error(file + ' should retry after a matched candidate changes track metadata');
+  if (!switched) {
+    throw new Error(file + ' should commit a matched candidate even when metadata changes');
   }
-  const secondSkipSources = sandbox.recoverCalls[1].skipSources;
-  if (!secondSkipSources.includes('netease') || !secondSkipSources.includes('qq')) {
-    throw new Error(file + ' reset fallback failures after candidate metadata changed; got ' + secondSkipSources.join(','));
+  if (sandbox.recoverCalls.length !== 1) {
+    throw new Error(file + ' should not trial multiple matched candidates before the browser reports an audio error');
+  }
+  const fallbackState = sandbox._fallbackAttemptState;
+  if (!fallbackState.sources.includes('netease')) {
+    throw new Error(file + ' should keep the original failed source when committing a metadata-changing candidate');
+  }
+  if (fallbackState.sources.includes('qq')) {
+    throw new Error(file + ' should not mark the matched metadata-changing candidate failed before audio error');
   }
 }
 
@@ -317,6 +331,7 @@ async function verifySwitchUsesDeepFallbackForLongTitles(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },

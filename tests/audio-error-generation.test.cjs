@@ -53,8 +53,11 @@ for (const file of ['index.html', 'dist/index.html']) {
   if (!fallback.includes('tryProxyPlaybackLine(failedUrl, requestId)')) {
     throw new Error(file + ' source fallback does not pass the request id into proxy fallback');
   }
-  if (!fallback.includes('confirmPlaybackStarted(requestId || _playRequestId)')) {
-    throw new Error(file + ' source fallback confirmation does not use the captured request id');
+  if (fallback.includes('Audio fallback did not start playback') || fallback.includes('playAudioWithTimeout(trialTimeoutMs')) {
+    throw new Error(file + ' source fallback still blocks on a trial playback confirmation');
+  }
+  if (!fallback.includes("typeof audioPlayer.play === 'function'") || !fallback.includes('fallback audio play deferred')) {
+    throw new Error(file + ' source fallback does not commit matched URLs through the audio element');
   }
 
   for (const marker of [

@@ -61,7 +61,11 @@ for (const file of ['index.html', 'dist/index.html']) {
     throw new Error(file + ' does not retry fallback when primary play stays paused');
   }
 
-  if (!html.includes("if (!await confirmPlaybackStarted(requestId || _playRequestId)) throw new Error('Audio fallback did not start playback');")) {
-    throw new Error(file + ' does not verify fallback playback startup');
+  if (html.includes("throw new Error('Audio fallback did not start playback')") || html.includes('playAudioWithTimeout(trialTimeoutMs')) {
+    throw new Error(file + ' blocks fallback source switching on trial playback startup');
+  }
+
+  if (!html.includes("typeof audioPlayer.play === 'function'") || !html.includes('fallback audio play deferred')) {
+    throw new Error(file + ' does not start committed fallback sources without a blocking trial');
   }
 }

@@ -78,6 +78,7 @@ async function verifyPrewarmedFallback(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },
@@ -206,6 +207,7 @@ async function verifyPendingPrewarmBeatsProxyRetry(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },
@@ -331,6 +333,7 @@ async function verifySlowPrewarmDoesNotBlockDirectRecovery(file) {
         if (name === 'src') this._src = '';
       },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) {
         this._src = value;
       },
@@ -577,6 +580,7 @@ async function verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file) {
       getAttribute(name) { return name === 'src' ? this._src : ''; },
       removeAttribute(name) { if (name === 'src') this._src = ''; },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) { this._src = value; },
       get src() { return this._src; }
     },
@@ -683,6 +687,7 @@ async function verifyPendingPrewarmPreventsPrematureNoSource(file) {
       getAttribute(name) { return name === 'src' ? this._src : ''; },
       removeAttribute(name) { if (name === 'src') this._src = ''; },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) { this._src = value; },
       get src() { return this._src; }
     },
@@ -791,6 +796,7 @@ async function verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file) {
       getAttribute(name) { return name === 'src' ? this._src : ''; },
       removeAttribute(name) { if (name === 'src') this._src = ''; },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) { this._src = value; },
       get src() { return this._src; }
     },
@@ -857,7 +863,7 @@ async function verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file) {
   }
 }
 
-async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
+async function verifyFallbackSwitchCommitsMatchedSourceWithoutBlockingTrial(file) {
   const html = fs.readFileSync(file, 'utf8');
   const script = html.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i)[1];
   const failedUrl = 'https://cdn.example.test/failed-kuwo-stack.mp3';
@@ -887,6 +893,7 @@ async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
       getAttribute(name) { return name === 'src' ? this._src : ''; },
       removeAttribute(name) { if (name === 'src') this._src = ''; },
       load() {},
+      play() { return Promise.resolve(); },
       set src(value) { this._src = value; },
       get src() { return this._src; }
     },
@@ -896,9 +903,8 @@ async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
     restoredPlaybackTime: 0,
     PREWARM_FAST_SWITCH_GRACE_MS: 1,
     FALLBACK_PLAYBACK_TIMEOUT_MS: 4200,
-    FALLBACK_TRIAL_PLAYBACK_TIMEOUT_MS: 1500,
     recoverCalls: 0,
-    playbackTimeouts: [],
+    playAttempts: 0,
     isSmartSourceEnabled() { return true; },
     tryProxyPlaybackLine() { return Promise.resolve(false); },
     inferTrackSourceCandidates() { return ['kuwo', 'joox', 'netease', 'qq']; },
@@ -917,10 +923,9 @@ async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
       });
       return track.src;
     },
-    async playAudioWithTimeout(timeoutMs) {
-      sandbox.playbackTimeouts.push(timeoutMs);
-      await new Promise((resolve) => setTimeout(resolve, 30));
-      throw new Error('candidate timed out');
+    async playAudioWithTimeout() {
+      sandbox.playAttempts += 1;
+      throw new Error('fallback should not block on immediate playback confirmation');
     },
     confirmPlaybackStarted() { return Promise.resolve(false); },
     reconcileCurrentTrackInQueue() {},
@@ -955,14 +960,17 @@ async function verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file) {
 
   const switched = await sandbox.switchToFallbackSource('play-failed', 71, failedUrl);
 
-  if (switched !== false) {
-    throw new Error(file + ' should not report a completed switch after the matched source fails to start');
+  if (switched !== true) {
+    throw new Error(file + ' should commit the matched fallback source and let the audio element load it');
   }
-  if (sandbox.playbackTimeouts.some((timeoutMs) => Number(timeoutMs) > 1800)) {
-    throw new Error(file + ' stacked long fallback playback trials: ' + sandbox.playbackTimeouts.join(','));
+  if (sandbox.playAttempts !== 0) {
+    throw new Error(file + ' blocked fallback switching on immediate playback confirmation');
   }
-  if (sandbox.recoverCalls < 2) {
-    throw new Error(file + ' should still move past a bad fallback candidate without waiting on long trials');
+  if (sandbox.recoverCalls !== 1) {
+    throw new Error(file + ' should search one matched free source per fallback event, got ' + sandbox.recoverCalls);
+  }
+  if (sandbox.audioPlayer.getAttribute('src') !== 'https://cdn.example.test/joox-stack.mp3') {
+    throw new Error(file + ' did not assign the matched fallback URL to the audio element');
   }
 }
 
@@ -985,7 +993,7 @@ function verifyPlaybackStartsPrewarm(file) {
     await verifyFallbackSearchDoesNotWaitForSlowProxyRetry(file);
     await verifyPendingPrewarmPreventsPrematureNoSource(file);
     await verifyMissingFallbackDoesNotWaitForLongLatePrewarm(file);
-    await verifyFallbackSwitchDoesNotStackLongTimedPlaybackTrials(file);
+    await verifyFallbackSwitchCommitsMatchedSourceWithoutBlockingTrial(file);
   }
 })().catch((error) => {
   console.error(error);
